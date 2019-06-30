@@ -1,0 +1,24 @@
+{
+	"name": "Fighter",
+	"skills": [
+		{
+			"name": "Bash",
+			"level": 2,
+			"active": true,
+			"prerequisites": [
+			],
+			"skillTreeRow": 0,
+			"skillTreeColumn": 1
+		},
+		{
+			"name": "Sweep",
+			"level": 3,
+			"active": true,
+			"prerequisites": [
+				"Bash"
+			],
+			"skillTreeRow": 1,
+			"skillTreeColumn": 1
+		}
+	]
+}

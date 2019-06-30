@@ -1,0 +1,16 @@
+{
+	"name": "test",
+	"recommendedLevel": 1,
+	"phases": [
+		{
+			"objectiveChains": [
+				{
+					"objectives": {
+						"goal": 1,
+						"description": "test description"
+					}
+				}
+			]
+		}
+	]
+}
