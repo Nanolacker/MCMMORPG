@@ -10,6 +10,7 @@ public abstract class CommonCharacter {
 
 	private String name;
 	private int level;
+	private boolean alive;
 	private Location location;
 	private TextArea nameplate;
 
@@ -31,6 +32,14 @@ public abstract class CommonCharacter {
 
 	public final int getLevel() {
 		return level;
+	}
+
+	public boolean isAlive() {
+		return alive;
+	}
+
+	public void setAlive(boolean alive) {
+		this.alive = alive;
 	}
 
 	@OverridingMethodsMustInvokeSuper

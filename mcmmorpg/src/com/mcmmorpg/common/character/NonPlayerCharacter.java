@@ -11,7 +11,6 @@ public abstract class NonPlayerCharacter extends CommonCharacter {
 
 	private static List<NonPlayerCharacter> spawningNpcs;
 
-	private boolean alive;
 	private boolean spawning;
 	private boolean spawned;
 
@@ -26,7 +25,7 @@ public abstract class NonPlayerCharacter extends CommonCharacter {
 		spawned = false;
 	}
 
-	public final boolean getAlive() {
+	public final boolean isAlive() {
 		return alive;
 	}
 
