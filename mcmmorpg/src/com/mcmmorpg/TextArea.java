@@ -10,6 +10,10 @@ public class TextArea {
 
 	}
 
+	public TextArea(int charsPerLine) {
+		this("", charsPerLine);
+	}
+
 	public String getText() {
 		return null;
 	}

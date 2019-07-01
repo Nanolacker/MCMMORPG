@@ -1,16 +1,11 @@
 package com.mcmmorpg.common.quest;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import org.bukkit.Bukkit;
-
-import com.mcmmorpg.common.character.PlayerCharacter;
+import java.io.Serializable;
 
 /**
  * Stores a player's progress on a certain quest.
  */
-public class QuestStatus {
+public class QuestStatus implements Serializable {
 
 	private final String questName;
 	private final int[][][] progressData;
