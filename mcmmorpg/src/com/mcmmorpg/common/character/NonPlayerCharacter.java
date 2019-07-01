@@ -11,6 +11,7 @@ public abstract class NonPlayerCharacter extends CommonCharacter {
 
 	private static List<NonPlayerCharacter> spawningNpcs;
 
+	private boolean alive;
 	private boolean spawning;
 	private boolean spawned;
 
@@ -20,9 +21,21 @@ public abstract class NonPlayerCharacter extends CommonCharacter {
 
 	protected NonPlayerCharacter(String name, int level, Location location) {
 		super(name, level, location);
+		alive = true;
+		spawning = false;
+		spawned = false;
 	}
 
-	public final boolean isSpawning() {
+	public final boolean getAlive() {
+		return alive;
+	}
+
+	@OverridingMethodsMustInvokeSuper
+	public void setAlive(boolean alive) {
+		this.alive = alive;
+	}
+
+	public final boolean getSpawning() {
 		return spawning;
 	}
 
@@ -42,11 +55,15 @@ public abstract class NonPlayerCharacter extends CommonCharacter {
 		}
 	}
 
+	public final boolean getSpawned() {
+		return spawned;
+	}
+
 	/**
 	 * Override in subclasses to provide additional functionality.
 	 */
 	@OverridingMethodsMustInvokeSuper
-	public void spawn() {
+	protected void spawn() {
 		spawned = true;
 	}
 
@@ -54,7 +71,7 @@ public abstract class NonPlayerCharacter extends CommonCharacter {
 	 * Override in subclasses to provide additional functionality.
 	 */
 	@OverridingMethodsMustInvokeSuper
-	public void despawn() {
+	protected void despawn() {
 		spawned = false;
 	}
 

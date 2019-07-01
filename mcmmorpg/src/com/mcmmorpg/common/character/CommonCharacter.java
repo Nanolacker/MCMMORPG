@@ -11,14 +11,12 @@ public abstract class CommonCharacter {
 	private String name;
 	private int level;
 	private Location location;
-	private boolean alive;
 	private TextArea nameplate;
 
 	protected CommonCharacter(String name, int level, Location location) {
 		this.name = name;
 		this.level = level;
 		this.location = location;
-		alive = false;
 		nameplate = new TextArea(0);
 	}
 
@@ -47,14 +45,6 @@ public abstract class CommonCharacter {
 	@OverridingMethodsMustInvokeSuper
 	public void setLocation(Location location) {
 		this.location = location;
-	}
-
-	public boolean isAlive() {
-		return alive;
-	}
-
-	public void die() {
-		alive = false;
 	}
 
 }
