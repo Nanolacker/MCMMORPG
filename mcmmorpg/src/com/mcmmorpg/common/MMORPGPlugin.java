@@ -4,6 +4,9 @@ import org.bukkit.Bukkit;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import com.mcmmorpg.common.character.NonPlayerCharacter;
+import com.mcmmorpg.common.ui.TextArea;
+
 public abstract class MMORPGPlugin extends JavaPlugin {
 
 	private static boolean isInitialized;
@@ -11,21 +14,33 @@ public abstract class MMORPGPlugin extends JavaPlugin {
 	@Override
 	public void onEnable() {
 		isInitialized = false;
-		onMMORPGStart();
+		NonPlayerCharacter.startSpawnTask();
+		try {
+			onMMORPGStart();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		isInitialized = true;
 	}
 
 	@Override
 	public void onDisable() {
-		onMMORPGStop();
+		try {
+			onMMORPGStop();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		NonPlayerCharacter.despawnAll();
+		TextArea.removeAllEntities();
 	}
 
 	public static boolean isInitialized() {
 		return isInitialized;
 	}
 
-	public void registerEvents(Listener listener) {
-		Bukkit.getPluginManager().registerEvents(listener, this);
+	public static void registerEvents(Listener listener) {
+		MMORPGPlugin plugin = getPlugin(MMORPGPlugin.class);
+		Bukkit.getPluginManager().registerEvents(listener, plugin);
 	}
 
 	protected abstract void onMMORPGStart();

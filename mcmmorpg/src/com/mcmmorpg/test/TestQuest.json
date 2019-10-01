@@ -5,10 +5,12 @@
 		{
 			"objectiveChains": [
 				{
-					"objectives": {
-						"goal": 1,
-						"description": "test description"
-					}
+					"objectives": [
+						{
+							"goal": 1,
+							"description": "test description"
+						}
+					]
 				}
 			]
 		}

@@ -23,8 +23,8 @@ public abstract class DelayedTask extends CommonTask {
 		BukkitScheduler scheduler = Bukkit.getScheduler();
 		Plugin plugin = MMORPGPlugin.getPlugin(MMORPGPlugin.class);
 		Runnable runnable = () -> run();
-		long delayMilis = (long) (delaySeconds * 1000);
-		scheduler.scheduleSyncDelayedTask(plugin, runnable, delayMilis);
+		long delayTicks = (long) (delaySeconds * 20);
+		scheduler.scheduleSyncDelayedTask(plugin, runnable, delayTicks);
 	}
 
 }

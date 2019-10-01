@@ -7,31 +7,62 @@ import javax.annotation.OverridingMethodsMustInvokeSuper;
 
 import org.bukkit.Location;
 
+import com.mcmmorpg.common.MMORPGPlugin;
+import com.mcmmorpg.common.time.RepeatingTask;
+
 public abstract class NonPlayerCharacter extends CommonCharacter {
+
+	private static final double SPAWN_PERIOD_SECONDS = 0.1;
 
 	private static List<NonPlayerCharacter> spawningNpcs;
 
 	private boolean spawning;
 	private boolean spawned;
 
-	static {
+	public static void startSpawnTask() {
+		if (MMORPGPlugin.isInitialized()) {
+			throw new IllegalStateException("Plugin must be uninitialized");
+		}
 		spawningNpcs = new ArrayList<>();
+		RepeatingTask spawnTask = new RepeatingTask(SPAWN_PERIOD_SECONDS) {
+			@Override
+			public void run() {
+				for (NonPlayerCharacter npc : spawningNpcs) {
+					boolean alive = npc.isAlive();
+					if (alive) {
+						boolean canSpawn = npc.canSpawn();
+						boolean isSpawned = npc.isSpawned();
+						if (canSpawn) {
+							if (!isSpawned) {
+								npc.spawn();
+							}
+						} else {
+							if (isSpawned) {
+								npc.despawn();
+							}
+						}
+					}
+				}
+			}
+		};
+		spawnTask.schedule();
 	}
 
-	protected NonPlayerCharacter(String name, int level, Location location) {
-		super(name, level, location);
-		alive = true;
+	/**
+	 * Invoked when plugin is disabled.
+	 */
+	public static void despawnAll() {
+		for (NonPlayerCharacter npc : spawningNpcs) {
+			if (npc.isSpawned()) {
+				npc.despawn();
+			}
+		}
+	}
+
+	protected NonPlayerCharacter(String name, int level, Location location, double maxHealth) {
+		super(name, level, location, maxHealth);
 		spawning = false;
 		spawned = false;
-	}
-
-	public final boolean isAlive() {
-		return alive;
-	}
-
-	@OverridingMethodsMustInvokeSuper
-	public void setAlive(boolean alive) {
-		this.alive = alive;
 	}
 
 	public final boolean getSpawning() {
@@ -54,7 +85,7 @@ public abstract class NonPlayerCharacter extends CommonCharacter {
 		}
 	}
 
-	public final boolean getSpawned() {
+	public final boolean isSpawned() {
 		return spawned;
 	}
 
@@ -64,6 +95,7 @@ public abstract class NonPlayerCharacter extends CommonCharacter {
 	@OverridingMethodsMustInvokeSuper
 	protected void spawn() {
 		spawned = true;
+		setNameplateVisible(true);
 	}
 
 	/**
@@ -72,6 +104,28 @@ public abstract class NonPlayerCharacter extends CommonCharacter {
 	@OverridingMethodsMustInvokeSuper
 	protected void despawn() {
 		spawned = false;
+		setNameplateVisible(false);
+	}
+
+	@OverridingMethodsMustInvokeSuper
+	@Override
+	protected void die() {
+		super.die();
+		despawn();
+	}
+
+	private static final double MAX_DISTANCE_FROM_PLAYER_TO_SPAWN = 25.0;
+
+	/**
+	 * Returns whether the conditions are suitable for this npc to spawn. By
+	 * default, returns whether there is a player nearby. Override in subclasses to
+	 * provide alternative functionality.
+	 */
+	protected boolean canSpawn() {
+		Location location = getLocation();
+		boolean playerIsNearby = PlayerCharacter.playerIsNearby(location, MAX_DISTANCE_FROM_PLAYER_TO_SPAWN,
+				MAX_DISTANCE_FROM_PLAYER_TO_SPAWN, MAX_DISTANCE_FROM_PLAYER_TO_SPAWN);
+		return playerIsNearby;
 	}
 
 }

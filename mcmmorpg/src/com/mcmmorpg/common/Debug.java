@@ -1,8 +1,11 @@
 package com.mcmmorpg.common;
 
+import java.util.Collection;
+
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Server;
+import org.bukkit.entity.Player;
 
 import com.mcmmorpg.common.time.DelayedTask;
 
@@ -30,8 +33,21 @@ public class Debug {
 
 	private static void log0(Object message, StackTraceElement source) {
 		Server server = Bukkit.getServer();
-		String formattedMessage = ChatColor.BLUE + "[DEBUG]: " + ChatColor.RESET + message + "\n" + source.toString();
+		String formattedMessage = ChatColor.BLUE + "[DEBUG]: " + ChatColor.RESET + message + ChatColor.RESET + "\n"
+				+ source.toString();
 		server.broadcastMessage(formattedMessage);
+	}
+
+	/**
+	 * Returns the first online player this method finds. Provides a convenient way
+	 * to find a player for testing purposes.
+	 */
+	public static Player getFirstPlayer() {
+		Collection<? extends Player> players = Bukkit.getOnlinePlayers();
+		if (players.isEmpty()) {
+			return null;
+		}
+		return (Player) players.toArray()[0];
 	}
 
 }

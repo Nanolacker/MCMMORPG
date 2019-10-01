@@ -1,4 +1,4 @@
-package com.mcmmorpg.common.player;
+package com.mcmmorpg.common.playerClass;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -17,39 +17,39 @@ public class PlayerClass {
 	 */
 	private static final Map<String, PlayerClass> playerClasses;
 
+	private final String name;
+	private Skill[] skills;
+
 	static {
 		playerClasses = new HashMap<>();
 	}
-
-	private final String name;
-	private Skill[] skills;
 
 	public PlayerClass(String name) {
 		this.name = name;
 	}
 
-	public static PlayerClass forName(String name) {
+	public static final PlayerClass forName(String name) {
 		return playerClasses.get(name);
 	}
 
-	public void initialize() {
+	public final void initialize() {
 		if (MMORPGPlugin.isInitialized()) {
 			throw new IllegalStateException("Cannot initialize a player class after the plugin has been initialized.");
 		}
 		for (Skill skill : skills) {
-			skill.setPlayerClass(this);
+			skill.initialize(this);
 		}
 		playerClasses.put(name, this);
 	}
 
-	public String getName() {
+	public final String getName() {
 		return name;
 	}
 
 	/**
 	 * Returns null if no skill with the specified name exists.
 	 */
-	public Skill skillForName(String skillName) {
+	public final Skill skillForName(String skillName) {
 		for (Skill skill : skills) {
 			if (skill.getName().equals(skillName)) {
 				return skill;

@@ -3,8 +3,6 @@ package com.mcmmorpg.common.quest;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.mcmmorpg.common.character.PlayerCharacter;
-
 public class QuestStatusManager {
 
 	private final Map<Quest, QuestStatus> statusMap;
