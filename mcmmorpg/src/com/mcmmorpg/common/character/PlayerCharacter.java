@@ -1,5 +1,6 @@
 package com.mcmmorpg.common.character;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -12,6 +13,7 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
@@ -55,7 +57,7 @@ public class PlayerCharacter extends CommonCharacter {
 
 	private PlayerCharacter(Player player, PlayerClass playerClass, Location location, Location respawnLocation, int xp,
 			int currency, double maxHealth, double currentHealth, double maxMana, double currentMana,
-			QuestStatus[] questStatuses, SkillStatus[] skillStatuses) {
+			QuestStatus[] questStatuses, SkillStatus[] skillStatuses, ItemStack[] inventoryContents) {
 		super(player.getName(), xpToLevel(xp), location, maxHealth);
 		this.player = player;
 		this.playerClass = playerClass;
@@ -67,6 +69,7 @@ public class PlayerCharacter extends CommonCharacter {
 		this.currentMana = currentMana;
 		this.questStatusManager = new QuestStatusManager(questStatuses);
 		this.skillStatusManager = new SkillStatusManager(skillStatuses);
+		player.getInventory().setContents(inventoryContents);
 		this.collider = new PlayerCharacterCollider(this);
 		this.movementSyncer = new MovementSyncer(this, player, MovementSyncMode.CHARACTER_FOLLOWS_ENTITY);
 
@@ -99,8 +102,8 @@ public class PlayerCharacter extends CommonCharacter {
 
 	}
 
-	public static Collection<PlayerCharacter> list() {
-		return playerMap.values();
+	public static List<PlayerCharacter> list() {
+		return new ArrayList<PlayerCharacter>(playerMap.values());
 	}
 
 	public static PlayerCharacter registerPlayerCharacter(Player player, PlayerCharacterSaveData saveData) {
@@ -115,8 +118,9 @@ public class PlayerCharacter extends CommonCharacter {
 		double currentMana = saveData.getCurrentMana();
 		QuestStatus[] questStatuses = saveData.getQuestStatuses();
 		SkillStatus[] skillStatuses = saveData.getSkillStatuses();
+		ItemStack[] inventoryContents = saveData.getInventoryContents();
 		return new PlayerCharacter(player, playerClass, location, respawnLocation, xp, currency, maxHealth,
-				currentHealth, maxMana, currentMana, questStatuses, skillStatuses);
+				currentHealth, maxMana, currentMana, questStatuses, skillStatuses, inventoryContents);
 	}
 
 	public static PlayerCharacter forPlayer(Player player) {
@@ -134,7 +138,7 @@ public class PlayerCharacter extends CommonCharacter {
 		return false;
 	}
 
-	private static final double MAX_DISTANCE_WITHOUT_PLAYER_TELEPORT = 2.0;
+	private static final double MAX_DISTANCE_WITHOUT_PLAYER_TELEPORT = 5.0;
 
 	public PlayerClass getPlayerClass() {
 		return playerClass;
@@ -235,6 +239,7 @@ public class PlayerCharacter extends CommonCharacter {
 	}
 
 	private void levelUp() {
+		setLevel(getLevel() + 1);
 		Noise levelUpNoise = new Noise(Sound.ENTITY_PLAYER_LEVELUP);
 		levelUpNoise.play(player);
 		sendMessage(ChatColor.GREEN + "Level up!");
@@ -304,7 +309,6 @@ public class PlayerCharacter extends CommonCharacter {
 		return player.getInventory();
 	}
 
-	// DONT FORGET TO IMPLEMENT DEACTIVATE!!!
 	public boolean isActive() {
 		return active;
 	}

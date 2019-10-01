@@ -1,8 +1,8 @@
 package com.mcmmorpg.common.persistence;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
+import java.util.List;
+import java.util.Set;
 
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemFlag;
@@ -13,25 +13,37 @@ public final class PersistentItemStack {
 
 	private final Material type;
 	private final int amount;
-	private String displayName;
-	private String[] lore;
-	private ItemFlag[] flags;
+	private final String displayName;
+	private final String[] lore;
+	private final ItemFlag[] flags;
+	private final boolean unbreakable;
 
 	public PersistentItemStack(ItemStack itemStack) {
 		this.type = itemStack.getType();
 		this.amount = itemStack.getAmount();
 		ItemMeta itemMeta = itemStack.getItemMeta();
 		this.displayName = itemMeta.getDisplayName();
-		this.lore = (String[]) itemMeta.getLore().toArray();
-		this.flags = (ItemFlag[]) itemMeta.getItemFlags().toArray();
+		List<String> lore = itemMeta.getLore();
+		if (lore == null) {
+			this.lore = null;
+		} else {
+			this.lore = lore.toArray(new String[lore.size()]);
+		}
+		Set<ItemFlag> itemFlags = itemMeta.getItemFlags();
+		this.flags = itemFlags.toArray(new ItemFlag[itemFlags.size()]);
+		this.unbreakable = itemMeta.isUnbreakable();
 	}
 
 	public ItemStack getItemStack() {
 		ItemStack itemStack = new ItemStack(type, amount);
 		ItemMeta itemMeta = itemStack.getItemMeta();
 		itemMeta.setDisplayName(displayName);
-		itemMeta.setLore(Arrays.asList(lore));
+		if (lore != null) {
+			itemMeta.setLore(Arrays.asList(lore));
+		}
 		itemMeta.addItemFlags(flags);
+		itemMeta.setUnbreakable(unbreakable);
+		itemStack.setItemMeta(itemMeta);
 		return itemStack;
 	}
 

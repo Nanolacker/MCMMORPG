@@ -1,6 +1,7 @@
 package com.mcmmorpg.common.utils;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
 
@@ -33,15 +34,19 @@ public class StringUtils {
 				String token = lineParser.next();
 				boolean lineLengthExceeded = line.length() + 1 + token.length() > lineLength;
 				if (lineLengthExceeded) { // +1 for space
+					line = line.trim();
+					line = prevColor + line;
 					paragraph.add(line);
 					prevColor = ChatColor.getLastColors(line);
 					line = prevColor + token;
 				} else {
-					line += " " + token;
+					line += token + " ";
 				}
 			}
-			prevColor = ChatColor.getLastColors(line);
+			line = line.trim();
+			line = prevColor + line;
 			paragraph.add(line);
+			prevColor = ChatColor.getLastColors(line);
 			lineParser.close();
 		}
 		return paragraph;
