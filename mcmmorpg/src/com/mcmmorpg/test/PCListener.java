@@ -1,6 +1,7 @@
 package com.mcmmorpg.test;
 
 import java.io.File;
+import java.io.IOException;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -11,28 +12,36 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
-import com.google.gson.Gson;
 import com.mcmmorpg.common.character.PlayerCharacter;
 import com.mcmmorpg.common.persistence.PlayerCharacterSaveData;
 import com.mcmmorpg.common.playerClass.PlayerClass;
-import com.mcmmorpg.common.time.DelayedTask;
-import com.mcmmorpg.common.utils.JsonUtils;
+import com.mcmmorpg.common.utils.IOUtils;
 
 public class PCListener implements Listener {
 
-	private static final String SAVE_FOLDER_NAME = "C:/Users/conno/Desktop/PlayerSaves";
+	private final File saveDataDirectory;
+	private final Location startingLocation;
+	private final MenuItem menuItem;
 
-	private static final Gson gson = new Gson();
+	public PCListener() {
+		File dataFolder = IOUtils.getDataFolder();
+		saveDataDirectory = new File(dataFolder, "PlayerData");
+		if (!saveDataDirectory.exists()) {
+			saveDataDirectory.mkdir();
+		}
+		World world = Bukkit.getWorld("world");
+		startingLocation = new Location(world, 141, 70, 66);
+		menuItem = new MenuItem();
+	}
 
 	@EventHandler
 	private void onJoin(PlayerJoinEvent event) {
 		Player player = event.getPlayer();
-		File file = new File(SAVE_FOLDER_NAME + "/" + player.getName());
+		File file = getSaveFile(player.getName());
 		if (file.exists()) {
-			PlayerCharacterSaveData saveData = JsonUtils.readFromFile(file, PlayerCharacterSaveData.class);
+			PlayerCharacterSaveData saveData = IOUtils.jsonFromFile(file, PlayerCharacterSaveData.class);
 			PlayerCharacter.registerPlayerCharacter(player, saveData);
-			QuestBookItem item = new QuestBookItem();
-			player.getInventory().addItem(item.getItemStack());
+			player.getInventory().addItem(menuItem.getItemStack());
 		} else {
 			createNewCharacter(player);
 		}
@@ -41,17 +50,9 @@ public class PCListener implements Listener {
 
 	private void createNewCharacter(Player player) {
 		PlayerClass playerClass = PlayerClass.forName("Fighter");
-		World world = Bukkit.getWorld("world");
-		Location startingLocation = new Location(world, 141, 70, 66);
 		PlayerCharacterSaveData saveData = PlayerCharacterSaveData.createFreshSaveData(player, playerClass,
 				startingLocation);
-		PlayerCharacter pc = PlayerCharacter.registerPlayerCharacter(player, saveData);
-		pc.grantXP(90);
-		new DelayedTask(4) {
-			public void run() {
-				pc.grantXP(50);
-			}
-		}.schedule();
+		PlayerCharacter.registerPlayerCharacter(player, saveData);
 	}
 
 	@EventHandler
@@ -61,10 +62,15 @@ public class PCListener implements Listener {
 		if (pc == null) {
 			return;
 		}
-		File file = new File(SAVE_FOLDER_NAME + "/" + player.getName());
+		File file = getSaveFile(player.getName());
 		PlayerCharacterSaveData saveData = PlayerCharacterSaveData.createSaveData(pc);
-		JsonUtils.writeToFile(file, saveData);
+		IOUtils.jsonToFile(file, saveData);
 		pc.deactivate();
+	}
+
+	private File getSaveFile(String playerName) {
+		File saveFile = new File(saveDataDirectory, playerName + ".json");
+		return saveFile;
 	}
 
 }

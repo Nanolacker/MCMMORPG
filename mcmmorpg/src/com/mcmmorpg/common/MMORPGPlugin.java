@@ -39,8 +39,12 @@ public abstract class MMORPGPlugin extends JavaPlugin {
 	}
 
 	public static void registerEvents(Listener listener) {
-		MMORPGPlugin plugin = getPlugin(MMORPGPlugin.class);
+		MMORPGPlugin plugin = getPlugin();
 		Bukkit.getPluginManager().registerEvents(listener, plugin);
+	}
+
+	public static MMORPGPlugin getPlugin() {
+		return getPlugin(MMORPGPlugin.class);
 	}
 
 	protected abstract void onMMORPGStart();

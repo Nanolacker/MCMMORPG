@@ -47,15 +47,6 @@ public abstract class Collider {
 	 */
 	private double xMin, yMin, zMin, xMax, yMax, zMax;
 	/**
-	 * The location representing the point that exists at the center of this
-	 * collider.
-	 */
-	private Location center;
-	/**
-	 * The lengths of the edges this collider.
-	 */
-	private double lengthX, lengthY, lengthZ;
-	/**
 	 * Whether this collider should be "drawn" in its Minecraft world using
 	 * particles to visualize its location and size.
 	 */
@@ -114,26 +105,12 @@ public abstract class Collider {
 	 */
 	public Collider(World world, double xMin, double yMin, double zMin, double xMax, double yMax, double zMax) {
 		this.world = world;
-		if (!(xMax > xMin)) {
-			throw new IllegalArgumentException(
-					"Impossible dimensions. xMax " + "(" + xMax + ") must be greater than xMin (" + xMin + ")");
-		}
-		if (!(yMax > yMin)) {
-			throw new IllegalArgumentException(
-					"Impossible dimensions. yMax " + "(" + yMax + ") must be greater than yMin (" + yMin + ")");
-		}
-		if (!(zMax > zMin)) {
-			throw new IllegalArgumentException(
-					"Impossible dimensions. zMax " + "(" + zMax + ") must be greater than zMin (" + zMin + ")");
-		}
 		this.xMin = xMin;
 		this.xMax = xMax;
 		this.yMin = yMin;
 		this.yMax = yMax;
 		this.zMin = zMin;
 		this.zMax = zMax;
-		updateCenter();
-		updateDimensions();
 		init();
 	}
 
@@ -162,25 +139,7 @@ public abstract class Collider {
 	 * @throws IllegalArgumentException if any of the lengths are negative
 	 */
 	public Collider(Location center, double lengthX, double lengthY, double lengthZ) {
-		this.world = center.getWorld();
-		this.center = center;
-		if (lengthX < 0) {
-			throw new IllegalArgumentException(
-					"Impossible dimensions. lengthX " + "(" + lengthX + ") cannot be negative");
-		}
-		this.lengthX = lengthX;
-		if (lengthY < 0) {
-			throw new IllegalArgumentException(
-					"Impossible dimensions. lengthY " + "(" + lengthY + ") cannot be negative");
-		}
-		this.lengthY = lengthY;
-		if (lengthZ < 0) {
-			throw new IllegalArgumentException(
-					"Impossible dimensions. lengthZ " + "(" + lengthZ + ") cannot be negative");
-		}
-		this.lengthZ = lengthZ;
-		updateBounds();
-		init();
+		
 	}
 
 	/**
@@ -234,7 +193,6 @@ public abstract class Collider {
 	 */
 	public void setWorld(World world) {
 		this.world = world;
-		center.setWorld(world);
 		updateOccupiedBuckets();
 		if (active) {
 			checkForCollision();
@@ -250,9 +208,10 @@ public abstract class Collider {
 
 	public void setXMin(double xMin) {
 		this.xMin = xMin;
-		updateCenter();
-		updateDimensions();
 		updateOccupiedBuckets();
+		if (active) {
+			checkForCollision();
+		}
 	}
 
 	/**
@@ -264,9 +223,10 @@ public abstract class Collider {
 
 	public void setYMin(double yMin) {
 		this.yMin = yMin;
-		updateCenter();
-		updateDimensions();
 		updateOccupiedBuckets();
+		if (active) {
+			checkForCollision();
+		}
 	}
 
 	/**
@@ -278,9 +238,10 @@ public abstract class Collider {
 
 	public void setZMin(double zMin) {
 		this.zMin = zMin;
-		updateCenter();
-		updateDimensions();
 		updateOccupiedBuckets();
+		if (active) {
+			checkForCollision();
+		}
 	}
 
 	/**
@@ -292,9 +253,10 @@ public abstract class Collider {
 
 	public void setXMax(double xMax) {
 		this.xMax = xMax;
-		updateCenter();
-		updateDimensions();
 		updateOccupiedBuckets();
+		if (active) {
+			checkForCollision();
+		}
 	}
 
 	/**
@@ -306,9 +268,10 @@ public abstract class Collider {
 
 	public void setYMax(double yMax) {
 		this.yMax = yMax;
-		updateCenter();
-		updateDimensions();
 		updateOccupiedBuckets();
+		if (active) {
+			checkForCollision();
+		}
 	}
 
 	/**
@@ -320,9 +283,10 @@ public abstract class Collider {
 
 	public void setZMax(double zMax) {
 		this.zMax = zMax;
-		updateCenter();
-		updateDimensions();
 		updateOccupiedBuckets();
+		if (active) {
+			checkForCollision();
+		}
 	}
 
 	/**
@@ -330,6 +294,10 @@ public abstract class Collider {
 	 * box.
 	 */
 	public Location getCenter() {
+		double x = (xMin + xMax) / 2;
+		double y = (yMin + yMax) / 2;
+		double z = (zMin + zMax) / 2;
+		Location center = new Location(world, x, y, z);
 		return center;
 	}
 
@@ -339,9 +307,8 @@ public abstract class Collider {
 	 * @param center the new center of this collider
 	 */
 	public void setCenter(Location center) {
-		this.center = center;
 		world = center.getWorld();
-		updateBounds();
+		updateBounds(center);
 		updateOccupiedBuckets();
 		if (active) {
 			checkForCollision();
@@ -352,27 +319,30 @@ public abstract class Collider {
 	 * Returns the length of this collider on the x-axis.
 	 */
 	public double getLengthX() {
-		return lengthX;
+		return xMax - xMin;
 	}
 
 	/**
 	 * Returns the length of this collider on the y-axis.
 	 */
 	public double getLengthY() {
-		return lengthY;
+		return yMax - yMin;
 	}
 
 	/**
 	 * Returns the length of this collider on the z-axis.
 	 */
 	public double getLengthZ() {
-		return lengthZ;
+		return zMax - zMin;
 	}
 
 	/**
 	 * Returns the dimensions of this collider.
 	 */
 	public Vector getDimensions() {
+		double lengthX = getLengthX();
+		double lengthY = getLengthY();
+		double lengthZ = getLengthZ();
 		return new Vector(lengthX, lengthY, lengthZ);
 	}
 
@@ -382,10 +352,7 @@ public abstract class Collider {
 	 * @param dimensions the new dimensions of this collider
 	 */
 	public void setDimensions(Vector dimensions) {
-		lengthX = dimensions.getX();
-		lengthY = dimensions.getY();
-		lengthZ = dimensions.getZ();
-		updateBounds();
+		updateBounds(dimensions);
 		updateOccupiedBuckets();
 		if (active) {
 			checkForCollision();
@@ -411,7 +378,6 @@ public abstract class Collider {
 		yMax += y;
 		zMin += z;
 		zMax += z;
-		updateCenter();
 		updateOccupiedBuckets();
 		if (active) {
 			checkForCollision();
@@ -451,6 +417,7 @@ public abstract class Collider {
 				assignDrawTask();
 			}
 			drawTask.schedule();
+			Location center = getCenter();
 			String centerDesc = String.format(ChatColor.YELLOW + "center = (%.1f, %.1f, %.1f)", center.getX(),
 					center.getY(), center.getZ());
 			Debug.log(ChatColor.WHITE + "Drawing of collider has been enabled. (" + centerDesc + ChatColor.WHITE + ")");
@@ -572,42 +539,34 @@ public abstract class Collider {
 		}
 	}
 
-	/**
-	 * Center and dimensions must be current to update properly.
-	 */
-	private void updateBounds() {
+	private void updateBounds(Location center) {
 		double xMid = center.getX();
-		double halfLengthX = lengthX / 2;
+		double halfLengthX = getLengthX() / 2;
 		xMin = xMid - halfLengthX;
 		xMax = xMid + halfLengthX;
 		double yMid = center.getY();
-		double halfLengthY = lengthY / 2;
+		double halfLengthY = getLengthY() / 2;
 		yMin = yMid - halfLengthY;
 		yMax = yMid + halfLengthY;
 		double zMid = center.getZ();
-		double halfLengthZ = lengthZ / 2;
+		double halfLengthZ = getLengthZ() / 2;
 		zMin = zMid - halfLengthZ;
 		zMax = zMid + halfLengthZ;
 	}
 
-	/**
-	 * Bounds must be current to update properly.
-	 */
-	private void updateCenter() {
-		double xMid = MathUtils.midpoint(xMin, xMax);
-		double yMid = MathUtils.midpoint(yMin, yMax);
-		double zMid = MathUtils.midpoint(zMin, zMax);
-		center = new Location(world, xMid, yMid, zMid);
-	}
-
-	/**
-	 * Updates the dimensions (i.e. lengths) of this collider. Bounds must be
-	 * current to update properly.
-	 */
-	private void updateDimensions() {
-		lengthX = xMax - xMin;
-		lengthY = yMax - yMin;
-		lengthZ = zMax - zMin;
+	private void updateBounds(Vector dimensions) {
+		double xMid = (xMin + xMax) / 2;
+		double halfLengthX = dimensions.getX() / 2;
+		xMin = xMid - halfLengthX;
+		xMax = xMid + halfLengthX;
+		double yMid = (yMin + yMax) / 2;
+		double halfLengthY = dimensions.getY() / 2;
+		yMin = yMid - halfLengthY;
+		yMax = yMid + halfLengthY;
+		double zMid = (zMin + zMax) / 2;
+		double halfLengthZ = dimensions.getZ() / 2;
+		zMin = zMid - halfLengthZ;
+		zMax = zMid + halfLengthZ;
 	}
 
 	/**
@@ -616,7 +575,7 @@ public abstract class Collider {
 	 * properly.
 	 */
 	private void updateOccupiedBuckets() {
-		ArrayList<ColliderBucket> occupiedBucketsOld = new ArrayList<ColliderBucket>(occupiedBuckets);
+		List<ColliderBucket> occupiedBucketsOld = new ArrayList<ColliderBucket>(occupiedBuckets);
 		occupiedBuckets.clear();
 		int bucketSize = ColliderBucket.BUCKET_SIZE;
 
