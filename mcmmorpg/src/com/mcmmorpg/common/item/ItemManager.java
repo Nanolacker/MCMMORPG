@@ -23,7 +23,7 @@ public class ItemManager implements Listener {
 		MMORPGPlugin.registerEvents(new ItemManager());
 	}
 
-	public static void registerListener(ItemStack itemStack, ItemListener listener) {
+	public static void registerItemListener(ItemStack itemStack, ItemListener listener) {
 		itemMap.put(itemStack, listener);
 	}
 
