@@ -10,7 +10,7 @@ import org.bukkit.scoreboard.Score;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.ScoreboardManager;
 
-import com.mcmmorpg.common.Debug;
+import com.mcmmorpg.common.utils.Debug;
 import com.mcmmorpg.common.utils.StringUtils;
 
 public class SidebarTextArea {

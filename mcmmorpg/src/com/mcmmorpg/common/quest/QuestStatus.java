@@ -50,5 +50,5 @@ public class QuestStatus implements Serializable {
 		int iObjective = objective.getIndex();
 		progressData[iPhase][iObjectiveChain][iObjective] = progress;
 	}
-
+	
 }

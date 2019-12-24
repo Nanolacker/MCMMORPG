@@ -1,7 +1,7 @@
 package com.mcmmorpg.impl;
 
-import com.mcmmorpg.common.Debug;
 import com.mcmmorpg.common.MMORPGPlugin;
+import com.mcmmorpg.common.utils.Debug;
 
 public class Main extends MMORPGPlugin {
 
