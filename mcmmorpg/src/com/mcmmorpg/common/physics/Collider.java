@@ -627,7 +627,7 @@ public abstract class Collider {
 			for (int j = 0; j < neighboringColliders.size(); j++) {
 				Collider neighboringCollider = neighboringColliders.get(j);
 				if (neighboringCollider != this && neighboringCollider.isActive() == true) {
-					boolean collides = collidesWith(neighboringCollider);
+					boolean collides = isCollidingWith(neighboringCollider);
 					if (collidingColliders.contains(neighboringCollider)) {
 						if (!collides) {
 							handleCollisionExit(neighboringCollider);
@@ -687,7 +687,7 @@ public abstract class Collider {
 	 * @param other the other {@code Collider}
 	 * @return whether the two {@code Collider}s are colliding
 	 */
-	public boolean collidesWith(Collider other) {
+	public boolean isCollidingWith(Collider other) {
 		return (this.getXMin() <= other.getXMax() && this.getXMax() >= other.getXMin())
 				&& (this.getYMin() <= other.getYMax() && this.getYMax() >= other.getYMin())
 				&& (this.getZMin() <= other.getZMax() && this.getZMax() >= other.getZMin());

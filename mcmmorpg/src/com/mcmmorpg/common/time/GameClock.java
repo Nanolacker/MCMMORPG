@@ -21,7 +21,7 @@ public class GameClock {
 	 * Returns the number of seconds that have passed since the starting of the
 	 * server.
 	 */
-	public static double getTimeSeconds() {
+	public static double getTime() {
 		long currentTimeMilis = System.currentTimeMillis();
 		return (currentTimeMilis - startTimeMilis) / 1000.0;
 	}

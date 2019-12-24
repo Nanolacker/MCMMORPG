@@ -5,6 +5,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import com.mcmmorpg.common.character.NonPlayerCharacter;
+import com.mcmmorpg.common.time.GameClock;
 import com.mcmmorpg.common.ui.TextArea;
 
 public abstract class MMORPGPlugin extends JavaPlugin {
@@ -14,6 +15,7 @@ public abstract class MMORPGPlugin extends JavaPlugin {
 	@Override
 	public void onEnable() {
 		isInitialized = false;
+		GameClock.start();
 		NonPlayerCharacter.startSpawnTask();
 		try {
 			onMMORPGStart();

@@ -21,7 +21,6 @@ public class PCListener implements Listener {
 
 	private final File saveDataDirectory;
 	private final Location startingLocation;
-	private final MenuItem menuItem;
 
 	public PCListener() {
 		File dataFolder = IOUtils.getDataFolder();
@@ -31,7 +30,6 @@ public class PCListener implements Listener {
 		}
 		World world = Bukkit.getWorld("world");
 		startingLocation = new Location(world, 141, 70, 66);
-		menuItem = new MenuItem();
 	}
 
 	@EventHandler
@@ -41,7 +39,6 @@ public class PCListener implements Listener {
 		if (file.exists()) {
 			PlayerCharacterSaveData saveData = IOUtils.jsonFromFile(file, PlayerCharacterSaveData.class);
 			PlayerCharacter.registerPlayerCharacter(player, saveData);
-			player.getInventory().addItem(menuItem.getItemStack());
 		} else {
 			createNewCharacter(player);
 		}

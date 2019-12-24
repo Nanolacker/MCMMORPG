@@ -42,7 +42,7 @@ public class Debug {
 	 * Returns the first online player this method finds. Provides a convenient way
 	 * to find a player for testing purposes.
 	 */
-	public static Player getFirstPlayer() {
+	public static Player getAPlayer() {
 		Collection<? extends Player> players = Bukkit.getOnlinePlayers();
 		if (players.isEmpty()) {
 			return null;

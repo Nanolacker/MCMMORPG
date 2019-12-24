@@ -1,17 +1,14 @@
 package com.mcmmorpg.test;
 
-import java.io.File;
-import java.util.List;
-
-import org.bukkit.Bukkit;
+import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 
 import com.mcmmorpg.common.Debug;
 import com.mcmmorpg.common.MMORPGPlugin;
-import com.mcmmorpg.common.playerClass.PlayerClass;
-import com.mcmmorpg.common.ui.ActionBar;
-import com.mcmmorpg.common.utils.IOUtils;
-import com.mcmmorpg.common.utils.StringUtils;
+import com.mcmmorpg.common.sound.Noise;
+import com.mcmmorpg.common.sound.NoiseSequence;
+import com.mcmmorpg.common.sound.NoiseSequencePlayer;
+import com.mcmmorpg.common.time.DelayedTask;
 
 public class TestPlugin extends MMORPGPlugin {
 
@@ -19,12 +16,33 @@ public class TestPlugin extends MMORPGPlugin {
 	protected void onMMORPGStart() {
 		Debug.log("Starting");
 
-		File fighterFile = new File(
-				"C:\\Users\\conno\\git\\MCMMORPG\\mcmmorpg\\src\\com\\mcmmorpg\\test\\Fighter.json");
-		PlayerClass fighter = IOUtils.jsonFromFile(fighterFile, PlayerClass.class);
-		fighter.initialize();
+		NoiseSequence sequence = new NoiseSequence(10);
+		sequence.add(new Noise(Sound.BLOCK_ANVIL_BREAK), 2);
+		sequence.add(new Noise(Sound.ENTITY_ZOMBIE_AMBIENT), 4);
+		sequence.add(new Noise(Sound.ENTITY_VILLAGER_AMBIENT), 8);
 
-		registerEvents(new PCListener());
+		Player player = Debug.getFirstPlayer();
+		if (player != null) {
+			NoiseSequencePlayer sequencePlayer = new NoiseSequencePlayer(sequence, player);
+			sequencePlayer.setLooping(true);
+			sequencePlayer.play();
+
+			DelayedTask stop = new DelayedTask(5) {
+				@Override
+				public void run() {
+					sequencePlayer.pause();
+				}
+			};
+			stop.schedule();
+
+			DelayedTask play = new DelayedTask(3) {
+				@Override
+				public void run() {
+					sequencePlayer.play();
+				}
+			};
+			play.schedule();
+		}
 	}
 
 	@Override

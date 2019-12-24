@@ -6,21 +6,26 @@ import org.bukkit.scheduler.BukkitScheduler;
 public abstract class CommonTask {
 
 	private int bukkitTaskID;
-	/**
-	 * The time at which this task was scheduled.
-	 */
-	private double scheduleTimeSeconds;
+	private boolean scheduled;
 
 	public CommonTask() {
 		bukkitTaskID = -1;
+		scheduled = false;
 	}
 
 	public void schedule() {
-		scheduleTimeSeconds = GameClock.getTimeSeconds();
+		if (scheduled) {
+			throw new IllegalStateException("Already scheduled");
+		}
+		scheduled = true;
 		scheduleBukkitTask();
 	}
 
 	public void cancel() {
+		if (!scheduled) {
+			throw new IllegalStateException("Cannot cancel a task that isn't scheduled");
+		}
+		scheduled = false;
 		BukkitScheduler scheduler = Bukkit.getScheduler();
 		scheduler.cancelTask(bukkitTaskID);
 	}

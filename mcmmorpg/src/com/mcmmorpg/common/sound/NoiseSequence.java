@@ -6,14 +6,40 @@ import java.util.List;
 public class NoiseSequence {
 
 	private List<NoiseSequenceNode> nodes;
+	/**
+	 * In seconds.
+	 */
+	private double duration;
 
-	public NoiseSequence() {
+	/**
+	 * 
+	 * @param duration in seconds
+	 */
+	public NoiseSequence(double duration) {
 		nodes = new ArrayList<>();
+		this.duration = duration;
 	}
 
-	public void add(Noise noise, double timeSeconds) {
-		NoiseSequenceNode node = new NoiseSequenceNode(noise, timeSeconds);
+	/**
+	 * 
+	 * @param noise
+	 * @param time  the second at which the noise should play in the sequence
+	 */
+	public void add(Noise noise, double time) {
+		if (time > duration) {
+			throw new IllegalArgumentException("Time is greater than duration");
+		}
+		NoiseSequenceNode node = new NoiseSequenceNode(noise, time);
 		nodes.add(node);
+	}
+
+	/**
+	 * In seconds.
+	 * 
+	 * @return
+	 */
+	public double getDuration() {
+		return duration;
 	}
 
 	List<NoiseSequenceNode> getNodes() {
@@ -23,19 +49,22 @@ public class NoiseSequence {
 	static class NoiseSequenceNode {
 
 		private final Noise noise;
-		private final double timeSeconds;
+		private final double time;
 
 		NoiseSequenceNode(Noise noise, double timeSeconds) {
 			this.noise = noise;
-			this.timeSeconds = timeSeconds;
+			this.time = timeSeconds;
 		}
 
 		Noise getNoise() {
 			return noise;
 		}
 
-		double getTimeSeconds() {
-			return timeSeconds;
+		/**
+		 * In seconds.
+		 */
+		double getTime() {
+			return time;
 		}
 
 	}
