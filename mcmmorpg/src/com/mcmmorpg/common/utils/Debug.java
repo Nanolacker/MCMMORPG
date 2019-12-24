@@ -1,4 +1,4 @@
-package com.mcmmorpg.common;
+package com.mcmmorpg.common.utils;
 
 import java.util.Collection;
 
@@ -7,6 +7,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.Server;
 import org.bukkit.entity.Player;
 
+import com.mcmmorpg.common.MMORPGPlugin;
 import com.mcmmorpg.common.time.DelayedTask;
 
 public class Debug {

@@ -1,18 +1,22 @@
 package com.mcmmorpg.test;
 
 import java.io.File;
-import java.io.IOException;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.inventory.ItemStack;
 
 import com.mcmmorpg.common.character.PlayerCharacter;
+import com.mcmmorpg.common.item.ItemListener;
+import com.mcmmorpg.common.item.ItemManager;
+import com.mcmmorpg.common.item.ItemStackFactory;
 import com.mcmmorpg.common.persistence.PlayerCharacterSaveData;
 import com.mcmmorpg.common.playerClass.PlayerClass;
 import com.mcmmorpg.common.utils.IOUtils;
@@ -21,7 +25,7 @@ public class PCListener implements Listener {
 
 	private final File saveDataDirectory;
 	private final Location startingLocation;
-	private final MenuItem menuItem;
+	private final ItemStack menuItem;
 
 	public PCListener() {
 		File dataFolder = IOUtils.getDataFolder();
@@ -31,7 +35,9 @@ public class PCListener implements Listener {
 		}
 		World world = Bukkit.getWorld("world");
 		startingLocation = new Location(world, 141, 70, 66);
-		menuItem = new MenuItem();
+		menuItem = ItemStackFactory.create("Menu", null, Material.EMERALD);
+		ItemListener menuItemListener = new ItemListener();
+		ItemManager.registerItemListener(menuItem, menuItemListener);
 	}
 
 	@EventHandler
@@ -41,7 +47,7 @@ public class PCListener implements Listener {
 		if (file.exists()) {
 			PlayerCharacterSaveData saveData = IOUtils.jsonFromFile(file, PlayerCharacterSaveData.class);
 			PlayerCharacter.registerPlayerCharacter(player, saveData);
-			player.getInventory().addItem(menuItem.getItemStack());
+			player.getInventory().addItem(menuItem);
 		} else {
 			createNewCharacter(player);
 		}

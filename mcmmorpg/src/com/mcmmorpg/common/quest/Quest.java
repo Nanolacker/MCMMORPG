@@ -6,6 +6,11 @@ import java.util.Map;
 import com.mcmmorpg.common.MMORPGPlugin;
 import com.mcmmorpg.common.character.PlayerCharacter;
 
+/**
+ * A quest can be made available to a player at anytime with makeAvailable. Once
+ * a quest has been available, there is something that starts it, such as
+ * speaking with an NPC or entering a new area. After being started, 
+ */
 public class Quest {
 
 	private static final Map<String, Quest> quests;
@@ -69,8 +74,21 @@ public class Quest {
 		return objectives[iObjective];
 	}
 
+	/**
+	 * Returns true if the player can participate in this quest, false otherwise.
+	 */
+	public boolean isAvailable(PlayerCharacter pc) {
+		return pc.getQuestStatusManager().questIsAvailable(this);
+	}
+
 	public void makeAvailable(PlayerCharacter pc) {
 		pc.getQuestStatusManager().makeQuestAvailable(this);
 	}
 
+	public boolean isStarted(PlayerCharacter pc) {
+		return pc.getQuestStatusManager().isStarted(this);
+	}
+
+	public boolean start() {
+	
 }

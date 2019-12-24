@@ -10,8 +10,8 @@ import org.bukkit.World;
 import org.bukkit.util.BoundingBox;
 import org.bukkit.util.Vector;
 
-import com.mcmmorpg.common.Debug;
 import com.mcmmorpg.common.time.RepeatingTask;
+import com.mcmmorpg.common.utils.Debug;
 import com.mcmmorpg.common.utils.MathUtils;
 
 /**

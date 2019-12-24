@@ -17,8 +17,8 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
-import com.mcmmorpg.common.Debug;
 import com.mcmmorpg.common.character.MovementSyncer.MovementSyncMode;
+import com.mcmmorpg.common.effect.EffectManager;
 import com.mcmmorpg.common.persistence.PlayerCharacterSaveData;
 import com.mcmmorpg.common.physics.Collider;
 import com.mcmmorpg.common.playerClass.PlayerClass;
@@ -29,6 +29,7 @@ import com.mcmmorpg.common.quest.QuestStatusManager;
 import com.mcmmorpg.common.sound.Noise;
 import com.mcmmorpg.common.ui.ActionBar;
 import com.mcmmorpg.common.ui.SidebarTextArea;
+import com.mcmmorpg.common.utils.Debug;
 
 import net.md_5.bungee.api.ChatColor;
 
