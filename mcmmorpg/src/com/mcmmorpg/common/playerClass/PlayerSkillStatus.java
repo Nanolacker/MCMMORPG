@@ -1,13 +1,13 @@
 package com.mcmmorpg.common.playerClass;
 
-public class SkillStatus {
+public class PlayerSkillStatus {
 
 	private final String skillName;
 	private final String playerClassName;
 	private int skillLevel;
 	private double skillCooldownSeconds;
 
-	public SkillStatus(Skill skill) {
+	public PlayerSkillStatus(Skill skill) {
 		skillName = skill.getName();
 		playerClassName = skill.getPlayerClass().getName();
 		skillLevel = 0;

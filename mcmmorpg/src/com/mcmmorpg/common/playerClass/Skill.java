@@ -63,7 +63,7 @@ public class Skill {
 					return;
 				}
 				SkillStatusManager manager = pc.getSkillStatusManager();
-				SkillStatus status = manager.getSkillStatus(Skill.this);
+				PlayerSkillStatus status = manager.getSkillStatus(Skill.this);
 				double newCooldown = status.getSkillCooldownSeconds() - COOLDOWN_UPDATE_PERIOD_SECONDS;
 				if (newCooldown <= 0) {
 					status.setCooldownSeconds(0);

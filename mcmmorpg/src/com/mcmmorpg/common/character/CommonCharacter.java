@@ -6,6 +6,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.Location;
 
 import com.mcmmorpg.common.ui.TextArea;
+import com.mcmmorpg.common.utils.EventManager;
 
 public abstract class CommonCharacter {
 
@@ -16,6 +17,10 @@ public abstract class CommonCharacter {
 	private double currentHealth;
 	private double maxHealth;
 	private TextArea nameplate;
+
+	static {
+		EventManager.registerEvents(new CharacterListener());
+	}
 
 	/**
 	 * Constructs a character initialized with max health.

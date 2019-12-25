@@ -1,6 +1,7 @@
 package com.mcmmorpg.common.quest;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -8,41 +9,51 @@ import java.util.Map;
 public class PlayerQuestManager {
 
 	private final List<Quest> completedQuests;
-	private final Map<Quest, QuestStatus> statusMap;
+	private final Map<Quest, PlayerQuestData> questDataMap;
 
-	public PlayerQuestManager(String[] completedQuestNames, QuestStatus[] questStatuses) {
-		completedQuests = new ArrayList<>();
-		for (String questName : completedQuestNames) {
-			completedQuests.add(Quest.forName(questName));
-		}
-		statusMap = new HashMap<>();
-		for (QuestStatus questStatus : questStatuses) {
-			Quest quest = questStatus.getQuest();
-			statusMap.put(quest, questStatus);
+	public PlayerQuestManager(Quest[] completedQuests, PlayerQuestData[] questData) {
+		this.completedQuests = Arrays.asList(completedQuests);
+		questDataMap = new HashMap<>();
+		for (PlayerQuestData questStatus : questData) {
+			Quest quest = Quest.forName(questStatus.getQuestName());
+			questDataMap.put(quest, questStatus);
 		}
 	}
 
 	/**
 	 * Used for saving player data.
 	 */
-	public QuestStatus[] getQuestStatuses() {
-		return statusMap.values().toArray(new QuestStatus[statusMap.size()]);
+	public List<Quest> getCompletedQuests() {
+		return completedQuests;
+	}
+
+	/**
+	 * Used for saving player data.
+	 */
+	public PlayerQuestData[] getAllQuestData() {
+		return questDataMap.values().toArray(new PlayerQuestData[questDataMap.size()]);
+	}
+
+	QuestStatus getStatus(Quest quest) {
+		if (completedQuests.contains(quest)) {
+			return QuestStatus.COMPLETED;
+		} else if (questDataMap.containsKey(quest)) {
+			return QuestStatus.IN_PROGRESS;
+		} else {
+			return QuestStatus.NOT_STARTED;
+		}
 	}
 
 	/**
 	 * Returns null if the specified quest is not available to the player.
 	 */
-	QuestStatus getQuestStatus(Quest quest) {
-		return statusMap.get(quest);
+	PlayerQuestData getQuestData(Quest quest) {
+		return questDataMap.get(quest);
 	}
 
 	void startQuest(Quest quest) {
-		QuestStatus status = new QuestStatus(quest);
-		statusMap.put(quest, status);
-	}
-
-	boolean isStarted(Quest quest) {
-		return statusMap.containsKey(quest);
+		PlayerQuestData status = new PlayerQuestData(quest);
+		questDataMap.put(quest, status);
 	}
 
 }

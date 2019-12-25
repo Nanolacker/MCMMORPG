@@ -4,15 +4,15 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.mcmmorpg.common.quest.Quest;
-import com.mcmmorpg.common.quest.QuestStatus;
+import com.mcmmorpg.common.quest.PlayerQuestData;
 
 public class SkillStatusManager {
 
-	private Map<Skill, SkillStatus> skillMap;
+	private Map<Skill, PlayerSkillStatus> skillMap;
 
-	public SkillStatusManager(SkillStatus[] skillStatuses) {
+	public SkillStatusManager(PlayerSkillStatus[] skillStatuses) {
 		skillMap = new HashMap<>();
-		for (SkillStatus skillStatus : skillStatuses) {
+		for (PlayerSkillStatus skillStatus : skillStatuses) {
 			Skill skill = skillStatus.getSkill();
 			skillMap.put(skill, skillStatus);
 		}
@@ -20,19 +20,19 @@ public class SkillStatusManager {
 	/**
 	 * Used for save data.
 	 */
-	public SkillStatus[] getSkillStatuses() {
-		return skillMap.values().toArray(new SkillStatus[skillMap.size()]);
+	public PlayerSkillStatus[] getSkillStatuses() {
+		return skillMap.values().toArray(new PlayerSkillStatus[skillMap.size()]);
 	}
 
 	/**
 	 * Returns null if the specified skill is not available to the player.
 	 */
-	SkillStatus getSkillStatus(Skill skill) {
+	PlayerSkillStatus getSkillStatus(Skill skill) {
 		return skillMap.get(skill);
 	}
 
 	void unlockSkill(Skill skill) {
-		SkillStatus skillStatus = new SkillStatus(skill);
+		PlayerSkillStatus skillStatus = new PlayerSkillStatus(skill);
 		skillMap.put(skill, skillStatus);
 	}
 

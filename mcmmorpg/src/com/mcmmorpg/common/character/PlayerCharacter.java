@@ -22,11 +22,11 @@ import com.mcmmorpg.common.character.MovementSyncer.MovementSyncMode;
 import com.mcmmorpg.common.persistence.PlayerCharacterSaveData;
 import com.mcmmorpg.common.physics.Collider;
 import com.mcmmorpg.common.playerClass.PlayerClass;
-import com.mcmmorpg.common.playerClass.SkillStatus;
+import com.mcmmorpg.common.playerClass.PlayerSkillStatus;
 import com.mcmmorpg.common.playerClass.SkillStatusManager;
 import com.mcmmorpg.common.quest.Quest;
 import com.mcmmorpg.common.quest.QuestObjective;
-import com.mcmmorpg.common.quest.QuestStatus;
+import com.mcmmorpg.common.quest.PlayerQuestData;
 import com.mcmmorpg.common.quest.PlayerQuestManager;
 import com.mcmmorpg.common.sound.Noise;
 import com.mcmmorpg.common.ui.ActionBar;
@@ -59,7 +59,8 @@ public class PlayerCharacter extends CommonCharacter {
 
 	private PlayerCharacter(Player player, PlayerClass playerClass, Location location, Location respawnLocation, int xp,
 			int currency, double maxHealth, double currentHealth, double maxMana, double currentMana, Quest targetQuest,
-			QuestStatus[] questStatuses, SkillStatus[] skillStatuses, ItemStack[] inventoryContents) {
+			Quest[] completedQuests, PlayerQuestData[] questData, PlayerSkillStatus[] skillData,
+			ItemStack[] inventoryContents) {
 		super(player.getName(), xpToLevel(xp), location, maxHealth);
 		this.player = player;
 		this.playerClass = playerClass;
@@ -70,8 +71,8 @@ public class PlayerCharacter extends CommonCharacter {
 		this.maxMana = maxMana;
 		this.currentMana = currentMana;
 		this.targetQuest = targetQuest;
-		this.questStatusManager = new PlayerQuestManager(new String[0], questStatuses);
-		this.skillStatusManager = new SkillStatusManager(skillStatuses);
+		this.questStatusManager = new PlayerQuestManager(completedQuests, questData);
+		this.skillStatusManager = new SkillStatusManager(skillData);
 		player.getInventory().setContents(inventoryContents);
 		this.collider = new PlayerCharacterCollider(this);
 		this.movementSyncer = new MovementSyncer(this, player, MovementSyncMode.CHARACTER_FOLLOWS_ENTITY);
@@ -119,11 +120,12 @@ public class PlayerCharacter extends CommonCharacter {
 		double maxMana = saveData.getMaxHealth();
 		double currentMana = saveData.getCurrentMana();
 		Quest targetQuest = saveData.getTargetQuest();
-		QuestStatus[] questStatuses = saveData.getQuestStatuses();
-		SkillStatus[] skillStatuses = saveData.getSkillStatuses();
+		PlayerQuestData[] questStatuses = saveData.getQuestData();
+		PlayerSkillStatus[] skillStatuses = saveData.getSkillStatuses();
 		ItemStack[] inventoryContents = saveData.getInventoryContents();
 		return new PlayerCharacter(player, playerClass, location, respawnLocation, xp, currency, maxHealth,
-				currentHealth, maxMana, currentMana, targetQuest, questStatuses, skillStatuses, inventoryContents);
+				currentHealth, maxMana, currentMana, targetQuest, saveData.getCompletedQuests(), questStatuses,
+				skillStatuses, inventoryContents);
 	}
 
 	public static PlayerCharacter forPlayer(Player player) {

@@ -1,7 +1,6 @@
 package com.mcmmorpg.common.quest;
 
 import com.mcmmorpg.common.character.PlayerCharacter;
-import com.mcmmorpg.common.utils.Debug;
 
 public class QuestObjective {
 
@@ -28,28 +27,33 @@ public class QuestObjective {
 		return description;
 	}
 
+	public Quest getQuest() {
+		return quest;
+	}
+
 	public int getIndex() {
 		return index;
 	}
 
 	public int getProgress(PlayerCharacter pc) {
 		PlayerQuestManager statusManager = pc.getQuestManager();
-		QuestStatus status = statusManager.getQuestStatus(quest);
-		if (status == null) {
-			Debug.log("null");
-			return 0;
-		}
-		return status.getProgress(this);
+		PlayerQuestData data = statusManager.getQuestData(quest);
+		return data.getProgress(this.index);
 	}
 
 	public void setProgress(PlayerCharacter pc, int progress) {
 		PlayerQuestManager questManager = pc.getQuestManager();
-		QuestStatus status = questManager.getQuestStatus(quest);
-		status.setProgress(this, progress);
+		PlayerQuestData data = questManager.getQuestData(quest);
+		if (data == null) {
+			return;
+		}
+		// clamp progress
+		progress = Math.max(progress, goal);
+		data.setProgress(this.index, progress);
 	}
 
 	/**
-	 * @param progressToAdd Progress can be reduced by specifying a negative number.
+	 * @param progressToAdd progress can be reduced by specifying a negative number
 	 */
 	public void addProgress(PlayerCharacter pc, int progressToAdd) {
 		int progress = getProgress(pc);

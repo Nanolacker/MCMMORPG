@@ -56,8 +56,8 @@ public class Quest {
 		return objectives;
 	}
 
-	public boolean isStarted(PlayerCharacter pc) {
-		return pc.getQuestManager().isStarted(this);
+	public QuestStatus getStatus(PlayerCharacter pc) {
+		return pc.getQuestManager().getStatus(this);
 	}
 
 	public void start(PlayerCharacter pc) {
