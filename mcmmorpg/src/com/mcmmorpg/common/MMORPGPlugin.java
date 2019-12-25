@@ -1,7 +1,5 @@
 package com.mcmmorpg.common;
 
-import org.bukkit.Bukkit;
-import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import com.mcmmorpg.common.character.NonPlayerCharacter;
@@ -38,11 +36,6 @@ public abstract class MMORPGPlugin extends JavaPlugin {
 
 	public static boolean isInitialized() {
 		return isInitialized;
-	}
-
-	public static void registerEvents(Listener listener) {
-		MMORPGPlugin plugin = getPlugin();
-		Bukkit.getPluginManager().registerEvents(listener, plugin);
 	}
 
 	public static MMORPGPlugin getPlugin() {

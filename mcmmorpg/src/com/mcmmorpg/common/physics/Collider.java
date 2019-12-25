@@ -126,7 +126,7 @@ public abstract class Collider {
 	}
 
 	/**
-	 * Constructs a new axis-aligned collider. Any length of this collider must not
+	 * Constructs a new axis-aligned collider. Any length of this collider should not
 	 * be negative. Be sure to invoke {@code setActive} to activate collider after
 	 * construction.
 	 * 
@@ -139,7 +139,8 @@ public abstract class Collider {
 	 * @throws IllegalArgumentException if any of the lengths are negative
 	 */
 	public Collider(Location center, double lengthX, double lengthY, double lengthZ) {
-		
+		this(center.getWorld(), center.getX() - lengthX / 2, center.getX() + lengthX / 2, center.getY() - lengthY / 2,
+				center.getY() + lengthY / 2, center.getZ() - lengthZ / 2, center.getZ() + lengthZ / 2);
 	}
 
 	/**

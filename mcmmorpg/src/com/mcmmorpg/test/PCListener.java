@@ -9,6 +9,11 @@ import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryDragEvent;
+import org.bukkit.event.inventory.InventoryPickupItemEvent;
+import org.bukkit.event.player.PlayerDropItemEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.ItemStack;
@@ -19,16 +24,15 @@ import com.mcmmorpg.common.item.ItemManager;
 import com.mcmmorpg.common.item.ItemStackFactory;
 import com.mcmmorpg.common.persistence.PlayerCharacterSaveData;
 import com.mcmmorpg.common.playerClass.PlayerClass;
+import com.mcmmorpg.common.quest.Quest;
+import com.mcmmorpg.common.utils.Debug;
 import com.mcmmorpg.common.utils.IOUtils;
 
 public class PCListener implements Listener {
 
 	private final File saveDataDirectory;
 	private final Location startingLocation;
-<<<<<<< HEAD
-=======
 	private final ItemStack menuItem;
->>>>>>> branch 'master' of https://github.com/Nanolacker/MCMMORPG.git
 
 	public PCListener() {
 		File dataFolder = IOUtils.getDataFolder();
@@ -38,12 +42,32 @@ public class PCListener implements Listener {
 		}
 		World world = Bukkit.getWorld("world");
 		startingLocation = new Location(world, 141, 70, 66);
-<<<<<<< HEAD
-=======
+
 		menuItem = ItemStackFactory.create("Menu", null, Material.EMERALD);
-		ItemListener menuItemListener = new ItemListener();
+		ItemListener menuItemListener = new ItemListener() {
+			@Override
+			public void onInventoryClick(InventoryClickEvent event) {
+			}
+
+			@Override
+			public void onInventoryDrag(InventoryDragEvent event) {
+			}
+
+			@Override
+			public void onInteract(PlayerInteractEvent event) {
+				Debug.log("open menu");
+			}
+
+			@Override
+			public void onPickup(InventoryPickupItemEvent event) {
+			}
+
+			@Override
+			public void onDrop(PlayerDropItemEvent event) {
+			}
+
+		};
 		ItemManager.registerItemListener(menuItem, menuItemListener);
->>>>>>> branch 'master' of https://github.com/Nanolacker/MCMMORPG.git
 	}
 
 	@EventHandler
@@ -52,15 +76,12 @@ public class PCListener implements Listener {
 		File file = getSaveFile(player.getName());
 		if (file.exists()) {
 			PlayerCharacterSaveData saveData = IOUtils.jsonFromFile(file, PlayerCharacterSaveData.class);
-			PlayerCharacter.registerPlayerCharacter(player, saveData);
-<<<<<<< HEAD
-=======
+			PlayerCharacter pc = PlayerCharacter.registerPlayerCharacter(player, saveData);
 			player.getInventory().addItem(menuItem);
->>>>>>> branch 'master' of https://github.com/Nanolacker/MCMMORPG.git
+			pc.setTargetQuest(Quest.forName("Saving the Farm"));
 		} else {
 			createNewCharacter(player);
 		}
-
 	}
 
 	private void createNewCharacter(Player player) {

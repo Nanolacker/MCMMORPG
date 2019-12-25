@@ -9,7 +9,7 @@ import com.mcmmorpg.common.character.PlayerCharacter;
 /**
  * A quest can be made available to a player at anytime with makeAvailable. Once
  * a quest has been available, there is something that starts it, such as
- * speaking with an NPC or entering a new area. After being started, 
+ * speaking with an NPC or entering a new area. After being started,
  */
 public class Quest {
 
@@ -21,21 +21,21 @@ public class Quest {
 
 	private final String name;
 	private final int recommendedLevel;
-	private final QuestPhase[] phases;
+	private final QuestObjective[] objectives;
 
-	public Quest(String name, int recommendedLevel, QuestPhase[] phases) {
+	public Quest(String name, int recommendedLevel, QuestObjective[] objectives) {
 		this.name = name;
 		this.recommendedLevel = recommendedLevel;
-		this.phases = phases;
+		this.objectives = objectives;
 	}
 
 	public void initialize() {
 		if (MMORPGPlugin.isInitialized()) {
 			throw new IllegalStateException("Cannot initialize a quest after the plugin has been initialized.");
 		}
-		for (int i = 0; i < phases.length; i++) {
-			QuestPhase phase = phases[i];
-			phase.initialize(this, i);
+		for (int i = 0; i < objectives.length; i++) {
+			QuestObjective objective = objectives[i];
+			objective.initialize(this, i);
 		}
 		quests.put(name, this);
 	}
@@ -52,43 +52,18 @@ public class Quest {
 		return recommendedLevel;
 	}
 
-	public QuestPhase[] getPhases() {
-		return phases;
-	}
-
-	/**
-	 * Convenience method for getting an objective in this quest.
-	 * 
-	 * @param iPhase          the index of the objective's parent quest phase in
-	 *                        this quest's phases
-	 * @param iObjectiveChain the index of the objective's parent objective chain in
-	 *                        the phase's objective chains
-	 * @param iObjective      the index of the objective in the objective chain's
-	 *                        objectives
-	 */
-	public QuestObjective getObjective(int iPhase, int iObjectiveChain, int iObjective) {
-		QuestPhase phase = phases[iPhase];
-		QuestObjectiveChain[] objectiveChains = phase.getObjectiveChains();
-		QuestObjectiveChain objectiveChain = objectiveChains[iObjectiveChain];
-		QuestObjective[] objectives = objectiveChain.getObjectives();
-		return objectives[iObjective];
-	}
-
-	/**
-	 * Returns true if the player can participate in this quest, false otherwise.
-	 */
-	public boolean isAvailable(PlayerCharacter pc) {
-		return pc.getQuestStatusManager().questIsAvailable(this);
-	}
-
-	public void makeAvailable(PlayerCharacter pc) {
-		pc.getQuestStatusManager().makeQuestAvailable(this);
+	public QuestObjective[] getObjectives() {
+		return objectives;
 	}
 
 	public boolean isStarted(PlayerCharacter pc) {
-		return pc.getQuestStatusManager().isStarted(this);
+		return pc.getQuestManager().isStarted(this);
 	}
 
-	public boolean start() {
-	
+	public void start(PlayerCharacter pc) {
+		PlayerQuestManager questManager = pc.getQuestManager();
+		questManager.startQuest(this);
+		pc.sendMessage("Quest started: " + name);
+	}
+
 }

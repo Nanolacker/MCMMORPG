@@ -50,4 +50,12 @@ public class SidebarTextArea {
 		player.setScoreboard(scoreboard);
 	}
 
+	/**
+	 * No SidebarTextArea will be displayed to this player.
+	 */
+	public static void clear(Player player) {
+		ScoreboardManager scoreboardManager = Bukkit.getScoreboardManager();
+		player.setScoreboard(scoreboardManager.getNewScoreboard());
+	}
+
 }

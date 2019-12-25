@@ -1,12 +1,13 @@
 package com.mcmmorpg.common.quest;
 
 import com.mcmmorpg.common.character.PlayerCharacter;
+import com.mcmmorpg.common.utils.Debug;
 
 public class QuestObjective {
 
 	private final int goal;
 	private final String description;
-	private transient QuestObjectiveChain objectiveChain;
+	private transient Quest quest;
 	private transient int index;
 
 	public QuestObjective(int goal, String description) {
@@ -14,8 +15,8 @@ public class QuestObjective {
 		this.description = description;
 	}
 
-	void initialize(QuestObjectiveChain objectiveChain, int index) {
-		this.objectiveChain = objectiveChain;
+	void initialize(Quest quest, int index) {
+		this.quest = quest;
 		this.index = index;
 	}
 
@@ -27,25 +28,23 @@ public class QuestObjective {
 		return description;
 	}
 
-	public QuestObjectiveChain getObjectiveChain() {
-		return objectiveChain;
-	}
-
 	public int getIndex() {
 		return index;
 	}
 
 	public int getProgress(PlayerCharacter pc) {
-		QuestStatusManager statusManager = pc.getQuestStatusManager();
-		Quest quest = objectiveChain.getPhase().getQuest();
+		PlayerQuestManager statusManager = pc.getQuestManager();
 		QuestStatus status = statusManager.getQuestStatus(quest);
+		if (status == null) {
+			Debug.log("null");
+			return 0;
+		}
 		return status.getProgress(this);
 	}
 
 	public void setProgress(PlayerCharacter pc, int progress) {
-		QuestStatusManager statusManager = pc.getQuestStatusManager();
-		Quest quest = objectiveChain.getPhase().getQuest();
-		QuestStatus status = statusManager.getQuestStatus(quest);
+		PlayerQuestManager questManager = pc.getQuestManager();
+		QuestStatus status = questManager.getQuestStatus(quest);
 		status.setProgress(this, progress);
 	}
 

@@ -13,14 +13,14 @@ import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 
-import com.mcmmorpg.common.MMORPGPlugin;
+import com.mcmmorpg.common.utils.EventManager;
 
 public class ItemManager implements Listener {
 
 	private static final Map<ItemStack, ItemListener> itemMap = new HashMap<>();
 
 	static {
-		MMORPGPlugin.registerEvents(new ItemManager());
+		EventManager.registerEvents(new ItemManager());
 	}
 
 	public static void registerItemListener(ItemStack itemStack, ItemListener listener) {
@@ -32,7 +32,7 @@ public class ItemManager implements Listener {
 		ItemStack itemStack = event.getCurrentItem();
 		ItemListener listener = itemMap.get(itemStack);
 		if (listener != null) {
-			listener.onClick(event);
+			listener.onInventoryClick(event);
 		}
 	}
 
@@ -41,7 +41,7 @@ public class ItemManager implements Listener {
 		ItemStack itemStack = event.getOldCursor();
 		ItemListener listener = itemMap.get(itemStack);
 		if (listener != null) {
-			listener.onDrag(event);
+			listener.onInventoryDrag(event);
 		}
 	}
 

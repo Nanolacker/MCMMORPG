@@ -1,7 +1,6 @@
 package com.mcmmorpg.common.utils;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
 
@@ -21,6 +20,14 @@ public class StringUtils {
 
 	public static List<String> paragraph(String text) {
 		return paragraph(text, STANDARD_LINE_LENGTH);
+	}
+
+	public static String repeat(String s, int n) {
+		String result = "";
+		for (int i = 0; i < n; i++) {
+			result += s;
+		}
+		return result;
 	}
 
 	public static List<String> paragraph(String text, int lineLength) {

@@ -18,7 +18,7 @@ public class SkillStatusManager {
 		}
 	}
 	/**
-	 * Used for serialization.
+	 * Used for save data.
 	 */
 	public SkillStatus[] getSkillStatuses() {
 		return skillMap.values().toArray(new SkillStatus[skillMap.size()]);

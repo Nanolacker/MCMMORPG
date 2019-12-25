@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Sound;
 import org.bukkit.World;
@@ -18,20 +19,19 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 import com.mcmmorpg.common.character.MovementSyncer.MovementSyncMode;
-import com.mcmmorpg.common.effect.EffectManager;
 import com.mcmmorpg.common.persistence.PlayerCharacterSaveData;
 import com.mcmmorpg.common.physics.Collider;
 import com.mcmmorpg.common.playerClass.PlayerClass;
 import com.mcmmorpg.common.playerClass.SkillStatus;
 import com.mcmmorpg.common.playerClass.SkillStatusManager;
+import com.mcmmorpg.common.quest.Quest;
+import com.mcmmorpg.common.quest.QuestObjective;
 import com.mcmmorpg.common.quest.QuestStatus;
-import com.mcmmorpg.common.quest.QuestStatusManager;
+import com.mcmmorpg.common.quest.PlayerQuestManager;
 import com.mcmmorpg.common.sound.Noise;
 import com.mcmmorpg.common.ui.ActionBar;
 import com.mcmmorpg.common.ui.SidebarTextArea;
-import com.mcmmorpg.common.utils.Debug;
-
-import net.md_5.bungee.api.ChatColor;
+import com.mcmmorpg.common.utils.StringUtils;
 
 public class PlayerCharacter extends CommonCharacter {
 
@@ -47,7 +47,8 @@ public class PlayerCharacter extends CommonCharacter {
 	private int currency;
 	private double currentMana;
 	private double maxMana;
-	private final QuestStatusManager questStatusManager;
+	private Quest targetQuest;
+	private final PlayerQuestManager questStatusManager;
 	private final SkillStatusManager skillStatusManager;
 	private CharacterCollider collider;
 	private final MovementSyncer movementSyncer;
@@ -57,7 +58,7 @@ public class PlayerCharacter extends CommonCharacter {
 	}
 
 	private PlayerCharacter(Player player, PlayerClass playerClass, Location location, Location respawnLocation, int xp,
-			int currency, double maxHealth, double currentHealth, double maxMana, double currentMana,
+			int currency, double maxHealth, double currentHealth, double maxMana, double currentMana, Quest targetQuest,
 			QuestStatus[] questStatuses, SkillStatus[] skillStatuses, ItemStack[] inventoryContents) {
 		super(player.getName(), xpToLevel(xp), location, maxHealth);
 		this.player = player;
@@ -68,7 +69,8 @@ public class PlayerCharacter extends CommonCharacter {
 		setCurrentHealth(currentHealth);
 		this.maxMana = maxMana;
 		this.currentMana = currentMana;
-		this.questStatusManager = new QuestStatusManager(questStatuses);
+		this.targetQuest = targetQuest;
+		this.questStatusManager = new PlayerQuestManager(new String[0], questStatuses);
 		this.skillStatusManager = new SkillStatusManager(skillStatuses);
 		player.getInventory().setContents(inventoryContents);
 		this.collider = new PlayerCharacterCollider(this);
@@ -76,9 +78,8 @@ public class PlayerCharacter extends CommonCharacter {
 
 		movementSyncer.setEnabled(true);
 		collider.setActive(true);
-
 		updateQuestDisplay();
-		displayXp();
+		updateXpDisplay();
 		updateActionBar();
 
 		player.teleport(getLocation());
@@ -117,11 +118,12 @@ public class PlayerCharacter extends CommonCharacter {
 		double currentHealth = saveData.getCurrentHealth();
 		double maxMana = saveData.getMaxHealth();
 		double currentMana = saveData.getCurrentMana();
+		Quest targetQuest = saveData.getTargetQuest();
 		QuestStatus[] questStatuses = saveData.getQuestStatuses();
 		SkillStatus[] skillStatuses = saveData.getSkillStatuses();
 		ItemStack[] inventoryContents = saveData.getInventoryContents();
 		return new PlayerCharacter(player, playerClass, location, respawnLocation, xp, currency, maxHealth,
-				currentHealth, maxMana, currentMana, questStatuses, skillStatuses, inventoryContents);
+				currentHealth, maxMana, currentMana, targetQuest, questStatuses, skillStatuses, inventoryContents);
 	}
 
 	public static PlayerCharacter forPlayer(Player player) {
@@ -139,11 +141,11 @@ public class PlayerCharacter extends CommonCharacter {
 		return false;
 	}
 
-	private static final double MAX_DISTANCE_WITHOUT_PLAYER_TELEPORT = 5.0;
-
 	public PlayerClass getPlayerClass() {
 		return playerClass;
 	}
+
+	private static final double MAX_DISTANCE_WITHOUT_PLAYER_TELEPORT = 5.0;
 
 	@Override
 	public void setLocation(Location location) {
@@ -193,11 +195,11 @@ public class PlayerCharacter extends CommonCharacter {
 	public void grantXP(int xp) {
 		this.xp += xp;
 		checkForLevelUp();
-		displayXp();
+		updateXpDisplay();
 		updateActionBar();
 	}
 
-	private void displayXp() {
+	private void updateXpDisplay() {
 		int level = getLevel();
 		player.setLevel(level);
 		int xpTarget = xpValues[level - 1];
@@ -262,7 +264,16 @@ public class PlayerCharacter extends CommonCharacter {
 		return currentMana;
 	}
 
-	public QuestStatusManager getQuestStatusManager() {
+	public Quest getTargetQuest() {
+		return targetQuest;
+	}
+
+	public void setTargetQuest(Quest targetQuest) {
+		this.targetQuest = targetQuest;
+		updateQuestDisplay();
+	}
+
+	public PlayerQuestManager getQuestManager() {
 		return questStatusManager;
 	}
 
@@ -283,9 +294,26 @@ public class PlayerCharacter extends CommonCharacter {
 	}
 
 	public void updateQuestDisplay() {
-		SidebarTextArea questDisplay = new SidebarTextArea("Quests", "line 1\nline 2\nline 3");
-		questDisplay.apply(player);
-		Debug.log("quest display updated");
+		if (targetQuest == null) {
+			SidebarTextArea.clear(player);
+		} else {
+			String questTitle = ChatColor.GOLD + targetQuest.getName();
+			String objectivesText = StringUtils.repeat("-", StringUtils.STANDARD_LINE_LENGTH) + "\n";
+			for (QuestObjective objective : targetQuest.getObjectives()) {
+				int progress = objective.getProgress(this);
+				int goal = objective.getGoal();
+				String progressText = "";
+				if (progress < goal) {
+					progressText = ChatColor.YELLOW + "";
+				} else {
+					progressText = ChatColor.GREEN + "";
+				}
+				progressText += progress + "" + ChatColor.WHITE + "/" + ChatColor.GREEN + "" + goal;
+				objectivesText += "-" + objective.getDescription() + " " + progressText + ChatColor.RESET + "\n\n";
+			}
+			SidebarTextArea questDisplay = new SidebarTextArea(questTitle, objectivesText);
+			questDisplay.apply(player);
+		}
 	}
 
 	@Override
