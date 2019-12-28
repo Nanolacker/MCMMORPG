@@ -103,6 +103,11 @@ public class PlayerCharacter extends CommonCharacter {
 		protected void onCollisionExit(Collider other) {
 		}
 
+		@Override
+		public PlayerCharacter getCharacter() {
+			return (PlayerCharacter) super.getCharacter();
+		}
+
 	}
 
 	public static List<PlayerCharacter> list() {

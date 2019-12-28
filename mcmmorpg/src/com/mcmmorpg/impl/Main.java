@@ -9,9 +9,13 @@ public class Main extends MMORPGPlugin {
 	protected void onMMORPGStart() {
 		Debug.log("starting");
 
-		QuestLoader.loadQuests();
+		load();
+	}
+
+	private void load() {
 		ItemLoader.loadItems();
-		ListenerLoader.loadListeners();
+		QuestLoader.loadQuests();
+		ZoneLoader.loadZones();
 	}
 
 	@Override
