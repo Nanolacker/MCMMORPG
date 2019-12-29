@@ -23,12 +23,15 @@ public class ItemManager implements Listener {
 		EventManager.registerEvents(new ItemManager());
 	}
 
+	private ItemManager() {
+	}
+
 	public static void registerItemListener(ItemStack itemStack, ItemListener listener) {
 		itemMap.put(itemStack, listener);
 	}
 
 	@EventHandler
-	protected void onClick(InventoryClickEvent event) {
+	private void onClick(InventoryClickEvent event) {
 		ItemStack itemStack = event.getCurrentItem();
 		ItemListener listener = itemMap.get(itemStack);
 		if (listener != null) {
@@ -37,7 +40,7 @@ public class ItemManager implements Listener {
 	}
 
 	@EventHandler
-	protected void onDrag(InventoryDragEvent event) {
+	private void onDrag(InventoryDragEvent event) {
 		ItemStack itemStack = event.getOldCursor();
 		ItemListener listener = itemMap.get(itemStack);
 		if (listener != null) {
@@ -46,7 +49,7 @@ public class ItemManager implements Listener {
 	}
 
 	@EventHandler
-	protected void onInteract(PlayerInteractEvent event) {
+	private void onInteract(PlayerInteractEvent event) {
 		Player player = event.getPlayer();
 		ItemStack itemStack = player.getInventory().getItemInMainHand();
 		ItemListener listener = itemMap.get(itemStack);
@@ -56,7 +59,7 @@ public class ItemManager implements Listener {
 	}
 
 	@EventHandler
-	protected void onPickup(InventoryPickupItemEvent event) {
+	private void onPickup(InventoryPickupItemEvent event) {
 		ItemStack itemStack = event.getItem().getItemStack();
 		ItemListener listener = itemMap.get(itemStack);
 		if (listener != null) {
@@ -65,7 +68,7 @@ public class ItemManager implements Listener {
 	}
 
 	@EventHandler
-	protected void onDrop(PlayerDropItemEvent event) {
+	private void onDrop(PlayerDropItemEvent event) {
 		ItemStack itemStack = event.getItemDrop().getItemStack();
 		ItemListener listener = itemMap.get(itemStack);
 		if (listener != null) {

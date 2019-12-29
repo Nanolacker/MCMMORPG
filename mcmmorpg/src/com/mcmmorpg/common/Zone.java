@@ -57,6 +57,7 @@ public abstract class Zone {
 		this.zoneBounds = zoneBounds;
 		for (BoundingBox bb : zoneBounds) {
 			ZoneBoundCollider col = new ZoneBoundCollider(this, bb);
+			col.setActive(true);
 		}
 	}
 

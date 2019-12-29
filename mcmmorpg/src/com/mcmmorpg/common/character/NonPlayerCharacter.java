@@ -10,6 +10,9 @@ import org.bukkit.Location;
 import com.mcmmorpg.common.MMORPGPlugin;
 import com.mcmmorpg.common.time.RepeatingTask;
 
+/**
+ * Represents an NPC. Methods can be overridden in subclasses and should invoke super.
+ */
 public abstract class NonPlayerCharacter extends CommonCharacter {
 
 	private static final double SPAWN_PERIOD_SECONDS = 0.1;
@@ -65,12 +68,12 @@ public abstract class NonPlayerCharacter extends CommonCharacter {
 		spawned = false;
 	}
 
-	public final boolean getSpawning() {
+	public final boolean isSpawning() {
 		return spawning;
 	}
 
 	/**
-	 * If an npc is spawning, it will spawn when a player is nearby.
+	 * If an NPC is spawning, it will spawn when canSpawn() returns true.
 	 */
 	public final void setSpawning(boolean spawning) {
 		boolean redundant = this.spawning == spawning;
@@ -114,17 +117,17 @@ public abstract class NonPlayerCharacter extends CommonCharacter {
 		despawn();
 	}
 
-	private static final double MAX_DISTANCE_FROM_PLAYER_TO_SPAWN = 25.0;
+	private static final double DEFAULT_SPAWN_RADIUS = 25.0;
 
 	/**
-	 * Returns whether the conditions are suitable for this npc to spawn. By
+	 * Returns whether the conditions are suitable for this NPC to spawn. By
 	 * default, returns whether there is a player nearby. Override in subclasses to
 	 * provide alternative functionality.
 	 */
 	protected boolean canSpawn() {
 		Location location = getLocation();
-		boolean playerIsNearby = PlayerCharacter.playerIsNearby(location, MAX_DISTANCE_FROM_PLAYER_TO_SPAWN,
-				MAX_DISTANCE_FROM_PLAYER_TO_SPAWN, MAX_DISTANCE_FROM_PLAYER_TO_SPAWN);
+		boolean playerIsNearby = PlayerCharacter.playerIsNearby(location, DEFAULT_SPAWN_RADIUS,
+				DEFAULT_SPAWN_RADIUS, DEFAULT_SPAWN_RADIUS);
 		return playerIsNearby;
 	}
 
