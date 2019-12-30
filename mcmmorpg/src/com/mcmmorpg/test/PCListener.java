@@ -15,6 +15,7 @@ import org.bukkit.event.inventory.InventoryPickupItemEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.ItemStack;
 
@@ -25,6 +26,7 @@ import com.mcmmorpg.common.item.ItemStackFactory;
 import com.mcmmorpg.common.persistence.PlayerCharacterSaveData;
 import com.mcmmorpg.common.playerClass.PlayerClass;
 import com.mcmmorpg.common.quest.Quest;
+import com.mcmmorpg.common.quest.QuestObjective;
 import com.mcmmorpg.common.utils.Debug;
 import com.mcmmorpg.common.utils.IOUtils;
 
@@ -36,7 +38,7 @@ public class PCListener implements Listener {
 
 	public PCListener() {
 		File dataFolder = IOUtils.getDataFolder();
-		saveDataDirectory = new File(dataFolder, "PlayerData");
+		saveDataDirectory = new File(dataFolder, "player_save_data");
 		if (!saveDataDirectory.exists()) {
 			saveDataDirectory.mkdir();
 		}
@@ -47,10 +49,12 @@ public class PCListener implements Listener {
 		ItemListener menuItemListener = new ItemListener() {
 			@Override
 			public void onInventoryClick(InventoryClickEvent event) {
+				Debug.log("open menu");
 			}
 
 			@Override
 			public void onInventoryDrag(InventoryDragEvent event) {
+				Debug.log("open menu");
 			}
 
 			@Override
@@ -67,28 +71,28 @@ public class PCListener implements Listener {
 			}
 
 		};
-		ItemManager.registerItemListener(menuItem, menuItemListener);
+		ItemManager.registerItem("Menu", menuItem, menuItemListener);
 	}
 
 	@EventHandler
 	private void onJoin(PlayerJoinEvent event) {
 		Player player = event.getPlayer();
 		File file = getSaveFile(player.getName());
+		PlayerCharacterSaveData saveData;
 		if (file.exists()) {
-			PlayerCharacterSaveData saveData = IOUtils.jsonFromFile(file, PlayerCharacterSaveData.class);
-			PlayerCharacter pc = PlayerCharacter.registerPlayerCharacter(player, saveData);
-			player.getInventory().addItem(menuItem);
-			pc.setTargetQuest(Quest.forName("Saving the Farm"));
+			// load data from file
+			Debug.log("loading character from file");
+			saveData = IOUtils.jsonFromFile(file, PlayerCharacterSaveData.class);
 		} else {
-			createNewCharacter(player);
+			// create new data
+			Debug.log("creating new character");
+			PlayerClass playerClass = PlayerClass.forName("Fighter");
+			saveData = PlayerCharacterSaveData.createFreshSaveData(player, playerClass, startingLocation);
 		}
-	}
-
-	private void createNewCharacter(Player player) {
-		PlayerClass playerClass = PlayerClass.forName("Fighter");
-		PlayerCharacterSaveData saveData = PlayerCharacterSaveData.createFreshSaveData(player, playerClass,
-				startingLocation);
-		PlayerCharacter.registerPlayerCharacter(player, saveData);
+		PlayerCharacter pc = PlayerCharacter.registerPlayerCharacter(player, saveData);
+		ItemStack item = ItemManager.getItemForID("Menu");
+		player.getInventory().addItem(item);
+		pc.setTargetQuest(Quest.forName("Saving the Farm"));
 	}
 
 	@EventHandler
@@ -98,6 +102,7 @@ public class PCListener implements Listener {
 		if (pc == null) {
 			return;
 		}
+		Debug.log("saving character");
 		File file = getSaveFile(player.getName());
 		PlayerCharacterSaveData saveData = PlayerCharacterSaveData.createSaveData(pc);
 		IOUtils.jsonToFile(file, saveData);
@@ -107,6 +112,20 @@ public class PCListener implements Listener {
 	private File getSaveFile(String playerName) {
 		File saveFile = new File(saveDataDirectory, playerName + ".json");
 		return saveFile;
+	}
+
+	@EventHandler
+	private void onRightClick(PlayerInteractEvent event) {
+		Player player = event.getPlayer();
+		PlayerCharacter pc = PlayerCharacter.forPlayer(player);
+		if (pc == null) {
+			return;
+		}
+		Debug.log("adding progress");
+		Quest quest = Quest.forName("Saving the Farm");
+		QuestObjective objective = quest.getObjectives()[0];
+		objective.addProgress(pc, 1);
+		;
 	}
 
 }

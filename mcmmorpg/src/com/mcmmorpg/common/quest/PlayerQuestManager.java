@@ -30,7 +30,7 @@ public class PlayerQuestManager {
 	/**
 	 * Used for saving player data.
 	 */
-	public PlayerQuestData[] getAllQuestData() {
+	public PlayerQuestData[] getQuestData() {
 		return questDataMap.values().toArray(new PlayerQuestData[questDataMap.size()]);
 	}
 

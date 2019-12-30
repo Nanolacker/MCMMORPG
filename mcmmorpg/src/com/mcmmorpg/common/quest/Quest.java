@@ -66,4 +66,16 @@ public class Quest {
 		pc.sendMessage("Quest started: " + name);
 	}
 
+	void checkForCompletion(PlayerCharacter pc) {
+		for (QuestObjective objective : objectives) {
+			if (!objective.isComplete(pc)) {
+				return;
+			}
+		}
+		pc.sendMessage("Quest complete: " + this.name);
+		if (pc.getTargetQuest() == this) {
+			pc.setTargetQuest(null);
+		}
+	}
+
 }

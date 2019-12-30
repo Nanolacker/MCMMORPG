@@ -8,8 +8,6 @@ import com.mcmmorpg.common.utils.Debug;
 
 public class Main extends MMORPGPlugin {
 
-	public static final World ELADRADOR = Bukkit.getWorld("Eladrador");
-
 	@Override
 	protected void onMMORPGStart() {
 		Debug.log("starting");
@@ -17,8 +15,8 @@ public class Main extends MMORPGPlugin {
 	}
 
 	private void load() {
-		ItemLoader.loadItems();
 		QuestLoader.loadQuests();
+		PlayerClassLoader.loadClasses();
 		ZoneLoader.loadZones();
 	}
 

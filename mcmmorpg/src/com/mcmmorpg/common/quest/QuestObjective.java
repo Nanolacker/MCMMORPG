@@ -50,6 +50,10 @@ public class QuestObjective {
 		// clamp progress
 		progress = Math.max(progress, goal);
 		data.setProgress(this.index, progress);
+		if (pc.getTargetQuest() == this.quest) {
+			pc.updateQuestDisplay();
+		}
+		quest.checkForCompletion(pc);
 	}
 
 	/**
@@ -59,6 +63,10 @@ public class QuestObjective {
 		int progress = getProgress(pc);
 		progress += progressToAdd;
 		setProgress(pc, progress);
+	}
+
+	public boolean isComplete(PlayerCharacter pc) {
+		return getProgress(pc) == this.goal;
 	}
 
 }

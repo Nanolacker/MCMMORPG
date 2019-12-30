@@ -17,32 +17,57 @@ import com.mcmmorpg.common.utils.EventManager;
 
 public class ItemManager implements Listener {
 
-	private static final Map<ItemStack, ItemListener> itemMap = new HashMap<>();
+	private static final Map<String, ItemStack> itemMap;
+	private static final Map<ItemStack, ItemListener> listenerMap;
 
 	static {
+		itemMap = new HashMap<>();
+		listenerMap = new HashMap<>();
 		EventManager.registerEvents(new ItemManager());
 	}
 
 	private ItemManager() {
 	}
 
-	public static void registerItemListener(ItemStack itemStack, ItemListener listener) {
-		itemMap.put(itemStack, listener);
+	public static ItemStack getItemForID(String id) {
+		return itemMap.get(id);
+	}
+
+	/**
+	 * 
+	 * @param itemID allows retrieval of item through
+	 *               {@link ItemManager#getItemForID(String)}
+	 */
+	public static void registerItem(String itemID, ItemStack item, ItemListener listener) {
+		item = simplifyItem(item);
+		itemMap.put(itemID, item);
+		listenerMap.put(item, listener);
+	}
+
+	private static ItemListener listenerForItemStack(ItemStack item) {
+		item = simplifyItem(item);
+		return listenerMap.get(item);
+	}
+
+	private static ItemStack simplifyItem(ItemStack item) {
+		item = item.clone();
+		item.setAmount(1);
+		return item;
 	}
 
 	@EventHandler
-	private void onClick(InventoryClickEvent event) {
+	private void onInventoryClick(InventoryClickEvent event) {
 		ItemStack itemStack = event.getCurrentItem();
-		ItemListener listener = itemMap.get(itemStack);
+		ItemListener listener = listenerForItemStack(itemStack);
 		if (listener != null) {
 			listener.onInventoryClick(event);
 		}
 	}
 
 	@EventHandler
-	private void onDrag(InventoryDragEvent event) {
+	private void onInventoryDrag(InventoryDragEvent event) {
 		ItemStack itemStack = event.getOldCursor();
-		ItemListener listener = itemMap.get(itemStack);
+		ItemListener listener = listenerForItemStack(itemStack);
 		if (listener != null) {
 			listener.onInventoryDrag(event);
 		}
@@ -52,7 +77,7 @@ public class ItemManager implements Listener {
 	private void onInteract(PlayerInteractEvent event) {
 		Player player = event.getPlayer();
 		ItemStack itemStack = player.getInventory().getItemInMainHand();
-		ItemListener listener = itemMap.get(itemStack);
+		ItemListener listener = listenerForItemStack(itemStack);
 		if (listener != null) {
 			listener.onInteract(event);
 		}
@@ -61,7 +86,7 @@ public class ItemManager implements Listener {
 	@EventHandler
 	private void onPickup(InventoryPickupItemEvent event) {
 		ItemStack itemStack = event.getItem().getItemStack();
-		ItemListener listener = itemMap.get(itemStack);
+		ItemListener listener = listenerForItemStack(itemStack);
 		if (listener != null) {
 			listener.onPickup(event);
 		}
@@ -70,7 +95,7 @@ public class ItemManager implements Listener {
 	@EventHandler
 	private void onDrop(PlayerDropItemEvent event) {
 		ItemStack itemStack = event.getItemDrop().getItemStack();
-		ItemListener listener = itemMap.get(itemStack);
+		ItemListener listener = listenerMap.get(itemStack);
 		if (listener != null) {
 			listener.onDrop(event);
 		}
