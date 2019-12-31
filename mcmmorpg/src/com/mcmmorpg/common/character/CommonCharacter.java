@@ -5,8 +5,8 @@ import javax.annotation.OverridingMethodsMustInvokeSuper;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 
+import com.mcmmorpg.common.event.EventManager;
 import com.mcmmorpg.common.ui.TextArea;
-import com.mcmmorpg.common.utils.EventManager;
 
 public abstract class CommonCharacter {
 

@@ -38,6 +38,9 @@ public class QuestObjective {
 	public int getProgress(PlayerCharacter pc) {
 		PlayerQuestManager statusManager = pc.getQuestManager();
 		PlayerQuestData data = statusManager.getQuestData(quest);
+		if (data == null) {
+			throw new IllegalArgumentException("Quest not in progress for player");
+		}
 		return data.getProgress(this.index);
 	}
 
@@ -48,7 +51,7 @@ public class QuestObjective {
 			return;
 		}
 		// clamp progress
-		progress = Math.max(progress, goal);
+		progress = Math.min(progress, goal);
 		data.setProgress(this.index, progress);
 		if (pc.getTargetQuest() == this.quest) {
 			pc.updateQuestDisplay();
@@ -61,8 +64,7 @@ public class QuestObjective {
 	 */
 	public void addProgress(PlayerCharacter pc, int progressToAdd) {
 		int progress = getProgress(pc);
-		progress += progressToAdd;
-		setProgress(pc, progress);
+		setProgress(pc, progress + progressToAdd);
 	}
 
 	public boolean isComplete(PlayerCharacter pc) {

@@ -11,7 +11,7 @@ import org.bukkit.inventory.ItemStack;
 
 import com.mcmmorpg.common.character.PlayerCharacter;
 import com.mcmmorpg.common.playerClass.PlayerClass;
-import com.mcmmorpg.common.playerClass.PlayerSkillStatus;
+import com.mcmmorpg.common.playerClass.PlayerSkillData;
 import com.mcmmorpg.common.quest.PlayerQuestData;
 import com.mcmmorpg.common.quest.PlayerQuestManager;
 import com.mcmmorpg.common.quest.Quest;
@@ -27,12 +27,12 @@ public class PlayerCharacterSaveData {
 	private final String targetQuestName;
 	private final String[] completedQuestNames;
 	private final PlayerQuestData[] questData;
-	private final PlayerSkillStatus[] skillStatuses;
+	private final PlayerSkillData[] skillStatuses;
 	private final PersistentInventory inventory;
 
 	private PlayerCharacterSaveData(PlayerClass playerClass, Location location, Location respawnLocation, int xp,
 			int currency, double maxHealth, double currentHealth, double maxMana, double currentMana, Quest targetQuest,
-			List<Quest> completedQuests, PlayerQuestData[] questData, PlayerSkillStatus[] skillStatuses,
+			List<Quest> completedQuests, PlayerQuestData[] questData, PlayerSkillData[] skillStatuses,
 			Inventory inventory) {
 		this.playerClassName = playerClass.getName();
 		this.location = new PersistentLocation(location);
@@ -67,7 +67,7 @@ public class PlayerCharacterSaveData {
 		PlayerQuestManager questManager = pc.getQuestManager();
 		List<Quest> completedQuests = questManager.getCompletedQuests();
 		PlayerQuestData[] allQuestData = pc.getQuestManager().getQuestData();
-		PlayerSkillStatus[] skillStatuses = pc.getSkillStatusManager().getSkillStatuses();
+		PlayerSkillData[] skillStatuses = pc.getSkillManager().getAllSkillData();
 		Inventory inventory = pc.getInventory();
 		return new PlayerCharacterSaveData(playerClass, location, respawnLocation, xp, currency, maxHealth,
 				currentHealth, maxMana, currentMana, targetQuest, completedQuests, allQuestData, skillStatuses,
@@ -84,7 +84,7 @@ public class PlayerCharacterSaveData {
 		double maxMana = 20;
 		double currentMana = maxMana;
 		PlayerQuestData[] questData = {};
-		PlayerSkillStatus[] skillStatuses = {}; // TODO: MAKE SURE THIS ALLIGNS WITH PLAYER CLASS!!!
+		PlayerSkillData[] skillStatuses = {}; // TODO: MAKE SURE THIS ALLIGNS WITH PLAYER CLASS!!!
 		Inventory inventory = player.getInventory();
 		return new PlayerCharacterSaveData(playerClass, startingLocation, respawnLocation, xp, currency, maxHealth,
 				currentHealth, maxMana, currentMana, null, new ArrayList<>(), questData, skillStatuses, inventory);
@@ -142,7 +142,7 @@ public class PlayerCharacterSaveData {
 		return questData;
 	}
 
-	public PlayerSkillStatus[] getSkillStatuses() {
+	public PlayerSkillData[] getSkillStatuses() {
 		return skillStatuses;
 	}
 

@@ -5,6 +5,8 @@ import java.util.Map;
 
 import com.mcmmorpg.common.MMORPGPlugin;
 import com.mcmmorpg.common.character.PlayerCharacter;
+import com.mcmmorpg.common.event.EventManager;
+import com.mcmmorpg.common.event.QuestCompletionEvent;
 
 /**
  * A quest can be made available to a player at anytime with makeAvailable. Once
@@ -61,6 +63,9 @@ public class Quest {
 	}
 
 	public void start(PlayerCharacter pc) {
+		if (getStatus(pc) != QuestStatus.NOT_STARTED) {
+			throw new IllegalArgumentException("Player has already started quest");
+		}
 		PlayerQuestManager questManager = pc.getQuestManager();
 		questManager.startQuest(this);
 		pc.sendMessage("Quest started: " + name);
@@ -72,10 +77,16 @@ public class Quest {
 				return;
 			}
 		}
+		complete(pc);
+	}
+
+	private void complete(PlayerCharacter pc) {
 		pc.sendMessage("Quest complete: " + this.name);
 		if (pc.getTargetQuest() == this) {
 			pc.setTargetQuest(null);
 		}
+		QuestCompletionEvent event = new QuestCompletionEvent(pc, this);
+		EventManager.callEvent(event);
 	}
 
 }

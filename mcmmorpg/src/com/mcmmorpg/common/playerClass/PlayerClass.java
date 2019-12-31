@@ -18,14 +18,16 @@ public class PlayerClass {
 	private static final Map<String, PlayerClass> playerClasses;
 
 	private final String name;
-	private Skill[] skills;
+	private final Skill[] skills;
+	private transient SkillTree skillTree;
 
 	static {
 		playerClasses = new HashMap<>();
 	}
 
-	public PlayerClass(String name) {
+	public PlayerClass(String name, Skill[] skills) {
 		this.name = name;
+		this.skills = skills;
 	}
 
 	public static final PlayerClass forName(String name) {
@@ -39,11 +41,20 @@ public class PlayerClass {
 		for (Skill skill : skills) {
 			skill.initialize(this);
 		}
+		this.skillTree = new SkillTree(this);
 		playerClasses.put(name, this);
 	}
 
 	public final String getName() {
 		return name;
+	}
+
+	public Skill[] getSkills() {
+		return skills;
+	}
+
+	public SkillTree getSkillTree() {
+		return skillTree;
 	}
 
 	/**
@@ -58,7 +69,4 @@ public class PlayerClass {
 		return null;
 	}
 
-	public void openSkillTree(PlayerCharacter pc) {
-
-	}
 }

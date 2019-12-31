@@ -9,24 +9,18 @@ import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.event.inventory.InventoryDragEvent;
-import org.bukkit.event.inventory.InventoryPickupItemEvent;
-import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.ItemStack;
 
 import com.mcmmorpg.common.character.PlayerCharacter;
-import com.mcmmorpg.common.item.ItemListener;
-import com.mcmmorpg.common.item.ItemManager;
+import com.mcmmorpg.common.event.QuestCompletionEvent;
 import com.mcmmorpg.common.item.ItemStackFactory;
 import com.mcmmorpg.common.persistence.PlayerCharacterSaveData;
 import com.mcmmorpg.common.playerClass.PlayerClass;
+import com.mcmmorpg.common.playerClass.SkillTree;
 import com.mcmmorpg.common.quest.Quest;
-import com.mcmmorpg.common.quest.QuestObjective;
 import com.mcmmorpg.common.utils.Debug;
 import com.mcmmorpg.common.utils.IOUtils;
 
@@ -45,33 +39,7 @@ public class PCListener implements Listener {
 		World world = Bukkit.getWorld("world");
 		startingLocation = new Location(world, 141, 70, 66);
 
-		menuItem = ItemStackFactory.create("Menu", null, Material.EMERALD);
-		ItemListener menuItemListener = new ItemListener() {
-			@Override
-			public void onInventoryClick(InventoryClickEvent event) {
-				Debug.log("open menu");
-			}
-
-			@Override
-			public void onInventoryDrag(InventoryDragEvent event) {
-				Debug.log("open menu");
-			}
-
-			@Override
-			public void onInteract(PlayerInteractEvent event) {
-				Debug.log("open menu");
-			}
-
-			@Override
-			public void onPickup(InventoryPickupItemEvent event) {
-			}
-
-			@Override
-			public void onDrop(PlayerDropItemEvent event) {
-			}
-
-		};
-		ItemManager.registerItem("Menu", menuItem, menuItemListener);
+		menuItem = ItemStackFactory.create0("Menu", null, Material.EMERALD);
 	}
 
 	@EventHandler
@@ -90,8 +58,8 @@ public class PCListener implements Listener {
 			saveData = PlayerCharacterSaveData.createFreshSaveData(player, playerClass, startingLocation);
 		}
 		PlayerCharacter pc = PlayerCharacter.registerPlayerCharacter(player, saveData);
-		ItemStack item = ItemManager.getItemForID("Menu");
-		player.getInventory().addItem(item);
+		Quest quest = Quest.forName("Saving the Farm");
+		quest.start(pc);
 		pc.setTargetQuest(Quest.forName("Saving the Farm"));
 	}
 
@@ -121,11 +89,14 @@ public class PCListener implements Listener {
 		if (pc == null) {
 			return;
 		}
-		Debug.log("adding progress");
-		Quest quest = Quest.forName("Saving the Farm");
-		QuestObjective objective = quest.getObjectives()[0];
-		objective.addProgress(pc, 1);
-		;
+		PlayerClass clazz = pc.getPlayerClass();
+		SkillTree tree = clazz.getSkillTree();
+		tree.open(pc);
+	}
+
+	@EventHandler
+	private void onCompleteQuest(QuestCompletionEvent event) {
+		event.getPlayer().sendMessage("You did it!");
 	}
 
 }

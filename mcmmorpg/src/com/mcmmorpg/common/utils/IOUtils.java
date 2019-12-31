@@ -39,11 +39,10 @@ public class IOUtils {
 	 * Throws an exception if the file does not exist.
 	 */
 	public static <T> T jsonFromFile(File file, Class<? extends T> clazz) {
-		try {
-			FileReader fileReader = new FileReader(file);
+		try (FileReader fileReader = new FileReader(file)) {
 			JsonReader jsonReader = new JsonReader(fileReader);
 			return gson.fromJson(jsonReader, clazz);
-		} catch (FileNotFoundException e) {
+		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
 	}

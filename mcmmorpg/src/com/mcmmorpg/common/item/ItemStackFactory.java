@@ -14,12 +14,16 @@ public class ItemStackFactory {
 	private ItemStackFactory() {
 	}
 
-	public static ItemStack create(String name, String description, Material material) {
+	public static ItemStack create(String name, String lore, Material material) {
+		List<String> loreAsList = StringUtils.paragraph(lore);
+		return create0(name, loreAsList, material);
+	}
+
+	public static ItemStack create0(String name, List<String> lore, Material material) {
 		ItemStack itemStack = new ItemStack(material);
 		ItemMeta itemMeta = itemStack.getItemMeta();
 		itemMeta.setDisplayName(name);
-		if (description != null) {
-			List<String> lore = StringUtils.paragraph(description);
+		if (lore != null) {
 			itemMeta.setLore(lore);
 		}
 		itemMeta.setUnbreakable(true);

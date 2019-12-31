@@ -15,7 +15,6 @@ public class StringUtils {
 	public static final int STANDARD_LINE_LENGTH = 18;
 
 	private StringUtils() {
-		// not to be instantiated
 	}
 
 	public static List<String> paragraph(String text) {
@@ -31,6 +30,9 @@ public class StringUtils {
 	}
 
 	public static List<String> paragraph(String text, int lineLength) {
+		if (text == null) {
+			return null;
+		}
 		List<String> paragraph = new ArrayList<>();
 		String[] preLines = text.split("\n");
 		String prevColor = ChatColor.RESET.toString();

@@ -1,33 +1,33 @@
 package com.mcmmorpg.common.playerClass;
 
-public class PlayerSkillStatus {
+public class PlayerSkillData {
 
 	private final String skillName;
 	private final String playerClassName;
-	private int skillLevel;
+	private int upgradeLevel;
 	private double skillCooldownSeconds;
 
-	public PlayerSkillStatus(Skill skill) {
+	public PlayerSkillData(Skill skill) {
 		skillName = skill.getName();
 		playerClassName = skill.getPlayerClass().getName();
-		skillLevel = 0;
+		upgradeLevel = 0;
 		skillCooldownSeconds = 0.0;
 	}
 
-	public Skill getSkill() {
+	Skill getSkill() {
 		PlayerClass playerClass = PlayerClass.forName(playerClassName);
 		return playerClass.skillForName(skillName);
 	}
 
-	public int getSkillLevel() {
-		return skillLevel;
+	int getUpgradeLevel() {
+		return upgradeLevel;
 	}
 
-	public double getSkillCooldownSeconds() {
+	double getSkillCooldownSeconds() {
 		return skillCooldownSeconds;
 	}
 
-	public void setCooldownSeconds(double cooldownSeconds) {
+	void setCooldownSeconds(double cooldownSeconds) {
 		this.skillCooldownSeconds = cooldownSeconds;
 	}
 
