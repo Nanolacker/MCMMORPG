@@ -3,7 +3,6 @@ package com.mcmmorpg.test;
 import java.io.File;
 
 import com.mcmmorpg.common.MMORPGPlugin;
-import com.mcmmorpg.common.character.PlayerCharacter;
 import com.mcmmorpg.common.event.EventManager;
 import com.mcmmorpg.common.playerClass.PlayerClass;
 import com.mcmmorpg.common.quest.Quest;

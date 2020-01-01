@@ -4,7 +4,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.mcmmorpg.common.MMORPGPlugin;
-import com.mcmmorpg.common.character.PlayerCharacter;
 
 /**
  * PlayerClasses can be made using JSON. Code will need to be written that deals

@@ -1,22 +1,35 @@
 package com.mcmmorpg.common.playerClass;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 import com.mcmmorpg.common.character.PlayerCharacter;
+import com.mcmmorpg.common.event.EventManager;
+import com.mcmmorpg.common.utils.Debug;
 
-public class SkillTree {
+public class SkillTree implements Listener {
 
 	private final PlayerClass playerClass;
+	private final Map<PlayerCharacter, Inventory> inventoryMap;
 
 	SkillTree(PlayerClass playerClass) {
 		this.playerClass = playerClass;
+		inventoryMap = new HashMap<>();
+		EventManager.registerEvents(this);
 	}
 
 	public void open(PlayerCharacter pc) {
 		Inventory inventory = createInventory(pc);
+		inventoryMap.put(pc, inventory);
 		pc.getPlayer().openInventory(inventory);
 	}
 
@@ -33,6 +46,48 @@ public class SkillTree {
 			inventory.setItem(slot, itemStack);
 		}
 		return inventory;
+	}
+
+	@EventHandler
+	private void onClick(InventoryClickEvent event) {
+		Player player = (Player) event.getWhoClicked();
+		PlayerCharacter pc = PlayerCharacter.forPlayer(player);
+		if (pc == null) {
+			return;
+		}
+		Inventory inventory = event.getInventory();
+		if (!inventoryMap.get(pc).equals(inventory)) {
+			return;
+		}
+		int slot = event.getSlot();
+		int skillRow = slot / 9;
+		int skillColumn = slot % 9;
+		Skill skill = getSkillAt(skillRow, skillColumn);
+		Debug.log("Clicking on skill " + skill.getName());
+	}
+
+	private Skill getSkillAt(int skillRow, int skillColumn) {
+		Skill[] skills = playerClass.getSkills();
+		for (int i = 0; i < skills.length; i++) {
+			Skill skill = skills[i];
+			if (skill.getSkillTreeRow() == skillRow && skill.getSkillTreeColumn() == skillColumn) {
+				return skill;
+			}
+		}
+		return null;
+	}
+
+	@EventHandler
+	private void onClose(InventoryCloseEvent event) {
+		Player player = (Player) event.getPlayer();
+		PlayerCharacter pc = PlayerCharacter.forPlayer(player);
+		if (pc == null) {
+			return;
+		}
+		if (inventoryMap.containsKey(pc)) {
+			inventoryMap.remove(pc);
+			Debug.log("Closing skill tree");
+		}
 	}
 
 }

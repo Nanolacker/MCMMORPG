@@ -120,8 +120,25 @@ public class Skill implements Listener {
 		if (getUpgradeLevel(pc) == 0) {
 			throw new IllegalArgumentException("Player has not unlocked skill");
 		}
-		SkillUseEvent event = new SkillUseEvent(pc, this);
-		EventManager.callEvent(event);
+		if (!isOnCooldown(pc)) {
+			pc.sendMessage("On cooldown!");
+		} else {
+			SkillUseEvent event = new SkillUseEvent(pc, this);
+			EventManager.callEvent(event);
+		}
+	}
+
+	public double getCooldownSeconds(PlayerCharacter pc) {
+		if (getUpgradeLevel(pc) == 0) {
+			throw new IllegalArgumentException("Player has not unlocked skill");
+		}
+		PlayerSkillManager manager = pc.getSkillManager();
+		PlayerSkillData data = manager.getSkillData(Skill.this);
+		return data.getSkillCooldownSeconds();
+	}
+
+	public boolean isOnCooldown(PlayerCharacter pc) {
+		return getCooldownSeconds(pc) != 0;
 	}
 
 	public void cooldown(PlayerCharacter pc, double duration) {
@@ -154,15 +171,6 @@ public class Skill implements Listener {
 				itemStack.setAmount((int) cooldownSeconds);
 			}
 		}
-	}
-
-	public double getCooldownSeconds(PlayerCharacter pc) {
-		if (getUpgradeLevel(pc) == 0) {
-			throw new IllegalArgumentException("Player has not unlocked skill");
-		}
-		PlayerSkillManager manager = pc.getSkillManager();
-		PlayerSkillData data = manager.getSkillData(Skill.this);
-		return data.getSkillCooldownSeconds();
 	}
 
 	public void denyUse(PlayerCharacter pc, SkillUseDenialReason reason) {

@@ -3,9 +3,6 @@ package com.mcmmorpg.common.playerClass;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.mcmmorpg.common.quest.Quest;
-import com.mcmmorpg.common.quest.PlayerQuestData;
-
 public class PlayerSkillManager {
 
 	private Map<Skill, PlayerSkillData> skillDataMap;
