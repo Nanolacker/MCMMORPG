@@ -1,6 +1,7 @@
 package com.mcmmorpg.common.quest;
 
 import com.mcmmorpg.common.character.PlayerCharacter;
+import com.mcmmorpg.common.utils.MathUtils;
 
 public class QuestObjective {
 
@@ -50,8 +51,7 @@ public class QuestObjective {
 		if (data == null) {
 			return;
 		}
-		// clamp progress
-		progress = Math.min(progress, goal);
+		progress = (int) MathUtils.clamp(progress, 0, goal);
 		data.setProgress(this.index, progress);
 		if (pc.getTargetQuest() == this.quest) {
 			pc.updateQuestDisplay();

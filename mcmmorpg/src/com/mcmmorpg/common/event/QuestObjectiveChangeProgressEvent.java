@@ -6,7 +6,7 @@ import org.bukkit.event.HandlerList;
 import com.mcmmorpg.common.character.PlayerCharacter;
 import com.mcmmorpg.common.quest.QuestObjective;
 
-public class PlayerQuestObjectiveChangeProgressEvent extends Event {
+public class QuestObjectiveChangeProgressEvent extends Event {
 
 	private static final HandlerList handlers = new HandlerList();
 
@@ -15,7 +15,7 @@ public class PlayerQuestObjectiveChangeProgressEvent extends Event {
 	private final int previousProgress;
 	private final int newProgress;
 
-	public PlayerQuestObjectiveChangeProgressEvent(PlayerCharacter pc, QuestObjective objective, int previousProgress,
+	public QuestObjectiveChangeProgressEvent(PlayerCharacter pc, QuestObjective objective, int previousProgress,
 			int newProgress) {
 		this.pc = pc;
 		this.objective = objective;

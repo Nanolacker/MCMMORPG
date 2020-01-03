@@ -21,6 +21,7 @@ import com.mcmmorpg.common.persistence.PlayerCharacterSaveData;
 import com.mcmmorpg.common.playerClass.PlayerClass;
 import com.mcmmorpg.common.playerClass.SkillTree;
 import com.mcmmorpg.common.quest.Quest;
+import com.mcmmorpg.common.quest.QuestStatus;
 import com.mcmmorpg.common.utils.Debug;
 import com.mcmmorpg.common.utils.IOUtils;
 
@@ -59,7 +60,9 @@ public class PCListener implements Listener {
 		}
 		PlayerCharacter pc = PlayerCharacter.registerPlayerCharacter(player, saveData);
 		Quest quest = Quest.forName("Saving the Farm");
-		quest.start(pc);
+		if (quest.getStatus(pc) == QuestStatus.NOT_STARTED) {
+			quest.start(pc);
+		}
 		pc.setTargetQuest(Quest.forName("Saving the Farm"));
 	}
 
@@ -89,8 +92,8 @@ public class PCListener implements Listener {
 		if (pc == null) {
 			return;
 		}
-		PlayerClass clazz = pc.getPlayerClass();
-		SkillTree tree = clazz.getSkillTree();
+		PlayerClass playerClass = pc.getPlayerClass();
+		SkillTree tree = playerClass.getSkillTree();
 		tree.open(pc);
 	}
 

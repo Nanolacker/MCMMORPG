@@ -397,9 +397,9 @@ public abstract class Collider {
 		double x = point.getX();
 		double y = point.getY();
 		double z = point.getZ();
-		return world.equals(this.world) && MathUtils.checkInInterval(x, xMin, true, xMax, true)
-				&& MathUtils.checkInInterval(y, yMin, true, yMax, true)
-				&& MathUtils.checkInInterval(z, zMin, true, zMax, true);
+		return world.equals(this.world) && MathUtils.isBetween(x, xMin, true, xMax, true)
+				&& MathUtils.isBetween(y, yMin, true, yMax, true)
+				&& MathUtils.isBetween(z, zMin, true, zMax, true);
 	}
 
 	/**

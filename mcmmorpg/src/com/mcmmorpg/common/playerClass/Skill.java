@@ -89,6 +89,13 @@ public class Skill implements Listener {
 		}
 	}
 
+	void upgrade(PlayerCharacter pc) {
+		PlayerSkillManager manager = pc.getSkillManager();
+		PlayerSkillData data = manager.getSkillData(this);
+		int newLevel = data.getUpgradeLevel() + 1;
+		data.setUpgradeLevel(newLevel);
+	}
+
 	ItemStack getHotbarItemStack() {
 		return itemStack;
 	}

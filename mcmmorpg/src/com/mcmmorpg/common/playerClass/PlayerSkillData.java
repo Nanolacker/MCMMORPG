@@ -23,6 +23,10 @@ public class PlayerSkillData {
 		return upgradeLevel;
 	}
 
+	public void setUpgradeLevel(int upgradeLevel) {
+		this.upgradeLevel = upgradeLevel;
+	}
+
 	double getSkillCooldownSeconds() {
 		return skillCooldownSeconds;
 	}

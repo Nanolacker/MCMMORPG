@@ -7,6 +7,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.Inventory;
@@ -55,15 +56,29 @@ public class SkillTree implements Listener {
 		if (pc == null) {
 			return;
 		}
-		Inventory inventory = event.getInventory();
+		Inventory inventory = event.getClickedInventory();
 		if (!inventoryMap.get(pc).equals(inventory)) {
 			return;
 		}
+		event.setCancelled(true);
 		int slot = event.getSlot();
 		int skillRow = slot / 9;
 		int skillColumn = slot % 9;
 		Skill skill = getSkillAt(skillRow, skillColumn);
-		Debug.log("Clicking on skill " + skill.getName());
+		ClickType click = event.getClick();
+		if (click.isShiftClick()) {
+			// unlock/upgrade
+			int skillPoints = 1; // pc.getSkillPoints();
+			if (skill.isUnlocked(pc)) {
+				if (skillPoints > 0) {
+					skill.upgrade(pc);
+				}else {
+					pc.sendMessage("No skill points remaining");
+				}
+			}
+		} else {
+			// add to hotbar
+		}
 	}
 
 	private Skill getSkillAt(int skillRow, int skillColumn) {
@@ -86,7 +101,6 @@ public class SkillTree implements Listener {
 		}
 		if (inventoryMap.containsKey(pc)) {
 			inventoryMap.remove(pc);
-			Debug.log("Closing skill tree");
 		}
 	}
 
