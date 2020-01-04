@@ -45,6 +45,7 @@ public class PlayerCharacter extends CommonCharacter {
 	private final PlayerClass playerClass;
 	private Location respawnLocation;
 	private int xp;
+	private int skillUpgradePoints;
 	private int currency;
 	private double currentMana;
 	private double maxMana;
@@ -59,21 +60,22 @@ public class PlayerCharacter extends CommonCharacter {
 	}
 
 	private PlayerCharacter(Player player, PlayerClass playerClass, Location location, Location respawnLocation, int xp,
-			int currency, double maxHealth, double currentHealth, double maxMana, double currentMana, Quest targetQuest,
-			Quest[] completedQuests, PlayerQuestData[] questData, PlayerSkillData[] skillData,
-			ItemStack[] inventoryContents) {
+			int skillUpgradePoints, int currency, double maxHealth, double currentHealth, double maxMana,
+			double currentMana, Quest targetQuest, Quest[] completedQuests, PlayerQuestData[] questData,
+			PlayerSkillData[] skillData, ItemStack[] inventoryContents) {
 		super(player.getName(), xpToLevel(xp), location, maxHealth);
 		this.player = player;
 		this.playerClass = playerClass;
 		this.respawnLocation = respawnLocation;
 		this.xp = xp;
+		this.skillUpgradePoints = skillUpgradePoints;
 		this.currency = currency;
 		setCurrentHealth(currentHealth);
 		this.maxMana = maxMana;
 		this.currentMana = currentMana;
 		this.targetQuest = targetQuest;
 		this.questStatusManager = new PlayerQuestManager(completedQuests, questData);
-		this.skillStatusManager = new PlayerSkillManager(skillData);
+		this.skillStatusManager = new PlayerSkillManager(this, skillData);
 		player.getInventory().setContents(inventoryContents);
 		this.collider = new PlayerCharacterCollider(this);
 		this.movementSyncer = new MovementSyncer(this, player, MovementSyncMode.CHARACTER_FOLLOWS_ENTITY);
@@ -120,6 +122,7 @@ public class PlayerCharacter extends CommonCharacter {
 		Location location = saveData.getLocation();
 		Location respawnLocation = saveData.getRespawnLocation();
 		int xp = saveData.getXP();
+		int skillUpgradePoints = saveData.getSkillUpgradePoints();
 		int currency = saveData.getCurrency();
 		double maxHealth = saveData.getMaxHealth();
 		double currentHealth = saveData.getCurrentHealth();
@@ -129,9 +132,9 @@ public class PlayerCharacter extends CommonCharacter {
 		PlayerQuestData[] questStatuses = saveData.getQuestData();
 		PlayerSkillData[] skillStatuses = saveData.getSkillStatuses();
 		ItemStack[] inventoryContents = saveData.getInventoryContents();
-		return new PlayerCharacter(player, playerClass, location, respawnLocation, xp, currency, maxHealth,
-				currentHealth, maxMana, currentMana, targetQuest, saveData.getCompletedQuests(), questStatuses,
-				skillStatuses, inventoryContents);
+		return new PlayerCharacter(player, playerClass, location, respawnLocation, xp, skillUpgradePoints, currency,
+				maxHealth, currentHealth, maxMana, currentMana, targetQuest, saveData.getCompletedQuests(),
+				questStatuses, skillStatuses, inventoryContents);
 	}
 
 	public static PlayerCharacter forPlayer(Player player) {
@@ -258,6 +261,14 @@ public class PlayerCharacter extends CommonCharacter {
 
 	public static int maxLevel() {
 		return xpValues.length;
+	}
+
+	public int getSkillUpgradePoints() {
+		return skillUpgradePoints;
+	}
+
+	public void setSkillUpgradePoints(int points) {
+		this.skillUpgradePoints = points;
 	}
 
 	public int getCurrency() {

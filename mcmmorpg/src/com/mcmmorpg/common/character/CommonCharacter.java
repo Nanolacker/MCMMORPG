@@ -5,7 +5,6 @@ import javax.annotation.OverridingMethodsMustInvokeSuper;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 
-import com.mcmmorpg.common.event.EventManager;
 import com.mcmmorpg.common.ui.TextArea;
 
 public abstract class CommonCharacter {
@@ -17,10 +16,6 @@ public abstract class CommonCharacter {
 	private double currentHealth;
 	private double maxHealth;
 	private TextArea nameplate;
-
-	static {
-		EventManager.registerEvents(new CharacterListener());
-	}
 
 	/**
 	 * Constructs a character initialized with max health.
@@ -45,6 +40,7 @@ public abstract class CommonCharacter {
 	@OverridingMethodsMustInvokeSuper
 	public void setName(String name) {
 		this.name = name;
+		updateNameplateText();
 	}
 
 	public final int getLevel() {

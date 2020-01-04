@@ -3,17 +3,24 @@ package com.mcmmorpg.common.playerClass;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.mcmmorpg.common.character.PlayerCharacter;
+
 public class PlayerSkillManager {
 
 	private Map<Skill, PlayerSkillData> skillDataMap;
 
-	public PlayerSkillManager(PlayerSkillData[] allSkillData) {
+	public PlayerSkillManager(PlayerCharacter pc, PlayerSkillData[] allSkillData) {
 		skillDataMap = new HashMap<>();
 		for (PlayerSkillData skillData : allSkillData) {
 			Skill skill = skillData.getSkill();
+			double cooldown = skillData.getSkillCooldownSeconds();
+			if (cooldown > 0) {
+				skill.cooldown(pc, cooldown);
+			}
 			skillDataMap.put(skill, skillData);
 		}
 	}
+
 	/**
 	 * Used for save data.
 	 */

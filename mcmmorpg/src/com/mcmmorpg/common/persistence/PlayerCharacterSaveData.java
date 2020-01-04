@@ -1,7 +1,6 @@
 package com.mcmmorpg.common.persistence;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import org.bukkit.Location;
@@ -21,6 +20,7 @@ public class PlayerCharacterSaveData {
 	private final String playerClassName;
 	private final PersistentLocation location, respawnLocation;
 	private final int xp;
+	private final int skillUpgradePoints;
 	private final int currency;
 	private final double maxHealth, currentHealth;
 	private final double maxMana, currentMana;
@@ -31,13 +31,14 @@ public class PlayerCharacterSaveData {
 	private final PersistentInventory inventory;
 
 	private PlayerCharacterSaveData(PlayerClass playerClass, Location location, Location respawnLocation, int xp,
-			int currency, double maxHealth, double currentHealth, double maxMana, double currentMana, Quest targetQuest,
-			List<Quest> completedQuests, PlayerQuestData[] questData, PlayerSkillData[] skillStatuses,
-			Inventory inventory) {
+			int skillUpgradePoints, int currency, double maxHealth, double currentHealth, double maxMana,
+			double currentMana, Quest targetQuest, List<Quest> completedQuests, PlayerQuestData[] questData,
+			PlayerSkillData[] skillStatuses, Inventory inventory) {
 		this.playerClassName = playerClass.getName();
 		this.location = new PersistentLocation(location);
 		this.respawnLocation = new PersistentLocation(respawnLocation);
 		this.xp = xp;
+		this.skillUpgradePoints = skillUpgradePoints;
 		this.currency = currency;
 		this.maxHealth = maxHealth;
 		this.currentHealth = currentHealth;
@@ -58,6 +59,7 @@ public class PlayerCharacterSaveData {
 		Location location = pc.getLocation();
 		Location respawnLocation = pc.getRespawnLocation();
 		int xp = pc.getXP();
+		int skillUpgradePoints = pc.getSkillUpgradePoints();
 		int currency = pc.getCurrency();
 		double maxHealth = pc.getMaxHealth();
 		double currentHealth = pc.getCurrentHealth();
@@ -69,15 +71,16 @@ public class PlayerCharacterSaveData {
 		PlayerQuestData[] allQuestData = pc.getQuestManager().getQuestData();
 		PlayerSkillData[] skillStatuses = pc.getSkillManager().getAllSkillData();
 		Inventory inventory = pc.getInventory();
-		return new PlayerCharacterSaveData(playerClass, location, respawnLocation, xp, currency, maxHealth,
-				currentHealth, maxMana, currentMana, targetQuest, completedQuests, allQuestData, skillStatuses,
-				inventory);
+		return new PlayerCharacterSaveData(playerClass, location, respawnLocation, xp, skillUpgradePoints, currency,
+				maxHealth, currentHealth, maxMana, currentMana, targetQuest, completedQuests, allQuestData,
+				skillStatuses, inventory);
 	}
 
 	public static PlayerCharacterSaveData createFreshSaveData(Player player, PlayerClass playerClass,
 			Location startingLocation) {
 		Location respawnLocation = startingLocation;
 		int xp = 0;
+		int skillUpgradePoints = 0;
 		int currency = 0;
 		double maxHealth = 20; // CHANGE THIS LATER!!!
 		double currentHealth = maxHealth;
@@ -86,8 +89,9 @@ public class PlayerCharacterSaveData {
 		PlayerQuestData[] questData = {};
 		PlayerSkillData[] skillStatuses = {}; // TODO: MAKE SURE THIS ALLIGNS WITH PLAYER CLASS!!!
 		Inventory inventory = player.getInventory();
-		return new PlayerCharacterSaveData(playerClass, startingLocation, respawnLocation, xp, currency, maxHealth,
-				currentHealth, maxMana, currentMana, null, new ArrayList<>(), questData, skillStatuses, inventory);
+		return new PlayerCharacterSaveData(playerClass, startingLocation, respawnLocation, xp, skillUpgradePoints,
+				currency, maxHealth, currentHealth, maxMana, currentMana, null, new ArrayList<>(), questData,
+				skillStatuses, inventory);
 	}
 
 	public PlayerClass getPlayerClass() {
@@ -104,6 +108,10 @@ public class PlayerCharacterSaveData {
 
 	public int getXP() {
 		return xp;
+	}
+
+	public int getSkillUpgradePoints() {
+		return skillUpgradePoints;
 	}
 
 	public int getCurrency() {
