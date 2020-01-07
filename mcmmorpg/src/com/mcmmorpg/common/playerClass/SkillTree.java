@@ -15,7 +15,6 @@ import org.bukkit.inventory.ItemStack;
 
 import com.mcmmorpg.common.character.PlayerCharacter;
 import com.mcmmorpg.common.event.EventManager;
-import com.mcmmorpg.common.utils.Debug;
 
 public class SkillTree implements Listener {
 
@@ -37,7 +36,7 @@ public class SkillTree implements Listener {
 	private Inventory createInventory(PlayerCharacter pc) {
 		Player player = pc.getPlayer();
 		int size = 6 * 9;
-		String title = playerClass.getName() + " Skill Tree";
+		String title = playerClass.getName() + " Skill Tree        " + pc.getSkillUpgradePoints() + " skill points";
 		Inventory inventory = Bukkit.createInventory(player, size, title);
 		Skill[] skills = playerClass.getSkills();
 		for (int i = 0; i < skills.length; i++) {
@@ -67,18 +66,45 @@ public class SkillTree implements Listener {
 		int skillColumn = slot % 9;
 		Skill skill = getSkillAt(skillRow, skillColumn);
 		ClickType click = event.getClick();
+
 		if (click.isShiftClick()) {
 			// unlock/upgrade
-			int skillPoints = 1; // pc.getSkillPoints();
+			int skillPoints = pc.getSkillUpgradePoints();
 			if (skill.isUnlocked(pc)) {
 				if (skillPoints > 0) {
 					skill.upgrade(pc);
+<<<<<<< HEAD
+=======
+					pc.setSkillUpgradePoints(pc.getSkillUpgradePoints() - 1);
+					pc.sendMessage("upgraded " + skill.getName());
+					// update skill tree inventory
+					this.open(pc);
+>>>>>>> branch 'master' of https://github.com/Nanolacker/MCMMORPG.git
 				} else {
 					pc.sendMessage("No skill points remaining");
 				}
 			}
 		} else {
+<<<<<<< HEAD
 			
+=======
+			// add to hotbar
+			ItemStack skillItemStack = skill.getHotbarItemStack();
+			int emptySlot = -1;
+			for (int i = 0; i < 9; i++) {
+				Inventory hotbarInventory = pc.getInventory();
+				ItemStack itemStack = hotbarInventory.getItem(i);
+				if (itemStack == null) {
+					emptySlot = i;
+				} else if (itemStack.equals(skillItemStack)) {
+					pc.sendMessage(skill.getName() + " already added to hotbar");
+					return;
+				}
+			}
+			if (emptySlot != -1) {
+				inventory.setItem(emptySlot, skillItemStack);
+			}
+>>>>>>> branch 'master' of https://github.com/Nanolacker/MCMMORPG.git
 		}
 	}
 

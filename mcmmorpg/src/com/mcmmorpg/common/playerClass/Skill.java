@@ -34,7 +34,7 @@ public final class Skill implements Listener {
 	private final int skillTreeColumn;
 	private final Material icon;
 	private transient PlayerClass playerClass;
-	private final transient ItemStack itemStack;
+	private final transient ItemStack hotbarItemStack;
 
 	public Skill(String name, String description, int manaCost, int cooldown, int minimumLevel,
 			String prerequisiteSkill, int skillTreeRow, int skillTreeColumn, Material icon) {
@@ -47,12 +47,16 @@ public final class Skill implements Listener {
 		this.skillTreeRow = skillTreeRow;
 		this.skillTreeColumn = skillTreeColumn;
 		this.icon = icon;
+<<<<<<< HEAD
 		itemStack = createItemStack();
 	}
 
 	private ItemStack createItemStack() {
 		ItemStack item = ItemStackFactory.create(name, "level " + minimumLevel + "\n" + description, icon);
 		return item;
+=======
+		this.hotbarItemStack = ItemStackFactory.create(name, description, icon);
+>>>>>>> branch 'master' of https://github.com/Nanolacker/MCMMORPG.git
 	}
 
 	void initialize(PlayerClass playerClass) {
@@ -111,7 +115,7 @@ public final class Skill implements Listener {
 	}
 
 	ItemStack getHotbarItemStack() {
-		return itemStack;
+		return hotbarItemStack;
 	}
 
 	ItemStack getSkillTreeItemStack(PlayerCharacter pc) {
@@ -129,9 +133,17 @@ public final class Skill implements Listener {
 		if (pc == null) {
 			throw new IllegalStateException("Player not connected to a player character");
 		}
+		if (pc.getPlayerClass() != this.playerClass) {
+			return;
+		}
 		Inventory inventory = player.getInventory();
 		int slot = event.getNewSlot();
+<<<<<<< HEAD
 		if (inventory.getItem(slot) == itemStack) {
+=======
+		if (inventory.getItem(slot) == hotbarItemStack) {
+			this.use(pc);
+>>>>>>> branch 'master' of https://github.com/Nanolacker/MCMMORPG.git
 			event.setCancelled(true);
 			if (isOnCooldown(pc)) {
 				pc.sendMessage("On cooldown!");
@@ -189,9 +201,11 @@ public final class Skill implements Listener {
 
 	private void updateItemStack(PlayerCharacter pc, double cooldownSeconds) {
 		Inventory inventory = pc.getInventory();
-		for (ItemStack itemStack : inventory.getContents()) {
-			if (itemStack.equals(this.itemStack)) {
+		for (int i = 0; i < 9; i++) {
+			ItemStack itemStack = inventory.getItem(i);
+			if (itemStack.equals(this.hotbarItemStack)) {
 				itemStack.setAmount((int) cooldownSeconds);
+				return;
 			}
 		}
 	}
