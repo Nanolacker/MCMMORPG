@@ -57,7 +57,8 @@ public class SkillTree implements Listener {
 			return;
 		}
 		Inventory inventory = event.getClickedInventory();
-		if (!inventoryMap.get(pc).equals(inventory)) {
+		Inventory mappedInventory = inventoryMap.get(pc);
+		if (mappedInventory == null || !mappedInventory.equals(inventory)) {
 			return;
 		}
 		event.setCancelled(true);
@@ -72,12 +73,12 @@ public class SkillTree implements Listener {
 			if (skill.isUnlocked(pc)) {
 				if (skillPoints > 0) {
 					skill.upgrade(pc);
-				}else {
+				} else {
 					pc.sendMessage("No skill points remaining");
 				}
 			}
 		} else {
-			// add to hotbar
+			
 		}
 	}
 
