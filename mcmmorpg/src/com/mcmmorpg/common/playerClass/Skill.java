@@ -47,16 +47,12 @@ public final class Skill implements Listener {
 		this.skillTreeRow = skillTreeRow;
 		this.skillTreeColumn = skillTreeColumn;
 		this.icon = icon;
-<<<<<<< HEAD
-		itemStack = createItemStack();
+		hotbarItemStack = createItemStack();
 	}
 
 	private ItemStack createItemStack() {
 		ItemStack item = ItemStackFactory.create(name, "level " + minimumLevel + "\n" + description, icon);
 		return item;
-=======
-		this.hotbarItemStack = ItemStackFactory.create(name, description, icon);
->>>>>>> branch 'master' of https://github.com/Nanolacker/MCMMORPG.git
 	}
 
 	void initialize(PlayerClass playerClass) {
@@ -138,12 +134,8 @@ public final class Skill implements Listener {
 		}
 		Inventory inventory = player.getInventory();
 		int slot = event.getNewSlot();
-<<<<<<< HEAD
-		if (inventory.getItem(slot) == itemStack) {
-=======
 		if (inventory.getItem(slot) == hotbarItemStack) {
 			this.use(pc);
->>>>>>> branch 'master' of https://github.com/Nanolacker/MCMMORPG.git
 			event.setCancelled(true);
 			if (isOnCooldown(pc)) {
 				pc.sendMessage("On cooldown!");
@@ -159,7 +151,7 @@ public final class Skill implements Listener {
 		SkillUseEvent event = new SkillUseEvent(pc, this);
 		EventManager.callEvent(event);
 		pc.setMaxHealth(pc.getCurrentMana() - manaCost);
-		cooldown(pc);
+		cooldown(pc, cooldown);
 	}
 
 	public double getCooldown(PlayerCharacter pc) {
@@ -175,10 +167,10 @@ public final class Skill implements Listener {
 		return getCooldown(pc) != 0;
 	}
 
-	private void cooldown(PlayerCharacter pc) {
+	void cooldown(PlayerCharacter pc, double duration) {
 		PlayerSkillManager manager = pc.getSkillManager();
 		PlayerSkillData data = manager.getSkillData(Skill.this);
-		data.setCooldown(cooldown);
+		data.setCooldown(duration);
 		RepeatingTask cooldownTask = new RepeatingTask(COOLDOWN_UPDATE_PERIOD_SECONDS) {
 			@Override
 			public void run() {

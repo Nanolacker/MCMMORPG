@@ -15,6 +15,7 @@ import org.bukkit.inventory.ItemStack;
 
 import com.mcmmorpg.common.character.PlayerCharacter;
 import com.mcmmorpg.common.event.EventManager;
+import com.mcmmorpg.common.utils.Debug;
 
 public class SkillTree implements Listener {
 
@@ -65,6 +66,9 @@ public class SkillTree implements Listener {
 		int skillRow = slot / 9;
 		int skillColumn = slot % 9;
 		Skill skill = getSkillAt(skillRow, skillColumn);
+		if (skill == null) {
+			return;
+		}
 		ClickType click = event.getClick();
 
 		if (click.isShiftClick()) {
@@ -73,21 +77,15 @@ public class SkillTree implements Listener {
 			if (skill.isUnlocked(pc)) {
 				if (skillPoints > 0) {
 					skill.upgrade(pc);
-<<<<<<< HEAD
-=======
 					pc.setSkillUpgradePoints(pc.getSkillUpgradePoints() - 1);
 					pc.sendMessage("upgraded " + skill.getName());
 					// update skill tree inventory
 					this.open(pc);
->>>>>>> branch 'master' of https://github.com/Nanolacker/MCMMORPG.git
 				} else {
 					pc.sendMessage("No skill points remaining");
 				}
 			}
 		} else {
-<<<<<<< HEAD
-			
-=======
 			// add to hotbar
 			ItemStack skillItemStack = skill.getHotbarItemStack();
 			int emptySlot = -1;
@@ -95,7 +93,9 @@ public class SkillTree implements Listener {
 				Inventory hotbarInventory = pc.getInventory();
 				ItemStack itemStack = hotbarInventory.getItem(i);
 				if (itemStack == null) {
-					emptySlot = i;
+					if (emptySlot == -1) {
+						emptySlot = i;
+					}
 				} else if (itemStack.equals(skillItemStack)) {
 					pc.sendMessage(skill.getName() + " already added to hotbar");
 					return;
@@ -104,7 +104,6 @@ public class SkillTree implements Listener {
 			if (emptySlot != -1) {
 				inventory.setItem(emptySlot, skillItemStack);
 			}
->>>>>>> branch 'master' of https://github.com/Nanolacker/MCMMORPG.git
 		}
 	}
 
@@ -126,7 +125,7 @@ public class SkillTree implements Listener {
 		if (pc == null) {
 			return;
 		}
-		if (inventoryMap.containsKey(pc)) {
+		if (inventoryMap.get(pc) == event.getInventory()) {
 			inventoryMap.remove(pc);
 		}
 	}
