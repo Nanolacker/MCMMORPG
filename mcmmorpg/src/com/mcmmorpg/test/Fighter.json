@@ -4,10 +4,10 @@
 		{
 			"name": "Bash",
 			"description": "Description",
-			"level": 2,
-			"active": true,
-			"prerequisites": [
-			],
+			"manaCost": 4,
+			"cooldown": 2,
+			"minimumLevel": 1,
+			"prerequisiteSkill": null,
 			"skillTreeRow": 0,
 			"skillTreeColumn": 1,
 			"icon": "DIRT"

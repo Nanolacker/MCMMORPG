@@ -15,6 +15,7 @@ import org.bukkit.inventory.ItemStack;
 
 import com.mcmmorpg.common.character.PlayerCharacter;
 import com.mcmmorpg.common.event.EventManager;
+import com.mcmmorpg.common.utils.Debug;
 
 public class SkillTree implements Listener {
 
@@ -56,7 +57,8 @@ public class SkillTree implements Listener {
 			return;
 		}
 		Inventory inventory = event.getClickedInventory();
-		if (!inventoryMap.get(pc).equals(inventory)) {
+		Inventory mappedInventory = inventoryMap.get(pc);
+		if (mappedInventory == null || !mappedInventory.equals(inventory)) {
 			return;
 		}
 		event.setCancelled(true);
@@ -64,6 +66,9 @@ public class SkillTree implements Listener {
 		int skillRow = slot / 9;
 		int skillColumn = slot % 9;
 		Skill skill = getSkillAt(skillRow, skillColumn);
+		if (skill == null) {
+			return;
+		}
 		ClickType click = event.getClick();
 
 		if (click.isShiftClick()) {
@@ -88,7 +93,9 @@ public class SkillTree implements Listener {
 				Inventory hotbarInventory = pc.getInventory();
 				ItemStack itemStack = hotbarInventory.getItem(i);
 				if (itemStack == null) {
-					emptySlot = i;
+					if (emptySlot == -1) {
+						emptySlot = i;
+					}
 				} else if (itemStack.equals(skillItemStack)) {
 					pc.sendMessage(skill.getName() + " already added to hotbar");
 					return;
@@ -118,7 +125,7 @@ public class SkillTree implements Listener {
 		if (pc == null) {
 			return;
 		}
-		if (inventoryMap.containsKey(pc)) {
+		if (inventoryMap.get(pc) == event.getInventory()) {
 			inventoryMap.remove(pc);
 		}
 	}

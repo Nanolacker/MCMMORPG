@@ -1,8 +1,6 @@
 package com.mcmmorpg.common.playerClass;
 
-import org.bukkit.ChatColor;
 import org.bukkit.Material;
-import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -14,7 +12,6 @@ import com.mcmmorpg.common.character.PlayerCharacter;
 import com.mcmmorpg.common.event.EventManager;
 import com.mcmmorpg.common.event.SkillUseEvent;
 import com.mcmmorpg.common.item.ItemStackFactory;
-import com.mcmmorpg.common.sound.Noise;
 import com.mcmmorpg.common.time.RepeatingTask;
 
 public final class Skill implements Listener {

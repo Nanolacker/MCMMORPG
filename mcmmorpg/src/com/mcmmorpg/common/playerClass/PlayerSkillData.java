@@ -31,7 +31,7 @@ public class PlayerSkillData {
 		return skillCooldownSeconds;
 	}
 
-	void setCooldownSeconds(double cooldownSeconds) {
+	void setCooldown(double cooldownSeconds) {
 		this.skillCooldownSeconds = cooldownSeconds;
 	}
 
