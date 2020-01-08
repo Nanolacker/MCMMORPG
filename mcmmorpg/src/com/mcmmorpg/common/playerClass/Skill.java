@@ -17,27 +17,42 @@ import com.mcmmorpg.common.item.ItemStackFactory;
 import com.mcmmorpg.common.sound.Noise;
 import com.mcmmorpg.common.time.RepeatingTask;
 
-public class Skill implements Listener {
+public final class Skill implements Listener {
 
 	private static final double COOLDOWN_UPDATE_PERIOD_SECONDS = 0.1;
 
 	private final String name;
 	private final String description;
-	private final int level;
+	private final double manaCost;
+	/**
+	 * In seconds.
+	 */
+	private final double cooldown;
+	private final int minimumLevel;
+	private final String prerequisiteSkill;
 	private final int skillTreeRow;
 	private final int skillTreeColumn;
 	private final Material icon;
 	private transient PlayerClass playerClass;
 	private final transient ItemStack hotbarItemStack;
 
-	public Skill(String name, String description, int level, int skillTreeRow, int skillTreeColumn, Material icon) {
+	public Skill(String name, String description, int manaCost, int cooldown, int minimumLevel,
+			String prerequisiteSkill, int skillTreeRow, int skillTreeColumn, Material icon) {
 		this.name = name;
 		this.description = description;
-		this.level = level;
+		this.manaCost = manaCost;
+		this.cooldown = cooldown;
+		this.minimumLevel = minimumLevel;
+		this.prerequisiteSkill = prerequisiteSkill;
 		this.skillTreeRow = skillTreeRow;
 		this.skillTreeColumn = skillTreeColumn;
 		this.icon = icon;
-		this.hotbarItemStack = ItemStackFactory.create(name, description, icon);
+		hotbarItemStack = createItemStack();
+	}
+
+	private ItemStack createItemStack() {
+		ItemStack item = ItemStackFactory.create(name, "level " + minimumLevel + "\n" + description, icon);
+		return item;
 	}
 
 	void initialize(PlayerClass playerClass) {
@@ -52,8 +67,12 @@ public class Skill implements Listener {
 		return description;
 	}
 
-	public int getLevel() {
-		return level;
+	public int getMinimumLevel() {
+		return minimumLevel;
+	}
+
+	Skill getPrerequisiteSkill() {
+		return playerClass.skillForName(prerequisiteSkill);
 	}
 
 	int getSkillTreeRow() {
@@ -118,22 +137,24 @@ public class Skill implements Listener {
 		if (inventory.getItem(slot) == hotbarItemStack) {
 			this.use(pc);
 			event.setCancelled(true);
+			if (isOnCooldown(pc)) {
+				pc.sendMessage("On cooldown!");
+			} else if (pc.getCurrentMana() < manaCost) {
+				pc.sendMessage("Insufficient mana!");
+			} else {
+				this.use(pc);
+			}
 		}
 	}
 
-	public final void use(PlayerCharacter pc) {
-		if (getUpgradeLevel(pc) == 0) {
-			throw new IllegalArgumentException("Player has not unlocked skill");
-		}
-		if (!isOnCooldown(pc)) {
-			pc.sendMessage("On cooldown!");
-		} else {
-			SkillUseEvent event = new SkillUseEvent(pc, this);
-			EventManager.callEvent(event);
-		}
+	private void use(PlayerCharacter pc) {
+		SkillUseEvent event = new SkillUseEvent(pc, this);
+		EventManager.callEvent(event);
+		pc.setMaxHealth(pc.getCurrentMana() - manaCost);
+		cooldown(pc, cooldown);
 	}
 
-	public double getCooldownSeconds(PlayerCharacter pc) {
+	public double getCooldown(PlayerCharacter pc) {
 		if (getUpgradeLevel(pc) == 0) {
 			throw new IllegalArgumentException("Player has not unlocked skill");
 		}
@@ -143,10 +164,13 @@ public class Skill implements Listener {
 	}
 
 	public boolean isOnCooldown(PlayerCharacter pc) {
-		return getCooldownSeconds(pc) != 0;
+		return getCooldown(pc) != 0;
 	}
 
-	public void cooldown(PlayerCharacter pc, double duration) {
+	void cooldown(PlayerCharacter pc, double duration) {
+		PlayerSkillManager manager = pc.getSkillManager();
+		PlayerSkillData data = manager.getSkillData(Skill.this);
+		data.setCooldown(duration);
 		RepeatingTask cooldownTask = new RepeatingTask(COOLDOWN_UPDATE_PERIOD_SECONDS) {
 			@Override
 			public void run() {
@@ -154,15 +178,13 @@ public class Skill implements Listener {
 					cancel();
 					return;
 				}
-				PlayerSkillManager manager = pc.getSkillManager();
-				PlayerSkillData data = manager.getSkillData(Skill.this);
 				double newCooldown = data.getSkillCooldownSeconds() - COOLDOWN_UPDATE_PERIOD_SECONDS;
 				if (newCooldown <= 0) {
-					data.setCooldownSeconds(0);
+					data.setCooldown(0);
 					cancel();
 					return;
 				}
-				data.setCooldownSeconds(newCooldown);
+				data.setCooldown(newCooldown);
 				updateItemStack(pc, newCooldown);
 			}
 		};
@@ -178,28 +200,6 @@ public class Skill implements Listener {
 				return;
 			}
 		}
-	}
-
-	public void denyUse(PlayerCharacter pc, SkillUseDenialReason reason) {
-		String message;
-		switch (reason) {
-		case INSUFFICIENT_MANA:
-			message = ChatColor.RED + "Insufficent mana!";
-			break;
-		case ON_COOLDOWN:
-			message = ChatColor.RED + "On cooldown!";
-			break;
-		default:
-			message = null;
-			break;
-		}
-		Noise denyNoise = new Noise(Sound.BLOCK_ANVIL_DESTROY);
-		denyNoise.play(pc.getPlayer());
-		pc.sendMessage(message);
-	}
-
-	public enum SkillUseDenialReason {
-		INSUFFICIENT_MANA, ON_COOLDOWN;
 	}
 
 }
