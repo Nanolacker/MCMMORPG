@@ -5,7 +5,6 @@ import org.bukkit.event.HandlerList;
 
 import com.mcmmorpg.common.character.PlayerCharacter;
 import com.mcmmorpg.common.playerClass.Skill;
-import com.mcmmorpg.common.quest.Quest;
 
 public class SkillUseEvent extends Event {
 

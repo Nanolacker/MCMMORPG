@@ -8,8 +8,6 @@ import org.bukkit.Location;
 import org.bukkit.Particle;
 import org.bukkit.World;
 import org.bukkit.util.BoundingBox;
-import org.bukkit.util.Vector;
-
 import com.mcmmorpg.common.time.RepeatingTask;
 import com.mcmmorpg.common.utils.Debug;
 import com.mcmmorpg.common.utils.MathUtils;
@@ -20,7 +18,7 @@ import com.mcmmorpg.common.utils.MathUtils;
 public abstract class Collider {
 
 	/**
-	 * The particle used to draw collideres.
+	 * The particle used to draw colliders.
 	 */
 	private static final Particle DEFAULT_DRAW_PARTICLE = Particle.CRIT;
 	/**
@@ -28,14 +26,13 @@ public abstract class Collider {
 	 */
 	private static final double DRAW_PERIOD = 0.1;
 	/**
-	 * How thick layers of particles used to draw collideres will be. The greater
-	 * this value, the less space there is between particles used to draw
-	 * collideres.
+	 * How thick layers of particles used to draw colliders will be. The greater
+	 * this value, the less space there is between particles used to draw colliders.
 	 */
 	private static final double DRAW_THICKNESS = 4.0;
 
 	/**
-	 * Whether this collider will collide and respond to other collideres.
+	 * Whether this collider will collide and respond to other colliders.
 	 */
 	private boolean active;
 	/**
@@ -46,6 +43,14 @@ public abstract class Collider {
 	 * Represents the bounds of this collider.
 	 */
 	private double xMin, yMin, zMin, xMax, yMax, zMax;
+	/**
+	 * The collider buckets that this collider occupies.
+	 */
+	private List<ColliderBucket> occupiedBuckets;
+	/**
+	 * The colliders that this collider is currently colliding with.
+	 */
+	private List<Collider> collidingColliders;
 	/**
 	 * Whether this collider should be "drawn" in its Minecraft world using
 	 * particles to visualize its location and size.
@@ -66,17 +71,9 @@ public abstract class Collider {
 	 * The repeating task that is used to draw this collider.
 	 */
 	private RepeatingTask drawTask;
-	/**
-	 * The collider buckets that this collider occupies.
-	 */
-	private List<ColliderBucket> occupiedBuckets;
-	/**
-	 * The collideres that this collider is currently colliding with.
-	 */
-	private List<Collider> collidingColliders;
 
 	/**
-	 * Represents a type of pattern by which collideres can be drawn.
+	 * Represents a type of pattern by which colliders can be drawn.
 	 */
 	public static enum ColliderDrawMode {
 		/**
@@ -111,7 +108,14 @@ public abstract class Collider {
 		this.yMax = yMax;
 		this.zMin = zMin;
 		this.zMax = zMax;
-		init();
+
+		active = false;
+		drawingEnabled = false;
+		drawMode = ColliderDrawMode.WIREFRAME;
+		drawParticle = DEFAULT_DRAW_PARTICLE;
+		drawTask = null;
+		occupiedBuckets = new ArrayList<ColliderBucket>();
+		collidingColliders = new ArrayList<Collider>();
 	}
 
 	/**
@@ -126,9 +130,9 @@ public abstract class Collider {
 	}
 
 	/**
-	 * Constructs a new axis-aligned collider. Any length of this collider should not
-	 * be negative. Be sure to invoke {@code setActive} to activate collider after
-	 * construction.
+	 * Constructs a new axis-aligned collider. Any length of this collider should
+	 * not be negative. Be sure to invoke {@code setActive} to activate collider
+	 * after construction.
 	 * 
 	 * @param center  the location, including the world, at the center of this
 	 *                collider
@@ -144,27 +148,14 @@ public abstract class Collider {
 	}
 
 	/**
-	 * Eliminates redundancy in constructors.
-	 */
-	private void init() {
-		active = false;
-		drawingEnabled = false;
-		drawMode = ColliderDrawMode.WIREFRAME;
-		drawParticle = DEFAULT_DRAW_PARTICLE;
-		drawTask = null;
-		occupiedBuckets = new ArrayList<ColliderBucket>();
-		collidingColliders = new ArrayList<Collider>();
-	}
-
-	/**
-	 * Returns whether this collider will interact with other collideres.
+	 * Returns whether this collider will interact with other colliders.
 	 */
 	public boolean isActive() {
 		return active;
 	}
 
 	/**
-	 * Sets whether this collider will interact with other collideres.
+	 * Sets whether this collider will interact with other colliders.
 	 */
 	public void setActive(boolean active) {
 		this.active = active;
@@ -316,6 +307,41 @@ public abstract class Collider {
 		}
 	}
 
+	private void updateBounds(Location newCenter) {
+		double xMid = newCenter.getX();
+		double halfLengthX = getLengthX() / 2;
+		xMin = xMid - halfLengthX;
+		xMax = xMid + halfLengthX;
+		double yMid = newCenter.getY();
+		double halfLengthY = getLengthY() / 2;
+		yMin = yMid - halfLengthY;
+		yMax = yMid + halfLengthY;
+		double zMid = newCenter.getZ();
+		double halfLengthZ = getLengthZ() / 2;
+		zMin = zMid - halfLengthZ;
+		zMax = zMid + halfLengthZ;
+	}
+
+	/**
+	 * Translates this collider. Translating this collider so that it overlaps with
+	 * another colliders will result in {@link Collider#onCollisionEnter} being
+	 * called for each collider. Conversely, translating this collider so that it
+	 * does not overlap with any colliders that it previously overlapped with will
+	 * result in {@link Collider#onCollisionExit} being called for each collider.
+	 */
+	public void translate(double x, double y, double z) {
+		xMin += x;
+		xMax += x;
+		yMin += y;
+		yMax += y;
+		zMin += z;
+		zMax += z;
+		updateOccupiedBuckets();
+		if (active) {
+			checkForCollision();
+		}
+	}
+
 	/**
 	 * Returns the length of this collider on the x-axis.
 	 */
@@ -338,50 +364,81 @@ public abstract class Collider {
 	}
 
 	/**
-	 * Returns the dimensions of this collider.
-	 */
-	public Vector getDimensions() {
-		double lengthX = getLengthX();
-		double lengthY = getLengthY();
-		double lengthZ = getLengthZ();
-		return new Vector(lengthX, lengthY, lengthZ);
-	}
-
-	/**
 	 * Sets the dimensions of the collider.
 	 * 
 	 * @param dimensions the new dimensions of this collider
 	 */
-	public void setDimensions(Vector dimensions) {
-		updateBounds(dimensions);
+	public void setDimensions(double lengthX, double lengthY, double lengthZ) {
+		updateBounds(lengthX, lengthY, lengthZ);
 		updateOccupiedBuckets();
 		if (active) {
 			checkForCollision();
 		}
 	}
 
+	public BoundingBox toBoundingBox() {
+		return new BoundingBox(xMin, yMin, zMin, xMax, yMax, zMax);
+	}
+
+	private void updateBounds(double newLengthX, double newLengthY, double newLengthZ) {
+		double xMid = (xMin + xMax) / 2;
+		double halfLengthX = newLengthX / 2;
+		xMin = xMid - halfLengthX;
+		xMax = xMid + halfLengthX;
+		double yMid = (yMin + yMax) / 2;
+		double halfLengthY = newLengthY / 2;
+		yMin = yMid - halfLengthY;
+		yMax = yMid + halfLengthY;
+		double zMid = (zMin + zMax) / 2;
+		double halfLengthZ = newLengthZ / 2;
+		zMin = zMid - halfLengthZ;
+		zMax = zMid + halfLengthZ;
+	}
+
 	/**
-	 * Translates this collider. Translating this collider so that it overlaps with
-	 * another collideres will result in {@link Collider#onCollisionEnter} being
-	 * called for each collider. Conversely, translating this collider so that it
-	 * does not overlap with any collideres that it previously overlapped with will
-	 * result in {@link Collider#onCollisionExit} being called for each collider.
-	 * 
-	 * @param translate vector by which to translate this collider
+	 * Determines what collider buckets this collider should exist in to ensure
+	 * efficient and accurate collision detection. Bounds must be current to update
+	 * properly.
 	 */
-	public void translate(Vector translate) {
-		double x = translate.getX();
-		double y = translate.getY();
-		double z = translate.getZ();
-		xMin += x;
-		xMax += x;
-		yMin += y;
-		yMax += y;
-		zMin += z;
-		zMax += z;
-		updateOccupiedBuckets();
-		if (active) {
-			checkForCollision();
+	private void updateOccupiedBuckets() {
+		List<ColliderBucket> occupiedBucketsOld = new ArrayList<ColliderBucket>(occupiedBuckets);
+		occupiedBuckets.clear();
+		int bucketSize = ColliderBucket.BUCKET_SIZE;
+
+		int bucketXMin = (int) (xMin / bucketSize);
+		int bucketYMin = (int) (yMin / bucketSize);
+		int bucketZMin = (int) (zMin / bucketSize);
+
+		int bucketXMax = (int) (xMax / bucketSize);
+		int bucketYMax = (int) (yMax / bucketSize);
+		int bucketZMax = (int) (zMax / bucketSize);
+
+		for (int xCount = bucketXMin; xCount <= bucketXMax; xCount++) {
+			for (int yCount = bucketYMin; yCount <= bucketYMax; yCount++) {
+				for (int zCount = bucketZMin; zCount <= bucketZMax; zCount++) {
+					Location bucketAddress = new Location(world, xCount, yCount, zCount);
+					ColliderBucket bucket = ColliderBucket.bucketForAddress(bucketAddress);
+					if (bucket == null) {
+						bucket = ColliderBucket.createNewBucket(bucketAddress);
+					}
+					boolean alreadyEncompassed = bucket.getEncompassedColliders().contains(this);
+					if (!alreadyEncompassed) {
+						bucket.encompassCollider(this);
+					}
+					occupiedBuckets.add(bucket);
+				}
+			}
+		}
+
+		for (int i = 0; i < occupiedBucketsOld.size(); i++) {
+			ColliderBucket bucket = occupiedBucketsOld.get(i);
+			if (!occupiedBuckets.contains(bucket)) {
+				bucket.removeCollider(this);
+				if (bucket.getEncompassedColliders().isEmpty()) {
+					Location address = bucket.getAddress();
+					ColliderBucket.deleteBucket(address);
+				}
+			}
 		}
 	}
 
@@ -398,9 +455,99 @@ public abstract class Collider {
 		double y = point.getY();
 		double z = point.getZ();
 		return world.equals(this.world) && MathUtils.isBetween(x, xMin, true, xMax, true)
-				&& MathUtils.isBetween(y, yMin, true, yMax, true)
-				&& MathUtils.isBetween(z, zMin, true, zMax, true);
+				&& MathUtils.isBetween(y, yMin, true, yMax, true) && MathUtils.isBetween(z, zMin, true, zMax, true);
 	}
+
+	/**
+	 * Detects the presence and absence of collisions between this collider and
+	 * other colliders and responds appropriately.
+	 */
+	private void checkForCollision() {
+		for (int i = 0; i < occupiedBuckets.size(); i++) {
+			ColliderBucket bucket = occupiedBuckets.get(i);
+			List<Collider> neighboringColliders = bucket.getEncompassedColliders();
+			for (int j = 0; j < neighboringColliders.size(); j++) {
+				Collider neighboringCollider = neighboringColliders.get(j);
+				if (neighboringCollider != this && neighboringCollider.isActive() == true) {
+					boolean collides = isCollidingWith(neighboringCollider);
+					if (collidingColliders.contains(neighboringCollider)) {
+						if (!collides) {
+							handleCollisionExit(neighboringCollider);
+						}
+					} else {
+						if (collides) {
+							handleCollisionEnter(neighboringCollider);
+						}
+					}
+				}
+			}
+		}
+		outerloop: for (int i = 0; i < collidingColliders.size(); i++) {
+			Collider collidingCollider = collidingColliders.get(i);
+			for (int j = 0; j < occupiedBuckets.size(); j++) {
+				ColliderBucket bucket = occupiedBuckets.get(j);
+				if (bucket.getEncompassedColliders().contains(collidingCollider)) {
+					continue outerloop;
+				}
+			}
+			handleCollisionExit(collidingCollider);
+		}
+	}
+
+	/**
+	 * Responds to this collider and another collider colliding with each other.
+	 * Called when two colliders that were colliding no longer overlap each other.
+	 * {@code onCollisionEnter} is called from each of the bounding boxes.
+	 * 
+	 * @param other the other collider in the collision
+	 */
+	private void handleCollisionEnter(Collider other) {
+		this.collidingColliders.add(other);
+		other.collidingColliders.add(this);
+		this.onCollisionEnter(other);
+		other.onCollisionEnter(this);
+	}
+
+	/**
+	 * Responds to this collider and another collider retracting from a collision.
+	 * Called when two colliders that were colliding no longer overlap each other.
+	 * {@code onCollisionExit} is called from each of the colliders.
+	 * 
+	 * @param other the other collider in the collision
+	 */
+	private void handleCollisionExit(Collider other) {
+		collidingColliders.remove(other);
+		other.collidingColliders.remove(this);
+		this.onCollisionExit(other);
+		other.onCollisionExit(this);
+	}
+
+	/**
+	 * Returns whether this {@code Collider} is colliding with the specified
+	 * {@code Collider}.
+	 * 
+	 * @param other the other {@code Collider}
+	 * @return whether the two {@code Collider}s are colliding
+	 */
+	public boolean isCollidingWith(Collider other) {
+		return (this.getXMin() <= other.getXMax() && this.getXMax() >= other.getXMin())
+				&& (this.getYMin() <= other.getYMax() && this.getYMax() >= other.getYMin())
+				&& (this.getZMin() <= other.getZMax() && this.getZMax() >= other.getZMin());
+	}
+
+	/**
+	 * Called when this collider enters a collision with another collider.
+	 * 
+	 * @param other the other collider in the collision
+	 */
+	protected abstract void onCollisionEnter(Collider other);
+
+	/**
+	 * Called when this collider exits a collision with another collider.
+	 * 
+	 * @param other the other collider in the collision
+	 */
+	protected abstract void onCollisionExit(Collider other);
 
 	/**
 	 * Enabling drawing will result in a visual representation of this collider to
@@ -457,7 +604,6 @@ public abstract class Collider {
 	 */
 	private void assignDrawTask() {
 		drawTask = new RepeatingTask(DRAW_PERIOD) {
-
 			@Override
 			protected void run() {
 				switch (drawMode) {
@@ -471,7 +617,6 @@ public abstract class Collider {
 					break;
 				}
 			}
-
 		};
 	}
 
@@ -539,173 +684,5 @@ public abstract class Collider {
 			}
 		}
 	}
-
-	private void updateBounds(Location center) {
-		double xMid = center.getX();
-		double halfLengthX = getLengthX() / 2;
-		xMin = xMid - halfLengthX;
-		xMax = xMid + halfLengthX;
-		double yMid = center.getY();
-		double halfLengthY = getLengthY() / 2;
-		yMin = yMid - halfLengthY;
-		yMax = yMid + halfLengthY;
-		double zMid = center.getZ();
-		double halfLengthZ = getLengthZ() / 2;
-		zMin = zMid - halfLengthZ;
-		zMax = zMid + halfLengthZ;
-	}
-
-	private void updateBounds(Vector dimensions) {
-		double xMid = (xMin + xMax) / 2;
-		double halfLengthX = dimensions.getX() / 2;
-		xMin = xMid - halfLengthX;
-		xMax = xMid + halfLengthX;
-		double yMid = (yMin + yMax) / 2;
-		double halfLengthY = dimensions.getY() / 2;
-		yMin = yMid - halfLengthY;
-		yMax = yMid + halfLengthY;
-		double zMid = (zMin + zMax) / 2;
-		double halfLengthZ = dimensions.getZ() / 2;
-		zMin = zMid - halfLengthZ;
-		zMax = zMid + halfLengthZ;
-	}
-
-	/**
-	 * Determines what collider buckets this collider should exist in to ensure
-	 * efficient and accurate collision detection. Bounds must be current to update
-	 * properly.
-	 */
-	private void updateOccupiedBuckets() {
-		List<ColliderBucket> occupiedBucketsOld = new ArrayList<ColliderBucket>(occupiedBuckets);
-		occupiedBuckets.clear();
-		int bucketSize = ColliderBucket.BUCKET_SIZE;
-
-		int bucketXMin = (int) (xMin / bucketSize);
-		int bucketYMin = (int) (yMin / bucketSize);
-		int bucketZMin = (int) (zMin / bucketSize);
-
-		int bucketXMax = (int) (xMax / bucketSize);
-		int bucketYMax = (int) (yMax / bucketSize);
-		int bucketZMax = (int) (zMax / bucketSize);
-
-		for (int xCount = bucketXMin; xCount <= bucketXMax; xCount++) {
-			for (int yCount = bucketYMin; yCount <= bucketYMax; yCount++) {
-				for (int zCount = bucketZMin; zCount <= bucketZMax; zCount++) {
-					Location bucketAddress = new Location(world, xCount, yCount, zCount);
-					ColliderBucket bucket = ColliderBucket.bucketByAddress(bucketAddress);
-					if (bucket == null) {
-						bucket = ColliderBucket.createNewBucket(bucketAddress);
-					}
-					boolean alreadyEncompassed = bucket.getEncompassedColliders().contains(this);
-					if (!alreadyEncompassed) {
-						bucket.encompassCollider(this);
-					}
-					occupiedBuckets.add(bucket);
-				}
-			}
-		}
-
-		for (int i = 0; i < occupiedBucketsOld.size(); i++) {
-			ColliderBucket bucket = occupiedBucketsOld.get(i);
-			if (!occupiedBuckets.contains(bucket)) {
-				bucket.removeCollider(this);
-				if (bucket.getEncompassedColliders().isEmpty()) {
-					Location address = bucket.getAddress();
-					ColliderBucket.deleteBucket(address);
-				}
-			}
-		}
-	}
-
-	/**
-	 * Detects the presence and absence of collisions between this collider and
-	 * other colliders and responds appropriately.
-	 */
-	private void checkForCollision() {
-		for (int i = 0; i < occupiedBuckets.size(); i++) {
-			ColliderBucket bucket = occupiedBuckets.get(i);
-			List<Collider> neighboringColliders = bucket.getEncompassedColliders();
-			for (int j = 0; j < neighboringColliders.size(); j++) {
-				Collider neighboringCollider = neighboringColliders.get(j);
-				if (neighboringCollider != this && neighboringCollider.isActive() == true) {
-					boolean collides = isCollidingWith(neighboringCollider);
-					if (collidingColliders.contains(neighboringCollider)) {
-						if (!collides) {
-							handleCollisionExit(neighboringCollider);
-						}
-					} else {
-						if (collides) {
-							handleCollisionEnter(neighboringCollider);
-						}
-					}
-				}
-			}
-		}
-		outerloop: for (int i = 0; i < collidingColliders.size(); i++) {
-			Collider collidingCollider = collidingColliders.get(i);
-			for (int j = 0; j < occupiedBuckets.size(); j++) {
-				ColliderBucket bucket = occupiedBuckets.get(j);
-				if (bucket.getEncompassedColliders().contains(collidingCollider)) {
-					continue outerloop;
-				}
-			}
-			handleCollisionExit(collidingCollider);
-		}
-	}
-
-	/**
-	 * Responds to this collider and another collider colliding with each other.
-	 * Called when two collideres that were colliding no longer overlap each other.
-	 * {@code onCollisionEnter} is called from each of the bounding boxes.
-	 * 
-	 * @param other the other collider in the collision
-	 */
-	private void handleCollisionEnter(Collider other) {
-		this.collidingColliders.add(other);
-		other.collidingColliders.add(this);
-		this.onCollisionEnter(other);
-		other.onCollisionEnter(this);
-	}
-
-	/**
-	 * Responds to this collider and another collider retracting from a collision.
-	 * Called when two collideres that were colliding no longer overlap each other.
-	 * {@code onCollisionExit} is called from each of the collideres.
-	 * 
-	 * @param other the other collider in the collision
-	 */
-	private void handleCollisionExit(Collider other) {
-		collidingColliders.remove(other);
-		other.collidingColliders.remove(this);
-		this.onCollisionExit(other);
-		other.onCollisionExit(this);
-	}
-
-	/**
-	 * Returns whether this {@code Collider} is colliding with the specified
-	 * {@code Collider}.
-	 * 
-	 * @param other the other {@code Collider}
-	 * @return whether the two {@code Collider}s are colliding
-	 */
-	public boolean isCollidingWith(Collider other) {
-		return (this.getXMin() <= other.getXMax() && this.getXMax() >= other.getXMin())
-				&& (this.getYMin() <= other.getYMax() && this.getYMax() >= other.getYMin())
-				&& (this.getZMin() <= other.getZMax() && this.getZMax() >= other.getZMin());
-	}
-
-	/**
-	 * Called when this collider enters a collision with another collider.
-	 * 
-	 * @param other the other collider in the collision
-	 */
-	protected abstract void onCollisionEnter(Collider other);
-
-	/**
-	 * Called when this collider exits a collision with another collider.
-	 * 
-	 * @param other the other collider in the collision
-	 */
-	protected abstract void onCollisionExit(Collider other);
 
 }

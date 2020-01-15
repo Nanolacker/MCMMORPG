@@ -11,7 +11,7 @@ import org.bukkit.inventory.ItemStack;
 import com.mcmmorpg.common.character.PlayerCharacter;
 import com.mcmmorpg.common.event.EventManager;
 import com.mcmmorpg.common.event.SkillUseEvent;
-import com.mcmmorpg.common.item.ItemStackFactory;
+import com.mcmmorpg.common.item.ItemFactory;
 import com.mcmmorpg.common.time.RepeatingTask;
 
 public final class Skill implements Listener {
@@ -48,7 +48,7 @@ public final class Skill implements Listener {
 	}
 
 	private ItemStack createItemStack() {
-		ItemStack item = ItemStackFactory.create(name, "level " + minimumLevel + "\n" + description, icon);
+		ItemStack item = ItemFactory.createItemStack(name, "level " + minimumLevel + "\n" + description, icon);
 		return item;
 	}
 
@@ -115,7 +115,7 @@ public final class Skill implements Listener {
 		PlayerSkillManager manager = pc.getSkillManager();
 		PlayerSkillData data = manager.getSkillData(this);
 		int level = data == null ? 0 : data.getUpgradeLevel();
-		ItemStack itemStack = ItemStackFactory.create(name + " level " + level, description, icon);
+		ItemStack itemStack = ItemFactory.createItemStack(name + " level " + level, description, icon);
 		return itemStack;
 	}
 
@@ -193,7 +193,7 @@ public final class Skill implements Listener {
 		for (int i = 0; i < 9; i++) {
 			ItemStack itemStack = inventory.getItem(i);
 			if (itemStack.equals(this.hotbarItemStack)) {
-				itemStack.setAmount((int) cooldownSeconds);
+				itemStack.setAmount((int) Math.ceil(cooldownSeconds));
 				return;
 			}
 		}

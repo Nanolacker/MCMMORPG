@@ -16,7 +16,7 @@ import org.bukkit.inventory.ItemStack;
 
 import com.mcmmorpg.common.character.PlayerCharacter;
 import com.mcmmorpg.common.event.QuestCompletionEvent;
-import com.mcmmorpg.common.item.ItemStackFactory;
+import com.mcmmorpg.common.item.ItemFactory;
 import com.mcmmorpg.common.persistence.PlayerCharacterSaveData;
 import com.mcmmorpg.common.playerClass.PlayerClass;
 import com.mcmmorpg.common.playerClass.SkillTree;
@@ -40,7 +40,7 @@ public class PCListener implements Listener {
 		World world = Bukkit.getWorld("world");
 		startingLocation = new Location(world, 141, 70, 66);
 
-		menuItem = ItemStackFactory.create0("Menu", null, Material.EMERALD);
+		menuItem = ItemFactory.createItemStack0("Menu", null, Material.EMERALD);
 	}
 
 	@EventHandler
