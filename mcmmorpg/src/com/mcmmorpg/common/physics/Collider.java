@@ -417,7 +417,7 @@ public abstract class Collider {
 			for (int yCount = bucketYMin; yCount <= bucketYMax; yCount++) {
 				for (int zCount = bucketZMin; zCount <= bucketZMax; zCount++) {
 					Location bucketAddress = new Location(world, xCount, yCount, zCount);
-					ColliderBucket bucket = ColliderBucket.bucketForAddress(bucketAddress);
+					ColliderBucket bucket = ColliderBucket.forAddress(bucketAddress);
 					if (bucket == null) {
 						bucket = ColliderBucket.createNewBucket(bucketAddress);
 					}

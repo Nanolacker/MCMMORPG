@@ -47,7 +47,7 @@ final class ColliderBucket {
 		encompassedColliders = new ArrayList<>();
 	}
 
-	static ColliderBucket bucketForAddress(Location address) {
+	static ColliderBucket forAddress(Location address) {
 		return bucketMap.get(address);
 	}
 

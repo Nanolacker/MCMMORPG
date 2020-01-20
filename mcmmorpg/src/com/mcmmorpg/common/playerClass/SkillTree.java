@@ -78,31 +78,20 @@ public class SkillTree implements Listener {
 				if (skillPoints > 0) {
 					skill.upgrade(pc);
 					pc.setSkillUpgradePoints(pc.getSkillUpgradePoints() - 1);
-					pc.sendMessage("upgraded " + skill.getName());
-					// update skill tree inventory
+					pc.sendMessage("Upgraded " + skill.getName() + "!");
+					// update skill tree inventory by reopening it
 					this.open(pc);
 				} else {
-					pc.sendMessage("No skill points remaining");
+					pc.sendMessage("No skill points remaining!");
 				}
 			}
 		} else {
 			// add to hotbar
 			ItemStack skillItemStack = skill.getHotbarItemStack();
-			int emptySlot = -1;
-			for (int i = 0; i < 9; i++) {
-				Inventory hotbarInventory = pc.getInventory();
-				ItemStack itemStack = hotbarInventory.getItem(i);
-				if (itemStack == null) {
-					if (emptySlot == -1) {
-						emptySlot = i;
-					}
-				} else if (itemStack.equals(skillItemStack)) {
-					pc.sendMessage(skill.getName() + " already added to hotbar");
-					return;
-				}
-			}
-			if (emptySlot != -1) {
-				inventory.setItem(emptySlot, skillItemStack);
+			if (inventory.contains(skillItemStack)) {
+				pc.sendMessage(skill.getName() + " is already in your inventory!");
+			} else {
+				inventory.addItem(skillItemStack);
 			}
 		}
 	}
