@@ -30,7 +30,6 @@ class ItemDiscardMenu {
 	public ItemDiscardMenu(PlayerCharacter pc, ItemStack itemStack) {
 		this.pc = pc;
 		this.itemStack = itemStack;
-		menuMap.put(pc, this);
 	}
 
 	void open() {
@@ -40,8 +39,14 @@ class ItemDiscardMenu {
 		inventory.setItem(0, CANCEL_ITEM_STACK);
 		inventory.setItem(8, CONFIRM_ITEM_STACK);
 		pc.getPlayer().openInventory(inventory);
+		menuMap.put(pc, this);
 	}
 
+	void close() {
+		pc.getPlayer().closeInventory();
+		menuMap.remove(pc);
+	}
+	
 	public static ItemDiscardMenu forPC(PlayerCharacter pc) {
 		return menuMap.get(pc);
 	}

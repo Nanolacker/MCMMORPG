@@ -44,66 +44,55 @@ class ItemListener implements Listener {
 		menu.open();
 	}
 
-	private void onDiscardCancelClick(InventoryClickEvent event) {
+	@EventHandler
+	private void onDiscardMenuClick(InventoryClickEvent event) {
 		Player player = (Player) event.getWhoClicked();
 		PlayerCharacter pc = PlayerCharacter.forPlayer(player);
-		ItemDiscardMenu menu = ItemDiscardMenu.forPC(pc);
-		if (menu == null) {
+		if (pc == null) {
 			return;
 		}
-		handleDiscardCancelEvent(menu);
+		ItemStack itemStack = event.getCurrentItem();
+		handleDiscardEvent(pc, itemStack);
+		event.setCancelled(true);
 	}
 
-	private void onDiscardCancelDrag(InventoryDragEvent event) {
+	@EventHandler
+	private void onDiscardMenuDrag(InventoryDragEvent event) {
 		Player player = (Player) event.getWhoClicked();
 		PlayerCharacter pc = PlayerCharacter.forPlayer(player);
-		ItemDiscardMenu menu = ItemDiscardMenu.forPC(pc);
-		if (menu == null) {
+		if (pc == null) {
 			return;
 		}
-		handleDiscardCancelEvent(menu);
+		ItemStack itemStack = event.getOldCursor();
+		handleDiscardEvent(pc, itemStack);
+		event.setCancelled(true);
 	}
 
-	private void onDiscardCloseMenu(InventoryCloseEvent event) {
+	@EventHandler
+	private void onDiscardMenuClose(InventoryCloseEvent event) {
 		Player player = (Player) event.getPlayer();
 		PlayerCharacter pc = PlayerCharacter.forPlayer(player);
+		if (pc == null) {
+			return;
+		}
+		ItemStack itemStack = player.getItemOnCursor();
+		handleDiscardEvent(pc, itemStack);
+	}
+
+	private void handleDiscardEvent(PlayerCharacter pc, ItemStack itemStack) {
 		ItemDiscardMenu menu = ItemDiscardMenu.forPC(pc);
 		if (menu == null) {
 			return;
 		}
-		handleDiscardCancelEvent(menu);
-	}
-
-	private void handleDiscardCancelEvent(ItemDiscardMenu menu) {
-		Player player = menu.pc.getPlayer();
-		player.openInventory(player.getInventory());
-		player.setItemOnCursor(menu.itemStack);
-	}
-
-	private void onDiscardConfirmClick(InventoryClickEvent event) {
-		Player player = (Player) event.getWhoClicked();
-		PlayerCharacter pc = PlayerCharacter.forPlayer(player);
-		ItemDiscardMenu menu = ItemDiscardMenu.forPC(pc);
-		if (menu == null) {
-			return;
+		Player player = pc.getPlayer();
+		if (itemStack.equals(ItemDiscardMenu.CANCEL_ITEM_STACK)) {
+			// allow player to place item somewhere in inventory
+			player.openInventory(player.getInventory());
+			player.setItemOnCursor(menu.itemStack);
+		} else if (itemStack.equals(ItemDiscardMenu.CONFIRM_ITEM_STACK)) {
+			player
+			menu.close();
 		}
-		handleDiscardConfirmEvent(menu);
-	}
-
-	private void onDiscardConfirmDrag(InventoryClickEvent event) {
-		Player player = (Player) event.getWhoClicked();
-		PlayerCharacter pc = PlayerCharacter.forPlayer(player);
-		ItemDiscardMenu menu = ItemDiscardMenu.forPC(pc);
-		if (menu == null) {
-			return;
-		}
-		handleDiscardConfirmEvent(menu);
-	}
-
-	private void handleDiscardConfirmEvent(ItemDiscardMenu menu) {
-		Player player = menu.pc.getPlayer();
-		player.setItemOnCursor(null);
-		player.closeInventory();
 	}
 
 }
