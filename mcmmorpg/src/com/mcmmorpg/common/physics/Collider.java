@@ -143,8 +143,8 @@ public abstract class Collider {
 	 * @throws IllegalArgumentException if any of the lengths are negative
 	 */
 	public Collider(Location center, double lengthX, double lengthY, double lengthZ) {
-		this(center.getWorld(), center.getX() - lengthX / 2, center.getX() + lengthX / 2, center.getY() - lengthY / 2,
-				center.getY() + lengthY / 2, center.getZ() - lengthZ / 2, center.getZ() + lengthZ / 2);
+		this(center.getWorld(), center.getX() - lengthX / 2, center.getY() - lengthX / 2, center.getZ() - lengthZ / 2,
+				center.getX() + lengthX / 2, center.getY() + lengthY / 2, center.getZ() + lengthZ / 2);
 	}
 
 	/**
@@ -588,6 +588,10 @@ public abstract class Collider {
 		if (drawingEnabled) {
 			drawTask.schedule();
 		}
+	}
+
+	public Particle getDrawParticle() {
+		return drawParticle;
 	}
 
 	/**

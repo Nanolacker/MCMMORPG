@@ -194,7 +194,7 @@ public class TextArea {
 	 */
 	public void setText(String text) {
 		this.text = text;
-		formattedText = StringUtils.paragraph(text, charsPerLine);
+		formattedText = StringUtils.lineSplit(text, charsPerLine);
 		if (visible) {
 			removeEntities();
 			spawnEntities();
@@ -207,7 +207,7 @@ public class TextArea {
 
 	public void setCharactersPerLine(int charactersPerLine) {
 		charsPerLine = charactersPerLine;
-		formattedText = StringUtils.paragraph(text, charsPerLine);
+		formattedText = StringUtils.lineSplit(text, charsPerLine);
 		if (visible) {
 			removeEntities();
 			spawnEntities();

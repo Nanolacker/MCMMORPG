@@ -9,16 +9,15 @@ import org.bukkit.ChatColor;
 public class StringUtils {
 
 	/**
-	 * The ideal amount of characters per line to display in the {@code lore} of an
-	 * {@code ItemStack}.
+	 * The ideal amount of characters per line to display in the lore of an item.
 	 */
 	public static final int STANDARD_LINE_LENGTH = 18;
 
 	private StringUtils() {
 	}
 
-	public static List<String> paragraph(String text) {
-		return paragraph(text, STANDARD_LINE_LENGTH);
+	public static List<String> lineSplit(String text) {
+		return lineSplit(text, STANDARD_LINE_LENGTH);
 	}
 
 	public static String repeat(String s, int n) {
@@ -29,7 +28,7 @@ public class StringUtils {
 		return result;
 	}
 
-	public static List<String> paragraph(String text, int lineLength) {
+	public static List<String> lineSplit(String text, int lineLength) {
 		if (text == null) {
 			return null;
 		}

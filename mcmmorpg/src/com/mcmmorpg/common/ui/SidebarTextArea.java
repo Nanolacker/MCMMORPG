@@ -38,7 +38,7 @@ public class SidebarTextArea {
 		Objective objective = scoreboard.registerNewObjective("objective", "dummy", title);
 		objective.setDisplaySlot(DisplaySlot.SIDEBAR);
 
-		List<String> lines = StringUtils.paragraph(text, lineLength);
+		List<String> lines = StringUtils.lineSplit(text, lineLength);
 		for (int i = 0; i < lines.size(); i++) {
 			String line = lines.get(i);
 			Score score = objective.getScore(line);

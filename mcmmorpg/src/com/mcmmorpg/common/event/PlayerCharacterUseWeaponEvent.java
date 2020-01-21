@@ -6,16 +6,16 @@ import org.bukkit.inventory.ItemStack;
 
 import com.mcmmorpg.common.character.PlayerCharacter;
 
-public class ConsumableItemEvent extends Event {
+public class PlayerCharacterUseWeaponEvent extends Event {
 
 	private static final HandlerList handlers = new HandlerList();
-	
-	private final PlayerCharacter consumer;
-	private final ItemStack consumable;
 
-	public ConsumableItemEvent(PlayerCharacter consumer, ItemStack consumable) {
-		this.consumer = consumer;
-		this.consumable = consumable;
+	private final PlayerCharacter pc;
+	private final ItemStack weapon;
+
+	public PlayerCharacterUseWeaponEvent(PlayerCharacter pc, ItemStack weapon) {
+		this.pc = pc;
+		this.weapon = weapon;
 	}
 
 	public static HandlerList getHandlerList() {
@@ -26,13 +26,13 @@ public class ConsumableItemEvent extends Event {
 	public HandlerList getHandlers() {
 		return handlers;
 	}
-	
-	public PlayerCharacter getConsumer() {
-		return consumer;
+
+	public PlayerCharacter getPlayerCharacter() {
+		return pc;
 	}
 
-	public ItemStack getConsumable() {
-		return consumable;
+	public ItemStack getWeapon() {
+		return weapon;
 	}
 
 }

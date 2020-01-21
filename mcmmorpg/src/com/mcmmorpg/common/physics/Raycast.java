@@ -17,33 +17,38 @@ public class Raycast {
 	public Raycast(Location origin, Vector direction, double maxDistance, Class<? extends Collider> target) {
 		List<ColliderBucket> nearbyBuckets = new ArrayList<>();
 		// This could be made more efficient in the future.
-		Location currentBucketAddress = origin.multiply(1 / ColliderBucket.BUCKET_SIZE);
+		double bucketSize = ColliderBucket.BUCKET_SIZE;
+		int currentX = (int) (origin.getX() / bucketSize);
+		int currentY = (int) (origin.getY() / bucketSize);
+		int currentZ = (int) (origin.getZ() / bucketSize);
 		int bucketRadius = (int) Math.ceil(maxDistance / ColliderBucket.BUCKET_SIZE);
-		int bucketMinX = (int) currentBucketAddress.getX() - bucketRadius;
-		int bucketMaxX = (int) currentBucketAddress.getX() + bucketRadius;
-		int bucketMinY = (int) currentBucketAddress.getY() - bucketRadius;
-		int bucketMaxY = (int) currentBucketAddress.getY() + bucketRadius;
-		int bucketMinZ = (int) currentBucketAddress.getZ() - bucketRadius;
-		int bucketMaxZ = (int) currentBucketAddress.getZ() + bucketRadius;
+		int bucketMinX = currentX - bucketRadius;
+		int bucketMaxX = currentX + bucketRadius;
+		int bucketMinY = currentY - bucketRadius;
+		int bucketMaxY = currentY + bucketRadius;
+		int bucketMinZ = currentZ - bucketRadius;
+		int bucketMaxZ = currentZ + bucketRadius;
 		for (int x = bucketMinX; x < bucketMaxX; x++) {
 			for (int y = bucketMinY; y < bucketMaxY; y++) {
 				for (int z = bucketMinZ; z < bucketMaxZ; z++) {
 					Location bucketAddress = new Location(origin.getWorld(), x, y, z);
 					ColliderBucket bucket = ColliderBucket.forAddress(bucketAddress);
-					nearbyBuckets.add(bucket);
+					if (bucket != null) {
+						nearbyBuckets.add(bucket);
+					}
 				}
 			}
 		}
-
+		Debug.log(nearbyBuckets.size() + " buckets");
 		List<Collider> hitsList = new ArrayList<>();
 		for (ColliderBucket bucket : nearbyBuckets) {
 			List<Collider> nearbyColliders = bucket.getEncompassedColliders();
 			for (Collider collider : nearbyColliders) {
 				BoundingBox bb = collider.toBoundingBox();
 				RayTraceResult result = bb.rayTrace(origin.toVector(), direction, maxDistance);
-				Vector hitPosition = result.getHitPosition();
-				Debug.log("hit position: " + hitPosition);
-				if (hitPosition != null) {
+				if (result != null) {
+					Vector hitPosition = result.getHitPosition();
+					Debug.log("hit position: " + hitPosition);
 					hitsList.add(collider);
 				}
 			}

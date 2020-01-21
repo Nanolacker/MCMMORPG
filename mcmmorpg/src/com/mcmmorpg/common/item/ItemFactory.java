@@ -13,8 +13,8 @@ import com.mcmmorpg.common.utils.StringUtils;
 
 public class ItemFactory {
 
-	 static final List<ItemStack> consumableItems = new ArrayList<>();
-	 static final List<ItemStack> weaponItems = new ArrayList<>();
+	static final List<ItemStack> weapons = new ArrayList<>();
+	static final List<ItemStack> consumables = new ArrayList<>();
 
 	static {
 		EventManager.registerEvents(new ItemListener());
@@ -24,7 +24,7 @@ public class ItemFactory {
 	}
 
 	public static ItemStack createItemStack(String name, String lore, Material material) {
-		List<String> loreAsList = StringUtils.paragraph(lore);
+		List<String> loreAsList = StringUtils.lineSplit(lore);
 		return createItemStack0(name, loreAsList, material);
 	}
 
@@ -41,10 +41,12 @@ public class ItemFactory {
 		return itemStack;
 	}
 
-	public ItemStack createConsumable(String name, String description, Material material) {
-		ItemStack itemStack = createItemStack(name, description, material);
-		consumableItems.add(itemStack);
-		return itemStack;
+	public static void registerWeapon(ItemStack itemStack) {
+		weapons.add(itemStack);
+	}
+
+	public static void registerConsumable(ItemStack itemStack) {
+		consumables.add(itemStack);
 	}
 
 }

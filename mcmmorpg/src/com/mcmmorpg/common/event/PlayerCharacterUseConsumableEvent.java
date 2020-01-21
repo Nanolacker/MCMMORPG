@@ -2,19 +2,20 @@ package com.mcmmorpg.common.event;
 
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
+import org.bukkit.inventory.ItemStack;
 
 import com.mcmmorpg.common.character.PlayerCharacter;
 
-public class PlayerCharacterLevelUpEvent extends Event {
+public class PlayerCharacterUseConsumableEvent extends Event {
 
 	private static final HandlerList handlers = new HandlerList();
 
 	private final PlayerCharacter pc;
-	private final int newLevel;
+	private final ItemStack consumable;
 
-	public PlayerCharacterLevelUpEvent(PlayerCharacter pc, int newLevel) {
+	public PlayerCharacterUseConsumableEvent(PlayerCharacter pc, ItemStack consumable) {
 		this.pc = pc;
-		this.newLevel = newLevel;
+		this.consumable = consumable;
 	}
 
 	public static HandlerList getHandlerList() {
@@ -30,8 +31,8 @@ public class PlayerCharacterLevelUpEvent extends Event {
 		return pc;
 	}
 
-	public int getNewLevel() {
-		return newLevel;
+	public ItemStack getConsumable() {
+		return consumable;
 	}
 
 }
