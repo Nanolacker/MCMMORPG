@@ -141,6 +141,10 @@ public class PlayerCharacter extends CommonCharacter {
 		return playerMap.get(player);
 	}
 
+	/**
+	 * Returns true if there is a player within the specified x, y, and z distances
+	 * from the specified location. False otherwise.
+	 */
 	public static boolean playerIsNearby(Location location, double distanceX, double distanceY, double distanceZ) {
 		World world = location.getWorld();
 		Collection<Entity> nearbyEntities = world.getNearbyEntities(location, distanceX, distanceY, distanceZ);
@@ -304,7 +308,7 @@ public class PlayerCharacter extends CommonCharacter {
 	}
 
 	@Override
-	protected void die() {
+	protected void onDeath() {
 		player.teleport(respawnLocation);
 		player.sendTitle(ChatColor.RED + "You died", "respawning...");
 		PotionEffect veilEffect = new PotionEffect(PotionEffectType.BLINDNESS, 80, 1);

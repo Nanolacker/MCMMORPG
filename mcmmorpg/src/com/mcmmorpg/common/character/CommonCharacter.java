@@ -6,7 +6,15 @@ import org.bukkit.ChatColor;
 import org.bukkit.Location;
 
 import com.mcmmorpg.common.ui.TextArea;
+import com.mcmmorpg.common.utils.MathUtils;
 
+/**
+ * Represents an in-game character, which could be a player character or a
+ * non-player character. Each character has, at the minimum, basic attributes
+ * that include a name, level, location, alive flag, current health, max health,
+ * and nameplate. This class should be extended to create custom characters.
+ * Methods in subclasses which override methods in this class must invoke super.
+ */
 public abstract class CommonCharacter {
 
 	private String name;
@@ -33,32 +41,56 @@ public abstract class CommonCharacter {
 		updateNameplateText();
 	}
 
+	/**
+	 * Returns the name of this character as displayed by its nameplate.
+	 */
 	public final String getName() {
 		return name;
 	}
 
+	/**
+	 * Sets the name of this character and updates its nameplate text. Additional
+	 * functionality may be specified in subclasses. Overriding methods must invoke
+	 * super.
+	 */
 	@OverridingMethodsMustInvokeSuper
 	public void setName(String name) {
 		this.name = name;
 		updateNameplateText();
 	}
 
+	/**
+	 * Returns the level of this character, as displayed by its nameplate.
+	 */
 	public final int getLevel() {
 		return level;
 	}
 
+	/**
+	 * Sets the level of this character and updates its nameplate text. Additional
+	 * functionality may be specified in subclasses. Overriding methods must invoke
+	 * super.
+	 */
 	@OverridingMethodsMustInvokeSuper
 	public void setLevel(int level) {
 		this.level = level;
+		updateNameplateText();
 	}
 
 	/**
-	 * Returns a clone for safety.
+	 * Returns a clone of this character's location. Note that, since the location
+	 * is cloned, it cannot be modified externally without the use of setLocation().
 	 */
 	public final Location getLocation() {
 		return location.clone();
 	}
 
+	/**
+	 * Sets the location of this character and updates its nameplate location. The
+	 * location argument is internally cloned so that this characters location
+	 * cannot be modified externally. Additional functionality may be specified in
+	 * subclasses. Overriding methods must invoke super.
+	 */
 	@OverridingMethodsMustInvokeSuper
 	public void setLocation(Location location) {
 		// clone for safety
@@ -67,45 +99,83 @@ public abstract class CommonCharacter {
 		nameplate.setLocation(nameplateLocation);
 	}
 
+	/**
+	 * Returns whether this character is alive.
+	 */
 	public final boolean isAlive() {
 		return alive;
 	}
 
+	/**
+	 * Sets whether this character is alive. If alive == true and this character is
+	 * not alive, this character's current health will be set to its max health. If
+	 * alive == false, this character's current health will be set to 0 and
+	 * onDeath() will be called. Additional functionality may be specified in
+	 * subclasses. Overriding methods must invoke super.
+	 */
 	@OverridingMethodsMustInvokeSuper
 	public void setAlive(boolean alive) {
-		boolean temp = this.alive;
+		boolean wasAlive = this.alive;
 		this.alive = alive;
-		if (temp && !alive) {
-			die();
+		if (wasAlive && !alive) {
+			this.currentHealth = 0.0;
+			onDeath();
+		} else if (!wasAlive && alive) {
+			this.currentHealth = maxHealth;
 		}
 	}
 
+	/**
+	 * Returns the current health of this character.
+	 */
 	public final double getCurrentHealth() {
 		return currentHealth;
 	}
 
+	/**
+	 * Sets the current health of this character. The health is clamped to [0, max
+	 * health]. If the health is 0, this character is considered dead. In such a
+	 * case, onDeath() will be called and isAlive() will return false. This
+	 * character's nameplate will be updated to display the updated health.
+	 * Additional functionality may be specified in subclasses. Overriding methods
+	 * must invoke super.
+	 */
 	@OverridingMethodsMustInvokeSuper
 	public void setCurrentHealth(double currentHealth) {
+		currentHealth = MathUtils.clamp(currentHealth, 0.0, maxHealth);
 		this.currentHealth = currentHealth;
-		if (currentHealth <= 0.0) {
-			this.currentHealth = 0.0;
+		if (currentHealth == 0.0) {
 			setAlive(false);
 		}
 		updateNameplateText();
 	}
 
+	/**
+	 * Returns this character's max health.
+	 */
 	public final double getMaxHealth() {
 		return currentHealth;
 	}
 
+	/**
+	 * Sets this character's max health and updates its nameplate text. Additional
+	 * functionality may be specified in subclasses. Overriding methods must invoke
+	 * super.
+	 */
 	@OverridingMethodsMustInvokeSuper
 	public void setMaxHealth(double maxHealth) {
 		this.maxHealth = maxHealth;
 		updateNameplateText();
 	}
 
+	/**
+	 * Invoked when this character dies, either by calling setAlive(false) or
+	 * setCurrentHealth(0). By default, this will hide this character's nameplate.
+	 * Additional functionality may be specified in subclasses. Overriding methods
+	 * must invoke super.
+	 */
 	@OverridingMethodsMustInvokeSuper
-	protected void die() {
+	protected void onDeath() {
 		setNameplateVisible(false);
 	}
 
@@ -134,10 +204,19 @@ public abstract class CommonCharacter {
 		nameplate.setText(nameplateText);
 	}
 
+	/**
+	 * Sets whether this character's nameplate is visible.
+	 */
 	public final void setNameplateVisible(boolean visible) {
 		nameplate.setVisible(visible);
 	}
 
+	/**
+	 * This is used to ensure this character's nameplate is always positioned
+	 * correctly. Specify in subclasses where this character's nameplate should be
+	 * located at any time. The location should usually be relative to this
+	 * character's location.
+	 */
 	protected abstract Location getNameplateLocation();
 
 }

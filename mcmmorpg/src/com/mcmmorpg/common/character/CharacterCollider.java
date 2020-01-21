@@ -7,7 +7,7 @@ import com.mcmmorpg.common.physics.Collider;
 /**
  * A collider that is associated with a character. Used for hitboxes.
  */
-public abstract class CharacterCollider extends Collider {
+public class CharacterCollider extends Collider {
 
 	private final CommonCharacter character;
 

@@ -15,7 +15,7 @@ import com.mcmmorpg.common.utils.MathUtils;
 /**
  * Represents an axis-aligned box collider.
  */
-public abstract class Collider {
+public class Collider {
 
 	/**
 	 * The particle used to draw colliders.
@@ -150,14 +150,14 @@ public abstract class Collider {
 	/**
 	 * Returns whether this collider will interact with other colliders.
 	 */
-	public boolean isActive() {
+	public final boolean isActive() {
 		return active;
 	}
 
 	/**
 	 * Sets whether this collider will interact with other colliders.
 	 */
-	public void setActive(boolean active) {
+	public final void setActive(boolean active) {
 		this.active = active;
 		if (active) {
 			updateOccupiedBuckets();
@@ -174,7 +174,7 @@ public abstract class Collider {
 	/**
 	 * Returns the world this collider exists in.
 	 */
-	public World getWorld() {
+	public final World getWorld() {
 		return world;
 	}
 
@@ -183,7 +183,7 @@ public abstract class Collider {
 	 * 
 	 * @param world the world this collider will exist in
 	 */
-	public void setWorld(World world) {
+	public final void setWorld(World world) {
 		this.world = world;
 		updateOccupiedBuckets();
 		if (active) {
@@ -194,11 +194,11 @@ public abstract class Collider {
 	/**
 	 * Returns the minimum x value that exists inside this collider.
 	 */
-	public double getXMin() {
+	public final double getXMin() {
 		return xMin;
 	}
 
-	public void setXMin(double xMin) {
+	public final void setXMin(double xMin) {
 		this.xMin = xMin;
 		updateOccupiedBuckets();
 		if (active) {
@@ -209,11 +209,11 @@ public abstract class Collider {
 	/**
 	 * Returns the minimum y value that exists inside this collider.
 	 */
-	public double getYMin() {
+	public final double getYMin() {
 		return yMin;
 	}
 
-	public void setYMin(double yMin) {
+	public final void setYMin(double yMin) {
 		this.yMin = yMin;
 		updateOccupiedBuckets();
 		if (active) {
@@ -224,11 +224,11 @@ public abstract class Collider {
 	/**
 	 * Returns the minimum z value that exists inside this collider.
 	 */
-	public double getZMin() {
+	public final double getZMin() {
 		return zMin;
 	}
 
-	public void setZMin(double zMin) {
+	public final void setZMin(double zMin) {
 		this.zMin = zMin;
 		updateOccupiedBuckets();
 		if (active) {
@@ -239,11 +239,11 @@ public abstract class Collider {
 	/**
 	 * Returns the maximum x value that exists inside this collider.
 	 */
-	public double getXMax() {
+	public final double getXMax() {
 		return xMax;
 	}
 
-	public void setXMax(double xMax) {
+	public final void setXMax(double xMax) {
 		this.xMax = xMax;
 		updateOccupiedBuckets();
 		if (active) {
@@ -254,11 +254,11 @@ public abstract class Collider {
 	/**
 	 * Returns the minimum y value that exists inside this collider.
 	 */
-	public double getYMax() {
+	public final double getYMax() {
 		return yMax;
 	}
 
-	public void setYMax(double yMax) {
+	public final void setYMax(double yMax) {
 		this.yMax = yMax;
 		updateOccupiedBuckets();
 		if (active) {
@@ -269,11 +269,11 @@ public abstract class Collider {
 	/**
 	 * Returns the minimum z value that exists inside this collider.
 	 */
-	public double getZMax() {
+	public final double getZMax() {
 		return zMax;
 	}
 
-	public void setZMax(double zMax) {
+	public final void setZMax(double zMax) {
 		this.zMax = zMax;
 		updateOccupiedBuckets();
 		if (active) {
@@ -285,7 +285,7 @@ public abstract class Collider {
 	 * Returns the location of the point that exists at the center of this bounding
 	 * box.
 	 */
-	public Location getCenter() {
+	public final Location getCenter() {
 		double x = (xMin + xMax) / 2;
 		double y = (yMin + yMax) / 2;
 		double z = (zMin + zMax) / 2;
@@ -298,7 +298,7 @@ public abstract class Collider {
 	 * 
 	 * @param center the new center of this collider
 	 */
-	public void setCenter(Location center) {
+	public final void setCenter(Location center) {
 		world = center.getWorld();
 		updateBounds(center);
 		updateOccupiedBuckets();
@@ -307,7 +307,7 @@ public abstract class Collider {
 		}
 	}
 
-	private void updateBounds(Location newCenter) {
+	private final void updateBounds(Location newCenter) {
 		double xMid = newCenter.getX();
 		double halfLengthX = getLengthX() / 2;
 		xMin = xMid - halfLengthX;
@@ -329,7 +329,7 @@ public abstract class Collider {
 	 * does not overlap with any colliders that it previously overlapped with will
 	 * result in {@link Collider#onCollisionExit} being called for each collider.
 	 */
-	public void translate(double x, double y, double z) {
+	public final void translate(double x, double y, double z) {
 		xMin += x;
 		xMax += x;
 		yMin += y;
@@ -345,21 +345,21 @@ public abstract class Collider {
 	/**
 	 * Returns the length of this collider on the x-axis.
 	 */
-	public double getLengthX() {
+	public final double getLengthX() {
 		return xMax - xMin;
 	}
 
 	/**
 	 * Returns the length of this collider on the y-axis.
 	 */
-	public double getLengthY() {
+	public final double getLengthY() {
 		return yMax - yMin;
 	}
 
 	/**
 	 * Returns the length of this collider on the z-axis.
 	 */
-	public double getLengthZ() {
+	public final double getLengthZ() {
 		return zMax - zMin;
 	}
 
@@ -368,7 +368,7 @@ public abstract class Collider {
 	 * 
 	 * @param dimensions the new dimensions of this collider
 	 */
-	public void setDimensions(double lengthX, double lengthY, double lengthZ) {
+	public final void setDimensions(double lengthX, double lengthY, double lengthZ) {
 		updateBounds(lengthX, lengthY, lengthZ);
 		updateOccupiedBuckets();
 		if (active) {
@@ -376,11 +376,11 @@ public abstract class Collider {
 		}
 	}
 
-	public BoundingBox toBoundingBox() {
+	public final BoundingBox toBoundingBox() {
 		return new BoundingBox(xMin, yMin, zMin, xMax, yMax, zMax);
 	}
 
-	private void updateBounds(double newLengthX, double newLengthY, double newLengthZ) {
+	private final void updateBounds(double newLengthX, double newLengthY, double newLengthZ) {
 		double xMid = (xMin + xMax) / 2;
 		double halfLengthX = newLengthX / 2;
 		xMin = xMid - halfLengthX;
@@ -400,7 +400,7 @@ public abstract class Collider {
 	 * efficient and accurate collision detection. Bounds must be current to update
 	 * properly.
 	 */
-	private void updateOccupiedBuckets() {
+	private final void updateOccupiedBuckets() {
 		List<ColliderBucket> occupiedBucketsOld = new ArrayList<ColliderBucket>(occupiedBuckets);
 		occupiedBuckets.clear();
 		int bucketSize = ColliderBucket.BUCKET_SIZE;
@@ -449,7 +449,7 @@ public abstract class Collider {
 	 * @param point location of the point to be checked
 	 * @return whether this collider encompasses the point
 	 */
-	public boolean encompasses(Location point) {
+	public final boolean encompasses(Location point) {
 		World world = point.getWorld();
 		double x = point.getX();
 		double y = point.getY();
@@ -462,7 +462,7 @@ public abstract class Collider {
 	 * Detects the presence and absence of collisions between this collider and
 	 * other colliders and responds appropriately.
 	 */
-	private void checkForCollision() {
+	private final void checkForCollision() {
 		for (int i = 0; i < occupiedBuckets.size(); i++) {
 			ColliderBucket bucket = occupiedBuckets.get(i);
 			List<Collider> neighboringColliders = bucket.getEncompassedColliders();
@@ -501,7 +501,7 @@ public abstract class Collider {
 	 * 
 	 * @param other the other collider in the collision
 	 */
-	private void handleCollisionEnter(Collider other) {
+	private final void handleCollisionEnter(Collider other) {
 		this.collidingColliders.add(other);
 		other.collidingColliders.add(this);
 		this.onCollisionEnter(other);
@@ -515,7 +515,7 @@ public abstract class Collider {
 	 * 
 	 * @param other the other collider in the collision
 	 */
-	private void handleCollisionExit(Collider other) {
+	private final void handleCollisionExit(Collider other) {
 		collidingColliders.remove(other);
 		other.collidingColliders.remove(this);
 		this.onCollisionExit(other);
@@ -529,7 +529,7 @@ public abstract class Collider {
 	 * @param other the other {@code Collider}
 	 * @return whether the two {@code Collider}s are colliding
 	 */
-	public boolean isCollidingWith(Collider other) {
+	public final boolean isCollidingWith(Collider other) {
 		return (this.getXMin() <= other.getXMax() && this.getXMax() >= other.getXMin())
 				&& (this.getYMin() <= other.getYMax() && this.getYMax() >= other.getYMin())
 				&& (this.getZMin() <= other.getZMax() && this.getZMax() >= other.getZMin());
@@ -540,21 +540,23 @@ public abstract class Collider {
 	 * 
 	 * @param other the other collider in the collision
 	 */
-	protected abstract void onCollisionEnter(Collider other);
+	protected void onCollisionEnter(Collider other) {
+	}
 
 	/**
 	 * Called when this collider exits a collision with another collider.
 	 * 
 	 * @param other the other collider in the collision
 	 */
-	protected abstract void onCollisionExit(Collider other);
+	protected void onCollisionExit(Collider other) {
+	}
 
 	/**
 	 * Enabling drawing will result in a visual representation of this collider to
 	 * be rendered in game using particles. As creating so many particles is very
 	 * costly, this should only be invoked for debugging purposes.
 	 */
-	public void setDrawingEnabled(boolean enabled) {
+	public final void setDrawingEnabled(boolean enabled) {
 		boolean redundant = this.drawingEnabled == enabled;
 		if (redundant) {
 			return;
@@ -579,7 +581,7 @@ public abstract class Collider {
 	 * 
 	 * @param mode the mode with which this collider will be drawn
 	 */
-	public void setDrawMode(ColliderDrawMode mode) {
+	public final void setDrawMode(ColliderDrawMode mode) {
 		drawMode = mode;
 		if (drawingEnabled) {
 			drawTask.cancel();
@@ -590,7 +592,7 @@ public abstract class Collider {
 		}
 	}
 
-	public Particle getDrawParticle() {
+	public final Particle getDrawParticle() {
 		return drawParticle;
 	}
 
@@ -599,14 +601,14 @@ public abstract class Collider {
 	 * 
 	 * @param particle the particle to be used in drawing this collider
 	 */
-	public void setDrawParticle(Particle particle) {
+	public final void setDrawParticle(Particle particle) {
 		drawParticle = particle;
 	}
 
 	/**
 	 * Assigns {@code drawTask}, the task used to draw this collider.
 	 */
-	private void assignDrawTask() {
+	private final void assignDrawTask() {
 		drawTask = new RepeatingTask(DRAW_PERIOD) {
 			@Override
 			protected void run() {
@@ -627,7 +629,7 @@ public abstract class Collider {
 	/**
 	 * Draws this collider in a wireframe pattern.
 	 */
-	private void drawWireframe() {
+	private final void drawWireframe() {
 		// distance between particles used to draw
 		double spaceDistance = 1 / DRAW_THICKNESS;
 		World world = getWorld();
@@ -676,7 +678,7 @@ public abstract class Collider {
 	 * Draws this collider in a fill pattern (i.e. the drawing is completely filled
 	 * with particles).
 	 */
-	private void drawFill() {
+	private final void drawFill() {
 		// distance between particles used to draw
 		double spaceDistance = 1 / DRAW_THICKNESS;
 		for (double xCount = xMin; xCount <= xMax; xCount += spaceDistance) {
