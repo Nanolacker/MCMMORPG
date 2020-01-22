@@ -3,12 +3,18 @@ package com.mcmmorpg.common;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.bukkit.ChatColor;
 import org.bukkit.World;
+import org.bukkit.entity.Player;
 import org.bukkit.util.BoundingBox;
 
 import com.mcmmorpg.common.character.PlayerCharacter;
 import com.mcmmorpg.common.character.PlayerCharacter.PlayerCharacterCollider;
+import com.mcmmorpg.common.event.EventManager;
+import com.mcmmorpg.common.event.PlayerCharacterEnterZoneEvent;
+import com.mcmmorpg.common.event.PlayerCharacterExitZoneEvent;
 import com.mcmmorpg.common.physics.Collider;
+import com.mcmmorpg.common.ui.TitleMessage;
 
 public abstract class Zone {
 
@@ -22,6 +28,39 @@ public abstract class Zone {
 		return zoneMap.get(name);
 	}
 
+	private final String name;
+	private final World world;
+	private final ChatColor displayColor;
+	private final TitleMessage welcomeTitleMessage;
+
+	public Zone(String name, World world, BoundingBox[] zoneBounds, ChatColor displayColor) {
+		this.name = name;
+		this.world = world;
+		this.displayColor = displayColor;
+		this.welcomeTitleMessage = new TitleMessage(name, "");
+		for (BoundingBox bb : zoneBounds) {
+			ZoneBoundCollider collider = new ZoneBoundCollider(this, bb);
+			collider.setActive(true);
+		}
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public World getWorld() {
+		return world;
+	}
+	
+	private void welcome(PlayerCharacter pc) {
+		Player player = pc.getPlayer();
+		welcomeTitleMessage.apply(player);
+	}
+
+	public abstract void onEnter(PlayerCharacter pc);
+
+	public abstract void onExit(PlayerCharacter pc);
+
 	private static class ZoneBoundCollider extends Collider {
 		private final Zone zone;
 
@@ -34,7 +73,10 @@ public abstract class Zone {
 		protected void onCollisionEnter(Collider other) {
 			if (other instanceof PlayerCharacterCollider) {
 				PlayerCharacter pc = ((PlayerCharacterCollider) other).getCharacter();
+				zone.welcome(pc);
 				zone.onEnter(pc);
+				PlayerCharacterEnterZoneEvent event = new PlayerCharacterEnterZoneEvent(pc, zone);
+				EventManager.callEvent(event);
 			}
 		}
 
@@ -43,34 +85,10 @@ public abstract class Zone {
 			if (other instanceof PlayerCharacterCollider) {
 				PlayerCharacter pc = ((PlayerCharacterCollider) other).getCharacter();
 				zone.onExit(pc);
+				PlayerCharacterExitZoneEvent event = new PlayerCharacterExitZoneEvent(pc, zone);
+				EventManager.callEvent(event);
 			}
 		}
 	}
-
-	private final String name;
-	private final World world;
-	private final BoundingBox[] zoneBounds;
-
-	public Zone(String name, World world, BoundingBox[] zoneBounds) {
-		this.name = name;
-		this.world = world;
-		this.zoneBounds = zoneBounds;
-		for (BoundingBox bb : zoneBounds) {
-			ZoneBoundCollider col = new ZoneBoundCollider(this, bb);
-			col.setActive(true);
-		}
-	}
-
-	public String getName() {
-		return name;
-	}
-
-	public World getWorld() {
-		return world;
-	}
-	
-	public abstract void onEnter(PlayerCharacter pc);
-
-	public abstract void onExit(PlayerCharacter pc);
 
 }

@@ -3,7 +3,6 @@ package com.mcmmorpg.common.utils;
 public class MathUtils {
 
 	private MathUtils() {
-		// no instances
 	}
 
 	public static double clamp(double num, double min, double max) {
@@ -29,6 +28,17 @@ public class MathUtils {
 				return n > min && n < max;
 			}
 		}
+	}
+
+	/**
+	 * Converts from seconds to ticks, rounding up to the nearest tick.
+	 */
+	public static int secondsToTicks(double seconds) {
+		return (int) Math.floor(seconds / 20);
+	}
+
+	public static double ticksToSeconds(int ticks) {
+		return ticks * 20.0;
 	}
 
 }
