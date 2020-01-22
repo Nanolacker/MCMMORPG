@@ -34,7 +34,7 @@ public class Debug {
 
 	private static void log0(Object message, StackTraceElement source) {
 		Server server = Bukkit.getServer();
-		String formattedMessage = ChatColor.BLUE + "[DEBUG]: " + ChatColor.RESET + message + ChatColor.RESET + "\n"
+		String formattedMessage = ChatColor.BLUE + "[DEBUG]: " + ChatColor.RESET + message + "\n" + ChatColor.BLUE
 				+ source.toString();
 		server.broadcastMessage(formattedMessage);
 	}

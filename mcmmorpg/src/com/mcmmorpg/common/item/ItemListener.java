@@ -74,68 +74,6 @@ class ItemListener implements Listener {
 		}
 		Item item = event.getItemDrop();
 		item.remove();
-		ItemStack itemStack = item.getItemStack();
-		// see if their inventory is open or not
-		boolean reopenInventory = player.getOpenInventory().getTitle().equals("Crafting");
-		DiscardItemMenu menu = new DiscardItemMenu(pc, itemStack, reopenInventory);
-		menu.open();
-	}
-
-	@EventHandler
-	private void onClickInDiscardMenu(InventoryClickEvent event) {
-		Player player = (Player) event.getWhoClicked();
-		PlayerCharacter pc = PlayerCharacter.forPlayer(player);
-		if (pc == null) {
-			return;
-		}
-		DiscardItemMenu menu = DiscardItemMenu.forPC(pc);
-		if (menu == null) {
-			return;
-		}
-		event.setCancelled(true);
-		ItemStack itemStack = event.getCurrentItem();
-		if (itemStack == null) {
-			return;
-		}
-		if (itemStack.equals(DiscardItemMenu.CANCEL_ITEM_STACK)) {
-			menu.cancel();
-		} else if (itemStack.equals(DiscardItemMenu.CONFIRM_ITEM_STACK)) {
-			menu.confirm();
-		}
-	}
-
-	@EventHandler
-	private void onDragInDiscardMenu(InventoryDragEvent event) {
-		Player player = (Player) event.getWhoClicked();
-		PlayerCharacter pc = PlayerCharacter.forPlayer(player);
-		if (pc == null) {
-			return;
-		}
-		DiscardItemMenu menu = DiscardItemMenu.forPC(pc);
-		if (menu == null) {
-			return;
-		}
-		event.setCancelled(true);
-		ItemStack itemStack = event.getOldCursor();
-		if (itemStack.equals(DiscardItemMenu.CANCEL_ITEM_STACK)) {
-			menu.cancel();
-		} else if (itemStack.equals(DiscardItemMenu.CONFIRM_ITEM_STACK)) {
-			menu.confirm();
-		}
-	}
-
-	@EventHandler
-	private void onCloseDiscardMenu(InventoryCloseEvent event) {
-		Player player = (Player) event.getPlayer();
-		PlayerCharacter pc = PlayerCharacter.forPlayer(player);
-		if (pc == null) {
-			return;
-		}
-		DiscardItemMenu menu = DiscardItemMenu.forPC(pc);
-		if (menu == null) {
-			return;
-		}
-		menu.cancel();
 	}
 
 }

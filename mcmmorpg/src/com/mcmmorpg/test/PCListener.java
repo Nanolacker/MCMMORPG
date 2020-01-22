@@ -5,7 +5,6 @@ import java.io.File;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.Sound;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -16,20 +15,20 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 
+import com.mcmmorpg.common.character.AbstractCharacter;
+import com.mcmmorpg.common.character.CharacterCollider;
 import com.mcmmorpg.common.character.PlayerCharacter;
 import com.mcmmorpg.common.event.QuestCompletionEvent;
 import com.mcmmorpg.common.item.ItemFactory;
 import com.mcmmorpg.common.persistence.PlayerCharacterSaveData;
 import com.mcmmorpg.common.physics.Collider;
-import com.mcmmorpg.common.physics.Collider.ColliderDrawMode;
 import com.mcmmorpg.common.physics.Raycast;
 import com.mcmmorpg.common.playerClass.PlayerClass;
 import com.mcmmorpg.common.quest.Quest;
 import com.mcmmorpg.common.quest.QuestStatus;
-import com.mcmmorpg.common.sound.Noise;
-import com.mcmmorpg.common.time.DelayedTask;
 import com.mcmmorpg.common.utils.Debug;
 import com.mcmmorpg.common.utils.IOUtils;
+import com.mcmmorpg.impl.npcs.BulskanUndead;
 
 public class PCListener implements Listener {
 
@@ -71,24 +70,10 @@ public class PCListener implements Listener {
 		}
 		pc.setTargetQuest(Quest.forName("Saving the Farm"));
 
-		DelayedTask dt = new DelayedTask(2) {
-			@Override
-			public void run() {
-				Collider collider = new Collider(player.getLocation(), 5, 5, 5) {
-					@Override
-					protected void onCollisionExit(Collider other) {
-					}
-
-					@Override
-					protected void onCollisionEnter(Collider other) {
-					}
-				};
-				collider.setDrawMode(ColliderDrawMode.FILL);
-				collider.setDrawingEnabled(true);
-				collider.setActive(true);
-			}
-		};
-		dt.schedule();
+		BulskanUndead undead = new BulskanUndead(1, pc.getLocation());
+		undead.setAlive(true);
+		Debug.log(undead.getCurrentHealth());
+		Debug.log(undead.getMaxHealth());
 	}
 
 	@EventHandler
@@ -118,8 +103,10 @@ public class PCListener implements Listener {
 		Raycast raycast = new Raycast(loc, lookDir, 10);
 		Collider[] colliders = raycast.getHits();
 		for (Collider collider : colliders) {
-			Noise noise = new Noise(Sound.ENTITY_GHAST_SCREAM);
-			noise.play(player);
+			if (collider instanceof CharacterCollider) {
+				AbstractCharacter character = ((CharacterCollider) collider).getCharacter();
+				character.setCurrentHealth(character.getCurrentHealth() - 1);
+			}
 		}
 
 //		PlayerCharacter pc = PlayerCharacter.forPlayer(player);

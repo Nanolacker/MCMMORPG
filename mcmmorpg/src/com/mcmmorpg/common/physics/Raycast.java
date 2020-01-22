@@ -39,7 +39,6 @@ public class Raycast {
 				}
 			}
 		}
-		Debug.log(nearbyBuckets.size() + " buckets");
 		List<Collider> hitsList = new ArrayList<>();
 		for (ColliderBucket bucket : nearbyBuckets) {
 			List<Collider> nearbyColliders = bucket.getEncompassedColliders();
@@ -48,7 +47,6 @@ public class Raycast {
 				RayTraceResult result = bb.rayTrace(origin.toVector(), direction, maxDistance);
 				if (result != null) {
 					Vector hitPosition = result.getHitPosition();
-					Debug.log("hit position: " + hitPosition);
 					hitsList.add(collider);
 				}
 			}

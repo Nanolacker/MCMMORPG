@@ -10,21 +10,20 @@ import org.bukkit.scoreboard.Score;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.ScoreboardManager;
 
-import com.mcmmorpg.common.utils.Debug;
 import com.mcmmorpg.common.utils.StringUtils;
 
-public class SidebarTextArea {
+public class SidebarText {
 
 	private String title;
 	private String text;
 	private int lineLength;
 	private Scoreboard scoreboard;
 
-	public SidebarTextArea(String title, String text) {
+	public SidebarText(String title, String text) {
 		this(title, text, StringUtils.STANDARD_LINE_LENGTH);
 	}
 
-	public SidebarTextArea(String title, String text, int lineLength) {
+	public SidebarText(String title, String text, int lineLength) {
 		this.title = title;
 		this.text = text;
 		this.lineLength = lineLength;
@@ -51,7 +50,7 @@ public class SidebarTextArea {
 	}
 
 	/**
-	 * No SidebarTextArea will be displayed to this player.
+	 * No sidebar text will be displayed to this player.
 	 */
 	public static void clear(Player player) {
 		ScoreboardManager scoreboardManager = Bukkit.getScoreboardManager();

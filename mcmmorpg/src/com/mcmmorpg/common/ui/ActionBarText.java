@@ -13,19 +13,19 @@ import net.minecraft.server.v1_14_R1.ChatMessageType;
 import net.minecraft.server.v1_14_R1.IChatBaseComponent.ChatSerializer;
 import net.minecraft.server.v1_14_R1.PacketPlayOutChat;
 
-public class ActionBar {
+public class ActionBarText {
 
 	private static final double APPLY_TASK_PERIOD_SECONDS = 2.0;
 
-	private static final Map<Player, ActionBar> actionBarMap = new HashMap<>();
+	private static final Map<Player, ActionBarText> actionBarMap = new HashMap<>();
 
 	static {
 		RepeatingTask applyTask = new RepeatingTask(APPLY_TASK_PERIOD_SECONDS) {
 			@Override
 			public void run() {
 				for (Player player : actionBarMap.keySet()) {
-					ActionBar actionBar = actionBarMap.get(player);
-					actionBar.apply0(player);
+					ActionBarText text = actionBarMap.get(player);
+					text.apply0(player);
 				}
 			}
 		};
@@ -34,7 +34,7 @@ public class ActionBar {
 
 	private PacketPlayOutChat packet;
 
-	public ActionBar(String text) {
+	public ActionBarText(String text) {
 		packet = new PacketPlayOutChat(ChatSerializer.a("{\"text\":\"" + text + "\"}"), ChatMessageType.a((byte) 2));
 	}
 

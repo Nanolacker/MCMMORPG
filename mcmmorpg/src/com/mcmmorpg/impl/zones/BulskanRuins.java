@@ -17,14 +17,14 @@ import com.mcmmorpg.impl.npcs.BulskanUndead;
 public class BulskanRuins extends Zone implements Listener {
 
 	public BulskanRuins() {
-		super("Bulskan Ruins", Worlds.ELADRADOR, new BoundingBox[0]);
+		super("Bulskan Ruins", Worlds.ELADRADOR, new BoundingBox[0], ChatColor.GRAY);
 		EventManager.registerEvents(this);
 		createNPCs();
 	}
 
 	private void createNPCs() {
 		BulskanUndead enemy1 = new BulskanUndead(1, new Location(Worlds.ELADRADOR, 0, 0, 0));
-		enemy1.setSpawning(true);
+		enemy1.setAlive(true);
 	}
 
 	@Override

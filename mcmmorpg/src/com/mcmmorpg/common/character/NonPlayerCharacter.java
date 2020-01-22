@@ -1,6 +1,5 @@
 package com.mcmmorpg.common.character;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -15,7 +14,7 @@ import com.mcmmorpg.common.time.RepeatingTask;
  * Represents an NPC. Methods can be overridden in subclasses and should invoke
  * super.
  */
-public abstract class NonPlayerCharacter extends CommonCharacter {
+public abstract class NonPlayerCharacter extends AbstractCharacter {
 
 	private static final double SPAWN_PERIOD_SECONDS = 0.1;
 
@@ -23,11 +22,11 @@ public abstract class NonPlayerCharacter extends CommonCharacter {
 
 	private boolean spawned;
 
-	public static void startSpawnTask() {
+	public static void startNPCSpawner() {
 		if (MMORPGPlugin.isInitialized()) {
 			throw new IllegalStateException("Plugin must be uninitialized");
 		}
-		RepeatingTask spawnTask = new RepeatingTask(SPAWN_PERIOD_SECONDS) {
+		RepeatingTask npcSpawner = new RepeatingTask(SPAWN_PERIOD_SECONDS) {
 			@Override
 			public void run() {
 				for (NonPlayerCharacter npc : aliveNpcs) {
@@ -48,7 +47,7 @@ public abstract class NonPlayerCharacter extends CommonCharacter {
 				}
 			}
 		};
-		spawnTask.schedule();
+		npcSpawner.schedule();
 	}
 
 	/**
@@ -86,7 +85,9 @@ public abstract class NonPlayerCharacter extends CommonCharacter {
 	}
 
 	/**
-	 * Override in subclasses to provide additional functionality.
+	 * Called when the NPC spawner deems it appropriate to despawn this NPC.
+	 * Additional functionality may be specified in subclasses. Overriding methods
+	 * must invoke super.
 	 */
 	@OverridingMethodsMustInvokeSuper
 	protected void despawn() {
@@ -96,20 +97,14 @@ public abstract class NonPlayerCharacter extends CommonCharacter {
 
 	@OverridingMethodsMustInvokeSuper
 	@Override
-	public void setAlive(boolean alive) {
-		super.setAlive(alive);
-		if (alive) {
-			// set only allows one instance so this is fine
-			aliveNpcs.add(this);
-		} else {
-			aliveNpcs.remove(this);
-		}
+	protected void onLive() {
+		aliveNpcs.add(this);
 	}
 
 	@OverridingMethodsMustInvokeSuper
 	@Override
 	protected void onDeath() {
-		super.onDeath();
+		aliveNpcs.remove(this);
 		despawn();
 	}
 

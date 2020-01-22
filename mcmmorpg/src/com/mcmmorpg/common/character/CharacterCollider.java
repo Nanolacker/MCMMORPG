@@ -9,15 +9,15 @@ import com.mcmmorpg.common.physics.Collider;
  */
 public class CharacterCollider extends Collider {
 
-	private final CommonCharacter character;
+	private final AbstractCharacter character;
 
-	public CharacterCollider(CommonCharacter character, Location center, double lengthX, double lengthY,
+	public CharacterCollider(AbstractCharacter character, Location center, double lengthX, double lengthY,
 			double lengthZ) {
 		super(center, lengthX, lengthY, lengthZ);
 		this.character = character;
 	}
 
-	public CommonCharacter getCharacter() {
+	public AbstractCharacter getCharacter() {
 		return character;
 	}
 

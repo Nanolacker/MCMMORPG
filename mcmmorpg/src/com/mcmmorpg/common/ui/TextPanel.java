@@ -15,7 +15,7 @@ import net.minecraft.server.v1_14_R1.EntityArmorStand;
 import net.minecraft.server.v1_14_R1.Vec3D;
 import net.minecraft.server.v1_14_R1.World;
 
-public class TextArea {
+public class TextPanel {
 
 	/**
 	 * The maximum distance from a {@code Player} that a {@code TextPanel} can be
@@ -43,7 +43,7 @@ public class TextArea {
 	 * Stores all {@code TextPanels} that are instantiated so that the entities
 	 * associated with them can be removed when the server is stopped.
 	 */
-	private static List<TextArea> activeTextAreas = new ArrayList<>();
+	private static List<TextPanel> activeTextPanels = new ArrayList<>();
 
 	/**
 	 * Whether this {@code TextPanel} is visible and rendering text.
@@ -87,7 +87,7 @@ public class TextArea {
 	 * @param text     the text rendered by this {@code TextPanel}
 	 * @param location this {@code TextPanel}'s {@code Location}
 	 */
-	public TextArea(Location location, String text) {
+	public TextPanel(Location location, String text) {
 		visible = false;
 		this.charsPerLine = StringUtils.STANDARD_LINE_LENGTH;
 		setText(text);
@@ -104,7 +104,7 @@ public class TextArea {
 	 * 
 	 * @param location this {@code TextPanel}'s {@code Location}
 	 */
-	public TextArea(Location location) {
+	public TextPanel(Location location) {
 		this(location, "");
 	}
 
@@ -115,9 +115,9 @@ public class TextArea {
 	 * <b>Only to be invoked once during runtime, when the server is stopping.</b>
 	 */
 	public static void removeAllEntities() {
-		for (int i = 0; i < activeTextAreas.size(); i++) {
-			TextArea textarea = activeTextAreas.get(i);
-			textarea.setVisible(false);
+		for (int i = 0; i < activeTextPanels.size(); i++) {
+			TextPanel textPanel = activeTextPanels.get(i);
+			textPanel.setVisible(false);
 		}
 	}
 
@@ -173,10 +173,10 @@ public class TextArea {
 		}
 		this.visible = visible;
 		if (visible) {
-			activeTextAreas.add(this);
+			activeTextPanels.add(this);
 			entitySpawnManageTask.schedule();
 		} else {
-			activeTextAreas.remove(this);
+			activeTextPanels.remove(this);
 			removeEntities();
 			entitySpawnManageTask.cancel();
 		}

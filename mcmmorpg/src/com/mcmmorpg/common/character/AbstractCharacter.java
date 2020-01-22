@@ -5,7 +5,9 @@ import javax.annotation.OverridingMethodsMustInvokeSuper;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 
-import com.mcmmorpg.common.ui.TextArea;
+import com.mcmmorpg.common.event.CharacterDeathEvent;
+import com.mcmmorpg.common.event.EventManager;
+import com.mcmmorpg.common.ui.TextPanel;
 import com.mcmmorpg.common.utils.MathUtils;
 
 /**
@@ -15,7 +17,7 @@ import com.mcmmorpg.common.utils.MathUtils;
  * and nameplate. This class should be extended to create custom characters.
  * Methods in subclasses which override methods in this class must invoke super.
  */
-public abstract class CommonCharacter {
+public abstract class AbstractCharacter {
 
 	private String name;
 	private int level;
@@ -23,20 +25,21 @@ public abstract class CommonCharacter {
 	private boolean alive;
 	private double currentHealth;
 	private double maxHealth;
-	private TextArea nameplate;
+	private final TextPanel nameplate;
 
 	/**
-	 * Constructs a character initialized with max health.
+	 * Constructs a character initialized with max health. By default, the character
+	 * will not be alive.
 	 */
-	protected CommonCharacter(String name, int level, Location location, double maxHealth) {
+	protected AbstractCharacter(String name, int level, Location location, double maxHealth) {
 		this.name = name;
 		this.level = level;
 		this.location = location;
-		alive = true;
-		currentHealth = maxHealth;
+		alive = false;
+		currentHealth = 0;
 		this.maxHealth = maxHealth;
 		Location nameplateLocation = getNameplateLocation();
-		nameplate = new TextArea(nameplateLocation);
+		nameplate = new TextPanel(nameplateLocation);
 		nameplate.setCharactersPerLine(25);
 		updateNameplateText();
 	}
@@ -107,14 +110,14 @@ public abstract class CommonCharacter {
 	}
 
 	/**
-	 * Sets whether this character is alive. If alive == true and this character is
-	 * not alive, this character's current health will be set to its max health. If
-	 * alive == false, this character's current health will be set to 0 and
-	 * onDeath() will be called. Additional functionality may be specified in
-	 * subclasses. Overriding methods must invoke super.
+	 * Sets whether this character is alive. This must be called after instantiating
+	 * this character to animate it. If alive == true and this character is not
+	 * alive, this character's current health will be set to its max health and
+	 * onLive() will be called. If alive == false and this character is alive, this
+	 * character's current health will be set to 0 and onDeath() will be called.
+	 * Otherwise, nothing happens.
 	 */
-	@OverridingMethodsMustInvokeSuper
-	public void setAlive(boolean alive) {
+	public final void setAlive(boolean alive) {
 		boolean wasAlive = this.alive;
 		this.alive = alive;
 		if (wasAlive && !alive) {
@@ -122,7 +125,9 @@ public abstract class CommonCharacter {
 			onDeath();
 		} else if (!wasAlive && alive) {
 			this.currentHealth = maxHealth;
+			onLive();
 		}
+		updateNameplateText();
 	}
 
 	/**
@@ -135,8 +140,8 @@ public abstract class CommonCharacter {
 	/**
 	 * Sets the current health of this character. The health is clamped to [0, max
 	 * health]. If the health is 0, this character is considered dead. In such a
-	 * case, onDeath() will be called and isAlive() will return false. This
-	 * character's nameplate will be updated to display the updated health.
+	 * case, onDeath() will be called this character will be considered not alive.
+	 * This character's nameplate will be updated to display the updated health.
 	 * Additional functionality may be specified in subclasses. Overriding methods
 	 * must invoke super.
 	 */
@@ -154,7 +159,7 @@ public abstract class CommonCharacter {
 	 * Returns this character's max health.
 	 */
 	public final double getMaxHealth() {
-		return currentHealth;
+		return maxHealth;
 	}
 
 	/**
@@ -169,6 +174,14 @@ public abstract class CommonCharacter {
 	}
 
 	/**
+	 * Invoked when setAlive(true) is called. Additional functionality may be
+	 * specified in subclasses. Overriding methods must invoke super.
+	 */
+	@OverridingMethodsMustInvokeSuper
+	protected void onLive() {
+	}
+
+	/**
 	 * Invoked when this character dies, either by calling setAlive(false) or
 	 * setCurrentHealth(0). By default, this will hide this character's nameplate.
 	 * Additional functionality may be specified in subclasses. Overriding methods
@@ -176,6 +189,8 @@ public abstract class CommonCharacter {
 	 */
 	@OverridingMethodsMustInvokeSuper
 	protected void onDeath() {
+		CharacterDeathEvent event = new CharacterDeathEvent(this);
+		EventManager.callEvent(event);
 		setNameplateVisible(false);
 	}
 

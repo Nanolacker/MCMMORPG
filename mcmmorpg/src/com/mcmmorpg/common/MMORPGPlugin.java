@@ -4,7 +4,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import com.mcmmorpg.common.character.NonPlayerCharacter;
 import com.mcmmorpg.common.time.GameClock;
-import com.mcmmorpg.common.ui.TextArea;
+import com.mcmmorpg.common.ui.TextPanel;
 
 public abstract class MMORPGPlugin extends JavaPlugin {
 
@@ -14,7 +14,7 @@ public abstract class MMORPGPlugin extends JavaPlugin {
 	public void onEnable() {
 		isInitialized = false;
 		GameClock.start();
-		NonPlayerCharacter.startSpawnTask();
+		NonPlayerCharacter.startNPCSpawner();
 		try {
 			onMMORPGStart();
 		} catch (Exception e) {
@@ -31,7 +31,7 @@ public abstract class MMORPGPlugin extends JavaPlugin {
 			e.printStackTrace();
 		}
 		NonPlayerCharacter.despawnAll();
-		TextArea.removeAllEntities();
+		TextPanel.removeAllEntities();
 	}
 
 	public static boolean isInitialized() {

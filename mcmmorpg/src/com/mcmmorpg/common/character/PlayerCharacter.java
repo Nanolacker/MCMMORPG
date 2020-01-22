@@ -30,11 +30,11 @@ import com.mcmmorpg.common.quest.Quest;
 import com.mcmmorpg.common.quest.QuestObjective;
 import com.mcmmorpg.common.quest.QuestStatus;
 import com.mcmmorpg.common.sound.Noise;
-import com.mcmmorpg.common.ui.ActionBar;
-import com.mcmmorpg.common.ui.SidebarTextArea;
+import com.mcmmorpg.common.ui.ActionBarText;
+import com.mcmmorpg.common.ui.SidebarText;
 import com.mcmmorpg.common.utils.StringUtils;
 
-public class PlayerCharacter extends CommonCharacter {
+public class PlayerCharacter extends AbstractCharacter {
 
 	private static final Noise DEATH_NOISE = new Noise(Sound.ENTITY_WITHER_SPAWN);
 
@@ -70,9 +70,8 @@ public class PlayerCharacter extends CommonCharacter {
 		this.xp = xp;
 		this.skillUpgradePoints = skillUpgradePoints;
 		this.currency = currency;
-		setCurrentHealth(currentHealth);
-		this.maxMana = maxMana;
 		this.currentMana = currentMana;
+		this.maxMana = maxMana;
 		this.targetQuest = targetQuest;
 		this.questStatusManager = new PlayerQuestManager(completedQuests, questData);
 		this.skillStatusManager = new PlayerSkillManager(this, skillData);
@@ -88,6 +87,7 @@ public class PlayerCharacter extends CommonCharacter {
 
 		player.teleport(getLocation());
 		active = true;
+		setAlive(true);
 		playerMap.put(player, this);
 	}
 
@@ -192,7 +192,7 @@ public class PlayerCharacter extends CommonCharacter {
 		String text = String.format(
 				ChatColor.RED + "HP: %d/%d    " + ChatColor.AQUA + "MP: %d/%d    " + ChatColor.GREEN + "XP: %d/%d",
 				rCurrentHealth, rMaxHealth, rCurrentMana, rMaxMana, currentLevelXp, targetXp);
-		ActionBar bar = new ActionBar(text);
+		ActionBarText bar = new ActionBarText(text);
 		bar.apply(player);
 	}
 
@@ -314,14 +314,13 @@ public class PlayerCharacter extends CommonCharacter {
 		PotionEffect veilEffect = new PotionEffect(PotionEffectType.BLINDNESS, 80, 1);
 		player.addPotionEffect(veilEffect);
 		DEATH_NOISE.play(player);
-		double maxHealth = getMaxHealth();
-		setCurrentHealth(maxHealth);
+		player.teleport(respawnLocation);
 		setAlive(true);
 	}
 
 	public void updateQuestDisplay() {
 		if (targetQuest == null) {
-			SidebarTextArea.clear(player);
+			SidebarText.clear(player);
 		} else {
 			String questTitle = ChatColor.GOLD + targetQuest.getName();
 			String objectivesText = StringUtils.repeat("-", StringUtils.STANDARD_LINE_LENGTH) + "\n";
@@ -337,7 +336,7 @@ public class PlayerCharacter extends CommonCharacter {
 				progressText += progress + "" + ChatColor.WHITE + "/" + ChatColor.GREEN + "" + goal;
 				objectivesText += "-" + objective.getDescription() + " " + progressText + ChatColor.RESET + "\n\n";
 			}
-			SidebarTextArea questDisplay = new SidebarTextArea(questTitle, objectivesText);
+			SidebarText questDisplay = new SidebarText(questTitle, objectivesText);
 			questDisplay.apply(player);
 		}
 	}

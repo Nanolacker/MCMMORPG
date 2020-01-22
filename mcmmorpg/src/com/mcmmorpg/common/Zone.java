@@ -14,7 +14,7 @@ import com.mcmmorpg.common.event.EventManager;
 import com.mcmmorpg.common.event.PlayerCharacterEnterZoneEvent;
 import com.mcmmorpg.common.event.PlayerCharacterExitZoneEvent;
 import com.mcmmorpg.common.physics.Collider;
-import com.mcmmorpg.common.ui.TitleMessage;
+import com.mcmmorpg.common.ui.TitleText;
 
 public abstract class Zone {
 
@@ -30,14 +30,10 @@ public abstract class Zone {
 
 	private final String name;
 	private final World world;
-	private final ChatColor displayColor;
-	private final TitleMessage welcomeTitleMessage;
 
 	public Zone(String name, World world, BoundingBox[] zoneBounds, ChatColor displayColor) {
 		this.name = name;
 		this.world = world;
-		this.displayColor = displayColor;
-		this.welcomeTitleMessage = new TitleMessage(name, "");
 		for (BoundingBox bb : zoneBounds) {
 			ZoneBoundCollider collider = new ZoneBoundCollider(this, bb);
 			collider.setActive(true);
@@ -52,11 +48,6 @@ public abstract class Zone {
 		return world;
 	}
 	
-	private void welcome(PlayerCharacter pc) {
-		Player player = pc.getPlayer();
-		welcomeTitleMessage.apply(player);
-	}
-
 	public abstract void onEnter(PlayerCharacter pc);
 
 	public abstract void onExit(PlayerCharacter pc);
@@ -73,7 +64,6 @@ public abstract class Zone {
 		protected void onCollisionEnter(Collider other) {
 			if (other instanceof PlayerCharacterCollider) {
 				PlayerCharacter pc = ((PlayerCharacterCollider) other).getCharacter();
-				zone.welcome(pc);
 				zone.onEnter(pc);
 				PlayerCharacterEnterZoneEvent event = new PlayerCharacterEnterZoneEvent(pc, zone);
 				EventManager.callEvent(event);
