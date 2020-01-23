@@ -67,7 +67,8 @@ public abstract class NonPlayerCharacter extends AbstractCharacter {
 	}
 
 	/**
-	 * Returns whether this NPC is spawned.
+	 * Returns true if this NPC is spawned. Returns false if this NPC is despawned
+	 * or dead.
 	 */
 	public final boolean isSpawned() {
 		return spawned;
@@ -85,9 +86,9 @@ public abstract class NonPlayerCharacter extends AbstractCharacter {
 	}
 
 	/**
-	 * Called when the NPC spawner deems it appropriate to despawn this NPC.
-	 * Additional functionality may be specified in subclasses. Overriding methods
-	 * must invoke super.
+	 * Called when the NPC spawner deems it appropriate to despawn this NPC. This
+	 * method is NOT called when this NPC dies. Additional functionality may be
+	 * specified in subclasses. Overriding methods must invoke super.
 	 */
 	@OverridingMethodsMustInvokeSuper
 	protected void despawn() {
@@ -98,14 +99,16 @@ public abstract class NonPlayerCharacter extends AbstractCharacter {
 	@OverridingMethodsMustInvokeSuper
 	@Override
 	protected void onLive() {
+		super.onLive();
 		aliveNpcs.add(this);
 	}
 
 	@OverridingMethodsMustInvokeSuper
 	@Override
 	protected void onDeath() {
+		super.onDeath();
 		aliveNpcs.remove(this);
-		despawn();
+		spawned = false;
 	}
 
 	private static final double DEFAULT_SPAWN_RADIUS = 25.0;

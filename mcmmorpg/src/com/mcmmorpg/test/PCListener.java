@@ -24,6 +24,7 @@ import com.mcmmorpg.common.persistence.PlayerCharacterSaveData;
 import com.mcmmorpg.common.physics.Collider;
 import com.mcmmorpg.common.physics.Raycast;
 import com.mcmmorpg.common.playerClass.PlayerClass;
+import com.mcmmorpg.common.playerClass.SkillTree;
 import com.mcmmorpg.common.quest.Quest;
 import com.mcmmorpg.common.quest.QuestStatus;
 import com.mcmmorpg.common.utils.Debug;
@@ -70,10 +71,8 @@ public class PCListener implements Listener {
 		}
 		pc.setTargetQuest(Quest.forName("Saving the Farm"));
 
-		BulskanUndead undead = new BulskanUndead(1, pc.getLocation());
+		BulskanUndead undead = new BulskanUndead(1, pc.getLocation(), 5);
 		undead.setAlive(true);
-		Debug.log(undead.getCurrentHealth());
-		Debug.log(undead.getMaxHealth());
 	}
 
 	@EventHandler
@@ -100,12 +99,13 @@ public class PCListener implements Listener {
 		Player player = event.getPlayer();
 		Location loc = player.getLocation();
 		Vector lookDir = loc.getDirection();
+		@SuppressWarnings("deprecation")
 		Raycast raycast = new Raycast(loc, lookDir, 10);
 		Collider[] colliders = raycast.getHits();
 		for (Collider collider : colliders) {
 			if (collider instanceof CharacterCollider) {
 				AbstractCharacter character = ((CharacterCollider) collider).getCharacter();
-				character.setCurrentHealth(character.getCurrentHealth() - 1);
+				character.setCurrentHealth(character.getCurrentHealth() - 5);
 			}
 		}
 

@@ -3,8 +3,6 @@ package com.mcmmorpg.common.playerClass;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.mcmmorpg.common.MMORPGPlugin;
-
 /**
  * PlayerClasses can be made using JSON. Code will need to be written that deals
  * with the class's skill use, however.

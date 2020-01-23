@@ -61,7 +61,7 @@ public class TextPanel {
 	/**
 	 * The text that has been formatted to be rendered across multiple lines.
 	 */
-	private List<String> formattedText;
+	private List<String> lines;
 	/**
 	 * this {@code TextPanel}'s {@code Location}
 	 */
@@ -194,7 +194,7 @@ public class TextPanel {
 	 */
 	public void setText(String text) {
 		this.text = text;
-		formattedText = StringUtils.lineSplit(text, charsPerLine);
+		lines = StringUtils.lineSplit(text, charsPerLine);
 		if (visible) {
 			removeEntities();
 			spawnEntities();
@@ -207,7 +207,7 @@ public class TextPanel {
 
 	public void setCharactersPerLine(int charactersPerLine) {
 		charsPerLine = charactersPerLine;
-		formattedText = StringUtils.lineSplit(text, charsPerLine);
+		lines = StringUtils.lineSplit(text, charsPerLine);
 		if (visible) {
 			removeEntities();
 			spawnEntities();
@@ -241,7 +241,7 @@ public class TextPanel {
 	 * Spawns all of the entities entities necessary to display text.
 	 */
 	private void spawnEntities() {
-		int numLines = formattedText.size();
+		int numLines = lines.size();
 		for (int lineCount = 0; lineCount < numLines; lineCount++) {
 			spawnSingleEntity(lineCount);
 		}
@@ -262,7 +262,7 @@ public class TextPanel {
 		entity.setSmall(true);
 		entity.setArms(false);
 		entity.setMarker(true);
-		String line = formattedText.get(lineCount);
+		String line = lines.get(lineCount);
 		entity.getBukkitEntity().setCustomName(line);
 		entity.setCustomNameVisible(true);
 		world.addEntity(entity);
@@ -288,7 +288,6 @@ public class TextPanel {
 	 * @param lineCount the number of line that the entity to be removed represents.
 	 */
 	private void removeSingleEntity(int lineCount) {
-		World world = ((CraftWorld) location.getWorld()).getHandle();
 		EntityArmorStand entity = entities.get(lineCount);
 		entity.killEntity();
 		entities.remove(entity);

@@ -40,8 +40,9 @@ public class StringUtils {
 			String line = prevColor;
 			while (lineParser.hasNext()) {
 				String token = lineParser.next();
+				// +1 for space
 				boolean lineLengthExceeded = line.length() + 1 + token.length() > lineLength;
-				if (lineLengthExceeded) { // +1 for space
+				if (lineLengthExceeded) {
 					line = line.trim();
 					line = prevColor + line;
 					paragraph.add(line);
@@ -52,12 +53,18 @@ public class StringUtils {
 				}
 			}
 			line = line.trim();
-			line = prevColor + line;
 			paragraph.add(line);
 			prevColor = ChatColor.getLastColors(line);
 			lineParser.close();
 		}
 		return paragraph;
+	}
+
+	/**
+	 * Used by line split.
+	 */
+	private static boolean ignoreLength(char ch, char precedingChar) {
+		return ch == '§' || precedingChar == '§' || ch == '\n';
 	}
 
 }

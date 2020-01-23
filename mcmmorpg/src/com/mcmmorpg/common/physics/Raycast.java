@@ -8,8 +8,10 @@ import org.bukkit.util.BoundingBox;
 import org.bukkit.util.RayTraceResult;
 import org.bukkit.util.Vector;
 
-import com.mcmmorpg.common.utils.Debug;
-
+@Deprecated
+/**
+ * @deprecated raycasting in some directions does not work as expected
+ */
 public class Raycast {
 
 	private final Collider[] hits;
@@ -46,7 +48,6 @@ public class Raycast {
 				BoundingBox bb = collider.toBoundingBox();
 				RayTraceResult result = bb.rayTrace(origin.toVector(), direction, maxDistance);
 				if (result != null) {
-					Vector hitPosition = result.getHitPosition();
 					hitsList.add(collider);
 				}
 			}

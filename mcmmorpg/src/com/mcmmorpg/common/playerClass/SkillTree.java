@@ -15,7 +15,6 @@ import org.bukkit.inventory.ItemStack;
 
 import com.mcmmorpg.common.character.PlayerCharacter;
 import com.mcmmorpg.common.event.EventManager;
-import com.mcmmorpg.common.utils.Debug;
 
 public class SkillTree implements Listener {
 
