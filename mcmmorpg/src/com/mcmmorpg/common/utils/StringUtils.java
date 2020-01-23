@@ -60,11 +60,4 @@ public class StringUtils {
 		return paragraph;
 	}
 
-	/**
-	 * Used by line split.
-	 */
-	private static boolean ignoreLength(char ch, char precedingChar) {
-		return ch == '§' || precedingChar == '§' || ch == '\n';
-	}
-
 }

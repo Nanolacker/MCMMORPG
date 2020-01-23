@@ -13,7 +13,6 @@ import com.mcmmorpg.common.character.NonPlayerCharacter;
 import com.mcmmorpg.common.sound.Noise;
 import com.mcmmorpg.common.time.DelayedTask;
 import com.mcmmorpg.common.utils.Debug;
-import com.mcmmorpg.impl.Worlds;
 
 public class BulskanUndead extends NonPlayerCharacter {
 

@@ -232,6 +232,9 @@ public abstract class AbstractCharacter {
 	 * located at any time. The location should usually be relative to this
 	 * character's location.
 	 */
-	protected abstract Location getNameplateLocation();
+	protected Location getNameplateLocation() {
+		// assume humanoid
+		return getLocation().add(0, 2, 1);
+	}
 
 }

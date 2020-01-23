@@ -7,11 +7,6 @@ import com.mcmmorpg.common.character.PlayerCharacter;
 import com.mcmmorpg.common.event.EventManager;
 import com.mcmmorpg.common.event.QuestCompletionEvent;
 
-/**
- * A quest can be made available to a player at anytime with makeAvailable. Once
- * a quest has been available, there is something that starts it, such as
- * speaking with an NPC or entering a new area. After being started,
- */
 public class Quest {
 
 	private static final Map<String, Quest> quests;
@@ -81,6 +76,8 @@ public class Quest {
 		if (pc.getTargetQuest() == this) {
 			pc.setTargetQuest(null);
 		}
+		PlayerQuestManager questManager = pc.getQuestManager();
+		questManager.completeQuest(this);
 		QuestCompletionEvent event = new QuestCompletionEvent(pc, this);
 		EventManager.callEvent(event);
 	}

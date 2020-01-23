@@ -10,12 +10,12 @@ public class PlayerQuestManager {
 	private final List<Quest> completedQuests;
 	private final Map<Quest, PlayerQuestData> questDataMap;
 
-	public PlayerQuestManager(Quest[] completedQuests, PlayerQuestData[] questData) {
+	public PlayerQuestManager(Quest[] completedQuests, PlayerQuestData[] questDatas) {
 		this.completedQuests = Arrays.asList(completedQuests);
 		questDataMap = new HashMap<>();
-		for (PlayerQuestData questStatus : questData) {
-			Quest quest = Quest.forName(questStatus.getQuestName());
-			questDataMap.put(quest, questStatus);
+		for (PlayerQuestData questData : questDatas) {
+			Quest quest = Quest.forName(questData.getQuestName());
+			questDataMap.put(quest, questData);
 		}
 	}
 
@@ -51,8 +51,13 @@ public class PlayerQuestManager {
 	}
 
 	void startQuest(Quest quest) {
-		PlayerQuestData status = new PlayerQuestData(quest);
-		questDataMap.put(quest, status);
+		PlayerQuestData data = new PlayerQuestData(quest);
+		questDataMap.put(quest, data);
+	}
+	
+	void completeQuest(Quest quest) {
+		completedQuests.add(quest);
+		questDataMap.remove(quest);
 	}
 
 }
