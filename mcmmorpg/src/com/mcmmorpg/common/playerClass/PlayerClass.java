@@ -34,9 +34,6 @@ public class PlayerClass {
 	}
 
 	public final void initialize() {
-		if (MMORPGPlugin.isInitialized()) {
-			throw new IllegalStateException("Cannot initialize a player class after the plugin has been initialized.");
-		}
 		for (Skill skill : skills) {
 			skill.initialize(this);
 		}

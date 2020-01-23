@@ -1,4 +1,4 @@
-package com.mcmmorpg.impl.questListeners;
+package com.mcmmorpg.impl.listeners;
 
 import org.bukkit.event.Listener;
 

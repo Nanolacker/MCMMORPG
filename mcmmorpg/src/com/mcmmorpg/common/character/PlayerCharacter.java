@@ -32,6 +32,7 @@ import com.mcmmorpg.common.quest.QuestStatus;
 import com.mcmmorpg.common.sound.Noise;
 import com.mcmmorpg.common.ui.ActionBarText;
 import com.mcmmorpg.common.ui.SidebarText;
+import com.mcmmorpg.common.ui.TitleMessage;
 import com.mcmmorpg.common.utils.StringUtils;
 
 public class PlayerCharacter extends AbstractCharacter {
@@ -310,7 +311,8 @@ public class PlayerCharacter extends AbstractCharacter {
 	@Override
 	protected void onDeath() {
 		player.teleport(respawnLocation);
-		player.sendTitle(ChatColor.RED + "You died", "respawning...");
+		TitleMessage deathMessage = new TitleMessage("You died", "respawning...");
+		deathMessage.sendTo(player);
 		PotionEffect veilEffect = new PotionEffect(PotionEffectType.BLINDNESS, 80, 1);
 		player.addPotionEffect(veilEffect);
 		DEATH_NOISE.play(player);
