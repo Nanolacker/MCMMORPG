@@ -17,6 +17,7 @@ import com.mcmmorpg.common.time.RepeatingTask;
 public final class Skill implements Listener {
 
 	private static final double COOLDOWN_UPDATE_PERIOD_SECONDS = 0.1;
+	private static final Material LOCKED_MATERIAL = Material.BARRIER;
 
 	private final String name;
 	private final String description;
@@ -27,6 +28,7 @@ public final class Skill implements Listener {
 	private final double cooldown;
 	private final int minimumLevel;
 	private final String prerequisiteSkill;
+	private final int maximumUpgradeLevel;
 	private final int skillTreeRow;
 	private final int skillTreeColumn;
 	private final Material icon;
@@ -34,13 +36,14 @@ public final class Skill implements Listener {
 	private final transient ItemStack hotbarItemStack;
 
 	public Skill(String name, String description, int manaCost, int cooldown, int minimumLevel,
-			String prerequisiteSkill, int skillTreeRow, int skillTreeColumn, Material icon) {
+			String prerequisiteSkill, int maximumUpgradeLevel, int skillTreeRow, int skillTreeColumn, Material icon) {
 		this.name = name;
 		this.description = description;
 		this.manaCost = manaCost;
 		this.cooldown = cooldown;
 		this.minimumLevel = minimumLevel;
 		this.prerequisiteSkill = prerequisiteSkill;
+		this.maximumUpgradeLevel = maximumUpgradeLevel;
 		this.skillTreeRow = skillTreeRow;
 		this.skillTreeColumn = skillTreeColumn;
 		this.icon = icon;
@@ -68,15 +71,19 @@ public final class Skill implements Listener {
 		return minimumLevel;
 	}
 
-	Skill getPrerequisiteSkill() {
+	public Skill getPrerequisiteSkill() {
 		return playerClass.skillForName(prerequisiteSkill);
 	}
 
-	int getSkillTreeRow() {
+	public int getMaximumUpgradeLevel() {
+		return maximumUpgradeLevel;
+	}
+
+	public int getSkillTreeRow() {
 		return skillTreeRow;
 	}
 
-	int getSkillTreeColumn() {
+	public int getSkillTreeColumn() {
 		return skillTreeColumn;
 	}
 
@@ -197,6 +204,10 @@ public final class Skill implements Listener {
 				return;
 			}
 		}
+	}
+
+	public boolean prerequisitesAreMet(PlayerCharacter pc) {
+		return playerClass.skillForName(prerequisiteSkill).isUnlocked(pc) && pc.getLevel() >= minimumLevel;
 	}
 
 }

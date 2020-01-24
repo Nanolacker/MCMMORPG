@@ -15,6 +15,7 @@ import org.bukkit.inventory.ItemStack;
 
 import com.mcmmorpg.common.character.PlayerCharacter;
 import com.mcmmorpg.common.event.EventManager;
+import com.mcmmorpg.common.utils.Debug;
 
 public class SkillTree implements Listener {
 
@@ -55,9 +56,13 @@ public class SkillTree implements Listener {
 		if (pc == null) {
 			return;
 		}
-		Inventory inventory = event.getClickedInventory();
 		Inventory mappedInventory = inventoryMap.get(pc);
-		if (mappedInventory == null || !mappedInventory.equals(inventory)) {
+		if (mappedInventory == null) {
+			return;
+		}
+		Inventory inventory = event.getClickedInventory();
+		if (mappedInventory != inventory) {
+			Debug.log("invs equal");
 			return;
 		}
 		event.setCancelled(true);
@@ -70,22 +75,30 @@ public class SkillTree implements Listener {
 		}
 		ClickType click = event.getClick();
 
+		if (!skill.isUnlocked(pc)) {
+			pc.sendMessage(skill.getName() + " is not unlocked");
+			return;
+		}
+
 		if (click.isShiftClick()) {
 			// unlock/upgrade
-			int skillPoints = pc.getSkillUpgradePoints();
-			if (skill.isUnlocked(pc)) {
-				if (skillPoints > 0) {
+			int availableSillPoints = pc.getSkillUpgradePoints();
+			if (availableSillPoints > 0) {
+				if (skill.prerequisitesAreMet(pc)) {
 					skill.upgrade(pc);
 					pc.setSkillUpgradePoints(pc.getSkillUpgradePoints() - 1);
 					pc.sendMessage("Upgraded " + skill.getName() + "!");
 					// update skill tree inventory by reopening it
 					this.open(pc);
 				} else {
-					pc.sendMessage("No skill points remaining!");
+					pc.sendMessage("Prerequisites not met");
 				}
+			} else {
+				pc.sendMessage("No skill points remaining!");
 			}
+
 		} else {
-			// add to hotbar
+			// add to inventory
 			ItemStack skillItemStack = skill.getHotbarItemStack();
 			if (inventory.contains(skillItemStack)) {
 				pc.sendMessage(skill.getName() + " is already in your inventory!");
