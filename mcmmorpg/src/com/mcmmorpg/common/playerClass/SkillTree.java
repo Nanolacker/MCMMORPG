@@ -10,6 +10,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
+import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
@@ -48,7 +49,7 @@ public class SkillTree implements Listener {
 		}
 		return inventory;
 	}
-
+	
 	@EventHandler
 	private void onClick(InventoryClickEvent event) {
 		Player player = (Player) event.getWhoClicked();
@@ -62,7 +63,7 @@ public class SkillTree implements Listener {
 		}
 		Inventory inventory = event.getClickedInventory();
 		if (mappedInventory != inventory) {
-			Debug.log("invs equal");
+			Debug.log("invs NOT equal");
 			return;
 		}
 		event.setCancelled(true);
@@ -80,19 +81,19 @@ public class SkillTree implements Listener {
 			return;
 		}
 
+		if (!skill.prerequisitesAreMet(pc)) {
+			pc.sendMessage("Skill not available");
+		}
+
 		if (click.isShiftClick()) {
 			// unlock/upgrade
 			int availableSillPoints = pc.getSkillUpgradePoints();
 			if (availableSillPoints > 0) {
-				if (skill.prerequisitesAreMet(pc)) {
-					skill.upgrade(pc);
-					pc.setSkillUpgradePoints(pc.getSkillUpgradePoints() - 1);
-					pc.sendMessage("Upgraded " + skill.getName() + "!");
-					// update skill tree inventory by reopening it
-					this.open(pc);
-				} else {
-					pc.sendMessage("Prerequisites not met");
-				}
+				skill.upgrade(pc);
+				pc.setSkillUpgradePoints(pc.getSkillUpgradePoints() - 1);
+				pc.sendMessage("Upgraded " + skill.getName() + "!");
+				// update skill tree inventory by reopening it
+				this.open(pc);
 			} else {
 				pc.sendMessage("No skill points remaining!");
 			}
@@ -106,6 +107,11 @@ public class SkillTree implements Listener {
 				inventory.addItem(skillItemStack);
 			}
 		}
+	}
+	
+	@EventHandler
+	private void onDrag(InventoryDragEvent event) {
+		
 	}
 
 	private Skill getSkillAt(int skillRow, int skillColumn) {

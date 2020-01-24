@@ -17,7 +17,7 @@ import com.mcmmorpg.common.time.RepeatingTask;
 public final class Skill implements Listener {
 
 	private static final double COOLDOWN_UPDATE_PERIOD_SECONDS = 0.1;
-	private static final Material LOCKED_MATERIAL = Material.BARRIER;
+	private static final Material NON_UNLOCKABLE_MATERIAL = Material.BARRIER;
 
 	private final String name;
 	private final String description;
@@ -122,7 +122,8 @@ public final class Skill implements Listener {
 		PlayerSkillManager manager = pc.getSkillManager();
 		PlayerSkillData data = manager.getSkillData(this);
 		int level = data == null ? 0 : data.getUpgradeLevel();
-		ItemStack itemStack = ItemFactory.createItemStack(name + " level " + level, description, icon);
+		Material material = prerequisitesAreMet(pc) ? icon : NON_UNLOCKABLE_MATERIAL;
+		ItemStack itemStack = ItemFactory.createItemStack(name + " level " + level, description, material);
 		return itemStack;
 	}
 
@@ -195,11 +196,16 @@ public final class Skill implements Listener {
 		cooldownTask.schedule();
 	}
 
+	/**
+	 * Displays the updated cooldown.
+	 */
 	private void updateItemStack(PlayerCharacter pc, double cooldownSeconds) {
 		Inventory inventory = pc.getInventory();
 		for (int i = 0; i < 9; i++) {
 			ItemStack itemStack = inventory.getItem(i);
-			if (itemStack.equals(this.hotbarItemStack)) {
+			ItemStack sizeOfOne = itemStack.clone();
+			itemStack.setAmount(1);
+			if (sizeOfOne.equals(this.hotbarItemStack)) {
 				itemStack.setAmount((int) Math.ceil(cooldownSeconds));
 				return;
 			}

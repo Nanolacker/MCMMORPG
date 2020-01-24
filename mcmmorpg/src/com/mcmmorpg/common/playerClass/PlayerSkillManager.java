@@ -11,6 +11,7 @@ public class PlayerSkillManager {
 
 	public PlayerSkillManager(PlayerCharacter pc, PlayerSkillData[] allSkillData) {
 		skillDataMap = new HashMap<>();
+		// to account for players who logged out with skills on cooldown
 		for (PlayerSkillData skillData : allSkillData) {
 			Skill skill = skillData.getSkill();
 			double cooldown = skillData.getSkillCooldownSeconds();
