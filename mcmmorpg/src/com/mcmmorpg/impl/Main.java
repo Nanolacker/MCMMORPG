@@ -14,7 +14,7 @@ public class Main extends MMORPGPlugin {
 	private void load() {
 		QuestLoader.loadQuests();
 		PlayerClassLoader.loadClasses();
-		EventLoader.loadEvents();
+		ListenerLoader.loadListeners();
 	}
 
 	@Override

@@ -20,7 +20,7 @@ import com.mcmmorpg.common.character.CharacterCollider;
 import com.mcmmorpg.common.character.PlayerCharacter;
 import com.mcmmorpg.common.event.QuestCompletionEvent;
 import com.mcmmorpg.common.item.ItemFactory;
-import com.mcmmorpg.common.persistence.PlayerCharacterSaveData;
+import com.mcmmorpg.common.persistence.PersistentPlayerCharacterDataContainer;
 import com.mcmmorpg.common.physics.Collider;
 import com.mcmmorpg.common.physics.Raycast;
 import com.mcmmorpg.common.playerClass.PlayerClass;
@@ -53,16 +53,16 @@ public class PCListener implements Listener {
 	private void onJoin(PlayerJoinEvent event) {
 		Player player = event.getPlayer();
 		File file = getSaveFile(player.getName());
-		PlayerCharacterSaveData saveData;
+		PersistentPlayerCharacterDataContainer saveData;
 		if (file.exists()) {
 			// load data from file
 			Debug.log("loading character from file");
-			saveData = IOUtils.jsonFromFile(file, PlayerCharacterSaveData.class);
+			saveData = IOUtils.jsonFromFile(file, PersistentPlayerCharacterDataContainer.class);
 		} else {
 			// create new data
 			Debug.log("creating new character");
 			PlayerClass playerClass = PlayerClass.forName("Fighter");
-			saveData = PlayerCharacterSaveData.createFreshSaveData(player, playerClass, startingLocation);
+			saveData = PersistentPlayerCharacterDataContainer.createFreshSaveData(player, playerClass, startingLocation);
 		}
 		PlayerCharacter pc = PlayerCharacter.registerPlayerCharacter(player, saveData);
 		Quest quest = Quest.forName("Saving the Farm");
@@ -84,7 +84,7 @@ public class PCListener implements Listener {
 		}
 		Debug.log("saving character");
 		File file = getSaveFile(player.getName());
-		PlayerCharacterSaveData saveData = PlayerCharacterSaveData.createSaveData(pc);
+		PersistentPlayerCharacterDataContainer saveData = PersistentPlayerCharacterDataContainer.createSaveData(pc);
 		IOUtils.jsonToFile(file, saveData);
 		pc.deactivate();
 	}

@@ -14,18 +14,24 @@ import com.mcmmorpg.common.character.PlayerCharacter;
 import com.mcmmorpg.common.event.EventManager;
 import com.mcmmorpg.common.event.PlayerCharacterUseConsumableEvent;
 import com.mcmmorpg.common.event.PlayerCharacterUseWeaponEvent;
+import com.mcmmorpg.common.event.StaticInteractableEvent;
 
 class ItemListener implements Listener {
 
 	@EventHandler
-	private void onRightClickItem(InventoryClickEvent event) {
+	private void onClickItem(InventoryClickEvent event) {
 		Player player = (Player) event.getWhoClicked();
+		ItemStack itemStack = event.getCurrentItem();
+		if (ItemFactory.staticInteractables.contains(itemStack)) {
+			StaticInteractableEvent consumableUseEvent = new StaticInteractableEvent(player, itemStack);
+			EventManager.callEvent(consumableUseEvent);
+			return;
+		}
 		PlayerCharacter pc = PlayerCharacter.forPlayer(player);
 		if (pc == null) {
 			return;
 		}
-		ItemStack itemStack = event.getCurrentItem();
-		if (ItemFactory.consumables.contains(itemStack)) {
+		if (ItemFactory.consumables.contains(itemStack) && event.isRightClick()) {
 			PlayerCharacterUseConsumableEvent consumableUseEvent = new PlayerCharacterUseConsumableEvent(pc, itemStack);
 			EventManager.callEvent(consumableUseEvent);
 		}
@@ -33,18 +39,30 @@ class ItemListener implements Listener {
 
 	@EventHandler
 	private void onInteractWithItem(PlayerInteractEvent event) {
+		ItemStack itemStack = event.getItem();
 		Player player = event.getPlayer();
+		if (ItemFactory.staticInteractables.contains(itemStack)) {
+			event.setCancelled(true);
+			handleStaticInteractableInteraction(player, itemStack, event.getAction());
+			return;
+		}
 		PlayerCharacter pc = PlayerCharacter.forPlayer(player);
 		if (pc == null) {
 			return;
 		}
 		// don't let people place blocks and what not
 		event.setCancelled(true);
-		ItemStack itemStack = event.getItem();
 		if (ItemFactory.weapons.contains(itemStack)) {
 			handleWeaponInteraction(pc, itemStack, event.getAction());
 		} else if (ItemFactory.consumables.contains(itemStack)) {
 			handleConsumableInteraction(pc, itemStack, event.getAction());
+		}
+	}
+
+	private void handleStaticInteractableInteraction(Player player, ItemStack interactable, Action action) {
+		if (action == Action.RIGHT_CLICK_AIR || action == Action.RIGHT_CLICK_BLOCK) {
+			StaticInteractableEvent event = new StaticInteractableEvent(player, interactable);
+			EventManager.callEvent(event);
 		}
 	}
 
@@ -64,12 +82,17 @@ class ItemListener implements Listener {
 
 	@EventHandler
 	private void onThrowItem(PlayerDropItemEvent event) {
+		Item item = event.getItemDrop();
+		ItemStack itemStack = item.getItemStack();
+		if (ItemFactory.staticInteractables.contains(itemStack)) {
+			event.setCancelled(true);
+			return;
+		}
 		Player player = (Player) event.getPlayer();
 		PlayerCharacter pc = PlayerCharacter.forPlayer(player);
 		if (pc == null) {
 			return;
 		}
-		Item item = event.getItemDrop();
 		item.remove();
 	}
 

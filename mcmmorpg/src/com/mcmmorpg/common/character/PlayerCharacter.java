@@ -19,8 +19,7 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 import com.mcmmorpg.common.character.MovementSyncer.MovementSyncMode;
-import com.mcmmorpg.common.persistence.PlayerCharacterSaveData;
-import com.mcmmorpg.common.physics.Collider;
+import com.mcmmorpg.common.persistence.PersistentPlayerCharacterDataContainer;
 import com.mcmmorpg.common.playerClass.PlayerClass;
 import com.mcmmorpg.common.playerClass.PlayerSkillData;
 import com.mcmmorpg.common.playerClass.PlayerSkillManager;
@@ -33,10 +32,18 @@ import com.mcmmorpg.common.sound.Noise;
 import com.mcmmorpg.common.ui.ActionBarText;
 import com.mcmmorpg.common.ui.SidebarText;
 import com.mcmmorpg.common.ui.TitleMessage;
+import com.mcmmorpg.common.utils.Debug;
 import com.mcmmorpg.common.utils.StringUtils;
 
 public class PlayerCharacter extends AbstractCharacter {
 
+
+	/**
+	 * The value at index 0 is the amount of xp it takes to level up from level 1 to
+	 * level 2. The value at index 1 is the xp it takes to level up from level 2 to
+	 * level 3.
+	 */
+	private static final int[] xpValues = { 100, 150, 200 };
 	private static final Noise DEATH_NOISE = new Noise(Sound.ENTITY_WITHER_SPAWN);
 
 	private static final Map<Player, PlayerCharacter> playerMap;
@@ -100,25 +107,17 @@ public class PlayerCharacter extends AbstractCharacter {
 		}
 
 		@Override
-		protected void onCollisionEnter(Collider other) {
-		}
-
-		@Override
-		protected void onCollisionExit(Collider other) {
-		}
-
-		@Override
 		public PlayerCharacter getCharacter() {
 			return (PlayerCharacter) super.getCharacter();
 		}
 
 	}
 
-	public static List<PlayerCharacter> list() {
+	public static List<PlayerCharacter> getAll() {
 		return new ArrayList<PlayerCharacter>(playerMap.values());
 	}
 
-	public static PlayerCharacter registerPlayerCharacter(Player player, PlayerCharacterSaveData saveData) {
+	public static PlayerCharacter registerPlayerCharacter(Player player, PersistentPlayerCharacterDataContainer saveData) {
 		PlayerClass playerClass = saveData.getPlayerClass();
 		Location location = saveData.getLocation();
 		Location respawnLocation = saveData.getRespawnLocation();
@@ -196,13 +195,6 @@ public class PlayerCharacter extends AbstractCharacter {
 		ActionBarText bar = new ActionBarText(text);
 		bar.apply(player);
 	}
-
-	/**
-	 * The value at index 0 is the amount of xp it takes to level up from level 1 to
-	 * level 2. The value at index 1 is the xp it takes to level up from level 2 to
-	 * level 3.
-	 */
-	private static final int[] xpValues = { 100, 150, 200 };
 
 	public int getXP() {
 		return xp;
@@ -304,12 +296,17 @@ public class PlayerCharacter extends AbstractCharacter {
 		return questStatusManager;
 	}
 
+	public void openQuestLog() {
+		Debug.log("Open quest log");
+	}
+
 	public PlayerSkillManager getSkillManager() {
 		return skillStatusManager;
 	}
 
 	@Override
 	protected void onDeath() {
+		super.onDeath();
 		player.teleport(respawnLocation);
 		TitleMessage deathMessage = new TitleMessage("You died", "respawning...");
 		deathMessage.sendTo(player);
@@ -341,11 +338,6 @@ public class PlayerCharacter extends AbstractCharacter {
 			SidebarText questDisplay = new SidebarText(questTitle, objectivesText);
 			questDisplay.apply(player);
 		}
-	}
-
-	@Override
-	protected Location getNameplateLocation() {
-		return getLocation().add(0.0, 1.0, 0.0);
 	}
 
 	private Location getColliderCenter() {

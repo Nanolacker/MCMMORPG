@@ -111,7 +111,7 @@ public class SkillTree implements Listener {
 	
 	@EventHandler
 	private void onDrag(InventoryDragEvent event) {
-		
+		Debug.log(event.getType());
 	}
 
 	private Skill getSkillAt(int skillRow, int skillColumn) {

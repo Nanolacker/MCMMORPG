@@ -234,7 +234,7 @@ public abstract class AbstractCharacter {
 	 */
 	protected Location getNameplateLocation() {
 		// assume humanoid
-		return getLocation().add(0, 2, 1);
+		return getLocation().add(0, 2, 0);
 	}
 
 }

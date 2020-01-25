@@ -15,7 +15,7 @@ import com.mcmmorpg.common.quest.PlayerQuestData;
 import com.mcmmorpg.common.quest.PlayerQuestManager;
 import com.mcmmorpg.common.quest.Quest;
 
-public class PlayerCharacterSaveData {
+public class PersistentPlayerCharacterDataContainer {
 
 	private final String playerClassName;
 	private final PersistentLocation location, respawnLocation;
@@ -30,7 +30,7 @@ public class PlayerCharacterSaveData {
 	private final PlayerSkillData[] skillStatuses;
 	private final PersistentInventory inventory;
 
-	private PlayerCharacterSaveData(PlayerClass playerClass, Location location, Location respawnLocation, int xp,
+	private PersistentPlayerCharacterDataContainer(PlayerClass playerClass, Location location, Location respawnLocation, int xp,
 			int skillUpgradePoints, int currency, double maxHealth, double currentHealth, double maxMana,
 			double currentMana, Quest targetQuest, List<Quest> completedQuests, PlayerQuestData[] questData,
 			PlayerSkillData[] skillStatuses, Inventory inventory) {
@@ -54,7 +54,7 @@ public class PlayerCharacterSaveData {
 		this.inventory = new PersistentInventory(inventory);
 	}
 
-	public static PlayerCharacterSaveData createSaveData(PlayerCharacter pc) {
+	public static PersistentPlayerCharacterDataContainer createSaveData(PlayerCharacter pc) {
 		PlayerClass playerClass = pc.getPlayerClass();
 		Location location = pc.getLocation();
 		Location respawnLocation = pc.getRespawnLocation();
@@ -71,14 +71,14 @@ public class PlayerCharacterSaveData {
 		PlayerQuestData[] allQuestData = pc.getQuestManager().getQuestData();
 		PlayerSkillData[] skillStatuses = pc.getSkillManager().getAllSkillData();
 		Inventory inventory = pc.getInventory();
-		return new PlayerCharacterSaveData(playerClass, location, respawnLocation, xp, skillUpgradePoints, currency,
+		return new PersistentPlayerCharacterDataContainer(playerClass, location, respawnLocation, xp, skillUpgradePoints, currency,
 				maxHealth, currentHealth, maxMana, currentMana, targetQuest, completedQuests, allQuestData,
 				skillStatuses, inventory);
 	}
 
-	public static PlayerCharacterSaveData createFreshSaveData(Player player, PlayerClass playerClass,
-			Location startingLocation) {
-		Location respawnLocation = startingLocation;
+	public static PersistentPlayerCharacterDataContainer createFreshSaveData(Player player, PlayerClass playerClass,
+			Location startLocation) {
+		Location respawnLocation = startLocation;
 		int xp = 0;
 		int skillUpgradePoints = 0;
 		int currency = 0;
@@ -89,7 +89,7 @@ public class PlayerCharacterSaveData {
 		PlayerQuestData[] questData = {};
 		PlayerSkillData[] skillStatuses = {}; // TODO: MAKE SURE THIS ALLIGNS WITH PLAYER CLASS!!!
 		Inventory inventory = player.getInventory();
-		return new PlayerCharacterSaveData(playerClass, startingLocation, respawnLocation, xp, skillUpgradePoints,
+		return new PersistentPlayerCharacterDataContainer(playerClass, startLocation, respawnLocation, xp, skillUpgradePoints,
 				currency, maxHealth, currentHealth, maxMana, currentMana, null, new ArrayList<>(), questData,
 				skillStatuses, inventory);
 	}
