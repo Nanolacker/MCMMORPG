@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Sound;
@@ -26,6 +27,7 @@ import com.mcmmorpg.common.playerClass.PlayerSkillManager;
 import com.mcmmorpg.common.quest.PlayerQuestData;
 import com.mcmmorpg.common.quest.PlayerQuestManager;
 import com.mcmmorpg.common.quest.Quest;
+import com.mcmmorpg.common.quest.QuestLog;
 import com.mcmmorpg.common.quest.QuestObjective;
 import com.mcmmorpg.common.quest.QuestStatus;
 import com.mcmmorpg.common.sound.Noise;
@@ -297,7 +299,8 @@ public class PlayerCharacter extends AbstractCharacter {
 	}
 
 	public void openQuestLog() {
-		Debug.log("Open quest log");
+		QuestLog questLog = new QuestLog(this);
+		questLog.open();
 	}
 
 	public PlayerSkillManager getSkillManager() {
