@@ -49,7 +49,7 @@ public class SkillTree implements Listener {
 		}
 		return inventory;
 	}
-	
+
 	@EventHandler
 	private void onClick(InventoryClickEvent event) {
 		Player player = (Player) event.getWhoClicked();
@@ -76,11 +76,6 @@ public class SkillTree implements Listener {
 		}
 		ClickType click = event.getClick();
 
-		if (!skill.isUnlocked(pc)) {
-			pc.sendMessage(skill.getName() + " is not unlocked");
-			return;
-		}
-
 		if (!skill.prerequisitesAreMet(pc)) {
 			pc.sendMessage("Skill not available");
 		}
@@ -99,16 +94,20 @@ public class SkillTree implements Listener {
 			}
 
 		} else {
-			// add to inventory
+			// add to inventoryS
+			if (!skill.isUnlocked(pc)) {
+				pc.sendMessage(skill.getName() + " is not unlocked");
+				return;
+			}
 			ItemStack skillItemStack = skill.getHotbarItemStack();
 			if (inventory.contains(skillItemStack)) {
 				pc.sendMessage(skill.getName() + " is already in your inventory!");
-			} else {
-				inventory.addItem(skillItemStack);
+				return;
 			}
+			inventory.addItem(skillItemStack);
 		}
 	}
-	
+
 	@EventHandler
 	private void onDrag(InventoryDragEvent event) {
 		Debug.log(event.getType());

@@ -19,6 +19,8 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 import com.mcmmorpg.common.character.MovementSyncer.MovementSyncMode;
+import com.mcmmorpg.common.event.EventManager;
+import com.mcmmorpg.common.event.PlayerCharacterLevelUpEvent;
 import com.mcmmorpg.common.persistence.PersistentPlayerCharacterDataContainer;
 import com.mcmmorpg.common.playerClass.PlayerClass;
 import com.mcmmorpg.common.playerClass.PlayerSkillData;
@@ -36,7 +38,6 @@ import com.mcmmorpg.common.utils.Debug;
 import com.mcmmorpg.common.utils.StringUtils;
 
 public class PlayerCharacter extends AbstractCharacter {
-
 
 	/**
 	 * The value at index 0 is the amount of xp it takes to level up from level 1 to
@@ -67,10 +68,10 @@ public class PlayerCharacter extends AbstractCharacter {
 		playerMap = new HashMap<>();
 	}
 
-	private PlayerCharacter(Player player, PlayerClass playerClass, Location location, Location respawnLocation, int xp,
-			int skillUpgradePoints, int currency, double maxHealth, double currentHealth, double maxMana,
-			double currentMana, Quest targetQuest, Quest[] completedQuests, PlayerQuestData[] questData,
-			PlayerSkillData[] skillData, ItemStack[] inventoryContents) {
+	private PlayerCharacter(Player player, boolean fresh, PlayerClass playerClass, Location location,
+			Location respawnLocation, int xp, int skillUpgradePoints, int currency, double maxHealth,
+			double currentHealth, double maxMana, double currentMana, Quest targetQuest, Quest[] completedQuests,
+			PlayerQuestData[] questData, PlayerSkillData[] skillData, ItemStack[] inventoryContents) {
 		super(player.getName(), xpToLevel(xp), location, maxHealth);
 		this.player = player;
 		this.playerClass = playerClass;
@@ -97,6 +98,11 @@ public class PlayerCharacter extends AbstractCharacter {
 		active = true;
 		setAlive(true);
 		playerMap.put(player, this);
+
+		if (fresh) {
+			PlayerCharacterLevelUpEvent event = new PlayerCharacterLevelUpEvent(this, 1);
+			EventManager.callEvent(event);
+		}
 	}
 
 	public static class PlayerCharacterCollider extends CharacterCollider {
@@ -117,7 +123,9 @@ public class PlayerCharacter extends AbstractCharacter {
 		return new ArrayList<PlayerCharacter>(playerMap.values());
 	}
 
-	public static PlayerCharacter registerPlayerCharacter(Player player, PersistentPlayerCharacterDataContainer saveData) {
+	public static PlayerCharacter registerPlayerCharacter(Player player,
+			PersistentPlayerCharacterDataContainer saveData) {
+		boolean fresh = saveData.isFresh();
 		PlayerClass playerClass = saveData.getPlayerClass();
 		Location location = saveData.getLocation();
 		Location respawnLocation = saveData.getRespawnLocation();
@@ -132,7 +140,7 @@ public class PlayerCharacter extends AbstractCharacter {
 		PlayerQuestData[] questStatuses = saveData.getQuestData();
 		PlayerSkillData[] skillStatuses = saveData.getSkillStatuses();
 		ItemStack[] inventoryContents = saveData.getInventoryContents();
-		return new PlayerCharacter(player, playerClass, location, respawnLocation, xp, skillUpgradePoints, currency,
+		return new PlayerCharacter(player, fresh,playerClass, location, respawnLocation, xp, skillUpgradePoints, currency,
 				maxHealth, currentHealth, maxMana, currentMana, targetQuest, saveData.getCompletedQuests(),
 				questStatuses, skillStatuses, inventoryContents);
 	}

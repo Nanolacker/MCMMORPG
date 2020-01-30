@@ -1,4 +1,4 @@
 name: MCMMORPG
 version: 1.0
-main: com.mcmmorpg.test.TestPlugin
+main: com.mcmmorpg.impl.Main
 api-version: 1.13

@@ -2,10 +2,11 @@ package com.mcmmorpg.impl;
 
 import org.bukkit.Bukkit;
 import org.bukkit.World;
+import org.bukkit.WorldCreator;
 
 public class Worlds {
 
-	public static final World ELADRADOR = Bukkit.getWorld("Eladrador");
-	public static final World LOBBY = Bukkit.getWorld("Lobby");
+	public static final World ELADRADOR = Bukkit.createWorld(new WorldCreator("world_eladrador"));
+	public static final World LOBBY = Bukkit.createWorld(new WorldCreator("world_lobby"));
 
 }

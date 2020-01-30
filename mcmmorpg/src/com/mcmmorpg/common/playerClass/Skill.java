@@ -112,6 +112,7 @@ public final class Skill implements Listener {
 		PlayerSkillData data = manager.getSkillData(this);
 		int newLevel = data.getUpgradeLevel() + 1;
 		data.setUpgradeLevel(newLevel);
+		pc.sendMessage(name + " upgraded to level " + newLevel);
 	}
 
 	ItemStack getHotbarItemStack() {
@@ -132,7 +133,7 @@ public final class Skill implements Listener {
 		Player player = event.getPlayer();
 		PlayerCharacter pc = PlayerCharacter.forPlayer(player);
 		if (pc == null) {
-			throw new IllegalStateException("Player not connected to a player character");
+			return;
 		}
 		if (pc.getPlayerClass() != this.playerClass) {
 			return;
@@ -213,7 +214,13 @@ public final class Skill implements Listener {
 	}
 
 	public boolean prerequisitesAreMet(PlayerCharacter pc) {
-		return playerClass.skillForName(prerequisiteSkill).isUnlocked(pc) && pc.getLevel() >= minimumLevel;
+		if (prerequisiteSkill != null) {
+			Skill prereq = playerClass.skillForName(prerequisiteSkill);
+			if (!prereq.isUnlocked(pc)) {
+				return false;
+			}
+		}
+		return pc.getLevel() >= minimumLevel;
 	}
 
 }

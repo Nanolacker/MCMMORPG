@@ -1,6 +1,7 @@
 package com.mcmmorpg.impl.listeners;
 
 import java.io.File;
+import java.util.Arrays;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -18,6 +19,7 @@ import com.mcmmorpg.common.event.StaticInteractableEvent;
 import com.mcmmorpg.common.item.ItemFactory;
 import com.mcmmorpg.common.persistence.PersistentPlayerCharacterDataContainer;
 import com.mcmmorpg.common.playerClass.PlayerClass;
+import com.mcmmorpg.common.ui.Menu;
 import com.mcmmorpg.common.utils.Debug;
 import com.mcmmorpg.common.utils.IOUtils;
 import com.mcmmorpg.impl.Worlds;
@@ -31,15 +33,16 @@ public class PlayerCharacterSelectionListener implements Listener {
 
 	private static final PlayerClass DEFAULT_PLAYER_CLASS;
 	private static final Location START_LOCATION;
-	private static final ItemStack OPEN_QUEST_LOG;
 	private static final ItemStack MENU;
+	private static final ItemStack QUEST_LOG;
+	private static final ItemStack SKILL_TREE;
 
 	static {
 		PLAYER_CHARACTER_DATA_DIRECTORY = new File(IOUtils.getDataFolder(), "player_save_data");
 		if (!PLAYER_CHARACTER_DATA_DIRECTORY.exists()) {
 			PLAYER_CHARACTER_DATA_DIRECTORY.mkdir();
 		}
-		LOBBY_SPAWN = new Location(Worlds.LOBBY, 0, 0, 0);
+		LOBBY_SPAWN = new Location(Worlds.LOBBY, 0, 4, 0);
 		CREATE_NEW_CHARACTER = ItemFactory.createItemStack(ChatColor.GREEN + "Create new character", null,
 				Material.DIAMOND);
 		ItemFactory.registerStaticInteractable(CREATE_NEW_CHARACTER);
@@ -50,8 +53,10 @@ public class PlayerCharacterSelectionListener implements Listener {
 		START_LOCATION = new Location(Worlds.ELADRADOR, 0, 70, 0);
 		MENU = ItemFactory.createItemStack(ChatColor.GREEN + "Menu", null, Material.EMERALD);
 		ItemFactory.registerStaticInteractable(MENU);
-		OPEN_QUEST_LOG = ItemFactory.createItemStack(ChatColor.GREEN + "Quest Log", null, Material.COMPASS);
-		ItemFactory.registerStaticInteractable(OPEN_QUEST_LOG);
+		QUEST_LOG = ItemFactory.createItemStack(ChatColor.GREEN + "Quest Log", null, Material.COMPASS);
+		ItemFactory.registerStaticInteractable(QUEST_LOG);
+		SKILL_TREE = ItemFactory.createItemStack(ChatColor.GREEN + "Skill Tree", null, Material.OAK_SAPLING);
+		ItemFactory.registerStaticInteractable(SKILL_TREE);
 	}
 
 	@EventHandler
@@ -75,6 +80,7 @@ public class PlayerCharacterSelectionListener implements Listener {
 		if (pc != null) {
 			savePlayerCharacterData(pc);
 		}
+		player.getInventory().clear();
 	}
 
 	private File getDataFile(String playerName) {
@@ -115,8 +121,8 @@ public class PlayerCharacterSelectionListener implements Listener {
 		Inventory inventory = player.getInventory();
 		inventory.clear();
 		PlayerCharacter.registerPlayerCharacter(player, data);
-		inventory.setItem(7, OPEN_QUEST_LOG);
 		inventory.setItem(8, MENU);
+		Debug.log(Arrays.toString(inventory.getContents()));
 	}
 
 	private void savePlayerCharacterData(PlayerCharacter pc) {
@@ -126,9 +132,21 @@ public class PlayerCharacterSelectionListener implements Listener {
 	}
 
 	@EventHandler
+	private void onOpenMenu(StaticInteractableEvent event) {
+		ItemStack itemStack = event.getInteractable();
+		if (itemStack.equals(MENU)) {
+			Player player = event.getPlayer();
+			Menu menu = new Menu("Menu", 1);
+			menu.addInteractable(0, QUEST_LOG);
+			menu.addInteractable(1, SKILL_TREE);
+			menu.open(player);
+		}
+	}
+
+	@EventHandler
 	private void onOpenQuestLog(StaticInteractableEvent event) {
 		ItemStack itemStack = event.getInteractable();
-		if (itemStack.equals(OPEN_QUEST_LOG)) {
+		if (itemStack.equals(QUEST_LOG)) {
 			Player player = event.getPlayer();
 			PlayerCharacter pc = PlayerCharacter.forPlayer(player);
 			pc.openQuestLog();
@@ -136,12 +154,12 @@ public class PlayerCharacterSelectionListener implements Listener {
 	}
 
 	@EventHandler
-	private void onOpenMenu(StaticInteractableEvent event) {
+	private void onOpenSkillTree(StaticInteractableEvent event) {
 		ItemStack itemStack = event.getInteractable();
-		if (itemStack.equals(MENU)) {
-			Debug.log("Open menu");
+		if (itemStack.equals(SKILL_TREE)) {
 			Player player = event.getPlayer();
 			PlayerCharacter pc = PlayerCharacter.forPlayer(player);
+			pc.getPlayerClass().getSkillTree().open(pc);
 		}
 	}
 

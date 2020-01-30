@@ -23,6 +23,7 @@ class ItemListener implements Listener {
 		Player player = (Player) event.getWhoClicked();
 		ItemStack itemStack = event.getCurrentItem();
 		if (ItemFactory.staticInteractables.contains(itemStack)) {
+			event.setCancelled(true);
 			StaticInteractableEvent consumableUseEvent = new StaticInteractableEvent(player, itemStack);
 			EventManager.callEvent(consumableUseEvent);
 			return;
@@ -32,6 +33,7 @@ class ItemListener implements Listener {
 			return;
 		}
 		if (ItemFactory.consumables.contains(itemStack) && event.isRightClick()) {
+			event.setCancelled(true);
 			PlayerCharacterUseConsumableEvent consumableUseEvent = new PlayerCharacterUseConsumableEvent(pc, itemStack);
 			EventManager.callEvent(consumableUseEvent);
 		}

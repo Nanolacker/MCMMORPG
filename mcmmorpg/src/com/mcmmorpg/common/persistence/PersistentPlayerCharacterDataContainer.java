@@ -5,7 +5,6 @@ import java.util.List;
 
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 import com.mcmmorpg.common.character.PlayerCharacter;
@@ -17,6 +16,7 @@ import com.mcmmorpg.common.quest.Quest;
 
 public class PersistentPlayerCharacterDataContainer {
 
+	private final boolean fresh;
 	private final String playerClassName;
 	private final PersistentLocation location, respawnLocation;
 	private final int xp;
@@ -30,10 +30,11 @@ public class PersistentPlayerCharacterDataContainer {
 	private final PlayerSkillData[] skillStatuses;
 	private final PersistentInventory inventory;
 
-	private PersistentPlayerCharacterDataContainer(PlayerClass playerClass, Location location, Location respawnLocation, int xp,
-			int skillUpgradePoints, int currency, double maxHealth, double currentHealth, double maxMana,
-			double currentMana, Quest targetQuest, List<Quest> completedQuests, PlayerQuestData[] questData,
-			PlayerSkillData[] skillStatuses, Inventory inventory) {
+	private PersistentPlayerCharacterDataContainer(boolean fresh, PlayerClass playerClass, Location location,
+			Location respawnLocation, int xp, int skillUpgradePoints, int currency, double maxHealth,
+			double currentHealth, double maxMana, double currentMana, Quest targetQuest, List<Quest> completedQuests,
+			PlayerQuestData[] questData, PlayerSkillData[] skillStatuses, ItemStack[] inventoryContents) {
+		this.fresh = fresh;
 		this.playerClassName = playerClass.getName();
 		this.location = new PersistentLocation(location);
 		this.respawnLocation = new PersistentLocation(respawnLocation);
@@ -51,7 +52,7 @@ public class PersistentPlayerCharacterDataContainer {
 		}
 		this.questData = questData;
 		this.skillStatuses = skillStatuses;
-		this.inventory = new PersistentInventory(inventory);
+		this.inventory = new PersistentInventory(inventoryContents);
 	}
 
 	public static PersistentPlayerCharacterDataContainer createSaveData(PlayerCharacter pc) {
@@ -70,10 +71,10 @@ public class PersistentPlayerCharacterDataContainer {
 		List<Quest> completedQuests = questManager.getCompletedQuests();
 		PlayerQuestData[] allQuestData = pc.getQuestManager().getQuestData();
 		PlayerSkillData[] skillStatuses = pc.getSkillManager().getAllSkillData();
-		Inventory inventory = pc.getInventory();
-		return new PersistentPlayerCharacterDataContainer(playerClass, location, respawnLocation, xp, skillUpgradePoints, currency,
-				maxHealth, currentHealth, maxMana, currentMana, targetQuest, completedQuests, allQuestData,
-				skillStatuses, inventory);
+		ItemStack[] inventoryContents = {};
+		return new PersistentPlayerCharacterDataContainer(false, playerClass, location, respawnLocation, xp,
+				skillUpgradePoints, currency, maxHealth, currentHealth, maxMana, currentMana, targetQuest,
+				completedQuests, allQuestData, skillStatuses, inventoryContents);
 	}
 
 	public static PersistentPlayerCharacterDataContainer createFreshSaveData(Player player, PlayerClass playerClass,
@@ -86,12 +87,22 @@ public class PersistentPlayerCharacterDataContainer {
 		double currentHealth = maxHealth;
 		double maxMana = 20;
 		double currentMana = maxMana;
+
+		// These are handled after the player logs in for the first time.
 		PlayerQuestData[] questData = {};
-		PlayerSkillData[] skillStatuses = {}; // TODO: MAKE SURE THIS ALLIGNS WITH PLAYER CLASS!!!
-		Inventory inventory = player.getInventory();
-		return new PersistentPlayerCharacterDataContainer(playerClass, startLocation, respawnLocation, xp, skillUpgradePoints,
-				currency, maxHealth, currentHealth, maxMana, currentMana, null, new ArrayList<>(), questData,
-				skillStatuses, inventory);
+		PlayerSkillData[] skillStatuses = {};
+
+		ItemStack[] inventoryContents = player.getInventory().getContents();
+		return new PersistentPlayerCharacterDataContainer(true, playerClass, startLocation, respawnLocation, xp,
+				skillUpgradePoints, currency, maxHealth, currentHealth, maxMana, currentMana, null, new ArrayList<>(),
+				questData, skillStatuses, inventoryContents);
+	}
+
+	/**
+	 * Returns whether this data has been used before.
+	 */
+	public boolean isFresh() {
+		return fresh;
 	}
 
 	public PlayerClass getPlayerClass() {
