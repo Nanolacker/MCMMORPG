@@ -3,6 +3,7 @@ package com.mcmmorpg.common.quest;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.mcmmorpg.common.MMORPGPlugin;
 import com.mcmmorpg.common.character.PlayerCharacter;
 import com.mcmmorpg.common.event.EventManager;
 import com.mcmmorpg.common.event.QuestCompletionEvent;
@@ -26,6 +27,9 @@ public class Quest {
 	}
 
 	public void initialize() {
+		if (MMORPGPlugin.isInitialized()) {
+			throw new IllegalStateException("Quest must be initialized during initialization of plugin");
+		}
 		for (int i = 0; i < objectives.length; i++) {
 			QuestObjective objective = objectives[i];
 			objective.initialize(this, i);
