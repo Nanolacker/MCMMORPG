@@ -3,8 +3,11 @@ package com.mcmmorpg.impl.listeners;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Sound;
+import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.material.Lever;
 
 import com.mcmmorpg.common.character.PlayerCharacter;
 import com.mcmmorpg.common.character.PlayerCharacter.PlayerCharacterCollider;
@@ -59,6 +62,21 @@ public class BulskanRuins implements Listener {
 			BulskanUndead undead = new BulskanUndead(4, location, 30);
 			undead.setAlive(true);
 		}
+	}
+
+	private void onButtonPress(PlayerInteractEvent event) {
+		Player player = event.getPlayer();
+		PlayerCharacter pc = PlayerCharacter.forPlayer(player);
+		if (pc == null) {
+			return;
+		}
+		Block clicked = event.getClickedBlock();
+		Location location = clicked.getLocation();
+		if (location == null) {
+			Lever lever = (Lever) clicked;
+			lever.setPowered(true);
+		}
+
 	}
 
 }
