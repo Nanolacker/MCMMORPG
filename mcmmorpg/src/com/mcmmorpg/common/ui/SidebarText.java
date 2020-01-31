@@ -12,6 +12,9 @@ import org.bukkit.scoreboard.ScoreboardManager;
 
 import com.mcmmorpg.common.utils.StringUtils;
 
+/**
+ * Uses scoreboards to display text on a player's sidebar.
+ */
 public class SidebarText {
 
 	private String title;
