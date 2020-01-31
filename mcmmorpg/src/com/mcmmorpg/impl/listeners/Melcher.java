@@ -7,9 +7,9 @@ public class Melcher implements Listener {
 	public Melcher() {
 		setupNpcs();
 	}
-	
+
 	private void setupNpcs() {
 		
 	}
-	
+
 }
