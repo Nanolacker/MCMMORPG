@@ -1,7 +1,15 @@
 package com.mcmmorpg.impl.listeners;
 
-public class Melcher {
+import org.bukkit.event.Listener;
 
+public class Melcher implements Listener {
+
+	public Melcher() {
+		setupNpcs();
+	}
 	
+	private void setupNpcs() {
+		
+	}
 	
 }

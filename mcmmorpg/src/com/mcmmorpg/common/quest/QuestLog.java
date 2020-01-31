@@ -1,27 +1,34 @@
 package com.mcmmorpg.common.quest;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
-import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 import com.mcmmorpg.common.character.PlayerCharacter;
 import com.mcmmorpg.common.event.EventManager;
 import com.mcmmorpg.common.event.StaticInteractableEvent;
 import com.mcmmorpg.common.item.ItemFactory;
+import com.mcmmorpg.common.ui.Menu;
 
 public class QuestLog {
 
-	private static final Map<Quest, ItemStack> interactables = new HashMap<>();
+	private static final Map<Quest, ItemStack> questsToInteractables = new HashMap<>();
+	private static final Map<ItemStack, Quest> interactablesToQuests = new HashMap<>();
 
 	static {
+		List<Quest> quests = Quest.getAll();
 		for (Quest quest : quests) {
-
+			ItemStack interactable = ItemFactory.createItemStack(quest.getName(), null, Material.BOOK);
+			ItemFactory.registerStaticInteractable(interactable);
+			questsToInteractables.put(quest, interactable);
+			interactablesToQuests.put(interactable, quest);
 		}
 		EventManager.registerEvents(new QuestLogListener());
 	}
@@ -29,38 +36,49 @@ public class QuestLog {
 	private static class QuestLogListener implements Listener {
 		@EventHandler
 		private void onInteract(StaticInteractableEvent event) {
+			Player player = event.getPlayer();
+			PlayerCharacter pc = PlayerCharacter.forPlayer(player);
+			if (pc == null) {
+				return;
+			}
 			ItemStack interactable = event.getInteractable();
-
+			Quest quest = interactablesToQuests.get(interactable);
+			pc.setTargetQuest(quest);
 		}
 	}
 
 	private final PlayerCharacter pc;
-	private final Inventory inventory;
 
 	public QuestLog(PlayerCharacter pc) {
 		this.pc = pc;
-		inventory = createInventory();
 	}
 
-	private Inventory createInventory() {
-		int questCount = 3 * 9;
-		Inventory inventory = Bukkit.createInventory(null, questCount, "Quest Log");
-		PlayerQuestManager manager = pc.getQuestManager();
-		Quest[] inProgressQuests = manager.getInProgressQuests();
-		for (int i = 0; i < questCount && i < inProgressQuests.length; i++) {
-			Quest quest = inProgressQuests[i];
-			ItemStack itemStack = getItemStack(quest);
+	private Menu createMenu() {
+		int menuSlots = 3 * 9;
+		Menu menu = new Menu("Quest Log", menuSlots);
+		List<Quest> inProgressQuests = getInProgressQuests();
+		for (int i = 0; i < menuSlots && i < inProgressQuests.size(); i++) {
+			Quest quest = inProgressQuests.get(i);
+			ItemStack interactable = questsToInteractables.get(quest);
+			menu.addInteractable(i, interactable);
 		}
-		return inventory;
+		return menu;
 	}
 
-	private ItemStack getItemStack(Quest quest) {
-		ItemStack itemStack = ItemFactory.createItemStack(quest.getName(), null, Material.PAPER);
-		ItemFactory.registerStaticInteractable(itemStack);
+	private List<Quest> getInProgressQuests() {
+		List<Quest> inProgressQuests = new ArrayList<>();
+		List<Quest> allQuests = Quest.getAll();
+		for (Quest quest : allQuests) {
+			if (quest.getStatus(pc) == QuestStatus.IN_PROGRESS) {
+				inProgressQuests.add(quest);
+			}
+		}
+		return inProgressQuests;
 	}
 
 	public void open() {
-		pc.getPlayer().openInventory(inventory);
+		Menu menu = createMenu();
+		menu.open(pc.getPlayer());
 	}
 
 }

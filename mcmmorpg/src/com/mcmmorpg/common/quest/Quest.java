@@ -1,6 +1,8 @@
 package com.mcmmorpg.common.quest;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import com.mcmmorpg.common.MMORPGPlugin;
@@ -39,6 +41,10 @@ public class Quest {
 
 	public static Quest forName(String name) {
 		return quests.get(name);
+	}
+
+	public static List<Quest> getAll() {
+		return new ArrayList<Quest>(quests.values());
 	}
 
 	public String getName() {

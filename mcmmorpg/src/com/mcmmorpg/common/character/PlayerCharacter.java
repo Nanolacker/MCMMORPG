@@ -3,7 +3,6 @@ package com.mcmmorpg.common.character;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.bukkit.Bukkit;
@@ -33,6 +32,7 @@ import com.mcmmorpg.common.quest.QuestLog;
 import com.mcmmorpg.common.quest.QuestObjective;
 import com.mcmmorpg.common.quest.QuestStatus;
 import com.mcmmorpg.common.sound.Noise;
+import com.mcmmorpg.common.sound.PlayerSoundtrackPlayer;
 import com.mcmmorpg.common.ui.ActionBarText;
 import com.mcmmorpg.common.ui.SidebarText;
 import com.mcmmorpg.common.ui.TitleMessage;
@@ -63,6 +63,7 @@ public class PlayerCharacter extends AbstractCharacter {
 	private Quest targetQuest;
 	private final PlayerQuestManager questStatusManager;
 	private final PlayerSkillManager skillStatusManager;
+	private final PlayerSoundtrackPlayer soundtrackPlayer;
 	private CharacterCollider collider;
 	private final MovementSyncer movementSyncer;
 
@@ -87,6 +88,7 @@ public class PlayerCharacter extends AbstractCharacter {
 		this.questStatusManager = new PlayerQuestManager(completedQuests, questData);
 		this.skillStatusManager = new PlayerSkillManager(this, skillData);
 		player.getInventory().setContents(inventoryContents);
+		soundtrackPlayer = new PlayerSoundtrackPlayer(player);
 		this.collider = new PlayerCharacterCollider(this);
 		this.movementSyncer = new MovementSyncer(this, player, MovementSyncMode.CHARACTER_FOLLOWS_ENTITY);
 
@@ -118,10 +120,9 @@ public class PlayerCharacter extends AbstractCharacter {
 		public PlayerCharacter getCharacter() {
 			return (PlayerCharacter) super.getCharacter();
 		}
-
 	}
 
-	public static List<PlayerCharacter> getAll() {
+	public static Collection<PlayerCharacter> getAll() {
 		return new ArrayList<PlayerCharacter>(playerMap.values());
 	}
 
@@ -366,6 +367,10 @@ public class PlayerCharacter extends AbstractCharacter {
 
 	public Inventory getInventory() {
 		return player.getInventory();
+	}
+	
+	public PlayerSoundtrackPlayer getSoundTrackPlayer() {
+		return soundtrackPlayer;
 	}
 
 	public boolean isActive() {

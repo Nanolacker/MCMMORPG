@@ -1,14 +1,14 @@
 package com.mcmmorpg.common.sound;
 
-import com.mcmmorpg.common.character.PlayerCharacter;
+import org.bukkit.entity.Player;
 
 public class PlayerSoundtrackPlayer {
 
-	private final PlayerCharacter pc;
+	private final Player player;
 	private NoiseSequencePlayer noisePlayer;
 
-	public PlayerSoundtrackPlayer(PlayerCharacter pc) {
-		this.pc = pc;
+	public PlayerSoundtrackPlayer(Player player) {
+		this.player = player;
 	}
 
 	/**
@@ -20,7 +20,7 @@ public class PlayerSoundtrackPlayer {
 			noisePlayer.stop();
 			noisePlayer = null;
 		} else {
-			noisePlayer = new NoiseSequencePlayer(soundtrack, pc.getPlayer());
+			noisePlayer = new NoiseSequencePlayer(soundtrack, player);
 			noisePlayer.setLooping(true);
 			noisePlayer.play();
 		}
