@@ -35,6 +35,7 @@ import com.mcmmorpg.common.sound.PlayerSoundtrackPlayer;
 import com.mcmmorpg.common.ui.ActionBarText;
 import com.mcmmorpg.common.ui.SidebarText;
 import com.mcmmorpg.common.ui.TitleMessage;
+import com.mcmmorpg.common.utils.Debug;
 import com.mcmmorpg.common.utils.StringUtils;
 
 public class PlayerCharacter extends AbstractCharacter {
@@ -82,6 +83,7 @@ public class PlayerCharacter extends AbstractCharacter {
 		this.xp = xp;
 		this.skillUpgradePoints = skillUpgradePoints;
 		this.currency = currency;
+		super.setCurrentHealth(currentHealth);
 		this.currentMana = currentMana;
 		this.maxMana = maxMana;
 		this.targetQuest = targetQuest;
@@ -95,13 +97,16 @@ public class PlayerCharacter extends AbstractCharacter {
 		this.movementSyncer = new MovementSyncer(this, player, MovementSyncMode.CHARACTER_FOLLOWS_ENTITY);
 		movementSyncer.setEnabled(true);
 		collider.setActive(true);
-		updateQuestDisplay();
-		updateXpDisplay();
-		updateActionBar();
 
 		active = true;
 		setAlive(true);
 		playerMap.put(player, this);
+
+		updateActionBar();
+		updateQuestDisplay();
+		updateXpDisplay();
+		updateHealthDisplay();
+		updateManaDisplay();
 
 		if (fresh) {
 			PlayerCharacterLevelUpEvent event = new PlayerCharacterLevelUpEvent(this, 1);
@@ -216,6 +221,17 @@ public class PlayerCharacter extends AbstractCharacter {
 		bar.apply(player);
 	}
 
+	private void updateHealthDisplay() {
+		double proportion = getCurrentHealth() / getMaxHealth();
+		player.setHealth(proportion * 20);
+	}
+
+	private void updateManaDisplay() {
+		double proportion = currentMana / maxMana;
+		int foodLevel = (int) Math.ceil(proportion * 20);
+		player.setFoodLevel(foodLevel);
+	}
+
 	public int getXP() {
 		return xp;
 	}
@@ -296,8 +312,32 @@ public class PlayerCharacter extends AbstractCharacter {
 		return maxMana;
 	}
 
+	public void setMaxMana(double maxMana) {
+		this.maxMana = maxMana;
+		updateActionBar();
+	}
+
+	@Override
+	public void setCurrentHealth(double currentHealth) {
+		super.setCurrentHealth(currentHealth);
+		updateActionBar();
+	}
+
+	@Override
+	public void setMaxHealth(double maxHealth) {
+		super.setMaxHealth(maxHealth);
+		updateActionBar();
+		updateHealthDisplay();
+	}
+
 	public double getCurrentMana() {
 		return currentMana;
+	}
+
+	public void setCurrentMana(double currentMana) {
+		this.currentMana = currentMana;
+		updateActionBar();
+		updateManaDisplay();
 	}
 
 	public Quest getTargetQuest() {
@@ -354,7 +394,8 @@ public class PlayerCharacter extends AbstractCharacter {
 					progressText = ChatColor.GREEN + "";
 				}
 				progressText += progress + "" + ChatColor.WHITE + "/" + ChatColor.GREEN + "" + goal;
-				objectivesText += "-" + objective.getDescription() + " " + progressText + ChatColor.RESET + "\n\n";
+				objectivesText += progressText + " " + ChatColor.RESET + objective.getDescription() + ChatColor.RESET
+						+ "\n";
 			}
 			SidebarText questDisplay = new SidebarText(questTitle, objectivesText);
 			questDisplay.apply(player);

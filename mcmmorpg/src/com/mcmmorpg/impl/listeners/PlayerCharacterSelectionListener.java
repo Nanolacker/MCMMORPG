@@ -61,7 +61,7 @@ public class PlayerCharacterSelectionListener implements Listener {
 
 	@EventHandler
 	private void onJoin(PlayerJoinEvent event) {
-		event.setJoinMessage("Test join message");
+		event.setJoinMessage(null);
 		Player player = event.getPlayer();
 		player.teleport(LOBBY_SPAWN);
 		Inventory inventory = player.getInventory();
@@ -74,7 +74,6 @@ public class PlayerCharacterSelectionListener implements Listener {
 
 	@EventHandler
 	private void onQuit(PlayerQuitEvent event) {
-		event.setQuitMessage("Test quit message");
 		Player player = event.getPlayer();
 		PlayerCharacter pc = PlayerCharacter.forPlayer(player);
 		if (pc != null) {

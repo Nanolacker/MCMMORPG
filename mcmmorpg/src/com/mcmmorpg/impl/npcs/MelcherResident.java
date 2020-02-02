@@ -18,7 +18,7 @@ public class MelcherResident extends NonPlayerCharacter {
 	@Override
 	protected void spawn() {
 		super.spawn();
-		villager = (Villager) spawnLocation.getWorld().spawnEntity(spawnLocation, EntityType.ZOMBIE);
+		villager = (Villager) spawnLocation.getWorld().spawnEntity(spawnLocation, EntityType.VILLAGER);
 		villager.setRemoveWhenFarAway(false);
 		villager.setAI(false);
 		villager.setInvulnerable(true);

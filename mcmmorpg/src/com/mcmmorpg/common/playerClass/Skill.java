@@ -13,11 +13,14 @@ import com.mcmmorpg.common.event.EventManager;
 import com.mcmmorpg.common.event.SkillUseEvent;
 import com.mcmmorpg.common.item.ItemFactory;
 import com.mcmmorpg.common.time.RepeatingTask;
+import com.mcmmorpg.common.utils.Debug;
+
+import net.md_5.bungee.api.ChatColor;
 
 public final class Skill implements Listener {
 
 	private static final double COOLDOWN_UPDATE_PERIOD_SECONDS = 0.1;
-	private static final Material NON_UNLOCKABLE_MATERIAL = Material.BARRIER;
+	private static final Material LOCKED_MATERIAL = Material.BARRIER;
 
 	private final String name;
 	private final String description;
@@ -33,7 +36,7 @@ public final class Skill implements Listener {
 	private final int skillTreeColumn;
 	private final Material icon;
 	private transient PlayerClass playerClass;
-	private final transient ItemStack hotbarItemStack;
+	private transient ItemStack hotbarItemStack;
 
 	public Skill(String name, String description, int manaCost, int cooldown, int minimumLevel,
 			String prerequisiteSkill, int maximumUpgradeLevel, int skillTreeRow, int skillTreeColumn, Material icon) {
@@ -47,16 +50,12 @@ public final class Skill implements Listener {
 		this.skillTreeRow = skillTreeRow;
 		this.skillTreeColumn = skillTreeColumn;
 		this.icon = icon;
-		hotbarItemStack = createHotbarItemStack();
-	}
-
-	private ItemStack createHotbarItemStack() {
-		ItemStack item = ItemFactory.createItemStack(name, "level " + minimumLevel + "\n" + description, icon);
-		return item;
 	}
 
 	void initialize(PlayerClass playerClass) {
 		this.playerClass = playerClass;
+		hotbarItemStack = createHotbarItemStack();
+		EventManager.registerEvents(this);
 	}
 
 	public String getName() {
@@ -110,21 +109,39 @@ public final class Skill implements Listener {
 	void upgrade(PlayerCharacter pc) {
 		PlayerSkillManager manager = pc.getSkillManager();
 		PlayerSkillData data = manager.getSkillData(this);
-		int newLevel = data.getUpgradeLevel() + 1;
-		data.setUpgradeLevel(newLevel);
-		pc.sendMessage(name + " upgraded to level " + newLevel);
+		if (data == null) {
+			// unlock
+			manager.unlockSkill(this);
+			pc.sendMessage(name + " unlocked!");
+		} else {
+			// upgrade
+			int newLevel = data.getUpgradeLevel() + 1;
+			data.setUpgradeLevel(newLevel);
+			pc.sendMessage(name + " upgraded to level " + newLevel);
+		}
 	}
 
 	ItemStack getHotbarItemStack() {
 		return hotbarItemStack;
 	}
 
+	private ItemStack createHotbarItemStack() {
+		ItemStack item = ItemFactory.createItemStack(name, "level " + minimumLevel + "\n" + description, icon);
+		return item;
+	}
+
 	ItemStack getSkillTreeItemStack(PlayerCharacter pc) {
 		PlayerSkillManager manager = pc.getSkillManager();
 		PlayerSkillData data = manager.getSkillData(this);
-		int level = data == null ? 0 : data.getUpgradeLevel();
-		Material material = prerequisitesAreMet(pc) ? icon : NON_UNLOCKABLE_MATERIAL;
-		ItemStack itemStack = ItemFactory.createItemStack(name + " level " + level, description, material);
+		int upgradeLevel = data == null ? 0 : data.getUpgradeLevel();
+		Material material = isUnlocked(pc) ? icon : LOCKED_MATERIAL;
+		StringBuilder lore = new StringBuilder();
+		lore.append(ChatColor.GOLD + "Level " + minimumLevel + " skill");
+		lore.append("\nUpgraded " + upgradeLevel + "/" + maximumUpgradeLevel);
+		lore.append(ChatColor.AQUA + "\nCost: " + manaCost);
+		lore.append(ChatColor.YELLOW + "\nCooldown: " + cooldown);
+		lore.append(ChatColor.WHITE + "\n" + description);
+		ItemStack itemStack = ItemFactory.createItemStack(ChatColor.GREEN + name, lore.toString(), material);
 		return itemStack;
 	}
 
@@ -140,8 +157,13 @@ public final class Skill implements Listener {
 		}
 		Inventory inventory = player.getInventory();
 		int slot = event.getNewSlot();
-		if (inventory.getItem(slot) == hotbarItemStack) {
-			this.use(pc);
+		ItemStack itemStack = inventory.getItem(slot);
+		if (itemStack == null) {
+			return;
+		}
+		ItemStack sizeOfOne = itemStack.clone();
+		sizeOfOne.setAmount(1);
+		if (sizeOfOne.equals(hotbarItemStack)) {
 			event.setCancelled(true);
 			if (isOnCooldown(pc)) {
 				pc.sendMessage("On cooldown!");
@@ -156,7 +178,7 @@ public final class Skill implements Listener {
 	private void use(PlayerCharacter pc) {
 		SkillUseEvent event = new SkillUseEvent(pc, this);
 		EventManager.callEvent(event);
-		pc.setMaxHealth(pc.getCurrentMana() - manaCost);
+		pc.setCurrentMana(pc.getCurrentMana() - manaCost);
 		cooldown(pc, cooldown);
 	}
 
@@ -204,10 +226,16 @@ public final class Skill implements Listener {
 		Inventory inventory = pc.getInventory();
 		for (int i = 0; i < 9; i++) {
 			ItemStack itemStack = inventory.getItem(i);
+			if (itemStack == null) {
+				continue;
+			}
 			ItemStack sizeOfOne = itemStack.clone();
-			itemStack.setAmount(1);
+			sizeOfOne.setAmount(1);
 			if (sizeOfOne.equals(this.hotbarItemStack)) {
-				itemStack.setAmount((int) Math.ceil(cooldownSeconds));
+				int newAmount = (int) Math.ceil(cooldownSeconds);
+				if (itemStack.getAmount() != newAmount) {
+					itemStack.setAmount(newAmount);
+				}
 				return;
 			}
 		}

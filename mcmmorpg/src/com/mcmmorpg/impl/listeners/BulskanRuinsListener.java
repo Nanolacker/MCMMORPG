@@ -7,14 +7,16 @@ import org.bukkit.Location;
 import org.bukkit.Sound;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.material.Lever;
 
 import com.mcmmorpg.common.character.PlayerCharacter;
 import com.mcmmorpg.common.character.PlayerCharacter.PlayerCharacterCollider;
+import com.mcmmorpg.common.event.PlayerCharacterLevelUpEvent;
 import com.mcmmorpg.common.physics.Collider;
-import com.mcmmorpg.common.physics.Collider.ColliderDrawMode;
+import com.mcmmorpg.common.quest.Quest;
 import com.mcmmorpg.common.sound.Noise;
 import com.mcmmorpg.common.sound.PersistentSoundSequenceDataContainer;
 import com.mcmmorpg.common.sound.SoundSequence;
@@ -47,7 +49,7 @@ public class BulskanRuinsListener implements Listener {
 		TitleMessage entranceMessage = new TitleMessage(ChatColor.GRAY + "Bulskan Ruins", ChatColor.GOLD + "Level 5");
 		TitleMessage exitMessage = new TitleMessage(ChatColor.GREEN + "Melcher", ChatColor.GOLD + "Level 1");
 		Noise entranceNoise = new Noise(Sound.ENTITY_WITHER_SPAWN);
-		Collider entranceCollider = new Collider(Worlds.ELADRADOR, 135, 65, -57, 207, 74, -17) {
+		Collider entranceCollider = new Collider(Worlds.ELADRADOR, 135, 65, -57, 207, 85, -17) {
 			@Override
 			public void onCollisionEnter(Collider other) {
 				if (other instanceof PlayerCharacterCollider) {
@@ -64,7 +66,7 @@ public class BulskanRuinsListener implements Listener {
 			}
 		};
 
-		Collider exitCollider = new Collider(Worlds.ELADRADOR, 125, 65, 0, 215, 85, -7) {
+		Collider exitCollider = new Collider(Worlds.ELADRADOR, 129, 0, -63, 210, 85, -13) {
 			@Override
 			public void onCollisionExit(Collider other) {
 				if (other instanceof PlayerCharacterCollider) {
@@ -85,7 +87,6 @@ public class BulskanRuinsListener implements Listener {
 	}
 
 	private void spawnNpcs() {
-		Debug.log("Spawning zombies");
 		Location[] undeadLocations = { new Location(Worlds.ELADRADOR, 174, 67, -35),
 				new Location(Worlds.ELADRADOR, 170, 67, -33) };
 		for (Location location : undeadLocations) {
@@ -94,19 +95,27 @@ public class BulskanRuinsListener implements Listener {
 		}
 	}
 
+	@EventHandler
 	private void onButtonPress(PlayerInteractEvent event) {
 		Player player = event.getPlayer();
 		PlayerCharacter pc = PlayerCharacter.forPlayer(player);
 		if (pc == null) {
 			return;
 		}
-		Block clicked = event.getClickedBlock();
-		Location location = clicked.getLocation();
-		if (location == null) {
-			Lever lever = (Lever) clicked;
-			lever.setPowered(true);
-		}
+//		Block clicked = event.getClickedBlock();
+//		Location location = clicked.getLocation();
+//		if (location == null) {
+//			Lever lever = (Lever) clicked;
+//			lever.setPowered(true);
+//		}
+	}
 
+	@EventHandler
+	private void onLevel1(PlayerCharacterLevelUpEvent event) {
+		PlayerCharacter pc = event.getPlayerCharacter();
+		pc.setSkillUpgradePoints(1);
+		Quest quest = Quest.forName("Saving the Farm");
+		quest.start(pc);
 	}
 
 }

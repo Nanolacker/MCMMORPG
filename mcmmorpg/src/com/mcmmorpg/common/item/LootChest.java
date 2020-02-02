@@ -17,12 +17,13 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 
 import com.mcmmorpg.common.character.PlayerCharacter;
+import com.mcmmorpg.common.time.DelayedTask;
 import com.mcmmorpg.common.time.RepeatingTask;
-import com.mcmmorpg.common.utils.Debug;
 
 public class LootChest {
 
-	private static final double PARTICLE_TASK_PERIOD_SECONDS = 1;
+	private static final int MAX_SPAWN_RADIUS = 5;
+	private static final double PARTICLE_TASK_PERIOD_SECONDS = 1.5;
 	private static final int PARTICLE_COUNT = 3;
 
 	private static final Map<Location, LootChest> chestMap = new HashMap<>();
@@ -57,14 +58,53 @@ public class LootChest {
 	private final Location location;
 	private final Particle aura;
 	private final ItemStack[] contents;
+	private boolean removed;
 
-	public LootChest(Location location, Material material, Particle aura, ItemStack[] contents) {
-		this.location = location;
+	/**
+	 * The default loot chest.
+	 */
+	public LootChest(Location location, ItemStack[] contents) {
+		this(location, Material.CHEST, Particle.VILLAGER_HAPPY, 30, contents);
+	}
+
+	public LootChest(Location location, Material material, Particle aura, double lifetimeSeconds,
+			ItemStack[] contents) {
+		this.location = getNearestEmptyBlock(location);
 		this.aura = aura;
 		this.contents = contents;
-		Block block = location.getBlock();
+		if (location == null) {
+			return;
+		}
+		this.removed = false;
+		Block block = this.location.getBlock();
 		block.setType(material);
-		chestMap.put(location, this);
+		chestMap.put(this.location, this);
+		new DelayedTask(lifetimeSeconds) {
+			@Override
+			protected void run() {
+				LootChest.this.remove();
+			}
+		}.schedule();
+	}
+
+	private Location getNearestEmptyBlock(Location location) {
+		World world = location.getWorld();
+		int baseX = location.getBlockX();
+		int baseY = location.getBlockY();
+		int baseZ = location.getBlockZ();
+		for (int radius = 0; radius <= MAX_SPAWN_RADIUS; radius++) {
+			for (int x = -radius; x <= radius; x++) {
+				for (int y = -radius; y <= radius; y++) {
+					for (int z = -radius; z <= radius; z++) {
+						Block block = world.getBlockAt(baseX + x, baseY + y, baseZ + z);
+						if (block.getType() == Material.AIR) {
+							return block.getLocation();
+						}
+					}
+				}
+			}
+		}
+		return null;
 	}
 
 	void open(PlayerCharacter pc) {
@@ -75,8 +115,12 @@ public class LootChest {
 	}
 
 	public void remove() {
+		if (removed) {
+			return;
+		}
 		chestMap.remove(location);
 		location.getBlock().setType(Material.AIR);
+		removed = true;
 	}
 
 	private void spawnParticles() {

@@ -6,12 +6,13 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
+import org.bukkit.inventory.EquipmentSlot;
 
 import com.mcmmorpg.common.character.PlayerCharacter;
 import com.mcmmorpg.common.event.EventManager;
 import com.mcmmorpg.common.quest.Quest;
+import com.mcmmorpg.common.quest.QuestObjective;
 import com.mcmmorpg.common.quest.QuestStatus;
-import com.mcmmorpg.common.utils.Debug;
 
 public class MelcherFarmer extends MelcherResident implements Listener {
 
@@ -27,9 +28,11 @@ public class MelcherFarmer extends MelcherResident implements Listener {
 		if (pc == null) {
 			return;
 		}
+		if (event.getHand() != EquipmentSlot.HAND) {
+			return;
+		}
 		Entity clicked = event.getRightClicked();
 		if (clicked == villager) {
-			Debug.log("farmer clicked");
 			interactWithPlayer(pc);
 		}
 	}
@@ -37,17 +40,16 @@ public class MelcherFarmer extends MelcherResident implements Listener {
 	private void interactWithPlayer(PlayerCharacter pc) {
 		Quest savingTheFarm = Quest.forName("Saving the Farm");
 		QuestStatus status = savingTheFarm.getStatus(pc);
-		if (status == QuestStatus.NOT_STARTED) {
-			savingTheFarm.start(pc);
-			pc.sendMessage("Farmer: Kill some bandits.");
-		} else if (status == QuestStatus.IN_PROGRESS) {
-			if (savingTheFarm.getObjectives()[0].isComplete(pc)) {
-				pc.sendMessage("You did it!");
+		if (status == QuestStatus.IN_PROGRESS) {
+			QuestObjective obj1 = savingTheFarm.getObjectives()[0];
+			if (!obj1.isComplete(pc)) {
+				obj1.setProgress(pc, 1);
+				pc.sendMessage("Farmer: Go on now!");
 			} else {
-				pc.sendMessage("Go on now");
+				QuestObjective obj2 = savingTheFarm.getObjectives()[1];
+				obj2.setProgress(pc, 3);
 			}
-			pc.sendMessage("Farmer: Go on now.");
-		} else {
+		} else if (status == QuestStatus.COMPLETED) {
 			pc.sendMessage("Farmer: I appreciate the help.");
 		}
 	}

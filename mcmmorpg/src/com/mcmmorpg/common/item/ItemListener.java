@@ -1,18 +1,22 @@
 package com.mcmmorpg.common.item;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.Particle;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
+import org.bukkit.event.entity.ItemDespawnEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
@@ -21,8 +25,11 @@ import com.mcmmorpg.common.event.EventManager;
 import com.mcmmorpg.common.event.PlayerCharacterUseConsumableEvent;
 import com.mcmmorpg.common.event.PlayerCharacterUseWeaponEvent;
 import com.mcmmorpg.common.event.StaticInteractableEvent;
+import com.mcmmorpg.common.utils.Debug;
 
 class ItemListener implements Listener {
+
+	private Map<Item, PlayerCharacter> droppedItemMap = new HashMap<>();
 
 	@EventHandler
 	private void onClickItem(InventoryClickEvent event) {
@@ -92,7 +99,28 @@ class ItemListener implements Listener {
 		if (pc == null) {
 			return;
 		}
-		item.remove();
+		droppedItemMap.put(item, pc);
+	}
+
+	@EventHandler
+	private void onPickupItem(PlayerPickupItemEvent event) {
+		Player player = event.getPlayer();
+		PlayerCharacter pc = PlayerCharacter.forPlayer(player);
+		if (pc == null) {
+			return;
+		}
+		Item item = event.getItem();
+		if (droppedItemMap.get(item) == pc) {
+			droppedItemMap.remove(item);
+		} else {
+			event.setCancelled(true);
+		}
+	}
+
+	@EventHandler
+	private void onItemDespawn(ItemDespawnEvent event) {
+		Item item = event.getEntity();
+		droppedItemMap.remove(item);
 	}
 
 	@EventHandler
@@ -111,11 +139,6 @@ class ItemListener implements Listener {
 		if (chest != null) {
 			chest.open(pc);
 			chest.remove();
-		} else {
-			ItemStack[] contents = new ItemStack[9];
-			ItemStack is = new ItemStack(Material.WOODEN_AXE);
-			contents = new ItemStack[] { is, is, is, is, is, is, is, is, is };
-			new LootChest(location.add(0, 1, 0), Material.HAY_BLOCK, Particle.VILLAGER_HAPPY, contents);
 		}
 	}
 

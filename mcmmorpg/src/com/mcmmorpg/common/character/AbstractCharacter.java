@@ -155,6 +155,14 @@ public abstract class AbstractCharacter {
 		updateNameplateText();
 	}
 
+	public void damage(double amount) {
+
+	}
+
+	public void heal(double amount) {
+
+	}
+
 	/**
 	 * Returns this character's max health.
 	 */
