@@ -2,6 +2,7 @@ package com.mcmmorpg.common.ui;
 
 import org.bukkit.entity.Player;
 
+import com.mcmmorpg.common.character.PlayerCharacter;
 import com.mcmmorpg.common.utils.MathUtils;
 
 public class TitleMessage {
@@ -31,6 +32,10 @@ public class TitleMessage {
 
 	public void sendTo(Player player) {
 		player.sendTitle(title, subtitle, fadeInTicks, stayTicks, fadeOutTicks);
+	}
+	
+	public void sendTo(PlayerCharacter pc) {
+		sendTo(pc.getPlayer());
 	}
 
 }

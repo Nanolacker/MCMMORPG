@@ -94,7 +94,7 @@ public class SkillTree implements Listener {
 			}
 
 		} else {
-			// add to inventoryS
+			// add to inventory
 			if (!skill.isUnlocked(pc)) {
 				pc.sendMessage(skill.getName() + " is not unlocked");
 				return;

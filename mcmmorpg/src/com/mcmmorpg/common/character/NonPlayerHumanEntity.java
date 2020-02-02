@@ -9,6 +9,7 @@ import org.bukkit.craftbukkit.v1_14_R1.CraftWorld;
 import org.bukkit.craftbukkit.v1_14_R1.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 
+import com.mcmmorpg.common.utils.Debug;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
 
@@ -24,7 +25,7 @@ import net.minecraft.server.v1_14_R1.WorldServer;
 /**
  * Allows for the creation of non-player human entities.
  */
-public class NonPlayerHuman {
+public class NonPlayerHumanEntity {
 
 	private final String name;
 	private Location location;
@@ -33,7 +34,7 @@ public class NonPlayerHuman {
 	private String texture;
 	private String signature;
 
-	public NonPlayerHuman(String name, Location location, String texture, String signature) {
+	public NonPlayerHumanEntity(String name, Location location, String texture, String signature) {
 		this.name = name;
 		this.location = location;
 		this.texture = texture;
@@ -57,7 +58,7 @@ public class NonPlayerHuman {
 	}
 
 	public void remove() {
-
+		entityPlayer.killEntity();
 	}
 
 	public void show(Player player) {
@@ -67,6 +68,10 @@ public class NonPlayerHuman {
 		PacketPlayOutNamedEntitySpawn packetPlayOutNamedEntitySpawn = new PacketPlayOutNamedEntitySpawn(entityPlayer);
 		playerConnection.sendPacket(packetPlayOutPlayerInfo);
 		playerConnection.sendPacket(packetPlayOutNamedEntitySpawn);
+	}
+
+	public void hide(Player player) {
+
 	}
 
 	public Location getLocation() {

@@ -6,12 +6,12 @@ import org.bukkit.event.HandlerList;
 /**
  * This is a template for writing custom Events.
  */
-class EventTemplate extends Event {
+public class EventTemplate extends Event {
 
 	private static final HandlerList handlers = new HandlerList();
 
 	// Fields go here.
-	
+
 	// Constructor goes here.
 
 	public static HandlerList getHandlerList() {

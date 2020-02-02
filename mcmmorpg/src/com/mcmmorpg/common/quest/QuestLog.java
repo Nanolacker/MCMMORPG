@@ -9,13 +9,13 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 import com.mcmmorpg.common.character.PlayerCharacter;
 import com.mcmmorpg.common.event.EventManager;
 import com.mcmmorpg.common.event.StaticInteractableEvent;
 import com.mcmmorpg.common.item.ItemFactory;
-import com.mcmmorpg.common.ui.Menu;
 
 public class QuestLog {
 
@@ -53,16 +53,17 @@ public class QuestLog {
 		this.pc = pc;
 	}
 
-	private Menu createMenu() {
-		int menuSlots = 3 * 9;
-		Menu menu = new Menu("Quest Log", menuSlots);
-		List<Quest> inProgressQuests = getInProgressQuests();
-		for (int i = 0; i < menuSlots && i < inProgressQuests.size(); i++) {
-			Quest quest = inProgressQuests.get(i);
-			ItemStack interactable = questsToInteractables.get(quest);
-			menu.addInteractable(i, interactable);
-		}
-		return menu;
+	private Inventory createInventory() {
+		int slots = 3 * 9;
+//		Inventory inventory = new Menu("Quest Log", menuSlots);
+//		List<Quest> inProgressQuests = getInProgressQuests();
+//		for (int i = 0; i < menuSlots && i < inProgressQuests.size(); i++) {
+//			Quest quest = inProgressQuests.get(i);
+//			ItemStack interactable = questsToInteractables.get(quest);
+//			menu.addItem(i, interactable);
+//		}
+//		return menu;
+		return null;
 	}
 
 	private List<Quest> getInProgressQuests() {
@@ -77,8 +78,8 @@ public class QuestLog {
 	}
 
 	public void open() {
-		Menu menu = createMenu();
-		menu.open(pc.getPlayer());
+//		Menu menu = createMenu();
+//		menu.open(pc.getPlayer());
 	}
 
 }

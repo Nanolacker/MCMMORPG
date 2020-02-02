@@ -3,9 +3,9 @@ package com.mcmmorpg.common.sound;
 import java.util.ArrayList;
 import java.util.List;
 
-public class NoiseSequence {
+public class SoundSequence {
 
-	private List<NoiseSequenceNode> nodes;
+	private List<SoundSequenceNode> nodes;
 	/**
 	 * In seconds.
 	 */
@@ -15,21 +15,19 @@ public class NoiseSequence {
 	 * 
 	 * @param duration in seconds
 	 */
-	public NoiseSequence(double duration) {
+	public SoundSequence(double duration) {
 		nodes = new ArrayList<>();
 		this.duration = duration;
 	}
 
 	/**
-	 * 
-	 * @param noise
-	 * @param time  the second at which the noise should play in the sequence
+	 * @param time the second at which the noise should play in the sequence
 	 */
-	public void add(Noise noise, double time) {
+	public void add(Noise sound, double time) {
 		if (time > duration) {
 			throw new IllegalArgumentException("Time is greater than duration");
 		}
-		NoiseSequenceNode node = new NoiseSequenceNode(noise, time);
+		SoundSequenceNode node = new SoundSequenceNode(sound, time);
 		nodes.add(node);
 	}
 
@@ -42,22 +40,21 @@ public class NoiseSequence {
 		return duration;
 	}
 
-	List<NoiseSequenceNode> getNodes() {
+	List<SoundSequenceNode> getNodes() {
 		return nodes;
 	}
 
-	static class NoiseSequenceNode {
-
-		private final Noise noise;
+	static class SoundSequenceNode {
+		private final Noise sound;
 		private final double time;
 
-		NoiseSequenceNode(Noise noise, double timeSeconds) {
-			this.noise = noise;
+		SoundSequenceNode(Noise sound, double timeSeconds) {
+			this.sound = sound;
 			this.time = timeSeconds;
 		}
 
-		Noise getNoise() {
-			return noise;
+		Noise getSound() {
+			return sound;
 		}
 
 		/**
@@ -66,7 +63,6 @@ public class NoiseSequence {
 		double getTime() {
 			return time;
 		}
-
 	}
 
 }

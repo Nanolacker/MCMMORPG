@@ -40,7 +40,7 @@ public class BulskanUndead extends NonPlayerCharacter {
 	public void spawn() {
 		super.spawn();
 		hitbox.setActive(true);
-		zombie = (Zombie) spawnLocation.getWorld().spawnEntity(spawnLocation, EntityType.ZOMBIE);
+		zombie = (Zombie) spawnLocation.getWorld().spawnEntity(spawnLocation, EntityType.HUSK);
 		zombie.setBaby(false);
 		zombie.setInvulnerable(true);
 		zombie.setRemoveWhenFarAway(false);

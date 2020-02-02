@@ -60,4 +60,8 @@ public class StringUtils {
 		return paragraph;
 	}
 
+	public static boolean isNumeric(String s) {
+		return s.matches("-?\\d+(\\.\\d+)?");
+	}
+
 }

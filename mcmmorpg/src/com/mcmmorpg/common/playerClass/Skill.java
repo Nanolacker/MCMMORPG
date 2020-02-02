@@ -47,10 +47,10 @@ public final class Skill implements Listener {
 		this.skillTreeRow = skillTreeRow;
 		this.skillTreeColumn = skillTreeColumn;
 		this.icon = icon;
-		hotbarItemStack = createItemStack();
+		hotbarItemStack = createHotbarItemStack();
 	}
 
-	private ItemStack createItemStack() {
+	private ItemStack createHotbarItemStack() {
 		ItemStack item = ItemFactory.createItemStack(name, "level " + minimumLevel + "\n" + description, icon);
 		return item;
 	}

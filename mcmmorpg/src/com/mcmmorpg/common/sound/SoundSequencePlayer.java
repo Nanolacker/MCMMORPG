@@ -2,19 +2,18 @@ package com.mcmmorpg.common.sound;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Consumer;
 
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
-import com.mcmmorpg.common.sound.NoiseSequence.NoiseSequenceNode;
+import com.mcmmorpg.common.sound.SoundSequence.SoundSequenceNode;
 import com.mcmmorpg.common.time.DelayedTask;
 import com.mcmmorpg.common.time.GameClock;
 
-import io.netty.util.internal.shaded.org.jctools.queues.MessagePassingQueue.Consumer;
+public class SoundSequencePlayer {
 
-public class NoiseSequencePlayer {
-
-	private final NoiseSequence sequence;
+	private final SoundSequence sequence;
 	private final Consumer<Noise> noisePlayer;
 	private final List<DelayedTask> playTasks;
 	private boolean loop;
@@ -28,19 +27,19 @@ public class NoiseSequencePlayer {
 	 */
 	private double startTime;
 
-	public NoiseSequencePlayer(NoiseSequence sequence, Player player) {
+	public SoundSequencePlayer(SoundSequence sequence, Player player) {
 		this(sequence, noise -> noise.play(player));
 	}
 
-	public NoiseSequencePlayer(NoiseSequence sequence, Player player, Location source) {
+	public SoundSequencePlayer(SoundSequence sequence, Player player, Location source) {
 		this(sequence, noise -> noise.play(player, source));
 	}
 
-	public NoiseSequencePlayer(NoiseSequence sequence, Location source) {
+	public SoundSequencePlayer(SoundSequence sequence, Location source) {
 		this(sequence, noise -> noise.play(source));
 	}
 
-	private NoiseSequencePlayer(NoiseSequence sequence, Consumer<Noise> noisePlayer) {
+	private SoundSequencePlayer(SoundSequence sequence, Consumer<Noise> noisePlayer) {
 		this.sequence = sequence;
 		this.noisePlayer = noisePlayer;
 		playTasks = new ArrayList<>();
@@ -75,14 +74,14 @@ public class NoiseSequencePlayer {
 		}
 		isPlaying = true;
 		startTime = GameClock.getTime();
-		
-		List<NoiseSequenceNode> nodes = sequence.getNodes();
-		for (NoiseSequenceNode node : nodes) {
+
+		List<SoundSequenceNode> nodes = sequence.getNodes();
+		for (SoundSequenceNode node : nodes) {
 			double time = node.getTime();
 			if (time < timeStamp) {
 				continue;
 			}
-			Noise noise = node.getNoise();
+			Noise noise = node.getSound();
 			double delay = time - timeStamp;
 			DelayedTask playTask = new DelayedTask(delay) {
 				@Override
