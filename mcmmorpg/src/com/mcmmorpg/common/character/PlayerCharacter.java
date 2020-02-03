@@ -35,7 +35,6 @@ import com.mcmmorpg.common.sound.PlayerSoundtrackPlayer;
 import com.mcmmorpg.common.ui.ActionBarText;
 import com.mcmmorpg.common.ui.SidebarText;
 import com.mcmmorpg.common.ui.TitleMessage;
-import com.mcmmorpg.common.utils.Debug;
 import com.mcmmorpg.common.utils.StringUtils;
 
 public class PlayerCharacter extends AbstractCharacter {

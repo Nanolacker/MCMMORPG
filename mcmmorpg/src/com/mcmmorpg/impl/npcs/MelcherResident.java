@@ -3,6 +3,7 @@ package com.mcmmorpg.impl.npcs;
 import org.bukkit.Location;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Villager;
+
 import com.mcmmorpg.common.character.NonPlayerCharacter;
 
 public class MelcherResident extends NonPlayerCharacter {

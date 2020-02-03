@@ -1,7 +1,6 @@
 package com.mcmmorpg.common.persistence;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import org.bukkit.Location;
@@ -14,7 +13,6 @@ import com.mcmmorpg.common.playerClass.PlayerSkillData;
 import com.mcmmorpg.common.quest.PlayerQuestData;
 import com.mcmmorpg.common.quest.PlayerQuestManager;
 import com.mcmmorpg.common.quest.Quest;
-import com.mcmmorpg.common.utils.Debug;
 
 public class PersistentPlayerCharacterDataContainer {
 
