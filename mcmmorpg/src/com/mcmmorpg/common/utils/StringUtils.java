@@ -122,4 +122,8 @@ public class StringUtils {
 		return token.substring(0, i + 1);
 	}
 
+	public static boolean isNumeric(String s) {
+		return s.matches("-?\\d+(\\.\\d+)?");
+	}
+
 }

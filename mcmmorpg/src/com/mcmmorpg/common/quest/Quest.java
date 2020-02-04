@@ -19,12 +19,12 @@ public class Quest {
 	}
 
 	private final String name;
-	private final int recommendedLevel;
+	private final int level;
 	private final QuestObjective[] objectives;
 
-	public Quest(String name, int recommendedLevel, QuestObjective[] objectives) {
+	public Quest(String name, int level, QuestObjective[] objectives) {
 		this.name = name;
-		this.recommendedLevel = recommendedLevel;
+		this.level = level;
 		this.objectives = objectives;
 	}
 
@@ -51,8 +51,8 @@ public class Quest {
 		return name;
 	}
 
-	public int getRecommendedLevel() {
-		return recommendedLevel;
+	public int getLevel() {
+		return level;
 	}
 
 	public QuestObjective[] getObjectives() {

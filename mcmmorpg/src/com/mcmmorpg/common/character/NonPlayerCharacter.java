@@ -8,6 +8,8 @@ import javax.annotation.OverridingMethodsMustInvokeSuper;
 import org.bukkit.Location;
 
 import com.mcmmorpg.common.MMORPGPlugin;
+import com.mcmmorpg.common.event.EventManager;
+import com.mcmmorpg.common.event.NonPlayerCharacterSpawnEvent;
 import com.mcmmorpg.common.time.RepeatingTask;
 
 /**
@@ -81,6 +83,8 @@ public abstract class NonPlayerCharacter extends AbstractCharacter {
 	 */
 	@OverridingMethodsMustInvokeSuper
 	protected void spawn() {
+		NonPlayerCharacterSpawnEvent event = new NonPlayerCharacterSpawnEvent(this);
+		EventManager.callEvent(event);
 		spawned = true;
 		setNameplateVisible(true);
 	}

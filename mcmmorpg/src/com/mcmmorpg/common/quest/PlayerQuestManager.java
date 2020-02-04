@@ -1,9 +1,12 @@
 package com.mcmmorpg.common.quest;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import com.mcmmorpg.common.utils.Debug;
 
 public class PlayerQuestManager {
 
@@ -11,7 +14,7 @@ public class PlayerQuestManager {
 	private final Map<Quest, PlayerQuestData> questDataMap;
 
 	public PlayerQuestManager(Quest[] completedQuests, PlayerQuestData[] questDatas) {
-		this.completedQuests = Arrays.asList(completedQuests);
+		this.completedQuests = new ArrayList<>(Arrays.asList(completedQuests));
 		questDataMap = new HashMap<>();
 		for (PlayerQuestData questData : questDatas) {
 			Quest quest = Quest.forName(questData.getQuestName());
@@ -51,10 +54,11 @@ public class PlayerQuestManager {
 	}
 
 	void startQuest(Quest quest) {
+		Debug.log("Start");
 		PlayerQuestData data = new PlayerQuestData(quest);
 		questDataMap.put(quest, data);
 	}
-	
+
 	void completeQuest(Quest quest) {
 		completedQuests.add(quest);
 		questDataMap.remove(quest);

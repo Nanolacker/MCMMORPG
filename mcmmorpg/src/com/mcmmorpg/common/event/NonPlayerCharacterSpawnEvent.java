@@ -3,16 +3,17 @@ package com.mcmmorpg.common.event;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
-/**
- * This is a template for writing custom Events.
- */
-public class EventTemplate extends Event {
+import com.mcmmorpg.common.character.NonPlayerCharacter;
+
+public class NonPlayerCharacterSpawnEvent extends Event {
 
 	private static final HandlerList handlers = new HandlerList();
 
-	// Fields go here.
+	private final NonPlayerCharacter npc;
 
-	// Constructor goes here.
+	public NonPlayerCharacterSpawnEvent(NonPlayerCharacter npc) {
+		this.npc = npc;
+	}
 
 	public static HandlerList getHandlerList() {
 		return handlers;
@@ -23,6 +24,8 @@ public class EventTemplate extends Event {
 		return handlers;
 	}
 
-	// Other methods go here.
+	public NonPlayerCharacter getNpc() {
+		return npc;
+	}
 
 }

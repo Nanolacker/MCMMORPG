@@ -22,7 +22,7 @@ public class IOUtils {
 	 * Writes the specified object to the file in JSON format. Throws an exception
 	 * if the file does not exist.
 	 */
-	public static void jsonToFile(File file, Object obj) {
+	public static void objectToJsonFile(File file, Object obj) {
 		String json = gson.toJson(obj);
 		if (!file.exists()) {
 			createFile(file);
@@ -38,7 +38,7 @@ public class IOUtils {
 	 * Returns an object constructed from the JSON found in the specified file.
 	 * Throws an exception if the file does not exist.
 	 */
-	public static <T> T jsonFromFile(File file, Class<? extends T> clazz) {
+	public static <T> T objectFromJsonFile(File file, Class<? extends T> clazz) {
 		try (FileReader fileReader = new FileReader(file)) {
 			JsonReader jsonReader = new JsonReader(fileReader);
 			return gson.fromJson(jsonReader, clazz);
@@ -57,7 +57,7 @@ public class IOUtils {
 	/**
 	 * Returns an object constructed from the specified JSON.
 	 */
-	public static <T> T fromJson(String json, Class<? extends T> clazz) {
+	public static <T> T objectFromJson(String json, Class<? extends T> clazz) {
 		return gson.fromJson(json, clazz);
 	}
 

@@ -10,7 +10,7 @@ public class PlayerSkillData {
 	public PlayerSkillData(Skill skill) {
 		skillName = skill.getName();
 		playerClassName = skill.getPlayerClass().getName();
-		upgradeLevel = 0;
+		upgradeLevel = 1;
 		skillCooldownSeconds = 0.0;
 	}
 

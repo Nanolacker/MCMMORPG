@@ -43,6 +43,8 @@ public class ActionBarText {
 	 */
 	public void apply(Player player) {
 		actionBarMap.put(player, this);
+		// Need that initial manual application.
+		apply0(player);
 	}
 
 	private void apply0(Player player) {

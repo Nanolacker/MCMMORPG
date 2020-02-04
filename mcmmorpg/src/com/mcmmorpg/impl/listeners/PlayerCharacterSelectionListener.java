@@ -1,8 +1,8 @@
 package com.mcmmorpg.impl.listeners;
 
 import java.io.File;
-import java.util.Arrays;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -19,8 +19,6 @@ import com.mcmmorpg.common.event.StaticInteractableEvent;
 import com.mcmmorpg.common.item.ItemFactory;
 import com.mcmmorpg.common.persistence.PersistentPlayerCharacterDataContainer;
 import com.mcmmorpg.common.playerClass.PlayerClass;
-import com.mcmmorpg.common.ui.Menu;
-import com.mcmmorpg.common.utils.Debug;
 import com.mcmmorpg.common.utils.IOUtils;
 import com.mcmmorpg.impl.Worlds;
 
@@ -32,6 +30,7 @@ public class PlayerCharacterSelectionListener implements Listener {
 	private static final ItemStack SELECT_EXISTING_CHARACTER;
 
 	private static final PlayerClass DEFAULT_PLAYER_CLASS;
+	private static final String STARTING_ZONE;
 	private static final Location START_LOCATION;
 	private static final ItemStack MENU;
 	private static final ItemStack QUEST_LOG;
@@ -50,6 +49,7 @@ public class PlayerCharacterSelectionListener implements Listener {
 		ItemFactory.registerStaticInteractable(SELECT_EXISTING_CHARACTER);
 
 		DEFAULT_PLAYER_CLASS = PlayerClass.forName("Fighter");
+		STARTING_ZONE = "Melcher";
 		START_LOCATION = new Location(Worlds.ELADRADOR, 0, 70, 0);
 		MENU = ItemFactory.createItemStack(ChatColor.GREEN + "Menu", null, Material.EMERALD);
 		ItemFactory.registerStaticInteractable(MENU);
@@ -61,7 +61,7 @@ public class PlayerCharacterSelectionListener implements Listener {
 
 	@EventHandler
 	private void onJoin(PlayerJoinEvent event) {
-		event.setJoinMessage("Test join message");
+		event.setJoinMessage(null);
 		Player player = event.getPlayer();
 		player.teleport(LOBBY_SPAWN);
 		Inventory inventory = player.getInventory();
@@ -74,7 +74,6 @@ public class PlayerCharacterSelectionListener implements Listener {
 
 	@EventHandler
 	private void onQuit(PlayerQuitEvent event) {
-		event.setQuitMessage("Test quit message");
 		Player player = event.getPlayer();
 		PlayerCharacter pc = PlayerCharacter.forPlayer(player);
 		if (pc != null) {
@@ -99,7 +98,7 @@ public class PlayerCharacterSelectionListener implements Listener {
 			Player player = event.getPlayer();
 			player.sendMessage(ChatColor.GREEN + "Creating new character...");
 			PersistentPlayerCharacterDataContainer data = PersistentPlayerCharacterDataContainer
-					.createFreshSaveData(player, DEFAULT_PLAYER_CLASS, START_LOCATION);
+					.createFreshSaveData(player, DEFAULT_PLAYER_CLASS, STARTING_ZONE, START_LOCATION);
 			loadPlayerCharacter(player, data);
 		}
 	}
@@ -111,7 +110,7 @@ public class PlayerCharacterSelectionListener implements Listener {
 			Player player = event.getPlayer();
 			player.sendMessage(ChatColor.GREEN + "Logging in...");
 			File dataFile = getDataFile(player.getName());
-			PersistentPlayerCharacterDataContainer data = IOUtils.jsonFromFile(dataFile,
+			PersistentPlayerCharacterDataContainer data = IOUtils.objectFromJsonFile(dataFile,
 					PersistentPlayerCharacterDataContainer.class);
 			loadPlayerCharacter(player, data);
 		}
@@ -122,13 +121,12 @@ public class PlayerCharacterSelectionListener implements Listener {
 		inventory.clear();
 		PlayerCharacter.registerPlayerCharacter(player, data);
 		inventory.setItem(8, MENU);
-		Debug.log(Arrays.toString(inventory.getContents()));
 	}
 
 	private void savePlayerCharacterData(PlayerCharacter pc) {
 		File dataFile = getDataFile(pc.getName());
 		PersistentPlayerCharacterDataContainer data = PersistentPlayerCharacterDataContainer.createSaveData(pc);
-		IOUtils.jsonToFile(dataFile, data);
+		IOUtils.objectToJsonFile(dataFile, data);
 	}
 
 	@EventHandler
@@ -136,10 +134,10 @@ public class PlayerCharacterSelectionListener implements Listener {
 		ItemStack itemStack = event.getInteractable();
 		if (itemStack.equals(MENU)) {
 			Player player = event.getPlayer();
-			Menu menu = new Menu("Menu", 1);
-			menu.addInteractable(0, QUEST_LOG);
-			menu.addInteractable(1, SKILL_TREE);
-			menu.open(player);
+			Inventory menu = Bukkit.createInventory(null, 9, "Menu");
+			menu.setItem(2, SKILL_TREE);
+			menu.setItem(6, QUEST_LOG);
+			player.openInventory(menu);
 		}
 	}
 

@@ -5,7 +5,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Sound;
@@ -36,7 +35,6 @@ import com.mcmmorpg.common.sound.PlayerSoundtrackPlayer;
 import com.mcmmorpg.common.ui.ActionBarText;
 import com.mcmmorpg.common.ui.SidebarText;
 import com.mcmmorpg.common.ui.TitleMessage;
-import com.mcmmorpg.common.utils.Debug;
 import com.mcmmorpg.common.utils.StringUtils;
 
 public class PlayerCharacter extends AbstractCharacter {
@@ -54,6 +52,7 @@ public class PlayerCharacter extends AbstractCharacter {
 	private final Player player;
 	private boolean active;
 	private final PlayerClass playerClass;
+	private String zone;
 	private Location respawnLocation;
 	private int xp;
 	private int skillUpgradePoints;
@@ -71,17 +70,19 @@ public class PlayerCharacter extends AbstractCharacter {
 		playerMap = new HashMap<>();
 	}
 
-	private PlayerCharacter(Player player, boolean fresh, PlayerClass playerClass, Location location,
+	private PlayerCharacter(Player player, boolean fresh, PlayerClass playerClass, String zone, Location location,
 			Location respawnLocation, int xp, int skillUpgradePoints, int currency, double maxHealth,
 			double currentHealth, double maxMana, double currentMana, Quest targetQuest, Quest[] completedQuests,
 			PlayerQuestData[] questData, PlayerSkillData[] skillData, ItemStack[] inventoryContents) {
 		super(player.getName(), xpToLevel(xp), location, maxHealth);
 		this.player = player;
 		this.playerClass = playerClass;
+		this.zone = zone;
 		this.respawnLocation = respawnLocation;
 		this.xp = xp;
 		this.skillUpgradePoints = skillUpgradePoints;
 		this.currency = currency;
+		super.setCurrentHealth(currentHealth);
 		this.currentMana = currentMana;
 		this.maxMana = maxMana;
 		this.targetQuest = targetQuest;
@@ -90,18 +91,21 @@ public class PlayerCharacter extends AbstractCharacter {
 		player.getInventory().setContents(inventoryContents);
 		soundtrackPlayer = new PlayerSoundtrackPlayer(player);
 		this.collider = new PlayerCharacterCollider(this);
-		this.movementSyncer = new MovementSyncer(this, player, MovementSyncMode.CHARACTER_FOLLOWS_ENTITY);
+		player.teleport(getLocation());
 
+		this.movementSyncer = new MovementSyncer(this, player, MovementSyncMode.CHARACTER_FOLLOWS_ENTITY);
 		movementSyncer.setEnabled(true);
 		collider.setActive(true);
-		updateQuestDisplay();
-		updateXpDisplay();
-		updateActionBar();
 
-		player.teleport(getLocation());
 		active = true;
 		setAlive(true);
 		playerMap.put(player, this);
+
+		updateActionBar();
+		updateQuestDisplay();
+		updateXpDisplay();
+		updateHealthDisplay();
+		updateManaDisplay();
 
 		if (fresh) {
 			PlayerCharacterLevelUpEvent event = new PlayerCharacterLevelUpEvent(this, 1);
@@ -113,7 +117,7 @@ public class PlayerCharacter extends AbstractCharacter {
 		private static final double LENGTH = 1.0, HEIGHT = 2.0, WIDTH = 1.0;
 
 		private PlayerCharacterCollider(PlayerCharacter pc) {
-			super(pc, pc.getColliderCenter(), LENGTH, WIDTH, HEIGHT);
+			super(pc, pc.getColliderCenter(), LENGTH, HEIGHT, WIDTH);
 		}
 
 		@Override
@@ -130,6 +134,7 @@ public class PlayerCharacter extends AbstractCharacter {
 			PersistentPlayerCharacterDataContainer saveData) {
 		boolean fresh = saveData.isFresh();
 		PlayerClass playerClass = saveData.getPlayerClass();
+		String zone = saveData.getZone();
 		Location location = saveData.getLocation();
 		Location respawnLocation = saveData.getRespawnLocation();
 		int xp = saveData.getXP();
@@ -141,10 +146,10 @@ public class PlayerCharacter extends AbstractCharacter {
 		double currentMana = saveData.getCurrentMana();
 		Quest targetQuest = saveData.getTargetQuest();
 		PlayerQuestData[] questStatuses = saveData.getQuestData();
-		PlayerSkillData[] skillStatuses = saveData.getSkillStatuses();
+		PlayerSkillData[] skillStatuses = saveData.getSkillData();
 		ItemStack[] inventoryContents = saveData.getInventoryContents();
-		return new PlayerCharacter(player, fresh,playerClass, location, respawnLocation, xp, skillUpgradePoints, currency,
-				maxHealth, currentHealth, maxMana, currentMana, targetQuest, saveData.getCompletedQuests(),
+		return new PlayerCharacter(player, fresh, playerClass, zone, location, respawnLocation, xp, skillUpgradePoints,
+				currency, maxHealth, currentHealth, maxMana, currentMana, targetQuest, saveData.getCompletedQuests(),
 				questStatuses, skillStatuses, inventoryContents);
 	}
 
@@ -172,6 +177,14 @@ public class PlayerCharacter extends AbstractCharacter {
 	}
 
 	private static final double MAX_DISTANCE_WITHOUT_PLAYER_TELEPORT = 5.0;
+
+	public String getZone() {
+		return zone;
+	}
+
+	public void setZone(String zone) {
+		this.zone = zone;
+	}
 
 	@Override
 	public void setLocation(Location location) {
@@ -205,6 +218,17 @@ public class PlayerCharacter extends AbstractCharacter {
 				rCurrentHealth, rMaxHealth, rCurrentMana, rMaxMana, currentLevelXp, targetXp);
 		ActionBarText bar = new ActionBarText(text);
 		bar.apply(player);
+	}
+
+	private void updateHealthDisplay() {
+		double proportion = getCurrentHealth() / getMaxHealth();
+		player.setHealth(proportion * 20);
+	}
+
+	private void updateManaDisplay() {
+		double proportion = currentMana / maxMana;
+		int foodLevel = (int) Math.ceil(proportion * 20);
+		player.setFoodLevel(foodLevel);
 	}
 
 	public int getXP() {
@@ -287,8 +311,32 @@ public class PlayerCharacter extends AbstractCharacter {
 		return maxMana;
 	}
 
+	public void setMaxMana(double maxMana) {
+		this.maxMana = maxMana;
+		updateActionBar();
+	}
+
+	@Override
+	public void setCurrentHealth(double currentHealth) {
+		super.setCurrentHealth(currentHealth);
+		updateActionBar();
+	}
+
+	@Override
+	public void setMaxHealth(double maxHealth) {
+		super.setMaxHealth(maxHealth);
+		updateActionBar();
+		updateHealthDisplay();
+	}
+
 	public double getCurrentMana() {
 		return currentMana;
+	}
+
+	public void setCurrentMana(double currentMana) {
+		this.currentMana = currentMana;
+		updateActionBar();
+		updateManaDisplay();
 	}
 
 	public Quest getTargetQuest() {
@@ -345,7 +393,8 @@ public class PlayerCharacter extends AbstractCharacter {
 					progressText = ChatColor.GREEN + "";
 				}
 				progressText += progress + "" + ChatColor.WHITE + "/" + ChatColor.GREEN + "" + goal;
-				objectivesText += "-" + objective.getDescription() + " " + progressText + ChatColor.RESET + "\n\n";
+				objectivesText += progressText + " " + ChatColor.RESET + objective.getDescription() + ChatColor.RESET
+						+ "\n";
 			}
 			SidebarText questDisplay = new SidebarText(questTitle, objectivesText);
 			questDisplay.apply(player);
@@ -368,7 +417,7 @@ public class PlayerCharacter extends AbstractCharacter {
 	public Inventory getInventory() {
 		return player.getInventory();
 	}
-	
+
 	public PlayerSoundtrackPlayer getSoundTrackPlayer() {
 		return soundtrackPlayer;
 	}

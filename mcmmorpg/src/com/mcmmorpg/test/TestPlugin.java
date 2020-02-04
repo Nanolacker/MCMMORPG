@@ -18,7 +18,7 @@ public class TestPlugin extends MMORPGPlugin {
 
 		File fighterFile = new File(
 				"C:\\Users\\conno\\git\\MCMMORPG\\mcmmorpg\\src\\com\\mcmmorpg\\test\\Fighter.json");
-		PlayerClass fighter = IOUtils.jsonFromFile(fighterFile, PlayerClass.class);
+		PlayerClass fighter = IOUtils.objectFromJsonFile(fighterFile, PlayerClass.class);
 		fighter.initialize();
 
 		EventManager.registerEvents(new PCListener());

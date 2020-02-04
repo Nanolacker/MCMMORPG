@@ -3,6 +3,7 @@ package com.mcmmorpg.impl.npcs;
 import org.bukkit.Location;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Villager;
+
 import com.mcmmorpg.common.character.NonPlayerCharacter;
 
 public class MelcherResident extends NonPlayerCharacter {
@@ -18,7 +19,7 @@ public class MelcherResident extends NonPlayerCharacter {
 	@Override
 	protected void spawn() {
 		super.spawn();
-		villager = (Villager) spawnLocation.getWorld().spawnEntity(spawnLocation, EntityType.ZOMBIE);
+		villager = (Villager) spawnLocation.getWorld().spawnEntity(spawnLocation, EntityType.VILLAGER);
 		villager.setRemoveWhenFarAway(false);
 		villager.setAI(false);
 		villager.setInvulnerable(true);

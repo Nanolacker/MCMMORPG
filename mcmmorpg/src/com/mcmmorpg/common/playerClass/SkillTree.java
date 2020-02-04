@@ -10,13 +10,11 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
-import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 import com.mcmmorpg.common.character.PlayerCharacter;
 import com.mcmmorpg.common.event.EventManager;
-import com.mcmmorpg.common.utils.Debug;
 
 public class SkillTree implements Listener {
 
@@ -38,7 +36,7 @@ public class SkillTree implements Listener {
 	private Inventory createInventory(PlayerCharacter pc) {
 		Player player = pc.getPlayer();
 		int size = 6 * 9;
-		String title = playerClass.getName() + " Skill Tree        " + pc.getSkillUpgradePoints() + " skill points";
+		String title = playerClass.getName() + " Skill Tree    " + pc.getSkillUpgradePoints() + " skill points";
 		Inventory inventory = Bukkit.createInventory(player, size, title);
 		Skill[] skills = playerClass.getSkills();
 		for (int i = 0; i < skills.length; i++) {
@@ -63,7 +61,6 @@ public class SkillTree implements Listener {
 		}
 		Inventory inventory = event.getClickedInventory();
 		if (mappedInventory != inventory) {
-			Debug.log("invs NOT equal");
 			return;
 		}
 		event.setCancelled(true);
@@ -86,7 +83,6 @@ public class SkillTree implements Listener {
 			if (availableSillPoints > 0) {
 				skill.upgrade(pc);
 				pc.setSkillUpgradePoints(pc.getSkillUpgradePoints() - 1);
-				pc.sendMessage("Upgraded " + skill.getName() + "!");
 				// update skill tree inventory by reopening it
 				this.open(pc);
 			} else {
@@ -94,23 +90,19 @@ public class SkillTree implements Listener {
 			}
 
 		} else {
-			// add to inventoryS
+			// add to inventory
 			if (!skill.isUnlocked(pc)) {
 				pc.sendMessage(skill.getName() + " is not unlocked");
 				return;
 			}
 			ItemStack skillItemStack = skill.getHotbarItemStack();
-			if (inventory.contains(skillItemStack)) {
+			Inventory playerInventory = player.getInventory();
+			if (playerInventory.contains(skillItemStack)) {
 				pc.sendMessage(skill.getName() + " is already in your inventory!");
 				return;
 			}
-			inventory.addItem(skillItemStack);
+			playerInventory.addItem(skillItemStack);
 		}
-	}
-
-	@EventHandler
-	private void onDrag(InventoryDragEvent event) {
-		Debug.log(event.getType());
 	}
 
 	private Skill getSkillAt(int skillRow, int skillColumn) {

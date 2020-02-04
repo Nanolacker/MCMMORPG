@@ -1,0 +1,107 @@
+{
+	"fresh": false,
+	"playerClassName": "Fighter",
+	"zone": "Melcher",
+	"location": {
+		"worldName": "world_eladrador",
+		"x": 34.36741530918066,
+		"y": 67.49120751720224,
+		"z": 4.776416052813131,
+		"yaw": 179.84999,
+		"pitch": -4.349999
+	},
+	"respawnLocation": {
+		"worldName": "world_eladrador",
+		"x": 0.0,
+		"y": 70.0,
+		"z": 0.0,
+		"yaw": 0.0,
+		"pitch": 0.0
+	},
+	"xp": 0,
+	"skillUpgradePoints": 0,
+	"currency": 0,
+	"maxHealth": 20.0,
+	"currentHealth": 20.0,
+	"maxMana": 20.0,
+	"currentMana": 8.0,
+	"completedQuestNames": [
+	],
+	"questData": [
+	],
+	"skillData": [
+		{
+			"skillName": "Bash",
+			"playerClassName": "Fighter",
+			"upgradeLevel": 1,
+			"skillCooldownSeconds": 0.0
+		}
+	],
+	"inventory": {
+		"persistentContents": [
+			{
+				"type": "SHIELD",
+				"amount": 1,
+				"displayName": "Bash",
+				"lore": [
+					"§rlevel 1",
+					"§rHurt your foes"
+				],
+				"flags": [
+					"HIDE_ATTRIBUTES",
+					"HIDE_UNBREAKABLE"
+				],
+				"unbreakable": true
+			},
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			{
+				"type": "EMERALD",
+				"amount": 1,
+				"displayName": "§aMenu",
+				"flags": [
+					"HIDE_ATTRIBUTES",
+					"HIDE_UNBREAKABLE"
+				],
+				"unbreakable": true
+			},
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null
+		]
+	}
+}

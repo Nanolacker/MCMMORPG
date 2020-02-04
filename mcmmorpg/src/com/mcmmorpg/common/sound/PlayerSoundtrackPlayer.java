@@ -5,7 +5,7 @@ import org.bukkit.entity.Player;
 public class PlayerSoundtrackPlayer {
 
 	private final Player player;
-	private NoiseSequencePlayer noisePlayer;
+	private SoundSequencePlayer noisePlayer;
 
 	public PlayerSoundtrackPlayer(Player player) {
 		this.player = player;
@@ -15,12 +15,14 @@ public class PlayerSoundtrackPlayer {
 	 * 
 	 * @param soundtrack null to stop playing
 	 */
-	public void setSoundtrack(NoiseSequence soundtrack) {
-		if (soundtrack == null) {
+	public void setSoundtrack(SoundSequence soundtrack) {
+		if (noisePlayer != null) {
 			noisePlayer.stop();
+		}
+		if (soundtrack == null) {
 			noisePlayer = null;
 		} else {
-			noisePlayer = new NoiseSequencePlayer(soundtrack, player);
+			noisePlayer = new SoundSequencePlayer(soundtrack, player);
 			noisePlayer.setLooping(true);
 			noisePlayer.play();
 		}

@@ -1,0 +1,148 @@
+{
+	"duration": "21",
+	"sounds":[
+		{
+			"time":"0",
+			"type":"BLOCK_NOTE_BLOCK_HARP",
+			"volume": "1",
+			"pitch": "C_7"
+		},
+		{
+			"time":"1",
+			"type":"BLOCK_NOTE_BLOCK_HARP",
+			"volume": "1",
+			"pitch": "D_SHARP_10",
+		},
+		{
+			"time":"2",
+			"type":"BLOCK_NOTE_BLOCK_HARP",
+			"volume": "1",
+			"pitch": "G_14",
+		},
+		{
+			"time":"3",
+			"type":"BLOCK_NOTE_BLOCK_HARP",
+			"volume": "1",
+			"pitch": "C_7"
+		},
+		{
+			"time":"4",
+			"type":"BLOCK_NOTE_BLOCK_HARP",
+			"volume": "1",
+			"pitch": "D_SHARP_10",
+		},
+		{
+			"time":"5",
+			"type":"BLOCK_NOTE_BLOCK_HARP",
+			"volume": "1",
+			"pitch": "G_14",
+		},
+		{
+			"time":"6",
+			"type":"BLOCK_NOTE_BLOCK_HARP",
+			"volume": "1",
+			"pitch": "C_7"
+		},
+		{
+			"time":"7",
+			"type":"BLOCK_NOTE_BLOCK_HARP",
+			"volume": "1",
+			"pitch": "D_SHARP_10",
+		},
+		{
+			"time":"8",
+			"type":"BLOCK_NOTE_BLOCK_HARP",
+			"volume": "1",
+			"pitch": "G_14",
+		},
+		{
+			"time":"9",
+			"type":"BLOCK_NOTE_BLOCK_HARP",
+			"volume": "1",
+			"pitch": "C_7"
+		},
+		{
+			"time":"10",
+			"type":"BLOCK_NOTE_BLOCK_HARP",
+			"volume": "1",
+			"pitch": "D_SHARP_10",
+		},
+		{
+			"time":"11",
+			"type":"BLOCK_NOTE_BLOCK_HARP",
+			"volume": "1",
+			"pitch": "G_14",
+		}
+		{
+			"time":"12",
+			"type":"BLOCK_NOTE_BLOCK_HARP",
+			"volume": "1",
+			"pitch": "B_6",
+		},
+		{
+			"time":"13",
+			"type":"BLOCK_NOTE_BLOCK_HARP",
+			"volume": "1",
+			"pitch": "D_9",
+		},
+		{
+			"time":"14",
+			"type":"BLOCK_NOTE_BLOCK_HARP",
+			"volume": "1",
+			"pitch": "F_12",
+		},{
+			"time":"12",
+			"type":"BLOCK_NOTE_BLOCK_HARP",
+			"volume": "1",
+			"pitch": "B_6",
+		},
+		{
+			"time":"13",
+			"type":"BLOCK_NOTE_BLOCK_HARP",
+			"volume": "1",
+			"pitch": "D_9",
+		},
+		{
+			"time":"14",
+			"type":"BLOCK_NOTE_BLOCK_HARP",
+			"volume": "1",
+			"pitch": "F_12",
+		},
+		{
+			"time":"15",
+			"type":"BLOCK_NOTE_BLOCK_HARP",
+			"volume": "1",
+			"pitch": "B_6",
+		},
+		{
+			"time":"16",
+			"type":"BLOCK_NOTE_BLOCK_HARP",
+			"volume": "1",
+			"pitch": "D_9",
+		},
+		{
+			"time":"17",
+			"type":"BLOCK_NOTE_BLOCK_HARP",
+			"volume": "1",
+			"pitch": "F_12",
+		},
+		{
+			"time":"18",
+			"type":"BLOCK_NOTE_BLOCK_HARP",
+			"volume": "1",
+			"pitch": "B_6",
+		},
+		{
+			"time":"19",
+			"type":"BLOCK_NOTE_BLOCK_HARP",
+			"volume": "1",
+			"pitch": "D_9",
+		},
+		{
+			"time":"20",
+			"type":"BLOCK_NOTE_BLOCK_HARP",
+			"volume": "1",
+			"pitch": "F_12",
+		}
+	]
+}
