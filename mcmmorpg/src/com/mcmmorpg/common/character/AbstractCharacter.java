@@ -31,13 +31,13 @@ public abstract class AbstractCharacter {
 	 * Constructs a character initialized with max health. By default, the character
 	 * will not be alive.
 	 */
-	protected AbstractCharacter(String name, int level, Location location, double maxHealth) {
+	protected AbstractCharacter(String name, int level, Location location) {
 		this.name = name;
 		this.level = level;
 		this.location = location;
 		alive = false;
 		currentHealth = 0;
-		this.maxHealth = maxHealth;
+		maxHealth = 1;
 		Location nameplateLocation = getNameplateLocation();
 		nameplate = new TextPanel(nameplateLocation);
 		nameplate.setCharactersPerLine(25);
@@ -155,6 +155,29 @@ public abstract class AbstractCharacter {
 		updateNameplateText();
 	}
 
+	public void damage(double amount, HealthSource source) {
+		// Don't damage negative amount.
+		amount = Math.max(amount, 0);
+		double newHealth = currentHealth - amount;
+		setCurrentHealth(newHealth);
+		EventManager.callEvent(new CharacterDamageCharacterEvent(this, source, amount);
+		if (newHealth <= 0) {
+			EventManager.callEvent(new CharacterKillCharacterEvent (this,source,amount));
+		}
+	}
+
+	private static double getMitigatedDamage(double damage, double protections) {
+		double damageMultiplier = damage / (damage + protections);
+		return damage * damageMultiplier;
+	}
+
+	public void heal(double amount, HealthSource source) {
+		// Don't heal negative amount.
+		amount = Math.max(amount, 0);
+		setCurrentHealth(currentHealth + amount);
+		ChcaracterHealCharacterEvent event = new ChcaracterHealCharacterEvent(this, source, amount);
+	}
+
 	/**
 	 * Returns this character's max health.
 	 */
@@ -235,6 +258,15 @@ public abstract class AbstractCharacter {
 	protected Location getNameplateLocation() {
 		// assume humanoid
 		return getLocation().add(0, 2, 0);
+	}
+
+	/**
+	 * Returns whether this character is friendly toward the other specified
+	 * character. Override in subclasses to provide specific behavior. Returns false
+	 * by default.
+	 */
+	public boolean isFriendly(AbstractCharacter other) {
+		return false;
 	}
 
 }

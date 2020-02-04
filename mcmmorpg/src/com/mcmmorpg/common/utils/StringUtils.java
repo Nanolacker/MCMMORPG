@@ -57,7 +57,6 @@ public class StringUtils {
 				currentLineLength += tokenLength;
 				boolean lineLengthExceeded = currentLineLength > lineLength;
 				if (lineLengthExceeded) {
-					System.out.println("it is " + line);
 					// start new line
 					line = line.trim();
 					lines.add(line);
