@@ -16,10 +16,6 @@ public class StringUtils {
 	private StringUtils() {
 	}
 
-	public static List<String> lineSplit(String text) {
-		return lineSplit(text, STANDARD_LINE_LENGTH);
-	}
-
 	public static String repeat(String s, int n) {
 		String result = "";
 		for (int i = 0; i < n; i++) {
@@ -28,36 +24,102 @@ public class StringUtils {
 		return result;
 	}
 
+	/**
+	 * Splits the text into lines. Chat color is preserved throughout lines.
+	 */
+	public static List<String> lineSplit(String text) {
+		return lineSplit(text, STANDARD_LINE_LENGTH);
+	}
+
+	/**
+	 * Splits the text into lines that do not exceed the specified line length. Chat
+	 * color is preserved throughout lines.
+	 */
 	public static List<String> lineSplit(String text, int lineLength) {
 		if (text == null) {
 			return null;
 		}
-		List<String> paragraph = new ArrayList<>();
+		List<String> lines = new ArrayList<>();
 		String[] preLines = text.split("\n");
-		String prevColor = ChatColor.RESET.toString();
+		String prevColor = "";
 		for (String preLine : preLines) {
+			int currentLineLength = 0;
 			Scanner lineParser = new Scanner(preLine);
 			String line = prevColor;
 			while (lineParser.hasNext()) {
 				String token = lineParser.next();
-				// +1 for space
-				boolean lineLengthExceeded = line.length() + 1 + token.length() > lineLength;
+				int tokenLength = length(token);
+				if (tokenLength > lineLength) {
+					// if the token is too long, it will get cut off (stupid user)
+					token = cut(token, lineLength);
+					tokenLength = lineLength;
+				}
+				currentLineLength += tokenLength;
+				boolean lineLengthExceeded = currentLineLength > lineLength;
 				if (lineLengthExceeded) {
+					System.out.println("it is " + line);
+					// start new line
 					line = line.trim();
-					line = prevColor + line;
-					paragraph.add(line);
+					lines.add(line);
 					prevColor = ChatColor.getLastColors(line);
-					line = prevColor + token;
+					line = prevColor + token + " ";
+					currentLineLength = length(line);
 				} else {
+					// add token to current line
 					line += token + " ";
+					// +1 for space
+					currentLineLength++;
 				}
 			}
+			// add the last remaining line
 			line = line.trim();
-			paragraph.add(line);
+			lines.add(line);
 			prevColor = ChatColor.getLastColors(line);
 			lineParser.close();
 		}
-		return paragraph;
+		return lines;
+	}
+
+	/**
+	 * Returns the length of the token, excluding chat color characters. Used for
+	 * line splitting.
+	 */
+	private static int length(String token) {
+		int count = 0;
+		char[] chars = token.toCharArray();
+		for (int i = 0; i < chars.length; i++) {
+			char ch = chars[i];
+			if (ch == '§') {
+				// skip next character
+				i++;
+			} else {
+				count++;
+			}
+		}
+		return count;
+	}
+
+	/**
+	 * Assumes the token's length is greater than the specified length. Used for
+	 * line splitting.
+	 */
+	private static String cut(String token, int length) {
+		int validCharCount = 0;
+		char[] chars = token.toCharArray();
+		int i;
+		for (i = 0; i < token.length(); i++) {
+			char ch = chars[i];
+			if (ch == '§') {
+				// skip next character
+				i++;
+			} else {
+				validCharCount++;
+				if (validCharCount == length) {
+					break;
+				}
+			}
+		}
+		return token.substring(0, i + 1);
 	}
 
 }
