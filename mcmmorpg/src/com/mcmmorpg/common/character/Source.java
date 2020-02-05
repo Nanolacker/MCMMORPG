@@ -1,6 +1,9 @@
 package com.mcmmorpg.common.character;
 
-public interface HealthSource {
+/**
+ * A source of healing or damage.
+ */
+public interface Source {
 
 	public String getName();
 

@@ -12,6 +12,7 @@ import org.bukkit.World;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
+import org.bukkit.event.Listener;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
@@ -74,7 +75,7 @@ public class PlayerCharacter extends AbstractCharacter {
 			Location respawnLocation, int xp, int skillUpgradePoints, int currency, double maxHealth,
 			double currentHealth, double maxMana, double currentMana, Quest targetQuest, Quest[] completedQuests,
 			PlayerQuestData[] questData, PlayerSkillData[] skillData, ItemStack[] inventoryContents) {
-		super(player.getName(), xpToLevel(xp), location, maxHealth);
+		super(player.getName(), xpToLevel(xp), location);
 		this.player = player;
 		this.playerClass = playerClass;
 		this.zone = zone;
@@ -83,6 +84,7 @@ public class PlayerCharacter extends AbstractCharacter {
 		this.skillUpgradePoints = skillUpgradePoints;
 		this.currency = currency;
 		super.setCurrentHealth(currentHealth);
+		super.setMaxHealth(maxHealth);
 		this.currentMana = currentMana;
 		this.maxMana = maxMana;
 		this.targetQuest = targetQuest;
@@ -337,6 +339,21 @@ public class PlayerCharacter extends AbstractCharacter {
 		this.currentMana = currentMana;
 		updateActionBar();
 		updateManaDisplay();
+	}
+
+	@Override
+	public void damage(double amount, Source source) {
+		amount = getMitigatedDamage(amount, getProtections());
+		super.damage(amount, source);
+	}
+
+	private static double getMitigatedDamage(double damage, double protections) {
+		double damageMultiplier = damage / (damage + protections);
+		return damage * damageMultiplier;
+	}
+
+	public double getProtections() {
+
 	}
 
 	public Quest getTargetQuest() {

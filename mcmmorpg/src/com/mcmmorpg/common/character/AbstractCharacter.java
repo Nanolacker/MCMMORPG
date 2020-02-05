@@ -5,7 +5,10 @@ import javax.annotation.OverridingMethodsMustInvokeSuper;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 
+import com.mcmmorpg.common.event.CharacterDamageEvent;
 import com.mcmmorpg.common.event.CharacterDeathEvent;
+import com.mcmmorpg.common.event.CharacterHealEvent;
+import com.mcmmorpg.common.event.CharacterKillEvent;
 import com.mcmmorpg.common.event.EventManager;
 import com.mcmmorpg.common.ui.TextPanel;
 import com.mcmmorpg.common.utils.MathUtils;
@@ -155,27 +158,23 @@ public abstract class AbstractCharacter {
 		updateNameplateText();
 	}
 
-	public void damage(double amount, HealthSource source) {
+	public void damage(double amount, Source source) {
 		// Don't damage negative amount.
 		amount = Math.max(amount, 0);
 		double newHealth = currentHealth - amount;
 		setCurrentHealth(newHealth);
-		EventManager.callEvent(new CharacterDamageCharacterEvent(this, source, amount);
+		EventManager.callEvent(new CharacterDamageEvent(this, amount, source));
 		if (newHealth <= 0) {
-			EventManager.callEvent(new CharacterKillCharacterEvent (this,source,amount));
+			EventManager.callEvent(new CharacterKillEvent(this, source));
 		}
 	}
 
-	private static double getMitigatedDamage(double damage, double protections) {
-		double damageMultiplier = damage / (damage + protections);
-		return damage * damageMultiplier;
-	}
-
-	public void heal(double amount, HealthSource source) {
+	public void heal(double amount, Source source) {
 		// Don't heal negative amount.
 		amount = Math.max(amount, 0);
 		setCurrentHealth(currentHealth + amount);
-		ChcaracterHealCharacterEvent event = new ChcaracterHealCharacterEvent(this, source, amount);
+		CharacterHealEvent event = new CharacterHealEvent(this, amount, source);
+		EventManager.callEvent(event);
 	}
 
 	/**

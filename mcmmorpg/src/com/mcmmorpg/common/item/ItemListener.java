@@ -15,6 +15,7 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerItemHeldEvent;
 import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -22,7 +23,6 @@ import org.bukkit.inventory.ItemStack;
 import com.mcmmorpg.common.character.PlayerCharacter;
 import com.mcmmorpg.common.event.EventManager;
 import com.mcmmorpg.common.event.PlayerCharacterUseConsumableEvent;
-import com.mcmmorpg.common.event.PlayerCharacterUseWeaponEvent;
 import com.mcmmorpg.common.event.StaticInteractableEvent;
 
 class ItemListener implements Listener {
@@ -56,9 +56,7 @@ class ItemListener implements Listener {
 		}
 		// don't let people place blocks and what not
 		event.setCancelled(true);
-		if (ItemFactory.weapons.contains(itemStack)) {
-			handleWeaponInteraction(pc, itemStack, event.getAction());
-		} else if (ItemFactory.consumables.contains(itemStack)) {
+		if (ConsumableItem.itemMap.containsKey(itemStack)) {
 			handleConsumableInteraction(pc, itemStack, event.getAction());
 		}
 	}
@@ -66,13 +64,6 @@ class ItemListener implements Listener {
 	private void handleStaticInteractableInteraction(Player player, ItemStack interactable, Action action) {
 		if (action == Action.RIGHT_CLICK_AIR || action == Action.RIGHT_CLICK_BLOCK) {
 			StaticInteractableEvent event = new StaticInteractableEvent(player, interactable);
-			EventManager.callEvent(event);
-		}
-	}
-
-	private void handleWeaponInteraction(PlayerCharacter pc, ItemStack weapon, Action action) {
-		if (action == Action.RIGHT_CLICK_AIR || action == Action.RIGHT_CLICK_BLOCK) {
-			PlayerCharacterUseWeaponEvent event = new PlayerCharacterUseWeaponEvent(pc, weapon);
 			EventManager.callEvent(event);
 		}
 	}
@@ -178,6 +169,16 @@ class ItemListener implements Listener {
 		if (LootChest.inventories.contains(inventory)) {
 			LootChest.inventories.remove(inventory);
 		}
+	}
+	
+	@EventHandler
+	private void onHeldItemChange(PlayerItemHeldEvent event) {
+		Player player = event.getPlayer();
+		PlayerCharacter pc = PlayerCharacter.forPlayer(player);
+		if(pc==null) {
+			return;
+		}
+		player.
 	}
 
 }

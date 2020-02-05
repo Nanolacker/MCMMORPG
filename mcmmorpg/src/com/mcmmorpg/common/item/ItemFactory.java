@@ -14,8 +14,6 @@ import com.mcmmorpg.common.utils.StringUtils;
 public class ItemFactory {
 
 	static final List<ItemStack> staticInteractables = new ArrayList<>();
-	static final List<ItemStack> weapons = new ArrayList<>();
-	static final List<ItemStack> consumables = new ArrayList<>();
 
 	static {
 		EventManager.registerEvents(new ItemListener());
@@ -52,22 +50,6 @@ public class ItemFactory {
 
 	public static void unregisterStaticInteractable(ItemStack itemStack) {
 		staticInteractables.remove(itemStack);
-	}
-
-	public static void registerWeapon(ItemStack itemStack) {
-		weapons.add(itemStack);
-	}
-
-	public static void unregisterWeapons(ItemStack itemStack) {
-		weapons.remove(itemStack);
-	}
-
-	public static void registerConsumable(ItemStack itemStack) {
-		consumables.add(itemStack);
-	}
-
-	public static void unregisterConsumable(ItemStack itemStack) {
-		consumables.remove(itemStack);
 	}
 
 }
