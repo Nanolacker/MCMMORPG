@@ -2,23 +2,20 @@ package com.mcmmorpg.common.event;
 
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
-import org.bukkit.inventory.EquipmentSlot;
-import org.bukkit.inventory.ItemStack;
 
 import com.mcmmorpg.common.character.PlayerCharacter;
+import com.mcmmorpg.common.item.ConsumableItem;
 
-public class PlayerCharacterUnequipItemEvent extends Event {
+public class PlayerCharacterUseConsumableItemEvent extends Event {
 
 	private static final HandlerList handlers = new HandlerList();
 
 	private final PlayerCharacter pc;
-	private final ItemStack item;
-	private final EquipmentSlot equipmentType;
+	private final ConsumableItem consumable;
 
-	public PlayerCharacterUnequipItemEvent(PlayerCharacter pc, ItemStack item, EquipmentSlot equipmentType) {
+	public PlayerCharacterUseConsumableItemEvent(PlayerCharacter pc, ConsumableItem consumable) {
 		this.pc = pc;
-		this.item = item;
-		this.equipmentType = equipmentType;
+		this.consumable = consumable;
 	}
 
 	public static HandlerList getHandlerList() {
@@ -34,12 +31,8 @@ public class PlayerCharacterUnequipItemEvent extends Event {
 		return pc;
 	}
 
-	public ItemStack getItem() {
-		return item;
-	}
-
-	public EquipmentSlot getEquipmentType() {
-		return equipmentType;
+	public ConsumableItem getConsumable() {
+		return consumable;
 	}
 
 }

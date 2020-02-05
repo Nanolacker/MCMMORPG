@@ -12,7 +12,6 @@ import org.bukkit.World;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
-import org.bukkit.event.Listener;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
@@ -21,6 +20,7 @@ import org.bukkit.potion.PotionEffectType;
 import com.mcmmorpg.common.character.MovementSyncer.MovementSyncMode;
 import com.mcmmorpg.common.event.EventManager;
 import com.mcmmorpg.common.event.PlayerCharacterLevelUpEvent;
+import com.mcmmorpg.common.item.ArmorItem;
 import com.mcmmorpg.common.persistence.PersistentPlayerCharacterDataContainer;
 import com.mcmmorpg.common.playerClass.PlayerClass;
 import com.mcmmorpg.common.playerClass.PlayerSkillData;
@@ -58,8 +58,10 @@ public class PlayerCharacter extends AbstractCharacter {
 	private int xp;
 	private int skillUpgradePoints;
 	private int currency;
-	private double currentMana;
+	private double healthRegenRate;
 	private double maxMana;
+	private double currentMana;
+	private double manaRegenRate;
 	private Quest targetQuest;
 	private final PlayerQuestManager questStatusManager;
 	private final PlayerSkillManager skillStatusManager;
@@ -73,8 +75,9 @@ public class PlayerCharacter extends AbstractCharacter {
 
 	private PlayerCharacter(Player player, boolean fresh, PlayerClass playerClass, String zone, Location location,
 			Location respawnLocation, int xp, int skillUpgradePoints, int currency, double maxHealth,
-			double currentHealth, double maxMana, double currentMana, Quest targetQuest, Quest[] completedQuests,
-			PlayerQuestData[] questData, PlayerSkillData[] skillData, ItemStack[] inventoryContents) {
+			double currentHealth, double healthRegenRate, double maxMana, double currentMana, double manaRegenRate,
+			Quest targetQuest, Quest[] completedQuests, PlayerQuestData[] questData, PlayerSkillData[] skillData,
+			ItemStack[] inventoryContents) {
 		super(player.getName(), xpToLevel(xp), location);
 		this.player = player;
 		this.playerClass = playerClass;
@@ -85,8 +88,10 @@ public class PlayerCharacter extends AbstractCharacter {
 		this.currency = currency;
 		super.setCurrentHealth(currentHealth);
 		super.setMaxHealth(maxHealth);
+		this.healthRegenRate = healthRegenRate;
 		this.currentMana = currentMana;
 		this.maxMana = maxMana;
+		this.manaRegenRate = manaRegenRate;
 		this.targetQuest = targetQuest;
 		this.questStatusManager = new PlayerQuestManager(completedQuests, questData);
 		this.skillStatusManager = new PlayerSkillManager(this, skillData);
@@ -144,15 +149,17 @@ public class PlayerCharacter extends AbstractCharacter {
 		int currency = saveData.getCurrency();
 		double maxHealth = saveData.getMaxHealth();
 		double currentHealth = saveData.getCurrentHealth();
+		double healthRegenRate = saveData.getHealthRegenRate();
 		double maxMana = saveData.getMaxHealth();
 		double currentMana = saveData.getCurrentMana();
+		double manaRegenRate = saveData.getManaRegenRate();
 		Quest targetQuest = saveData.getTargetQuest();
 		PlayerQuestData[] questStatuses = saveData.getQuestData();
 		PlayerSkillData[] skillStatuses = saveData.getSkillData();
 		ItemStack[] inventoryContents = saveData.getInventoryContents();
 		return new PlayerCharacter(player, fresh, playerClass, zone, location, respawnLocation, xp, skillUpgradePoints,
-				currency, maxHealth, currentHealth, maxMana, currentMana, targetQuest, saveData.getCompletedQuests(),
-				questStatuses, skillStatuses, inventoryContents);
+				currency, maxHealth, currentHealth, healthRegenRate, maxMana, currentMana, manaRegenRate, targetQuest,
+				saveData.getCompletedQuests(), questStatuses, skillStatuses, inventoryContents);
 	}
 
 	public static PlayerCharacter forPlayer(Player player) {
@@ -331,6 +338,14 @@ public class PlayerCharacter extends AbstractCharacter {
 		updateHealthDisplay();
 	}
 
+	public double getHealthRegenRate() {
+		return healthRegenRate;
+	}
+
+	public void setHealthRegenRate(double healthRegenRate) {
+		this.healthRegenRate = healthRegenRate;
+	}
+
 	public double getCurrentMana() {
 		return currentMana;
 	}
@@ -339,6 +354,14 @@ public class PlayerCharacter extends AbstractCharacter {
 		this.currentMana = currentMana;
 		updateActionBar();
 		updateManaDisplay();
+	}
+
+	public double getManaRegenRate() {
+		return manaRegenRate;
+	}
+
+	public void setManaRegenRate(double manaRegenRate) {
+		this.manaRegenRate = manaRegenRate;
 	}
 
 	@Override
@@ -353,7 +376,8 @@ public class PlayerCharacter extends AbstractCharacter {
 	}
 
 	public double getProtections() {
-
+		return getHeadArmor().getProtections() + getChestArmor().getProtections() + getLegArmor().getProtections()
+				+ getFeetArmor().getProtections();
 	}
 
 	public Quest getTargetQuest() {
@@ -433,6 +457,26 @@ public class PlayerCharacter extends AbstractCharacter {
 
 	public Inventory getInventory() {
 		return player.getInventory();
+	}
+
+	public ArmorItem getHeadArmor() {
+		ItemStack itemStack = getInventory().getItem(103);
+		return ArmorItem.forItemStack(itemStack);
+	}
+
+	public ArmorItem getChestArmor() {
+		ItemStack itemStack = getInventory().getItem(102);
+		return ArmorItem.forItemStack(itemStack);
+	}
+
+	public ArmorItem getLegArmor() {
+		ItemStack itemStack = getInventory().getItem(101);
+		return ArmorItem.forItemStack(itemStack);
+	}
+
+	public ArmorItem getFeetArmor() {
+		ItemStack itemStack = getInventory().getItem(100);
+		return ArmorItem.forItemStack(itemStack);
 	}
 
 	public PlayerSoundtrackPlayer getSoundTrackPlayer() {

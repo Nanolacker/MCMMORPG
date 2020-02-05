@@ -58,6 +58,7 @@ public class LootChest {
 	private final Location location;
 	private final Particle aura;
 	private final ItemStack[] contents;
+	private PlayerCharacter owner;
 	private boolean removed;
 
 	/**
@@ -75,6 +76,8 @@ public class LootChest {
 		if (location == null) {
 			return;
 		}
+		// starting owner state
+		owner = null;
 		this.removed = false;
 		Block block = this.location.getBlock();
 		block.setType(material);
@@ -112,6 +115,14 @@ public class LootChest {
 		inventory.setContents(contents);
 		pc.getPlayer().openInventory(inventory);
 		inventories.add(inventory);
+	}
+
+	public PlayerCharacter getOwner() {
+		return owner;
+	}
+
+	public void setOwner(PlayerCharacter owner) {
+		this.owner = owner;
 	}
 
 	public void remove() {

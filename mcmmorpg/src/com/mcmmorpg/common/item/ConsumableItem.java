@@ -11,7 +11,7 @@ import com.mcmmorpg.common.playerClass.PlayerClass;
 
 public class ConsumableItem {
 
-	static final Map<ItemStack, ConsumableItem> itemMap = new HashMap<>();
+	private static final Map<ItemStack, ConsumableItem> itemMap = new HashMap<>();
 
 	private final String name;
 	private final int level;

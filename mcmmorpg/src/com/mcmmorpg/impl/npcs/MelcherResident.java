@@ -4,6 +4,7 @@ import org.bukkit.Location;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Villager;
 
+import com.mcmmorpg.common.character.AbstractCharacter;
 import com.mcmmorpg.common.character.NonPlayerCharacter;
 
 public class MelcherResident extends NonPlayerCharacter {
@@ -12,7 +13,7 @@ public class MelcherResident extends NonPlayerCharacter {
 	protected Villager villager;
 
 	public MelcherResident(String name, int level, Location spawnLocation) {
-		super(name, level, spawnLocation, 10);
+		super(name, level, spawnLocation);
 		this.spawnLocation = spawnLocation;
 	}
 
@@ -29,6 +30,11 @@ public class MelcherResident extends NonPlayerCharacter {
 	protected void despawn() {
 		super.despawn();
 		villager.remove();
+	}
+
+	@Override
+	public boolean isFriendly(AbstractCharacter other) {
+		return true;
 	}
 
 }

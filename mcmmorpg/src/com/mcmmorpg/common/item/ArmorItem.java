@@ -11,7 +11,7 @@ import com.mcmmorpg.common.playerClass.PlayerClass;
 
 public class ArmorItem {
 
-	static final Map<ItemStack, ArmorItem> itemMap = new HashMap<>();
+	private static final Map<ItemStack, ArmorItem> itemMap = new HashMap<>();
 
 	private final String name;
 	private final PlayerClass playerClass;
@@ -29,6 +29,10 @@ public class ArmorItem {
 		this.protections = protections;
 		this.itemStack = ItemFactory.createItemStack(name, description, icon);
 		itemMap.put(itemStack, this);
+	}
+	
+	public static ArmorItem forItemStack(ItemStack itemStack) {
+		return itemMap.get(itemStack);
 	}
 
 	public String getName() {

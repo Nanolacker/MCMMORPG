@@ -3,6 +3,7 @@ package com.mcmmorpg.common.item;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Item;
@@ -15,15 +16,16 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.event.player.PlayerItemHeldEvent;
 import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 import com.mcmmorpg.common.character.PlayerCharacter;
 import com.mcmmorpg.common.event.EventManager;
-import com.mcmmorpg.common.event.PlayerCharacterUseConsumableEvent;
+import com.mcmmorpg.common.event.PlayerCharacterUseConsumableItemEvent;
+import com.mcmmorpg.common.event.PlayerCharacterUseMainHandItemEvent;
 import com.mcmmorpg.common.event.StaticInteractableEvent;
+import com.mcmmorpg.common.utils.Debug;
 
 class ItemListener implements Listener {
 
@@ -44,34 +46,37 @@ class ItemListener implements Listener {
 	@EventHandler
 	private void onInteractWithItem(PlayerInteractEvent event) {
 		ItemStack itemStack = event.getItem();
+		if (itemStack == null) {
+			return;
+		}
 		Player player = event.getPlayer();
+		Action action = event.getAction();
 		if (ItemFactory.staticInteractables.contains(itemStack)) {
-			event.setCancelled(true);
-			handleStaticInteractableInteraction(player, itemStack, event.getAction());
+			if (action == Action.RIGHT_CLICK_AIR || action == Action.RIGHT_CLICK_BLOCK) {
+				EventManager.callEvent(new StaticInteractableEvent(player, itemStack));
+			}
 			return;
 		}
 		PlayerCharacter pc = PlayerCharacter.forPlayer(player);
 		if (pc == null) {
 			return;
 		}
-		// don't let people place blocks and what not
 		event.setCancelled(true);
-		if (ConsumableItem.itemMap.containsKey(itemStack)) {
-			handleConsumableInteraction(pc, itemStack, event.getAction());
-		}
-	}
 
-	private void handleStaticInteractableInteraction(Player player, ItemStack interactable, Action action) {
-		if (action == Action.RIGHT_CLICK_AIR || action == Action.RIGHT_CLICK_BLOCK) {
-			StaticInteractableEvent event = new StaticInteractableEvent(player, interactable);
-			EventManager.callEvent(event);
+		MainHandItem mainHandItem = MainHandItem.forItemStack(itemStack);
+		if (mainHandItem != null) {
+			if (action == Action.LEFT_CLICK_AIR || action == Action.LEFT_CLICK_BLOCK) {
+				EventManager.callEvent(new PlayerCharacterUseMainHandItemEvent(pc, mainHandItem));
+			}
+			return;
 		}
-	}
 
-	private void handleConsumableInteraction(PlayerCharacter pc, ItemStack consumable, Action action) {
-		if (action == Action.RIGHT_CLICK_AIR || action == Action.RIGHT_CLICK_BLOCK) {
-			PlayerCharacterUseConsumableEvent event = new PlayerCharacterUseConsumableEvent(pc, consumable);
-			EventManager.callEvent(event);
+		ConsumableItem consumableItem = ConsumableItem.forItemStack(itemStack);
+		if (consumableItem != null) {
+			if (action == Action.RIGHT_CLICK_AIR || action == Action.RIGHT_CLICK_BLOCK) {
+				EventManager.callEvent(new PlayerCharacterUseConsumableItemEvent(pc, consumableItem));
+			}
+			return;
 		}
 	}
 
@@ -125,9 +130,14 @@ class ItemListener implements Listener {
 		}
 		Location location = block.getLocation();
 		LootChest chest = LootChest.forLocation(location);
-		if (chest != null) {
+		if (chest == null) {
+			return;
+		}
+		if (chest.getOwner() == null || chest.getOwner() == pc) {
 			chest.open(pc);
 			chest.remove();
+		} else {
+			pc.sendMessage(ChatColor.RED + "This chest does not belong to you!");
 		}
 	}
 
@@ -169,16 +179,6 @@ class ItemListener implements Listener {
 		if (LootChest.inventories.contains(inventory)) {
 			LootChest.inventories.remove(inventory);
 		}
-	}
-	
-	@EventHandler
-	private void onHeldItemChange(PlayerItemHeldEvent event) {
-		Player player = event.getPlayer();
-		PlayerCharacter pc = PlayerCharacter.forPlayer(player);
-		if(pc==null) {
-			return;
-		}
-		player.
 	}
 
 }

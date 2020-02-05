@@ -63,8 +63,8 @@ public abstract class NonPlayerCharacter extends AbstractCharacter {
 		}
 	}
 
-	protected NonPlayerCharacter(String name, int level, Location location, double maxHealth) {
-		super(name, level, location, maxHealth);
+	protected NonPlayerCharacter(String name, int level, Location location) {
+		super(name, level, location);
 		spawned = false;
 	}
 

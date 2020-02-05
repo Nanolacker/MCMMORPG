@@ -25,7 +25,8 @@ public class BulskanUndead extends NonPlayerCharacter {
 	private double respawnTime;
 
 	public BulskanUndead(int level, Location location, double respawnTime) {
-		super("Undead", level, location, maxHealth(level));
+		super("Undead", level, location);
+		super.setMaxHealth(maxHealth(level));
 		this.spawnLocation = location;
 		this.hitbox = new CharacterCollider(this, spawnLocation, 1, 2, 1);
 		this.movementSyncer = new MovementSyncer(this, null, MovementSyncMode.CHARACTER_FOLLOWS_ENTITY);

@@ -4,7 +4,9 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerItemHeldEvent;
+import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
@@ -13,6 +15,7 @@ import com.mcmmorpg.common.event.EventManager;
 import com.mcmmorpg.common.event.SkillUseEvent;
 import com.mcmmorpg.common.item.ItemFactory;
 import com.mcmmorpg.common.time.RepeatingTask;
+import com.mcmmorpg.common.utils.Debug;
 
 import net.md_5.bungee.api.ChatColor;
 
@@ -145,7 +148,7 @@ public final class Skill implements Listener {
 	}
 
 	@EventHandler
-	private void onUse(PlayerItemHeldEvent event) {
+	private void onUse(PlayerInteractEvent event) {
 		Player player = event.getPlayer();
 		PlayerCharacter pc = PlayerCharacter.forPlayer(player);
 		if (pc == null) {
@@ -154,16 +157,16 @@ public final class Skill implements Listener {
 		if (pc.getPlayerClass() != this.playerClass) {
 			return;
 		}
-		Inventory inventory = player.getInventory();
-		int slot = event.getNewSlot();
-		ItemStack itemStack = inventory.getItem(slot);
+		if (event.getHand() != EquipmentSlot.HAND) {
+			return;
+		}
+		ItemStack itemStack = event.getItem();
 		if (itemStack == null) {
 			return;
 		}
 		ItemStack sizeOfOne = itemStack.clone();
 		sizeOfOne.setAmount(1);
 		if (sizeOfOne.equals(hotbarItemStack)) {
-			event.setCancelled(true);
 			if (isOnCooldown(pc)) {
 				pc.sendMessage("On cooldown!");
 			} else if (pc.getCurrentMana() < manaCost) {
@@ -196,7 +199,7 @@ public final class Skill implements Listener {
 
 	void cooldown(PlayerCharacter pc, double duration) {
 		PlayerSkillManager manager = pc.getSkillManager();
-		PlayerSkillData data = manager.getSkillData(Skill.this);
+		PlayerSkillData data = manager.getSkillData(this);
 		data.setCooldown(duration);
 		RepeatingTask cooldownTask = new RepeatingTask(COOLDOWN_UPDATE_PERIOD_SECONDS) {
 			@Override
