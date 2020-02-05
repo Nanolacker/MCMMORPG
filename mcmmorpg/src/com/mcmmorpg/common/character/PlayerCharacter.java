@@ -3,6 +3,7 @@ package com.mcmmorpg.common.character;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.bukkit.ChatColor;
@@ -12,6 +13,9 @@ import org.bukkit.World;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
@@ -33,9 +37,12 @@ import com.mcmmorpg.common.quest.QuestObjective;
 import com.mcmmorpg.common.quest.QuestStatus;
 import com.mcmmorpg.common.sound.Noise;
 import com.mcmmorpg.common.sound.PlayerSoundtrackPlayer;
+import com.mcmmorpg.common.time.RepeatingTask;
 import com.mcmmorpg.common.ui.ActionBarText;
 import com.mcmmorpg.common.ui.SidebarText;
 import com.mcmmorpg.common.ui.TitleMessage;
+import com.mcmmorpg.common.utils.Debug;
+import com.mcmmorpg.common.utils.MathUtils;
 import com.mcmmorpg.common.utils.StringUtils;
 
 public class PlayerCharacter extends AbstractCharacter {
@@ -45,9 +52,11 @@ public class PlayerCharacter extends AbstractCharacter {
 	 * level 2. The value at index 1 is the xp it takes to level up from level 2 to
 	 * level 3.
 	 */
-	private static final int[] xpValues = { 100, 150, 200 };
+	private static final int[] XP_REQS = { 100, 150, 200 };
+	private static final int MAX_XP = getMaxXp();
 	private static final Noise DEATH_NOISE = new Noise(Sound.ENTITY_WITHER_SPAWN);
 
+	private static final List<PlayerCharacter> pcs;
 	private static final Map<Player, PlayerCharacter> playerMap;
 
 	private final Player player;
@@ -70,7 +79,10 @@ public class PlayerCharacter extends AbstractCharacter {
 	private final MovementSyncer movementSyncer;
 
 	static {
+		pcs = new ArrayList<>();
 		playerMap = new HashMap<>();
+		EventManager.registerEvents(new PlayerCharacterListener());
+		startRegenTask();
 	}
 
 	private PlayerCharacter(Player player, boolean fresh, PlayerClass playerClass, String zone, Location location,
@@ -106,6 +118,7 @@ public class PlayerCharacter extends AbstractCharacter {
 
 		active = true;
 		setAlive(true);
+		pcs.add(this);
 		playerMap.put(player, this);
 
 		updateActionBar();
@@ -133,8 +146,31 @@ public class PlayerCharacter extends AbstractCharacter {
 		}
 	}
 
-	public static Collection<PlayerCharacter> getAll() {
-		return new ArrayList<PlayerCharacter>(playerMap.values());
+	private static int getMaxXp() {
+		int maxXp = 0;
+		for (int i = 0; i < XP_REQS.length; i++) {
+			maxXp += XP_REQS[i];
+		}
+		Debug.log("max xp = " + maxXp);
+		return maxXp;
+	}
+
+	private static void startRegenTask() {
+		RepeatingTask regenTask = new RepeatingTask(1) {
+			@Override
+			public void run() {
+				for (int i = 0; i < pcs.size(); i++) {
+					PlayerCharacter pc = pcs.get(i);
+					pc.heal(pc.healthRegenRate, pc);
+					pc.setCurrentMana(pc.getCurrentMana() + pc.manaRegenRate);
+				}
+			}
+		};
+		regenTask.schedule();
+	}
+
+	public static List<PlayerCharacter> getAll() {
+		return pcs;
 	}
 
 	public static PlayerCharacter registerPlayerCharacter(Player player,
@@ -221,7 +257,7 @@ public class PlayerCharacter extends AbstractCharacter {
 		int rMaxMana = (int) Math.round(maxMana);
 		int currentLevelXp = getCurrentLevelXp();
 		int level = getLevel();
-		int targetXp = xpValues[level - 1];
+		int targetXp = XP_REQS[level - 1];
 		String text = String.format(
 				ChatColor.RED + "HP: %d/%d    " + ChatColor.AQUA + "MP: %d/%d    " + ChatColor.GREEN + "XP: %d/%d",
 				rCurrentHealth, rMaxHealth, rCurrentMana, rMaxMana, currentLevelXp, targetXp);
@@ -244,17 +280,19 @@ public class PlayerCharacter extends AbstractCharacter {
 		return xp;
 	}
 
-	public void grantXP(int xp) {
+	public void grantXp(int xp) {
 		this.xp += xp;
+		this.xp = (int) MathUtils.clamp(this.xp, 0, MAX_XP);
 		checkForLevelUp();
 		updateXpDisplay();
 		updateActionBar();
+		sendMessage("+" + xp + " XP!");
 	}
 
 	private void updateXpDisplay() {
 		int level = getLevel();
 		player.setLevel(level);
-		int xpTarget = xpValues[level - 1];
+		int xpTarget = XP_REQS[level - 1];
 		int currentLevelXp = getCurrentLevelXp();
 		float levelProgress = (float) currentLevelXp / xpTarget;
 		player.setExp(levelProgress);
@@ -265,9 +303,9 @@ public class PlayerCharacter extends AbstractCharacter {
 	 */
 	private int getCurrentLevelXp() {
 		int currentLevelXp = xp;
-		for (int i = 0; i < xpValues.length; i++) {
-			if (currentLevelXp >= xpValues[i]) {
-				currentLevelXp -= xpValues[i];
+		for (int i = 0; i < XP_REQS.length; i++) {
+			if (currentLevelXp >= XP_REQS[i]) {
+				currentLevelXp -= XP_REQS[i];
 			} else {
 				break;
 			}
@@ -283,8 +321,8 @@ public class PlayerCharacter extends AbstractCharacter {
 	}
 
 	private static int xpToLevel(int xp) {
-		for (int i = 0; i < xpValues.length; i++) {
-			int xpValue = xpValues[i];
+		for (int i = 0; i < XP_REQS.length; i++) {
+			int xpValue = XP_REQS[i];
 			xp -= xpValue;
 			if (xp < 0) {
 				return i + 1;
@@ -301,7 +339,7 @@ public class PlayerCharacter extends AbstractCharacter {
 	}
 
 	public static int maxLevel() {
-		return xpValues.length;
+		return XP_REQS.length;
 	}
 
 	public int getSkillUpgradePoints() {
@@ -338,10 +376,16 @@ public class PlayerCharacter extends AbstractCharacter {
 		updateHealthDisplay();
 	}
 
+	/**
+	 * In health per second.
+	 */
 	public double getHealthRegenRate() {
 		return healthRegenRate;
 	}
 
+	/**
+	 * In health per second.
+	 */
 	public void setHealthRegenRate(double healthRegenRate) {
 		this.healthRegenRate = healthRegenRate;
 	}
@@ -351,15 +395,22 @@ public class PlayerCharacter extends AbstractCharacter {
 	}
 
 	public void setCurrentMana(double currentMana) {
+		currentMana = MathUtils.clamp(currentMana, 0, maxMana);
 		this.currentMana = currentMana;
 		updateActionBar();
 		updateManaDisplay();
 	}
 
+	/**
+	 * In mana per second.
+	 */
 	public double getManaRegenRate() {
 		return manaRegenRate;
 	}
 
+	/**
+	 * In mana per second.
+	 */
 	public void setManaRegenRate(double manaRegenRate) {
 		this.manaRegenRate = manaRegenRate;
 	}
@@ -479,19 +530,38 @@ public class PlayerCharacter extends AbstractCharacter {
 		return ArmorItem.forItemStack(itemStack);
 	}
 
+	/**
+	 * Use this to set the song playing to the player.
+	 */
 	public PlayerSoundtrackPlayer getSoundTrackPlayer() {
 		return soundtrackPlayer;
 	}
 
+	/**
+	 * Returns whether this player character is currently being used by a player.
+	 */
 	public boolean isActive() {
 		return active;
 	}
 
+	/**
+	 * This needs to be invoked when the player abandons this player character.
+	 */
 	public void deactivate() {
 		active = false;
 		collider.setActive(false);
 		movementSyncer.setEnabled(false);
 		playerMap.remove(player);
+	}
+
+	/**
+	 * Handles events pertaining to player characters.
+	 */
+	private static class PlayerCharacterListener implements Listener {
+		@EventHandler
+		private void onPlayerDamage(EntityDamageEvent event) {
+			event.setCancelled(true);
+		}
 	}
 
 }

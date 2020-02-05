@@ -20,7 +20,7 @@ import com.mcmmorpg.common.utils.MathUtils;
  * and nameplate. This class should be extended to create custom characters.
  * Methods in subclasses which override methods in this class must invoke super.
  */
-public abstract class AbstractCharacter {
+public abstract class AbstractCharacter implements Source {
 
 	private String name;
 	private int level;
