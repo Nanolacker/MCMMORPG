@@ -536,6 +536,10 @@ public class Collider {
 				&& (this.getZMin() <= other.getZMax() && this.getZMax() >= other.getZMin());
 	}
 
+	public final Collider[] getCollidingColliders() {
+		return collidingColliders.toArray(new Collider[collidingColliders.size()]);
+	}
+
 	/**
 	 * Called when this collider enters a collision with another collider.
 	 * 

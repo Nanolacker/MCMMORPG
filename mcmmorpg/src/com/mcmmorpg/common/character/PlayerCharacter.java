@@ -41,7 +41,6 @@ import com.mcmmorpg.common.time.RepeatingTask;
 import com.mcmmorpg.common.ui.ActionBarText;
 import com.mcmmorpg.common.ui.SidebarText;
 import com.mcmmorpg.common.ui.TitleMessage;
-import com.mcmmorpg.common.utils.Debug;
 import com.mcmmorpg.common.utils.MathUtils;
 import com.mcmmorpg.common.utils.StringUtils;
 
@@ -107,6 +106,7 @@ public class PlayerCharacter extends AbstractCharacter {
 		this.targetQuest = targetQuest;
 		this.questStatusManager = new PlayerQuestManager(completedQuests, questData);
 		this.skillStatusManager = new PlayerSkillManager(this, skillData);
+		this.skillStatusManager.init();
 		player.getInventory().setContents(inventoryContents);
 		soundtrackPlayer = new PlayerSoundtrackPlayer(player);
 		this.collider = new PlayerCharacterCollider(this);
@@ -151,7 +151,6 @@ public class PlayerCharacter extends AbstractCharacter {
 		for (int i = 0; i < XP_REQS.length; i++) {
 			maxXp += XP_REQS[i];
 		}
-		Debug.log("max xp = " + maxXp);
 		return maxXp;
 	}
 
@@ -186,7 +185,7 @@ public class PlayerCharacter extends AbstractCharacter {
 		double maxHealth = saveData.getMaxHealth();
 		double currentHealth = saveData.getCurrentHealth();
 		double healthRegenRate = saveData.getHealthRegenRate();
-		double maxMana = saveData.getMaxHealth();
+		double maxMana = saveData.getMaxMana();
 		double currentMana = saveData.getCurrentMana();
 		double manaRegenRate = saveData.getManaRegenRate();
 		Quest targetQuest = saveData.getTargetQuest();
@@ -283,10 +282,10 @@ public class PlayerCharacter extends AbstractCharacter {
 	public void grantXp(int xp) {
 		this.xp += xp;
 		this.xp = (int) MathUtils.clamp(this.xp, 0, MAX_XP);
+		sendMessage("+" + xp + " XP!");
 		checkForLevelUp();
 		updateXpDisplay();
 		updateActionBar();
-		sendMessage("+" + xp + " XP!");
 	}
 
 	private void updateXpDisplay() {
@@ -367,6 +366,7 @@ public class PlayerCharacter extends AbstractCharacter {
 	public void setCurrentHealth(double currentHealth) {
 		super.setCurrentHealth(currentHealth);
 		updateActionBar();
+		updateHealthDisplay();
 	}
 
 	@Override
@@ -419,6 +419,8 @@ public class PlayerCharacter extends AbstractCharacter {
 	public void damage(double amount, Source source) {
 		amount = getMitigatedDamage(amount, getProtections());
 		super.damage(amount, source);
+		// for effect
+		player.damage(0);
 	}
 
 	private static double getMitigatedDamage(double damage, double protections) {
@@ -427,8 +429,44 @@ public class PlayerCharacter extends AbstractCharacter {
 	}
 
 	public double getProtections() {
-		return getHeadArmor().getProtections() + getChestArmor().getProtections() + getLegArmor().getProtections()
-				+ getFeetArmor().getProtections();
+		double protections = 0;
+		ArmorItem head = getHeadArmor();
+		if (head != null) {
+			protections += head.getProtections();
+		}
+		ArmorItem chest = getChestArmor();
+		if (chest != null) {
+			protections += chest.getProtections();
+		}
+		ArmorItem legs = getLegArmor();
+		if (legs != null) {
+			protections += legs.getProtections();
+		}
+		ArmorItem feet = getFeetArmor();
+		if (feet != null) {
+			protections += feet.getProtections();
+		}
+		return protections;
+	}
+
+	public ArmorItem getHeadArmor() {
+		ItemStack itemStack = getInventory().getItem(103);
+		return ArmorItem.forItemStack(itemStack);
+	}
+
+	public ArmorItem getChestArmor() {
+		ItemStack itemStack = getInventory().getItem(102);
+		return ArmorItem.forItemStack(itemStack);
+	}
+
+	public ArmorItem getLegArmor() {
+		ItemStack itemStack = getInventory().getItem(101);
+		return ArmorItem.forItemStack(itemStack);
+	}
+
+	public ArmorItem getFeetArmor() {
+		ItemStack itemStack = getInventory().getItem(100);
+		return ArmorItem.forItemStack(itemStack);
 	}
 
 	public Quest getTargetQuest() {
@@ -467,6 +505,15 @@ public class PlayerCharacter extends AbstractCharacter {
 		DEATH_NOISE.play(player);
 		player.teleport(respawnLocation);
 		setAlive(true);
+	}
+
+	@Override
+	public boolean isFriendly(AbstractCharacter other) {
+		if (other instanceof PlayerCharacter) {
+			return true;
+		} else {
+			return false;
+		}
 	}
 
 	public void updateQuestDisplay() {
@@ -510,26 +557,6 @@ public class PlayerCharacter extends AbstractCharacter {
 		return player.getInventory();
 	}
 
-	public ArmorItem getHeadArmor() {
-		ItemStack itemStack = getInventory().getItem(103);
-		return ArmorItem.forItemStack(itemStack);
-	}
-
-	public ArmorItem getChestArmor() {
-		ItemStack itemStack = getInventory().getItem(102);
-		return ArmorItem.forItemStack(itemStack);
-	}
-
-	public ArmorItem getLegArmor() {
-		ItemStack itemStack = getInventory().getItem(101);
-		return ArmorItem.forItemStack(itemStack);
-	}
-
-	public ArmorItem getFeetArmor() {
-		ItemStack itemStack = getInventory().getItem(100);
-		return ArmorItem.forItemStack(itemStack);
-	}
-
 	/**
 	 * Use this to set the song playing to the player.
 	 */
@@ -560,7 +587,8 @@ public class PlayerCharacter extends AbstractCharacter {
 	private static class PlayerCharacterListener implements Listener {
 		@EventHandler
 		private void onPlayerDamage(EntityDamageEvent event) {
-			event.setCancelled(true);
+			// Screw it. Let's just put it here for all entities.
+			event.setDamage(0);
 		}
 	}
 

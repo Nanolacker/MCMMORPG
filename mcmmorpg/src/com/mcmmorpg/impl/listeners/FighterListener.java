@@ -2,6 +2,7 @@ package com.mcmmorpg.impl.listeners;
 
 import org.bukkit.Location;
 import org.bukkit.Particle;
+import org.bukkit.Sound;
 import org.bukkit.World;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -14,8 +15,11 @@ import com.mcmmorpg.common.event.SkillUseEvent;
 import com.mcmmorpg.common.physics.Collider;
 import com.mcmmorpg.common.playerClass.PlayerClass;
 import com.mcmmorpg.common.playerClass.Skill;
+import com.mcmmorpg.common.sound.Noise;
 
 public class FighterListener implements Listener {
+
+	private static final Noise BASH_NOISE = new Noise(Sound.ENTITY_GENERIC_EXPLODE, 0.5f, 1f);
 
 	private PlayerClass fighter;
 	private Skill bash;
@@ -40,6 +44,7 @@ public class FighterListener implements Listener {
 		World world = location.getWorld();
 		location.add(lookDirection).add(0, 1, 0);
 		world.spawnParticle(Particle.EXPLOSION_LARGE, location, 1);
+		BASH_NOISE.play(location);
 		Collider hitbox = new Collider(location, 1.5, 1.5, 1.5) {
 			@Override
 			protected void onCollisionEnter(Collider other) {

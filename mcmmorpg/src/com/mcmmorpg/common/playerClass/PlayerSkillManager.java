@@ -1,5 +1,6 @@
 package com.mcmmorpg.common.playerClass;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -7,11 +8,21 @@ import com.mcmmorpg.common.character.PlayerCharacter;
 
 public class PlayerSkillManager {
 
-	private Map<Skill, PlayerSkillData> skillDataMap;
+	private final PlayerCharacter pc;
+	private final Map<Skill, PlayerSkillData> skillDataMap;
 
 	public PlayerSkillManager(PlayerCharacter pc, PlayerSkillData[] allSkillData) {
+		this.pc = pc;
 		skillDataMap = new HashMap<>();
 		// to account for players who logged out with skills on cooldown
+		for (PlayerSkillData skillData : allSkillData) {
+			Skill skill = skillData.getSkill();
+			skillDataMap.put(skill, skillData);
+		}
+	}
+
+	public void init() {
+		Collection<PlayerSkillData> allSkillData = skillDataMap.values();
 		for (PlayerSkillData skillData : allSkillData) {
 			Skill skill = skillData.getSkill();
 			double cooldown = skillData.getSkillCooldownSeconds();

@@ -45,7 +45,8 @@ public class BulskanRuinsListener implements Listener {
 	private void setUpBounds() {
 		TitleMessage entranceMessage = new TitleMessage(ChatColor.GRAY + "Bulskan Ruins", ChatColor.GOLD + "Level 5");
 		TitleMessage exitMessage = new TitleMessage(ChatColor.GREEN + "Melcher", ChatColor.GOLD + "Level 1");
-		Noise entranceNoise = new Noise(Sound.ENTITY_WITHER_SPAWN);
+		Noise entranceNoise = new Noise(Sound.AMBIENT_CAVE);
+
 		Collider entranceCollider = new Collider(Worlds.ELADRADOR, 135, 65, -57, 207, 85, -17) {
 			@Override
 			public void onCollisionEnter(Collider other) {
@@ -113,6 +114,8 @@ public class BulskanRuinsListener implements Listener {
 		pc.setSkillUpgradePoints(1);
 		Quest quest = Quest.forName("Saving the Farm");
 		quest.start(pc);
+		pc.setHealthRegenRate(50);
+		pc.setMaxHealth(5000);
 	}
 
 }

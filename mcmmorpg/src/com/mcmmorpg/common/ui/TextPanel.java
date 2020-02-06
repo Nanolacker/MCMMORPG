@@ -4,16 +4,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.bukkit.Location;
-import org.bukkit.craftbukkit.v1_14_R1.CraftWorld;
+import org.bukkit.craftbukkit.v1_15_R1.CraftWorld;
 import org.bukkit.util.Vector;
 
 import com.mcmmorpg.common.character.PlayerCharacter;
 import com.mcmmorpg.common.time.RepeatingTask;
 import com.mcmmorpg.common.utils.StringUtils;
 
-import net.minecraft.server.v1_14_R1.EntityArmorStand;
-import net.minecraft.server.v1_14_R1.Vec3D;
-import net.minecraft.server.v1_14_R1.World;
+import net.minecraft.server.v1_15_R1.EntityArmorStand;
+import net.minecraft.server.v1_15_R1.Vec3D;
+import net.minecraft.server.v1_15_R1.World;
 
 public class TextPanel {
 
@@ -136,9 +136,9 @@ public class TextPanel {
 						Location idealEntityLoc = getLocation().clone();
 						for (int i = 0; i < entities.size(); i++) {
 							EntityArmorStand entity = entities.get(i);
-							double offsetX = idealEntityLoc.getX() - entity.locX;
-							double offsetY = idealEntityLoc.getY() - entity.locY;
-							double offsetZ = idealEntityLoc.getZ() - entity.locZ;
+							double offsetX = idealEntityLoc.getX() - entity.locX();
+							double offsetY = idealEntityLoc.getY() - entity.locY();
+							double offsetZ = idealEntityLoc.getZ() - entity.locZ();
 							if (offsetX > ALLOWED_ENTITY_LOC_OFFSET || offsetY > ALLOWED_ENTITY_LOC_OFFSET
 									|| offsetZ > ALLOWED_ENTITY_LOC_OFFSET) {
 								removeSingleEntity(i);

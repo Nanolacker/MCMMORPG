@@ -5,6 +5,8 @@ import org.bukkit.Particle;
 import org.bukkit.Sound;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Zombie;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 
 import com.mcmmorpg.common.character.CharacterCollider;
 import com.mcmmorpg.common.character.MovementSyncer;
@@ -16,6 +18,7 @@ import com.mcmmorpg.common.character.Source;
 import com.mcmmorpg.common.physics.Collider;
 import com.mcmmorpg.common.sound.Noise;
 import com.mcmmorpg.common.time.DelayedTask;
+import com.mcmmorpg.common.time.RepeatingTask;
 import com.mcmmorpg.common.utils.Debug;
 
 public class BulskanUndead extends NonPlayerCharacter {
@@ -48,10 +51,22 @@ public class BulskanUndead extends NonPlayerCharacter {
 		hitbox.setActive(true);
 		zombie = (Zombie) spawnLocation.getWorld().spawnEntity(spawnLocation, EntityType.HUSK);
 		zombie.setBaby(false);
-		zombie.setInvulnerable(true);
 		zombie.setRemoveWhenFarAway(false);
+		zombie.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 999999999, 10));
 		movementSyncer.setEntity(zombie);
 		movementSyncer.setEnabled(true);
+		new RepeatingTask(0.5) {
+			@Override
+			protected void run() {
+				Collider[] colliders = hitbox.getCollidingColliders();
+				for (Collider collider : colliders) {
+					if (collider instanceof PlayerCharacterCollider) {
+						PlayerCharacter pc = ((PlayerCharacterCollider) collider).getCharacter();
+						pc.damage(500, BulskanUndead.this);
+					}
+				}
+			}
+		}.schedule();
 	}
 
 	@Override

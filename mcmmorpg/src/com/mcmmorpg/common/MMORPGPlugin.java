@@ -17,13 +17,21 @@ public abstract class MMORPGPlugin extends JavaPlugin {
 		GameClock.start();
 		NonPlayerCharacter.startNPCSpawner();
 		LootChest.init();
-		onMMORPGStart();
+		try {
+			onMMORPGStart();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		isInitialized = true;
 	}
 
 	@Override
 	public void onDisable() {
-		onMMORPGStop();
+		try {
+			onMMORPGStop();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		NonPlayerCharacter.despawnAll();
 		TextPanel.removeAllEntities();
 		LootChest.removeAll();

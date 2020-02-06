@@ -17,6 +17,7 @@ import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerPickupItemEvent;
+import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
@@ -49,6 +50,9 @@ class ItemListener implements Listener {
 		if (itemStack == null) {
 			return;
 		}
+		if (event.getHand() != EquipmentSlot.HAND) {
+			return;
+		}
 		Player player = event.getPlayer();
 		Action action = event.getAction();
 		if (ItemFactory.staticInteractables.contains(itemStack)) {
@@ -74,6 +78,7 @@ class ItemListener implements Listener {
 		ConsumableItem consumableItem = ConsumableItem.forItemStack(itemStack);
 		if (consumableItem != null) {
 			if (action == Action.RIGHT_CLICK_AIR || action == Action.RIGHT_CLICK_BLOCK) {
+				itemStack.setAmount(itemStack.getAmount() - 1);
 				EventManager.callEvent(new PlayerCharacterUseConsumableItemEvent(pc, consumableItem));
 			}
 			return;
