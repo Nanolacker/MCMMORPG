@@ -1,48 +1,43 @@
 package com.mcmmorpg.common.item;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
 import com.mcmmorpg.common.playerClass.PlayerClass;
 
-public class MainHandItem {
+public class MainHandItem extends Item {
 
-	private static final Map<ItemStack, MainHandItem> itemMap = new HashMap<>();
-
-	private final String name;
-	private final PlayerClass playerClass;
+	private final String playerClass;
 	private final int level;
-	private final ItemStack itemStack;
 
-	public MainHandItem(String name, PlayerClass playerClass, int level, Material icon, String description) {
-		this.name = name;
+	private transient PlayerClass playerClass0;
+
+	public MainHandItem(int id, String name, ItemRarity rarity, Material icon, String description, String playerClass,
+			int level) {
+		super(id, name, rarity, icon, description);
 		this.playerClass = playerClass;
 		this.level = level;
-		this.itemStack = ItemFactory.createItemStack(name, description, icon);
-		itemMap.put(itemStack, this);
 	}
 
-	public static MainHandItem forItemStack(ItemStack itemStack) {
-		return itemMap.get(itemStack);
+	@Override
+	protected void initialize() {
+		super.initialize();
+		playerClass0 = PlayerClass.forName(playerClass);
 	}
 
-	public String getName() {
-		return name;
+	@Override
+	protected ItemStack createItemStack() {
+		ItemRarity rarity = getRarity();
+		String lore = rarity + " Main Hand\n" + getDescription();
+		return ItemFactory.createItemStack(rarity.getColor() + getName(), lore, getIcon());
 	}
 
 	public PlayerClass getPlayerClass() {
-		return playerClass;
+		return playerClass0;
 	}
 
 	public int getLevel() {
 		return level;
-	}
-
-	public ItemStack getItemStack() {
-		return itemStack;
 	}
 
 }

@@ -1,44 +1,29 @@
 package com.mcmmorpg.common.item;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.bukkit.Material;
-import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 
 import com.mcmmorpg.common.playerClass.PlayerClass;
 
-public class ConsumableItem {
+public class ConsumableItem extends Item {
 
-	private static final Map<ItemStack, ConsumableItem> itemMap = new HashMap<>();
-
-	private final String name;
 	private final int level;
-	private final ItemStack itemStack;
 
-	public ConsumableItem(String name, PlayerClass playerClass, EquipmentSlot slot, int level, double protections,
-			Material icon, String description) {
-		this.name = name;
+	public ConsumableItem(int id, String name, PlayerClass playerClass, ItemRarity rarity, double protections,
+			Material icon, String description, int level) {
+		super(id, name, rarity, icon, description);
 		this.level = level;
-		this.itemStack = ItemFactory.createItemStack(name, description, icon);
-		itemMap.put(itemStack, this);
 	}
 
-	public static ConsumableItem forItemStack(ItemStack itemStack) {
-		return itemMap.get(itemStack);
-	}
-
-	public String getName() {
-		return name;
+	@Override
+	protected ItemStack createItemStack() {
+		ItemRarity rarity = getRarity();
+		String lore = rarity + " Consumable\n" + getDescription();
+		return ItemFactory.createItemStack(rarity + getName(), lore, getIcon());
 	}
 
 	public int getLevel() {
 		return level;
-	}
-
-	public ItemStack getItemStack() {
-		return itemStack;
 	}
 
 }

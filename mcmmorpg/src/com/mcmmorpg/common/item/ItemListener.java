@@ -6,7 +6,6 @@ import java.util.Map;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
-import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -26,11 +25,10 @@ import com.mcmmorpg.common.event.EventManager;
 import com.mcmmorpg.common.event.PlayerCharacterUseConsumableItemEvent;
 import com.mcmmorpg.common.event.PlayerCharacterUseMainHandItemEvent;
 import com.mcmmorpg.common.event.StaticInteractableEvent;
-import com.mcmmorpg.common.utils.Debug;
 
 class ItemListener implements Listener {
 
-	private Map<Item, PlayerCharacter> droppedItemMap = new HashMap<>();
+	private Map<org.bukkit.entity.Item, PlayerCharacter> droppedItemMap = new HashMap<>();
 
 	@EventHandler
 	private void onClickItem(InventoryClickEvent event) {
@@ -67,19 +65,34 @@ class ItemListener implements Listener {
 		}
 		event.setCancelled(true);
 
-		MainHandItem mainHandItem = MainHandItem.forItemStack(itemStack);
-		if (mainHandItem != null) {
+		Item item = Item.forItemStack(itemStack);
+		if (item == null) {
+			return;
+		}
+
+		if (item instanceof MainHandItem) {
 			if (action == Action.LEFT_CLICK_AIR || action == Action.LEFT_CLICK_BLOCK) {
-				EventManager.callEvent(new PlayerCharacterUseMainHandItemEvent(pc, mainHandItem));
+				MainHandItem mainHandItem = (MainHandItem) item;
+				if (pc.getPlayerClass() != mainHandItem.getPlayerClass()) {
+					pc.sendMessage("You are not the right class to use!");
+				} else if (pc.getLevel() >= mainHandItem.getLevel()) {
+					EventManager.callEvent(new PlayerCharacterUseMainHandItemEvent(pc, mainHandItem));
+				} else {
+					pc.sendMessage("Your level is too low to use!");
+				}
 			}
 			return;
 		}
 
-		ConsumableItem consumableItem = ConsumableItem.forItemStack(itemStack);
-		if (consumableItem != null) {
+		if (item instanceof ConsumableItem) {
 			if (action == Action.RIGHT_CLICK_AIR || action == Action.RIGHT_CLICK_BLOCK) {
-				itemStack.setAmount(itemStack.getAmount() - 1);
-				EventManager.callEvent(new PlayerCharacterUseConsumableItemEvent(pc, consumableItem));
+				ConsumableItem consumableItem = (ConsumableItem) item;
+				if (pc.getLevel() >= consumableItem.getLevel()) {
+					itemStack.setAmount(itemStack.getAmount() - 1);
+					EventManager.callEvent(new PlayerCharacterUseConsumableItemEvent(pc, consumableItem));
+				} else {
+					pc.sendMessage("Your level is too low to use!");
+				}
 			}
 			return;
 		}
@@ -87,7 +100,7 @@ class ItemListener implements Listener {
 
 	@EventHandler
 	private void onThrowItem(PlayerDropItemEvent event) {
-		Item item = event.getItemDrop();
+		org.bukkit.entity.Item item = event.getItemDrop();
 		ItemStack itemStack = item.getItemStack();
 		if (ItemFactory.staticInteractables.contains(itemStack)) {
 			event.setCancelled(true);
@@ -108,7 +121,7 @@ class ItemListener implements Listener {
 		if (pc == null) {
 			return;
 		}
-		Item item = event.getItem();
+		org.bukkit.entity.Item item = event.getItem();
 		if (droppedItemMap.get(item) == pc) {
 			droppedItemMap.remove(item);
 		} else {
@@ -118,7 +131,7 @@ class ItemListener implements Listener {
 
 	@EventHandler
 	private void onItemDespawn(ItemDespawnEvent event) {
-		Item item = event.getEntity();
+		org.bukkit.entity.Item item = event.getEntity();
 		droppedItemMap.remove(item);
 	}
 

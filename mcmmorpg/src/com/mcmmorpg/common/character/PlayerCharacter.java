@@ -430,20 +430,21 @@ public class PlayerCharacter extends AbstractCharacter {
 
 	public double getProtections() {
 		double protections = 0;
+		int level = getLevel();
 		ArmorItem head = getHeadArmor();
-		if (head != null) {
+		if (head != null && head.getLevel() >= level) {
 			protections += head.getProtections();
 		}
 		ArmorItem chest = getChestArmor();
-		if (chest != null) {
+		if (chest != null && chest.getLevel() >= level) {
 			protections += chest.getProtections();
 		}
 		ArmorItem legs = getLegArmor();
-		if (legs != null) {
+		if (legs != null && legs.getLevel() >= level) {
 			protections += legs.getProtections();
 		}
 		ArmorItem feet = getFeetArmor();
-		if (feet != null) {
+		if (feet != null && feet.getLevel() >= level) {
 			protections += feet.getProtections();
 		}
 		return protections;
