@@ -5,14 +5,14 @@ import org.bukkit.inventory.ItemStack;
 
 import com.mcmmorpg.common.playerClass.PlayerClass;
 
-public class MainHandItem extends Item {
+public class Weapon extends Item {
 
 	private final String playerClass;
 	private final int level;
 
 	private transient PlayerClass playerClass0;
 
-	public MainHandItem(int id, String name, ItemRarity rarity, Material icon, String description, String playerClass,
+	public Weapon(int id, String name, ItemRarity rarity, Material icon, String description, String playerClass,
 			int level) {
 		super(id, name, rarity, icon, description);
 		this.playerClass = playerClass;
@@ -20,7 +20,7 @@ public class MainHandItem extends Item {
 	}
 
 	@Override
-	protected void initialize() {
+	public void initialize() {
 		super.initialize();
 		playerClass0 = PlayerClass.forName(playerClass);
 	}
@@ -28,7 +28,7 @@ public class MainHandItem extends Item {
 	@Override
 	protected ItemStack createItemStack() {
 		ItemRarity rarity = getRarity();
-		String lore = rarity + " Main Hand\n" + getDescription();
+		String lore = rarity.getColor() + rarity.toString() + " Weapon\n" + getDescription();
 		return ItemFactory.createItemStack(rarity.getColor() + getName(), lore, getIcon());
 	}
 

@@ -21,6 +21,10 @@ public class Noise {
 		this(type, 1.0f, 1.0f);
 	}
 
+	public Noise(Sound type, float volume, MusicNote note) {
+		this(type, volume, note.getPitch());
+	}
+
 	public void play(Location source) {
 		World world = source.getWorld();
 		world.playSound(source, type, SoundCategory.MASTER, volume, pitch);

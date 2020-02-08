@@ -6,10 +6,12 @@ import java.util.Map;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.ItemDespawnEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
@@ -23,8 +25,9 @@ import org.bukkit.inventory.ItemStack;
 import com.mcmmorpg.common.character.PlayerCharacter;
 import com.mcmmorpg.common.event.EventManager;
 import com.mcmmorpg.common.event.PlayerCharacterUseConsumableItemEvent;
-import com.mcmmorpg.common.event.PlayerCharacterUseMainHandItemEvent;
+import com.mcmmorpg.common.event.PlayerCharacterUseWeaponEvent;
 import com.mcmmorpg.common.event.StaticInteractableEvent;
+import com.mcmmorpg.common.utils.Debug;
 
 class ItemListener implements Listener {
 
@@ -70,13 +73,13 @@ class ItemListener implements Listener {
 			return;
 		}
 
-		if (item instanceof MainHandItem) {
+		if (item instanceof Weapon) {
 			if (action == Action.LEFT_CLICK_AIR || action == Action.LEFT_CLICK_BLOCK) {
-				MainHandItem mainHandItem = (MainHandItem) item;
-				if (pc.getPlayerClass() != mainHandItem.getPlayerClass()) {
+				Weapon weaopn = (Weapon) item;
+				if (pc.getPlayerClass() != weaopn.getPlayerClass()) {
 					pc.sendMessage("You are not the right class to use!");
-				} else if (pc.getLevel() >= mainHandItem.getLevel()) {
-					EventManager.callEvent(new PlayerCharacterUseMainHandItemEvent(pc, mainHandItem));
+				} else if (pc.getLevel() >= weaopn.getLevel()) {
+					EventManager.callEvent(new PlayerCharacterUseWeaponEvent(pc, weaopn));
 				} else {
 					pc.sendMessage("Your level is too low to use!");
 				}
@@ -95,6 +98,24 @@ class ItemListener implements Listener {
 				}
 			}
 			return;
+		}
+	}
+
+	@EventHandler
+	private void onWeaponHit(EntityDamageByEntityEvent event) {
+		Entity damager = event.getDamager();
+		if (damager instanceof Player) {
+			Player player = (Player) damager;
+			PlayerCharacter pc = PlayerCharacter.forPlayer(player);
+			if (pc == null) {
+				return;
+			}
+			ItemStack itemStack = player.getItemInHand();
+			Item item = Item.forItemStack(itemStack);
+			if (item instanceof Weapon) {
+				Weapon weapon = (Weapon) item;
+				EventManager.callEvent(new PlayerCharacterUseWeaponEvent(pc, weapon));
+			}
 		}
 	}
 

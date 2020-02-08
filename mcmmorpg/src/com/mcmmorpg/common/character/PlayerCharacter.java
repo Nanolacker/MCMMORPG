@@ -25,6 +25,7 @@ import com.mcmmorpg.common.character.MovementSyncer.MovementSyncMode;
 import com.mcmmorpg.common.event.EventManager;
 import com.mcmmorpg.common.event.PlayerCharacterLevelUpEvent;
 import com.mcmmorpg.common.item.ArmorItem;
+import com.mcmmorpg.common.item.Item;
 import com.mcmmorpg.common.persistence.PersistentPlayerCharacterDataContainer;
 import com.mcmmorpg.common.playerClass.PlayerClass;
 import com.mcmmorpg.common.playerClass.PlayerSkillData;
@@ -128,6 +129,7 @@ public class PlayerCharacter extends AbstractCharacter {
 		updateManaDisplay();
 
 		if (fresh) {
+			setSkillUpgradePoints(1);
 			PlayerCharacterLevelUpEvent event = new PlayerCharacterLevelUpEvent(this, 1);
 			EventManager.callEvent(event);
 		}
@@ -282,7 +284,7 @@ public class PlayerCharacter extends AbstractCharacter {
 	public void grantXp(int xp) {
 		this.xp += xp;
 		this.xp = (int) MathUtils.clamp(this.xp, 0, MAX_XP);
-		sendMessage("+" + xp + " XP!");
+		sendMessage(ChatColor.GREEN + "+" + xp + " XP!");
 		checkForLevelUp();
 		updateXpDisplay();
 		updateActionBar();
@@ -332,9 +334,11 @@ public class PlayerCharacter extends AbstractCharacter {
 
 	private void levelUp() {
 		setLevel(getLevel() + 1);
+		setSkillUpgradePoints(skillUpgradePoints + 1);
 		Noise levelUpNoise = new Noise(Sound.ENTITY_PLAYER_LEVELUP);
 		levelUpNoise.play(player);
 		sendMessage(ChatColor.GREEN + "Level up!");
+		sendMessage("+1 skill point!");
 	}
 
 	public static int maxLevel() {
@@ -345,6 +349,9 @@ public class PlayerCharacter extends AbstractCharacter {
 		return skillUpgradePoints;
 	}
 
+	/**
+	 * Note that players automatically receive skill points when they level up.
+	 */
 	public void setSkillUpgradePoints(int points) {
 		this.skillUpgradePoints = points;
 	}
@@ -451,23 +458,28 @@ public class PlayerCharacter extends AbstractCharacter {
 	}
 
 	public ArmorItem getHeadArmor() {
-		ItemStack itemStack = getInventory().getItem(103);
-		return ArmorItem.forItemStack(itemStack);
+		return getArmorItem(103);
 	}
 
 	public ArmorItem getChestArmor() {
-		ItemStack itemStack = getInventory().getItem(102);
-		return ArmorItem.forItemStack(itemStack);
+		return getArmorItem(102);
 	}
 
 	public ArmorItem getLegArmor() {
-		ItemStack itemStack = getInventory().getItem(101);
-		return ArmorItem.forItemStack(itemStack);
+		return getArmorItem(101);
 	}
 
 	public ArmorItem getFeetArmor() {
-		ItemStack itemStack = getInventory().getItem(100);
-		return ArmorItem.forItemStack(itemStack);
+		return getArmorItem(100);
+	}
+
+	private ArmorItem getArmorItem(int inventorySlot) {
+		ItemStack itemStack = getInventory().getItem(inventorySlot);
+		Item item = Item.forItemStack(itemStack);
+		if (item instanceof ArmorItem) {
+			return (ArmorItem) item;
+		}
+		return null;
 	}
 
 	public Quest getTargetQuest() {
@@ -534,7 +546,7 @@ public class PlayerCharacter extends AbstractCharacter {
 				}
 				progressText += progress + "" + ChatColor.WHITE + "/" + ChatColor.GREEN + "" + goal;
 				objectivesText += progressText + " " + ChatColor.RESET + objective.getDescription() + ChatColor.RESET
-						+ "\n";
+						+ "\n\n";
 			}
 			SidebarText questDisplay = new SidebarText(questTitle, objectivesText);
 			questDisplay.apply(player);

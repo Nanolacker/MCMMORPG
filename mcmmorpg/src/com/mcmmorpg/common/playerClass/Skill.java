@@ -2,6 +2,7 @@ package com.mcmmorpg.common.playerClass;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -14,12 +15,14 @@ import com.mcmmorpg.common.character.PlayerCharacter;
 import com.mcmmorpg.common.event.EventManager;
 import com.mcmmorpg.common.event.SkillUseEvent;
 import com.mcmmorpg.common.item.ItemFactory;
+import com.mcmmorpg.common.sound.Noise;
 import com.mcmmorpg.common.time.RepeatingTask;
 
 public final class Skill implements Listener {
 
 	private static final double COOLDOWN_UPDATE_PERIOD_SECONDS = 0.1;
 	private static final Material LOCKED_MATERIAL = Material.BARRIER;
+	private static final Noise ON_COOLDOWN_NOISE = new Noise(Sound.BLOCK_ANVIL_LAND);
 
 	private final String name;
 	private final String description;
@@ -125,8 +128,13 @@ public final class Skill implements Listener {
 	}
 
 	private ItemStack createHotbarItemStack() {
-		ItemStack item = ItemFactory.createItemStack(name, "level " + minimumLevel + "\n" + description, icon);
-		return item;
+		StringBuilder lore = new StringBuilder();
+		lore.append(ChatColor.GOLD + "Level " + minimumLevel + " skill");
+		lore.append(ChatColor.AQUA + "\nCost: " + manaCost);
+		lore.append(ChatColor.YELLOW + "\nCooldown: " + cooldown);
+		lore.append(ChatColor.WHITE + "\n\n" + description);
+		ItemStack itemStack = ItemFactory.createItemStack(ChatColor.GREEN + name, lore.toString(), icon);
+		return itemStack;
 	}
 
 	ItemStack getSkillTreeItemStack(PlayerCharacter pc) {
@@ -139,7 +147,7 @@ public final class Skill implements Listener {
 		lore.append("\nUpgraded " + upgradeLevel + "/" + maximumUpgradeLevel);
 		lore.append(ChatColor.AQUA + "\nCost: " + manaCost);
 		lore.append(ChatColor.YELLOW + "\nCooldown: " + cooldown);
-		lore.append(ChatColor.WHITE + "\n" + description);
+		lore.append(ChatColor.WHITE + "\n\n" + description);
 		ItemStack itemStack = ItemFactory.createItemStack(ChatColor.GREEN + name, lore.toString(), material);
 		return itemStack;
 	}
@@ -165,7 +173,8 @@ public final class Skill implements Listener {
 		sizeOfOne.setAmount(1);
 		if (sizeOfOne.equals(hotbarItemStack)) {
 			if (isOnCooldown(pc)) {
-				pc.sendMessage("On cooldown!");
+				pc.sendMessage(ChatColor.RED + "On cooldown! (" + (int) Math.ceil(getCooldown(pc)) + ")");
+				ON_COOLDOWN_NOISE.play(player);
 			} else if (pc.getCurrentMana() < manaCost) {
 				pc.sendMessage("Insufficient mana!");
 			} else {

@@ -4,18 +4,18 @@ import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
 import com.mcmmorpg.common.character.PlayerCharacter;
-import com.mcmmorpg.common.item.MainHandItem;
+import com.mcmmorpg.common.item.Weapon;
 
-public class PlayerCharacterUseMainHandItemEvent extends Event {
+public class PlayerCharacterUseWeaponEvent extends Event {
 
 	private static final HandlerList handlers = new HandlerList();
 
 	private final PlayerCharacter pc;
-	private final MainHandItem mainHand;
+	private final Weapon weapon;
 
-	public PlayerCharacterUseMainHandItemEvent(PlayerCharacter pc, MainHandItem mainHand) {
+	public PlayerCharacterUseWeaponEvent(PlayerCharacter pc, Weapon weapon) {
 		this.pc = pc;
-		this.mainHand = mainHand;
+		this.weapon = weapon;
 	}
 
 	public static HandlerList getHandlerList() {
@@ -31,8 +31,8 @@ public class PlayerCharacterUseMainHandItemEvent extends Event {
 		return pc;
 	}
 
-	public MainHandItem getMainHand() {
-		return mainHand;
+	public Weapon getWeapon() {
+		return weapon;
 	}
 
 }

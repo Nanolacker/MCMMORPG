@@ -8,7 +8,7 @@ import com.mcmmorpg.common.utils.IOUtils;
 public class PlayerClassLoader {
 
 	public static void loadClasses() {
-		File playerClassFolder = new File(IOUtils.getDataFolder(), "player_classes");
+		File playerClassFolder = new File(IOUtils.getDataFolder(), "resources\\player_classes");
 		File[] playerClassFiles = playerClassFolder.listFiles();
 		for (File file : playerClassFiles) {
 			PlayerClass playerClass = IOUtils.objectFromJsonFile(file, PlayerClass.class);

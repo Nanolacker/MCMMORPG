@@ -6,8 +6,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.mcmmorpg.common.utils.Debug;
-
 public class PlayerQuestManager {
 
 	private final List<Quest> completedQuests;
@@ -54,7 +52,6 @@ public class PlayerQuestManager {
 	}
 
 	void startQuest(Quest quest) {
-		Debug.log("Start");
 		PlayerQuestData data = new PlayerQuestData(quest);
 		questDataMap.put(quest, data);
 	}

@@ -42,8 +42,15 @@ public class Item {
 		return idMap.get(id);
 	}
 
+	/**
+	 * Returns null if the specified item stack does not correspond to an item.
+	 */
 	public static Item forItemStack(ItemStack itemStack) {
 		return itemStackMap.get(itemStack);
+	}
+
+	public final int getID() {
+		return id;
 	}
 
 	public final String getName() {

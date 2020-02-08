@@ -11,11 +11,16 @@ import org.bukkit.util.Vector;
 import com.mcmmorpg.common.character.AbstractCharacter;
 import com.mcmmorpg.common.character.CharacterCollider;
 import com.mcmmorpg.common.character.PlayerCharacter;
+import com.mcmmorpg.common.event.PlayerCharacterLevelUpEvent;
+import com.mcmmorpg.common.event.PlayerCharacterUseWeaponEvent;
 import com.mcmmorpg.common.event.SkillUseEvent;
+import com.mcmmorpg.common.item.Item;
+import com.mcmmorpg.common.item.Weapon;
 import com.mcmmorpg.common.physics.Collider;
 import com.mcmmorpg.common.playerClass.PlayerClass;
 import com.mcmmorpg.common.playerClass.Skill;
 import com.mcmmorpg.common.sound.Noise;
+import com.mcmmorpg.common.utils.Debug;
 
 public class FighterListener implements Listener {
 
@@ -53,6 +58,38 @@ public class FighterListener implements Listener {
 					if (!target.isFriendly(pc)) {
 						target.damage(5, pc);
 					}
+				}
+			}
+		};
+		hitbox.setActive(true);
+		hitbox.setActive(false);
+	}
+
+	@EventHandler
+	private void onLevelUp(PlayerCharacterLevelUpEvent event) {
+		PlayerCharacter pc = event.getPlayerCharacter();
+		int level = event.getNewLevel();
+		if (level == 1) {
+			Weapon weapon = (Weapon) Item.forID(0);
+			pc.getInventory().addItem(weapon.getItemStack());
+		}
+	}
+
+	@EventHandler
+	private void onUseSword(PlayerCharacterUseWeaponEvent event) {
+		Weapon weapon = event.getWeapon();
+		if (weapon.getID() != 0) {
+			return;
+		}
+		PlayerCharacter pc = event.getPlayerCharacter();
+		Location center = pc.getLocation();
+		center.add(0, 1.5, 0).add(center.getDirection().multiply(1.5));
+		Collider hitbox = new Collider(center, 1.75, 1.75, 1.75) {
+			@Override
+			protected void onCollisionEnter(Collider other) {
+				if (other instanceof CharacterCollider) {
+					AbstractCharacter character = ((CharacterCollider) other).getCharacter();
+					character.damage(0.25 + 0.1 * pc.getLevel(), pc);
 				}
 			}
 		};

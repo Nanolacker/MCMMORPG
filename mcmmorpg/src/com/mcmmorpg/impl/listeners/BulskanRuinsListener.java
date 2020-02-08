@@ -36,7 +36,7 @@ public class BulskanRuinsListener implements Listener {
 	}
 
 	private void getSoundtrack() {
-		File file = new File(IOUtils.getDataFolder(), "soundtracks\\bulskan_ruins.json");
+		File file = new File(IOUtils.getDataFolder(), "resources\\soundtracks\\bulskan_ruins.json");
 		SoundSequence soundtrack = IOUtils.objectFromJsonFile(file, PersistentSoundSequenceDataContainer.class)
 				.toSoundSequence();
 		this.soundtrack = soundtrack;
@@ -111,7 +111,6 @@ public class BulskanRuinsListener implements Listener {
 	@EventHandler
 	private void onLevel1(PlayerCharacterLevelUpEvent event) {
 		PlayerCharacter pc = event.getPlayerCharacter();
-		pc.setSkillUpgradePoints(1);
 		Quest quest = Quest.forName("Saving the Farm");
 		quest.start(pc);
 		pc.setHealthRegenRate(50);

@@ -1,17 +1,17 @@
 package com.mcmmorpg.impl.npcs;
 
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
+import org.bukkit.entity.Husk;
 import org.bukkit.entity.Player;
-import org.bukkit.entity.Zombie;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.bukkit.potion.PotionEffect;
-import org.bukkit.potion.PotionEffectType;
+import org.bukkit.util.Vector;
 
 import com.mcmmorpg.common.character.CharacterCollider;
 import com.mcmmorpg.common.character.MovementSyncer;
@@ -24,7 +24,7 @@ import com.mcmmorpg.common.event.EventManager;
 import com.mcmmorpg.common.physics.Collider;
 import com.mcmmorpg.common.sound.Noise;
 import com.mcmmorpg.common.time.DelayedTask;
-import com.mcmmorpg.common.utils.Debug;
+import com.mcmmorpg.common.ui.ProgressBar;
 
 public class BulskanUndead extends NonPlayerCharacter implements Listener {
 
@@ -32,17 +32,19 @@ public class BulskanUndead extends NonPlayerCharacter implements Listener {
 	private static final Noise HURT_NOISE = new Noise(Sound.ENTITY_ZOMBIE_HURT);
 
 	private final Location spawnLocation;
-	private CharacterCollider hitbox;
-	private MovementSyncer movementSyncer;
-	private Zombie zombie;
-	private double respawnTime;
+	private final CharacterCollider hitbox;
+	private final MovementSyncer movementSyncer;
+	private Husk entity;
+	private final boolean respawn;
+	private final double respawnTime;
 
-	public BulskanUndead(int level, Location location, double respawnTime) {
+	public BulskanUndead(int level, Location location, boolean respawn, double respawnTime) {
 		super("Undead", level, location);
 		super.setMaxHealth(maxHealth(level));
 		this.spawnLocation = location;
 		this.hitbox = new CharacterCollider(this, spawnLocation, 1, 2, 1);
 		this.movementSyncer = new MovementSyncer(this, null, MovementSyncMode.CHARACTER_FOLLOWS_ENTITY);
+		this.respawn = respawn;
 		this.respawnTime = respawnTime;
 		EventManager.registerEvents(this);
 	}
@@ -55,11 +57,10 @@ public class BulskanUndead extends NonPlayerCharacter implements Listener {
 	public void spawn() {
 		super.spawn();
 		hitbox.setActive(true);
-		zombie = (Zombie) spawnLocation.getWorld().spawnEntity(spawnLocation, EntityType.HUSK);
-		zombie.setBaby(false);
-		zombie.setRemoveWhenFarAway(false);
-		zombie.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 999999999, 10));
-		movementSyncer.setEntity(zombie);
+		entity = (Husk) spawnLocation.getWorld().spawnEntity(spawnLocation, EntityType.HUSK);
+		entity.setBaby(false);
+		entity.setRemoveWhenFarAway(false);
+		movementSyncer.setEntity(entity);
 		movementSyncer.setEnabled(true);
 	}
 
@@ -68,7 +69,7 @@ public class BulskanUndead extends NonPlayerCharacter implements Listener {
 		super.despawn();
 		hitbox.setActive(false);
 		movementSyncer.setEnabled(false);
-		zombie.remove();
+		entity.remove();
 	}
 
 	@Override
@@ -81,7 +82,7 @@ public class BulskanUndead extends NonPlayerCharacter implements Listener {
 	public void damage(double amount, Source source) {
 		super.damage(amount, source);
 		// for light up red effect
-		zombie.damage(0);
+		entity.damage(0);
 		HURT_NOISE.play(getLocation());
 	}
 
@@ -89,19 +90,20 @@ public class BulskanUndead extends NonPlayerCharacter implements Listener {
 	protected void onDeath() {
 		super.onDeath();
 		grantXpToNearbyPlayers();
-		zombie.remove();
+		entity.remove();
 		Location location = getLocation();
 		DEATH_NOISE.play(location);
 		location.getWorld().spawnParticle(Particle.CLOUD, location, 10);
 		setLocation(spawnLocation);
-		DelayedTask respawn = new DelayedTask(respawnTime) {
-			@Override
-			protected void run() {
-				setAlive(true);
-				Debug.log("undead respawning");
-			}
-		};
-		respawn.schedule();
+		if (respawn) {
+			DelayedTask respawn = new DelayedTask(respawnTime) {
+				@Override
+				protected void run() {
+					setAlive(true);
+				}
+			};
+			respawn.schedule();
+		}
 	}
 
 	private void grantXpToNearbyPlayers() {
@@ -130,8 +132,8 @@ public class BulskanUndead extends NonPlayerCharacter implements Listener {
 	@EventHandler
 	private void onHit(EntityDamageByEntityEvent event) {
 		Entity damager = event.getDamager();
-		if (damager == this.zombie) {
-			Entity damaged = event.getEntity();
+		Entity damaged = event.getEntity();
+		if (damager == this.entity) {
 			if (damaged instanceof Player) {
 				Player player = (Player) damaged;
 				PlayerCharacter pc = PlayerCharacter.forPlayer(player);
@@ -140,6 +142,14 @@ public class BulskanUndead extends NonPlayerCharacter implements Listener {
 				}
 				pc.damage(getDamageAmount(), this);
 			}
+		} else if (damaged == this.entity) {
+			DelayedTask cancelKnockback = new DelayedTask(0.1) {
+				@Override
+				protected void run() {
+					entity.setVelocity(new Vector());
+				}
+			};
+			cancelKnockback.schedule();
 		}
 	}
 
