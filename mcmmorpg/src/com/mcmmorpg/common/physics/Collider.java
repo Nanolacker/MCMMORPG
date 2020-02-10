@@ -93,13 +93,20 @@ public class Collider {
 	 * must be greater than that axis's min value. Be sure to invoke
 	 * {@code setActive} to activate this collider after construction.
 	 * 
-	 * @param world the world this collider will exist in
-	 * @param xMin  the minimum x value that exists within this collider
-	 * @param xMax  the maximum x value that exists within this collider
-	 * @param yMin  the minimum y value that exists within this collider
-	 * @param yMax  the maximum y value that exists within this collider
-	 * @param zMin  the minimum z value that exists within this collider
-	 * @param zMax  the maximum z value that exists within this collider
+	 * @param world
+	 *            the world this collider will exist in
+	 * @param xMin
+	 *            the minimum x value that exists within this collider
+	 * @param xMax
+	 *            the maximum x value that exists within this collider
+	 * @param yMin
+	 *            the minimum y value that exists within this collider
+	 * @param yMax
+	 *            the maximum y value that exists within this collider
+	 * @param zMin
+	 *            the minimum z value that exists within this collider
+	 * @param zMax
+	 *            the maximum z value that exists within this collider
 	 */
 	public Collider(World world, double xMin, double yMin, double zMin, double xMax, double yMax, double zMax) {
 		this.world = world;
@@ -122,8 +129,10 @@ public class Collider {
 	/**
 	 * Constructs a new {@code Collider} from the specified {@link BoundingBox}.
 	 * 
-	 * @param world       the world this collider will exist in
-	 * @param boundingBox the collider used to construct this {@code Collider}
+	 * @param world
+	 *            the world this collider will exist in
+	 * @param boundingBox
+	 *            the collider used to construct this {@code Collider}
 	 */
 	public Collider(World world, BoundingBox boundingBox) {
 		this(world, boundingBox.getMinX(), boundingBox.getMinY(), boundingBox.getMinZ(), boundingBox.getMaxX(),
@@ -135,13 +144,17 @@ public class Collider {
 	 * not be negative. Be sure to invoke {@code setActive} to activate collider
 	 * after construction.
 	 * 
-	 * @param center  the location, including the world, at the center of this
-	 *                collider
-	 * @param lengthX the length of this collider on the x-axis
-	 * @param lengthY the length of this collider on the y-axis
-	 * @param lengthZ the length of this collider on the z-axis
+	 * @param center
+	 *            the location, including the world, at the center of this collider
+	 * @param lengthX
+	 *            the length of this collider on the x-axis
+	 * @param lengthY
+	 *            the length of this collider on the y-axis
+	 * @param lengthZ
+	 *            the length of this collider on the z-axis
 	 * 
-	 * @throws IllegalArgumentException if any of the lengths are negative
+	 * @throws IllegalArgumentException
+	 *             if any of the lengths are negative
 	 */
 	public Collider(Location center, double lengthX, double lengthY, double lengthZ) {
 		this(center.getWorld(), center.getX() - lengthX / 2, center.getY() - lengthX / 2, center.getZ() - lengthZ / 2,
@@ -164,11 +177,14 @@ public class Collider {
 			updateOccupiedBuckets();
 			checkForCollision();
 		} else {
-			for (int i = 0; i < collidingColliders.size(); i++) {
-				Collider collidingWith = collidingColliders.get(i);
+			for (Collider collidingWith : collidingColliders) {
 				onCollisionExit(collidingWith);
 				collidingWith.onCollisionExit(this);
 			}
+			for (ColliderBucket bucket : occupiedBuckets) {
+				bucket.removeCollider(this);
+			}
+			occupiedBuckets.clear();
 		}
 	}
 
@@ -182,12 +198,13 @@ public class Collider {
 	/**
 	 * Sets the world that this collider will exist in.
 	 * 
-	 * @param world the world this collider will exist in
+	 * @param world
+	 *            the world this collider will exist in
 	 */
 	public final void setWorld(World world) {
 		this.world = world;
-		updateOccupiedBuckets();
 		if (active) {
+			updateOccupiedBuckets();
 			checkForCollision();
 		}
 	}
@@ -201,8 +218,8 @@ public class Collider {
 
 	public final void setXMin(double xMin) {
 		this.xMin = xMin;
-		updateOccupiedBuckets();
 		if (active) {
+			updateOccupiedBuckets();
 			checkForCollision();
 		}
 	}
@@ -216,8 +233,8 @@ public class Collider {
 
 	public final void setYMin(double yMin) {
 		this.yMin = yMin;
-		updateOccupiedBuckets();
 		if (active) {
+			updateOccupiedBuckets();
 			checkForCollision();
 		}
 	}
@@ -231,8 +248,8 @@ public class Collider {
 
 	public final void setZMin(double zMin) {
 		this.zMin = zMin;
-		updateOccupiedBuckets();
 		if (active) {
+			updateOccupiedBuckets();
 			checkForCollision();
 		}
 	}
@@ -246,8 +263,8 @@ public class Collider {
 
 	public final void setXMax(double xMax) {
 		this.xMax = xMax;
-		updateOccupiedBuckets();
 		if (active) {
+			updateOccupiedBuckets();
 			checkForCollision();
 		}
 	}
@@ -261,8 +278,8 @@ public class Collider {
 
 	public final void setYMax(double yMax) {
 		this.yMax = yMax;
-		updateOccupiedBuckets();
 		if (active) {
+			updateOccupiedBuckets();
 			checkForCollision();
 		}
 	}
@@ -276,8 +293,8 @@ public class Collider {
 
 	public final void setZMax(double zMax) {
 		this.zMax = zMax;
-		updateOccupiedBuckets();
 		if (active) {
+			updateOccupiedBuckets();
 			checkForCollision();
 		}
 	}
@@ -297,13 +314,14 @@ public class Collider {
 	/**
 	 * Sets the center of this collider and updates all bounds accordingly.
 	 * 
-	 * @param center the new center of this collider
+	 * @param center
+	 *            the new center of this collider
 	 */
 	public final void setCenter(Location center) {
 		world = center.getWorld();
 		updateBounds(center);
-		updateOccupiedBuckets();
 		if (active) {
+			updateOccupiedBuckets();
 			checkForCollision();
 		}
 	}
@@ -337,8 +355,8 @@ public class Collider {
 		yMax += y;
 		zMin += z;
 		zMax += z;
-		updateOccupiedBuckets();
 		if (active) {
+			updateOccupiedBuckets();
 			checkForCollision();
 		}
 	}
@@ -367,12 +385,13 @@ public class Collider {
 	/**
 	 * Sets the dimensions of the collider.
 	 * 
-	 * @param dimensions the new dimensions of this collider
+	 * @param dimensions
+	 *            the new dimensions of this collider
 	 */
 	public final void setDimensions(double lengthX, double lengthY, double lengthZ) {
 		updateBounds(lengthX, lengthY, lengthZ);
-		updateOccupiedBuckets();
 		if (active) {
+			updateOccupiedBuckets();
 			checkForCollision();
 		}
 	}
@@ -422,7 +441,7 @@ public class Collider {
 					if (bucket == null) {
 						bucket = ColliderBucket.createNewBucket(bucketAddress);
 					}
-					boolean alreadyEncompassed = bucket.getEncompassedColliders().contains(this);
+					boolean alreadyEncompassed = bucket.getActiveColliders().contains(this);
 					if (!alreadyEncompassed) {
 						bucket.encompassCollider(this);
 					}
@@ -435,7 +454,7 @@ public class Collider {
 			ColliderBucket bucket = occupiedBucketsOld.get(i);
 			if (!occupiedBuckets.contains(bucket)) {
 				bucket.removeCollider(this);
-				if (bucket.getEncompassedColliders().isEmpty()) {
+				if (bucket.getActiveColliders().isEmpty()) {
 					Location address = bucket.getAddress();
 					ColliderBucket.deleteBucket(address);
 				}
@@ -447,7 +466,8 @@ public class Collider {
 	 * Returns whether this collider encompasses a point (in other words, whether
 	 * this point exists within the volume of this collider).
 	 * 
-	 * @param point location of the point to be checked
+	 * @param point
+	 *            location of the point to be checked
 	 * @return whether this collider encompasses the point
 	 */
 	public final boolean encompasses(Location point) {
@@ -466,10 +486,10 @@ public class Collider {
 	private final void checkForCollision() {
 		for (int i = 0; i < occupiedBuckets.size(); i++) {
 			ColliderBucket bucket = occupiedBuckets.get(i);
-			List<Collider> neighboringColliders = bucket.getEncompassedColliders();
+			List<Collider> neighboringColliders = bucket.getActiveColliders();
 			for (int j = 0; j < neighboringColliders.size(); j++) {
 				Collider neighboringCollider = neighboringColliders.get(j);
-				if (neighboringCollider != this && neighboringCollider.isActive() == true) {
+				if (neighboringCollider != this) {
 					boolean collides = isCollidingWith(neighboringCollider);
 					if (collidingColliders.contains(neighboringCollider)) {
 						if (!collides) {
@@ -487,7 +507,7 @@ public class Collider {
 			Collider collidingCollider = collidingColliders.get(i);
 			for (int j = 0; j < occupiedBuckets.size(); j++) {
 				ColliderBucket bucket = occupiedBuckets.get(j);
-				if (bucket.getEncompassedColliders().contains(collidingCollider)) {
+				if (bucket.getActiveColliders().contains(collidingCollider)) {
 					continue outerloop;
 				}
 			}
@@ -500,7 +520,8 @@ public class Collider {
 	 * Called when two colliders that were colliding no longer overlap each other.
 	 * {@code onCollisionEnter} is called from each of the bounding boxes.
 	 * 
-	 * @param other the other collider in the collision
+	 * @param other
+	 *            the other collider in the collision
 	 */
 	private final void handleCollisionEnter(Collider other) {
 		this.collidingColliders.add(other);
@@ -514,7 +535,8 @@ public class Collider {
 	 * Called when two colliders that were colliding no longer overlap each other.
 	 * {@code onCollisionExit} is called from each of the colliders.
 	 * 
-	 * @param other the other collider in the collision
+	 * @param other
+	 *            the other collider in the collision
 	 */
 	private final void handleCollisionExit(Collider other) {
 		collidingColliders.remove(other);
@@ -527,7 +549,8 @@ public class Collider {
 	 * Returns whether this {@code Collider} is colliding with the specified
 	 * {@code Collider}.
 	 * 
-	 * @param other the other {@code Collider}
+	 * @param other
+	 *            the other {@code Collider}
 	 * @return whether the two {@code Collider}s are colliding
 	 */
 	public final boolean isCollidingWith(Collider other) {
@@ -543,7 +566,8 @@ public class Collider {
 	/**
 	 * Called when this collider enters a collision with another collider.
 	 * 
-	 * @param other the other collider in the collision
+	 * @param other
+	 *            the other collider in the collision
 	 */
 	protected void onCollisionEnter(Collider other) {
 	}
@@ -551,7 +575,8 @@ public class Collider {
 	/**
 	 * Called when this collider exits a collision with another collider.
 	 * 
-	 * @param other the other collider in the collision
+	 * @param other
+	 *            the other collider in the collision
 	 */
 	protected void onCollisionExit(Collider other) {
 	}
@@ -584,7 +609,8 @@ public class Collider {
 	/**
 	 * Changes the mode, or pattern, used to draw this collider.
 	 * 
-	 * @param mode the mode with which this collider will be drawn
+	 * @param mode
+	 *            the mode with which this collider will be drawn
 	 */
 	public final void setDrawMode(ColliderDrawMode mode) {
 		drawMode = mode;
@@ -604,7 +630,8 @@ public class Collider {
 	/**
 	 * Changes the particle used to draw this collider when drawing is enabled.
 	 * 
-	 * @param particle the particle to be used in drawing this collider
+	 * @param particle
+	 *            the particle to be used in drawing this collider
 	 */
 	public final void setDrawParticle(Particle particle) {
 		drawParticle = particle;

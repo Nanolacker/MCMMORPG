@@ -36,7 +36,7 @@ final class ColliderBucket {
 	 * The {@link Collider}s that are encompassed entirely or partially by this
 	 * bucket.
 	 */
-	private List<Collider> encompassedColliders;
+	private List<Collider> activeColliders;
 	/**
 	 * Not a {@code Location} in the traditional sense.
 	 */
@@ -44,7 +44,7 @@ final class ColliderBucket {
 
 	private ColliderBucket(Location address) {
 		this.address = address;
-		encompassedColliders = new ArrayList<>();
+		activeColliders = new ArrayList<>();
 	}
 
 	static ColliderBucket forAddress(Location address) {
@@ -66,15 +66,18 @@ final class ColliderBucket {
 	}
 
 	void encompassCollider(Collider collider) {
-		encompassedColliders.add(collider);
+		activeColliders.add(collider);
 	}
 
 	void removeCollider(Collider collider) {
-		encompassedColliders.remove(collider);
+		activeColliders.remove(collider);
 	}
 
-	List<Collider> getEncompassedColliders() {
-		return encompassedColliders;
+	/**
+	 * Contains only active colliders.
+	 */
+	List<Collider> getActiveColliders() {
+		return activeColliders;
 	}
 
 }

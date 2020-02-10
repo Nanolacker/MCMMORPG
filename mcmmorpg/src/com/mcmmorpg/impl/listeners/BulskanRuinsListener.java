@@ -88,7 +88,7 @@ public class BulskanRuinsListener implements Listener {
 		Location[] undeadLocations = { new Location(Worlds.ELADRADOR, 174, 67, -35),
 				new Location(Worlds.ELADRADOR, 170, 67, -33) };
 		for (Location location : undeadLocations) {
-			BulskanUndead undead = new BulskanUndead(4, location, 30);
+			BulskanUndead undead = new BulskanUndead(4, location, true, 30);
 			undead.setAlive(true);
 		}
 	}
@@ -100,12 +100,12 @@ public class BulskanRuinsListener implements Listener {
 		if (pc == null) {
 			return;
 		}
-//		Block clicked = event.getClickedBlock();
-//		Location location = clicked.getLocation();
-//		if (location == null) {
-//			Lever lever = (Lever) clicked;
-//			lever.setPowered(true);
-//		}
+		// Block clicked = event.getClickedBlock();
+		// Location location = clicked.getLocation();
+		// if (location == null) {
+		// Lever lever = (Lever) clicked;
+		// lever.setPowered(true);
+		// }
 	}
 
 	@EventHandler
