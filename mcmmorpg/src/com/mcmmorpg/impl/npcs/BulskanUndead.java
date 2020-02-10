@@ -42,7 +42,7 @@ public class BulskanUndead extends NonPlayerCharacter implements Listener {
 		super("Undead", level, location);
 		super.setMaxHealth(maxHealth(level));
 		this.spawnLocation = location;
-		this.hitbox = new CharacterCollider(this, spawnLocation, 1, 2, 1);
+		this.hitbox = new CharacterCollider(this, spawnLocation.clone().add(0, 1.25, 0), 1, 2.5, 1);
 		this.movementSyncer = new MovementSyncer(this, null, MovementSyncMode.CHARACTER_FOLLOWS_ENTITY);
 		this.respawn = respawn;
 		this.respawnTime = respawnTime;
@@ -75,7 +75,7 @@ public class BulskanUndead extends NonPlayerCharacter implements Listener {
 	@Override
 	public void setLocation(Location location) {
 		super.setLocation(location);
-		hitbox.setCenter(location);
+		hitbox.setCenter(location.clone().add(0, 1, 0));
 	}
 
 	@Override

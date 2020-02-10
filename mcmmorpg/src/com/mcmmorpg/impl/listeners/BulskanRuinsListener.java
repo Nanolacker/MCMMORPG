@@ -86,7 +86,8 @@ public class BulskanRuinsListener implements Listener {
 
 	private void spawnNpcs() {
 		Location[] undeadLocations = { new Location(Worlds.ELADRADOR, 174, 67, -35),
-				new Location(Worlds.ELADRADOR, 170, 67, -33) };
+				new Location(Worlds.ELADRADOR, 170, 67, -33), new Location(Worlds.ELADRADOR, 155, 67, -36),
+				new Location(Worlds.ELADRADOR, 145, 67, -49), new Location(Worlds.ELADRADOR, 190, 67, -42) };
 		for (Location location : undeadLocations) {
 			BulskanUndead undead = new BulskanUndead(4, location, true, 30);
 			undead.setAlive(true);

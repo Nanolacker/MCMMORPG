@@ -45,7 +45,7 @@ public final class Raycast {
 		for (ColliderBucket bucket : nearbyBuckets) {
 			List<Collider> encompassedColliders = bucket.getActiveColliders();
 			for (Collider collider : encompassedColliders) {
-				if (!nearbyColliders.contains(collider)) {
+				if (target.isAssignableFrom(collider.getClass()) && !nearbyColliders.contains(collider)) {
 					nearbyColliders.add(collider);
 				}
 			}
