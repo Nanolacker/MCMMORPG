@@ -12,7 +12,7 @@ public abstract class MMORPGPlugin extends JavaPlugin {
 	private static boolean isInitialized;
 
 	@Override
-	public void onEnable() {
+	public final void onEnable() {
 		isInitialized = false;
 		GameClock.start();
 		NonPlayerCharacter.startNPCSpawner();
@@ -26,7 +26,7 @@ public abstract class MMORPGPlugin extends JavaPlugin {
 	}
 
 	@Override
-	public void onDisable() {
+	public final void onDisable() {
 		try {
 			onMMORPGStop();
 		} catch (Exception e) {

@@ -1,5 +1,7 @@
 package com.mcmmorpg.common.character;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
@@ -15,12 +17,14 @@ import com.mojang.authlib.properties.Property;
 
 import net.minecraft.server.v1_15_R1.EntityPlayer;
 import net.minecraft.server.v1_15_R1.MinecraftServer;
+import net.minecraft.server.v1_15_R1.PacketPlayOutEntity.PacketPlayOutEntityLook;
+import net.minecraft.server.v1_15_R1.PacketPlayOutEntityHeadRotation;
+import net.minecraft.server.v1_15_R1.PacketPlayOutEntityTeleport;
 import net.minecraft.server.v1_15_R1.PacketPlayOutNamedEntitySpawn;
 import net.minecraft.server.v1_15_R1.PacketPlayOutPlayerInfo;
 import net.minecraft.server.v1_15_R1.PlayerConnection;
 import net.minecraft.server.v1_15_R1.PlayerInteractManager;
 import net.minecraft.server.v1_15_R1.WorldServer;
-
 
 /**
  * Allows for the creation of non-player human entities.
@@ -31,21 +35,23 @@ public class NonPlayerHumanEntity {
 	private Location location;
 	private GameProfile gameProfile;
 	private EntityPlayer entityPlayer;
-	private String texture;
-	private String signature;
+	private String textureData;
+	private String textureSignature;
+	private final List<Player> viewers;
 
-	public NonPlayerHumanEntity(String name, Location location, String texture, String signature) {
+	public NonPlayerHumanEntity(String name, Location location, String textureData, String textureSignature) {
 		this.name = name;
 		this.location = location;
-		this.texture = texture;
-		this.signature = signature;
+		this.textureData = textureData;
+		this.textureSignature = textureSignature;
+		viewers = new ArrayList<>();
 	}
 
 	public void spawn() {
 		MinecraftServer minecraftServer = ((CraftServer) Bukkit.getServer()).getServer();
 		WorldServer worldServer = ((CraftWorld) location.getWorld()).getHandle();
 		this.gameProfile = new GameProfile(UUID.randomUUID(), ChatColor.translateAlternateColorCodes('&', this.name));
-		this.gameProfile.getProperties().put("textures", new Property("textures", texture, signature));
+		this.gameProfile.getProperties().put("textures", new Property("textures", textureData, textureSignature));
 		PlayerInteractManager playerInteractManager = new PlayerInteractManager(worldServer);
 
 		this.entityPlayer = new EntityPlayer(minecraftServer, worldServer, gameProfile, playerInteractManager);
@@ -53,33 +59,46 @@ public class NonPlayerHumanEntity {
 				location.getPitch());
 	}
 
-	public void despawn() {
-
-	}
-
 	public void remove() {
+		for (Player player : viewers) {
+			hide(player);
+		}
 		entityPlayer.killEntity();
+		viewers.clear();
 	}
 
 	public void show(Player player) {
 		PlayerConnection playerConnection = ((CraftPlayer) player).getHandle().playerConnection;
-		PacketPlayOutPlayerInfo packetPlayOutPlayerInfo = new PacketPlayOutPlayerInfo(
+		PacketPlayOutPlayerInfo addPlayerPacket = new PacketPlayOutPlayerInfo(
 				PacketPlayOutPlayerInfo.EnumPlayerInfoAction.ADD_PLAYER, entityPlayer);
-		PacketPlayOutNamedEntitySpawn packetPlayOutNamedEntitySpawn = new PacketPlayOutNamedEntitySpawn(entityPlayer);
-		playerConnection.sendPacket(packetPlayOutPlayerInfo);
-		playerConnection.sendPacket(packetPlayOutNamedEntitySpawn);
+		PacketPlayOutNamedEntitySpawn spawnPacket = new PacketPlayOutNamedEntitySpawn(entityPlayer);
+		playerConnection.sendPacket(addPlayerPacket);
+		playerConnection.sendPacket(spawnPacket);
+		viewers.add(player);
 	}
 
 	public void hide(Player player) {
-
+		// PacketPlayOut spawnPacket = new PacketPlayOutNamedEntitySpawn(entityPlayer);
+		viewers.remove(player);
 	}
 
 	public Location getLocation() {
-		return location;
+		return location.clone();
 	}
 
 	public void setLocation(Location location) {
 		this.location = location;
+		entityPlayer.setPositionRotation(location.getX(), location.getY(), location.getZ(), location.getYaw(),
+				location.getPitch());
+		for (Player player : viewers) {
+			PlayerConnection playerConnection = ((CraftPlayer) player).getHandle().playerConnection;
+			PacketPlayOutEntityTeleport teleportPacket = new PacketPlayOutEntityTeleport(entityPlayer);
+			// Convert from Bukkit to approximately NMS yaw.
+			PacketPlayOutEntityHeadRotation headRotatePacket = new PacketPlayOutEntityHeadRotation(entityPlayer,
+					(byte) (0.7 * location.getYaw()));
+			playerConnection.sendPacket(teleportPacket);
+			playerConnection.sendPacket(headRotatePacket);
+		}
 	}
 
 }
