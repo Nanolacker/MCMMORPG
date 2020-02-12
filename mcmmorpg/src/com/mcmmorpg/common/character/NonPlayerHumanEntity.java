@@ -17,7 +17,6 @@ import com.mojang.authlib.properties.Property;
 
 import net.minecraft.server.v1_15_R1.EntityPlayer;
 import net.minecraft.server.v1_15_R1.MinecraftServer;
-import net.minecraft.server.v1_15_R1.PacketPlayOutEntity.PacketPlayOutEntityLook;
 import net.minecraft.server.v1_15_R1.PacketPlayOutEntityHeadRotation;
 import net.minecraft.server.v1_15_R1.PacketPlayOutEntityTeleport;
 import net.minecraft.server.v1_15_R1.PacketPlayOutNamedEntitySpawn;
@@ -26,18 +25,16 @@ import net.minecraft.server.v1_15_R1.PlayerConnection;
 import net.minecraft.server.v1_15_R1.PlayerInteractManager;
 import net.minecraft.server.v1_15_R1.WorldServer;
 
-/**
- * Allows for the creation of non-player human entities.
- */
 public class NonPlayerHumanEntity {
 
 	private final String name;
 	private Location location;
+	private boolean spawned;
+	private final List<Player> viewers;
 	private GameProfile gameProfile;
 	private EntityPlayer entityPlayer;
 	private String textureData;
 	private String textureSignature;
-	private final List<Player> viewers;
 
 	public NonPlayerHumanEntity(String name, Location location, String textureData, String textureSignature) {
 		this.name = name;
@@ -57,17 +54,25 @@ public class NonPlayerHumanEntity {
 		this.entityPlayer = new EntityPlayer(minecraftServer, worldServer, gameProfile, playerInteractManager);
 		this.entityPlayer.setLocation(location.getX(), location.getY(), location.getZ(), location.getYaw(),
 				location.getPitch());
+		spawned = true;
 	}
 
 	public void remove() {
+		if (!spawned) {
+			throw new IllegalStateException("Not spawned");
+		}
 		for (Player player : viewers) {
 			hide(player);
 		}
 		entityPlayer.killEntity();
 		viewers.clear();
+		spawned = false;
 	}
 
 	public void show(Player player) {
+		if (!spawned) {
+			throw new IllegalStateException("Not spawned");
+		}
 		PlayerConnection playerConnection = ((CraftPlayer) player).getHandle().playerConnection;
 		PacketPlayOutPlayerInfo addPlayerPacket = new PacketPlayOutPlayerInfo(
 				PacketPlayOutPlayerInfo.EnumPlayerInfoAction.ADD_PLAYER, entityPlayer);
@@ -78,7 +83,13 @@ public class NonPlayerHumanEntity {
 	}
 
 	public void hide(Player player) {
-		// PacketPlayOut spawnPacket = new PacketPlayOutNamedEntitySpawn(entityPlayer);
+		if (!spawned) {
+			throw new IllegalStateException("Not spawned");
+		}
+		PlayerConnection playerConnection = ((CraftPlayer) player).getHandle().playerConnection;
+		PacketPlayOutPlayerInfo removePlayerPacket = new PacketPlayOutPlayerInfo(
+				PacketPlayOutPlayerInfo.EnumPlayerInfoAction.REMOVE_PLAYER, entityPlayer);
+		playerConnection.sendPacket(removePlayerPacket);
 		viewers.remove(player);
 	}
 
