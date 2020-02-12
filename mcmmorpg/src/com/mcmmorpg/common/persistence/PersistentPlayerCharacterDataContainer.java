@@ -32,12 +32,13 @@ public class PersistentPlayerCharacterDataContainer {
 	private final PlayerQuestData[] questData;
 	private final PlayerSkillData[] skillData;
 	private final PersistentInventory inventory;
+	private final String[] tags;
 
 	private PersistentPlayerCharacterDataContainer(boolean fresh, PlayerClass playerClass, String zone,
 			Location location, Location respawnLocation, int xp, int skillUpgradePoints, int currency, double maxHealth,
 			double currentHealth, double healthRegenRate, double maxMana, double currentMana, double manaRegenRate,
 			Quest targetQuest, List<Quest> completedQuests, PlayerQuestData[] questData, PlayerSkillData[] skillData,
-			ItemStack[] inventoryContents) {
+			ItemStack[] inventoryContents, String[] tags) {
 		this.fresh = fresh;
 		this.playerClassName = playerClass.getName();
 		this.zone = zone;
@@ -60,6 +61,7 @@ public class PersistentPlayerCharacterDataContainer {
 		this.questData = questData;
 		this.skillData = skillData;
 		this.inventory = new PersistentInventory(inventoryContents);
+		this.tags = tags;
 	}
 
 	public static PersistentPlayerCharacterDataContainer createSaveData(PlayerCharacter pc) {
@@ -82,9 +84,10 @@ public class PersistentPlayerCharacterDataContainer {
 		PlayerQuestData[] allQuestData = pc.getQuestManager().getQuestData();
 		PlayerSkillData[] skillData = pc.getSkillManager().getAllSkillData();
 		ItemStack[] inventoryContents = pc.getInventory().getContents();
+		String[] tags = pc.getTags();
 		return new PersistentPlayerCharacterDataContainer(false, playerClass, zone, location, respawnLocation, xp,
 				skillUpgradePoints, currency, maxHealth, currentHealth, healthRegenRate, maxMana, currentMana,
-				manaRegenRate, targetQuest, completedQuests, allQuestData, skillData, inventoryContents);
+				manaRegenRate, targetQuest, completedQuests, allQuestData, skillData, inventoryContents, tags);
 	}
 
 	public static PersistentPlayerCharacterDataContainer createFreshSaveData(Player player, PlayerClass playerClass,
@@ -102,9 +105,10 @@ public class PersistentPlayerCharacterDataContainer {
 		PlayerQuestData[] questData = {};
 		PlayerSkillData[] skillData = {};
 		ItemStack[] inventoryContents = {};
+		String[] tags = {};
 		return new PersistentPlayerCharacterDataContainer(true, playerClass, startZone, startLocation, respawnLocation,
 				xp, skillUpgradePoints, currency, maxHealth, currentHealth, healthRegenRate, maxMana, currentMana,
-				manaRegenRate, null, new ArrayList<>(), questData, skillData, inventoryContents);
+				manaRegenRate, null, new ArrayList<>(), questData, skillData, inventoryContents, tags);
 	}
 
 	/**
@@ -188,6 +192,10 @@ public class PersistentPlayerCharacterDataContainer {
 
 	public ItemStack[] getInventoryContents() {
 		return inventory.getContents();
+	}
+	
+	public String[] getTags() {
+		return tags;
 	}
 
 }

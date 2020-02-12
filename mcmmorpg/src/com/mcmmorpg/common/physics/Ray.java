@@ -50,9 +50,16 @@ public final class Ray {
 		this.end = end;
 	}
 
+	public Vector getDirection() {
+		return end.clone().subtract(start).toVector().normalize();
+	}
+
+	public double getLength() {
+		return end.distance(start);
+	}
+
 	public boolean intersects(Collider collider) {
-		Vector v = end.clone().subtract(start).toVector();
-		RayTraceResult result = collider.toBoundingBox().rayTrace(start.toVector(), v.clone().normalize(), v.length());
+		RayTraceResult result = collider.toBoundingBox().rayTrace(start.toVector(), getDirection(), getLength());
 		return result != null;
 	}
 

@@ -1,6 +1,8 @@
 package com.mcmmorpg.common.quest;
 
 import com.mcmmorpg.common.character.PlayerCharacter;
+import com.mcmmorpg.common.event.EventManager;
+import com.mcmmorpg.common.event.QuestObjectiveChangeProgressEvent;
 import com.mcmmorpg.common.utils.MathUtils;
 
 public class QuestObjective {
@@ -74,8 +76,12 @@ public class QuestObjective {
 		if (data == null) {
 			throw new IllegalArgumentException("Quest not in progress for player character");
 		}
+		int previousProgress = getProgress(pc);
 		progress = (int) MathUtils.clamp(progress, 0, goal);
 		data.setProgress(this.index, progress);
+		QuestObjectiveChangeProgressEvent event = new QuestObjectiveChangeProgressEvent(pc, this, previousProgress,
+				progress);
+		EventManager.callEvent(event);
 		if (pc.getTargetQuest() == this.quest) {
 			pc.updateQuestDisplay();
 		}

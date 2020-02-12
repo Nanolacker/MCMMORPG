@@ -68,7 +68,11 @@ public final class Raycast {
 	 * Null if there was no hit.
 	 */
 	public Collider getFirstHit() {
-		return hits[0];
+		if (hits.length == 0) {
+			return null;
+		} else {
+			return hits[0];
+		}
 	}
 
 	public Collider[] getHits() {

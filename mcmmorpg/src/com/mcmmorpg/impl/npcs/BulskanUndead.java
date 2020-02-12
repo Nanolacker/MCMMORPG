@@ -24,7 +24,6 @@ import com.mcmmorpg.common.event.EventManager;
 import com.mcmmorpg.common.physics.Collider;
 import com.mcmmorpg.common.sound.Noise;
 import com.mcmmorpg.common.time.DelayedTask;
-import com.mcmmorpg.common.ui.ProgressBar;
 
 public class BulskanUndead extends NonPlayerCharacter implements Listener {
 
@@ -39,7 +38,7 @@ public class BulskanUndead extends NonPlayerCharacter implements Listener {
 	private final double respawnTime;
 
 	public BulskanUndead(int level, Location location, boolean respawn, double respawnTime) {
-		super("Undead", level, location);
+		super(ChatColor.RED + "Undead", level, location);
 		super.setMaxHealth(maxHealth(level));
 		this.spawnLocation = location;
 		this.hitbox = new CharacterCollider(this, spawnLocation.clone().add(0, 1.25, 0), 1, 2.5, 1);
@@ -50,7 +49,7 @@ public class BulskanUndead extends NonPlayerCharacter implements Listener {
 	}
 
 	private static double maxHealth(int level) {
-		return 10 + 2 * level;
+		return 20 + 20 * level;
 	}
 
 	@Override
@@ -59,6 +58,7 @@ public class BulskanUndead extends NonPlayerCharacter implements Listener {
 		hitbox.setActive(true);
 		entity = (Husk) spawnLocation.getWorld().spawnEntity(spawnLocation, EntityType.HUSK);
 		entity.setBaby(false);
+		entity.getEquipment().clear();
 		entity.setRemoveWhenFarAway(false);
 		movementSyncer.setEntity(entity);
 		movementSyncer.setEnabled(true);

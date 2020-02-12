@@ -83,10 +83,10 @@ public abstract class NonPlayerCharacter extends AbstractCharacter {
 	 */
 	@OverridingMethodsMustInvokeSuper
 	protected void spawn() {
-		NonPlayerCharacterSpawnEvent event = new NonPlayerCharacterSpawnEvent(this);
-		EventManager.callEvent(event);
 		spawned = true;
 		setNameplateVisible(true);
+		NonPlayerCharacterSpawnEvent event = new NonPlayerCharacterSpawnEvent(this);
+		EventManager.callEvent(event);
 	}
 
 	/**
@@ -98,6 +98,8 @@ public abstract class NonPlayerCharacter extends AbstractCharacter {
 	protected void despawn() {
 		spawned = false;
 		setNameplateVisible(false);
+		NonPlayerCharacterSpawnEvent event = new NonPlayerCharacterSpawnEvent(this);
+		EventManager.callEvent(event);
 	}
 
 	@OverridingMethodsMustInvokeSuper

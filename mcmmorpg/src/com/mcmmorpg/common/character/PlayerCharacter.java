@@ -1,6 +1,7 @@
 package com.mcmmorpg.common.character;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -24,6 +25,8 @@ import org.bukkit.potion.PotionEffectType;
 import com.mcmmorpg.common.character.MovementSyncer.MovementSyncMode;
 import com.mcmmorpg.common.event.EventManager;
 import com.mcmmorpg.common.event.PlayerCharacterLevelUpEvent;
+import com.mcmmorpg.common.event.PlayerCharacterRegisterEvent;
+import com.mcmmorpg.common.event.PlayerCharacterRemoveEvent;
 import com.mcmmorpg.common.item.ArmorItem;
 import com.mcmmorpg.common.item.Item;
 import com.mcmmorpg.common.persistence.PersistentPlayerCharacterDataContainer;
@@ -74,6 +77,7 @@ public class PlayerCharacter extends AbstractCharacter {
 	private Quest targetQuest;
 	private final PlayerQuestManager questStatusManager;
 	private final PlayerSkillManager skillStatusManager;
+	private final List<String> tags;
 	private final PlayerSoundtrackPlayer soundtrackPlayer;
 	private CharacterCollider collider;
 	private final MovementSyncer movementSyncer;
@@ -89,7 +93,7 @@ public class PlayerCharacter extends AbstractCharacter {
 			Location respawnLocation, int xp, int skillUpgradePoints, int currency, double maxHealth,
 			double currentHealth, double healthRegenRate, double maxMana, double currentMana, double manaRegenRate,
 			Quest targetQuest, Quest[] completedQuests, PlayerQuestData[] questData, PlayerSkillData[] skillData,
-			ItemStack[] inventoryContents) {
+			ItemStack[] inventoryContents, String[] tags) {
 		super(player.getName(), xpToLevel(xp), location);
 		this.player = player;
 		this.playerClass = playerClass;
@@ -109,6 +113,7 @@ public class PlayerCharacter extends AbstractCharacter {
 		this.skillStatusManager = new PlayerSkillManager(this, skillData);
 		this.skillStatusManager.init();
 		player.getInventory().setContents(inventoryContents);
+		this.tags = new ArrayList<>(Arrays.asList(tags));
 		soundtrackPlayer = new PlayerSoundtrackPlayer(player);
 		this.collider = new PlayerCharacterCollider(this);
 		player.teleport(getLocation());
@@ -194,9 +199,15 @@ public class PlayerCharacter extends AbstractCharacter {
 		PlayerQuestData[] questStatuses = saveData.getQuestData();
 		PlayerSkillData[] skillStatuses = saveData.getSkillData();
 		ItemStack[] inventoryContents = saveData.getInventoryContents();
-		return new PlayerCharacter(player, fresh, playerClass, zone, location, respawnLocation, xp, skillUpgradePoints,
-				currency, maxHealth, currentHealth, healthRegenRate, maxMana, currentMana, manaRegenRate, targetQuest,
-				saveData.getCompletedQuests(), questStatuses, skillStatuses, inventoryContents);
+		String[] tags = saveData.getTags();
+
+		PlayerCharacter pc = new PlayerCharacter(player, fresh, playerClass, zone, location, respawnLocation, xp,
+				skillUpgradePoints, currency, maxHealth, currentHealth, healthRegenRate, maxMana, currentMana,
+				manaRegenRate, targetQuest, saveData.getCompletedQuests(), questStatuses, skillStatuses,
+				inventoryContents, tags);
+		PlayerCharacterRegisterEvent event = new PlayerCharacterRegisterEvent(pc);
+		EventManager.callEvent(event);
+		return pc;
 	}
 
 	public static PlayerCharacter forPlayer(Player player) {
@@ -333,8 +344,11 @@ public class PlayerCharacter extends AbstractCharacter {
 	}
 
 	private void levelUp() {
-		setLevel(getLevel() + 1);
+		int newLevel = getLevel() + 1;
+		setLevel(newLevel);
 		setSkillUpgradePoints(skillUpgradePoints + 1);
+		PlayerCharacterLevelUpEvent event = new PlayerCharacterLevelUpEvent(this, newLevel);
+		EventManager.callEvent(event);
 		Noise levelUpNoise = new Noise(Sound.ENTITY_PLAYER_LEVELUP);
 		levelUpNoise.play(player);
 		sendMessage(ChatColor.GREEN + "Level up!");
@@ -507,6 +521,22 @@ public class PlayerCharacter extends AbstractCharacter {
 		return skillStatusManager;
 	}
 
+	public boolean hasTag(String tag) {
+		return tags.contains(tag);
+	}
+
+	public void addTag(String tag) {
+		tags.add(tag);
+	}
+
+	public void removeTag(String tag) {
+		tags.remove(tag);
+	}
+
+	public String[] getTags() {
+		return tags.toArray(new String[tags.size()]);
+	}
+
 	@Override
 	protected void onDeath() {
 		super.onDeath();
@@ -587,11 +617,13 @@ public class PlayerCharacter extends AbstractCharacter {
 	/**
 	 * This needs to be invoked when the player abandons this player character.
 	 */
-	public void deactivate() {
+	public void remove() {
 		active = false;
 		collider.setActive(false);
 		movementSyncer.setEnabled(false);
 		playerMap.remove(player);
+		PlayerCharacterRemoveEvent event = new PlayerCharacterRemoveEvent(this);
+		EventManager.callEvent(event);
 	}
 
 	/**
