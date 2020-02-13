@@ -1,0 +1,41 @@
+{
+	"name": "Fighter",
+	"skills": [
+		{
+			"name": "Bash",
+			"description": "Damage enemies in an area in front of you",
+			"manaCost": 5,
+			"cooldown": 5,
+			"minimumLevel": 1,
+			"prerequisiteSkill": null,
+			"maximumUpgradeLevel": 3,
+			"skillTreeRow": 0,
+			"skillTreeColumn": 1,
+			"icon": "SHIELD"
+		},
+		{
+			"name": "Self Heal",
+			"description": "Heal yourself for a small amount.",
+			"manaCost": 15,
+			"cooldown": 15,
+			"minimumLevel": 2,
+			"prerequisiteSkill": null,
+			"maximumUpgradeLevel": 3,
+			"skillTreeRow": 0,
+			"skillTreeColumn": 7,
+			"icon": "EMERALD"
+		},
+		{
+			"name": "Sweep",
+			"description": "Deal a large amount of damage to enemies around you.",
+			"manaCost": 10,
+			"cooldown": 30,
+			"minimumLevel": 5,
+			"prerequisiteSkill": null,
+			"maximumUpgradeLevel": 3,
+			"skillTreeRow": 1,
+			"skillTreeColumn": 1,
+			"icon": "EMERALD"
+		}
+	]
+}

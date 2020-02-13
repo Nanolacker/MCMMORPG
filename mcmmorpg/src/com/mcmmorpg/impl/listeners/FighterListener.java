@@ -10,10 +10,8 @@ import org.bukkit.util.Vector;
 
 import com.mcmmorpg.common.character.AbstractCharacter;
 import com.mcmmorpg.common.character.CharacterCollider;
-import com.mcmmorpg.common.character.NonPlayerHumanEntity;
 import com.mcmmorpg.common.character.PlayerCharacter;
 import com.mcmmorpg.common.event.PlayerCharacterLevelUpEvent;
-import com.mcmmorpg.common.event.PlayerCharacterRegisterEvent;
 import com.mcmmorpg.common.event.PlayerCharacterUseWeaponEvent;
 import com.mcmmorpg.common.event.SkillUseEvent;
 import com.mcmmorpg.common.item.Item;
@@ -24,18 +22,24 @@ import com.mcmmorpg.common.physics.Raycast;
 import com.mcmmorpg.common.playerClass.PlayerClass;
 import com.mcmmorpg.common.playerClass.Skill;
 import com.mcmmorpg.common.sound.Noise;
-import com.mcmmorpg.common.time.RepeatingTask;
+import com.mcmmorpg.common.time.DelayedTask;
 
 public class FighterListener implements Listener {
 
 	private static final Noise BASH_NOISE = new Noise(Sound.ENTITY_GENERIC_EXPLODE, 0.5f, 1f);
+	private static final Noise SELF_HEAL_NOISE = new Noise(Sound.BLOCK_LAVA_EXTINGUISH);
+	private static final Noise SWEEP_NOISE = new Noise(Sound.ENTITY_GENERIC_EXPLODE, 1f, 1f);
 
-	private PlayerClass fighter;
-	private Skill bash;
+	private final PlayerClass fighter;
+	private final Skill bash;
+	private final Skill selfHeal;
+	private final Skill sweep;
 
 	public FighterListener() {
 		fighter = PlayerClass.forName("Fighter");
 		bash = fighter.skillForName("Bash");
+		selfHeal = fighter.skillForName("Self Heal");
+		sweep = fighter.skillForName("Sweep");
 	}
 
 	@EventHandler
@@ -44,6 +48,10 @@ public class FighterListener implements Listener {
 		PlayerCharacter pc = event.getPlayerCharacter();
 		if (skill == bash) {
 			useBash(pc);
+		} else if (skill == selfHeal) {
+			useSelfHeal(pc);
+		} else if (skill == sweep) {
+			useSweep(pc);
 		}
 	}
 
@@ -69,6 +77,54 @@ public class FighterListener implements Listener {
 		hitbox.setActive(false);
 	}
 
+	private void useSelfHeal(PlayerCharacter pc) {
+		double healAmount = 10 + selfHeal.getUpgradeLevel(pc) * 10;
+		pc.heal(healAmount, pc);
+		SELF_HEAL_NOISE.play(pc.getLocation());
+	}
+
+	private void useSweep(PlayerCharacter pc) {
+		Location location = pc.getLocation();
+		createSweepEffect(location);
+		new DelayedTask(0.25) {
+			@Override
+			protected void run() {
+				createSweepEffect(location);
+			}
+		}.schedule();
+		new DelayedTask(0.5) {
+			@Override
+			protected void run() {
+				createSweepEffect(location);
+			}
+		}.schedule();
+		SWEEP_NOISE.play(location);
+		Collider hitbox = new Collider(location, 8, 8, 8) {
+			@Override
+			protected void onCollisionEnter(Collider other) {
+				if (other instanceof CharacterCollider) {
+					AbstractCharacter target = ((CharacterCollider) other).getCharacter();
+					if (!target.isFriendly(pc)) {
+						target.damage(10, pc);
+					}
+				}
+			}
+		};
+		hitbox.setActive(true);
+		hitbox.setActive(false);
+	}
+
+	private void createSweepEffect(Location location) {
+		World world = location.getWorld();
+		Location effectLocation = location.clone();
+		// add some variation
+		double xOffset = 12 * (Math.random() - 0.5);
+		double yOffset = 12 * (Math.random() - 0.5);
+		double zOffset = 12 * (Math.random() - 0.5);
+		effectLocation.add(xOffset, yOffset, zOffset);
+		world.spawnParticle(Particle.EXPLOSION_LARGE, location, 1);
+	}
+
 	@EventHandler
 	private void onLevelUp(PlayerCharacterLevelUpEvent event) {
 		PlayerCharacter pc = event.getPlayerCharacter();
@@ -80,7 +136,7 @@ public class FighterListener implements Listener {
 	}
 
 	@EventHandler
-	private void onUseSword(PlayerCharacterUseWeaponEvent event) {
+	private void onWeaponUse(PlayerCharacterUseWeaponEvent event) {
 		Weapon weapon = event.getWeapon();
 		if (weapon.getID() != 0) {
 			return;
@@ -98,24 +154,6 @@ public class FighterListener implements Listener {
 				character.damage(damage, pc);
 			}
 		}
-	}
-
-	@EventHandler
-	private void onJoin(PlayerCharacterRegisterEvent event) {
-		PlayerCharacter pc = event.getPlayerCharacter();
-		String textureData = "eyJ0aW1lc3RhbXAiOjE1ODE0NzY1MTc1OTksInByb2ZpbGVJZCI6IjNmYzdmZGY5Mzk2MzRjNDE5MTE5OWJhM2Y3Y2MzZmVkIiwicHJvZmlsZU5hbWUiOiJZZWxlaGEiLCJzaWduYXR1cmVSZXF1aXJlZCI6dHJ1ZSwidGV4dHVyZXMiOnsiU0tJTiI6eyJ1cmwiOiJodHRwOi8vdGV4dHVyZXMubWluZWNyYWZ0Lm5ldC90ZXh0dXJlL2Y0MjdlY2NlMmQ2MmJiZmE5MDhjMzQ5OTMwYjliMzc1OWY5OWJhN2NmYTMwODUyMTExZDNiOWM2ODY3MWYxOTcifX19";
-		String textureSignature = "glN0pymsMkayUL6u8zoGPyo7Y7vgMUteNhWJ6ou66sDFu9Y6r9ODGzt2USsAgPllJRDSNCE/P1InCGjuR6SGuNHm62gazQ2J+H9MZmfsKjmEsw0xIEWNo+kF1GJz3KO8DrUn9FJtaK7O1phmatYSkCJua1fRPm7faazfoNLHMpOVWhfHAZR4SVNaWbGqAev/zF4+qH6sfPH/kt4Z9k6bLZEEuu8fWvhEZZ1g7u9GzJhprG5/G4nS7BWoVKnl3zQjfgAD+IRbYWV3cA3ZjohQvT7a5kvDLfbkhT5SGKCezSNvJSSCs8WEt9srIPtjSZVkwMh7kOy2IsyTDatqEXCVV/RcMy40YIbFjLYHn/+bT3k+wS+DhiAk99uRpNt35xrpH2k3N6n0PGih4VwvK4mycT+E3BwDaDsahvzNVH1P1PCWG7CW88XdIF35sfGcXMHtnjuNjoaPfW8NymTMx+hTVLqJFmwAt9+YUaCEPEW6S5NcNjlImroEN6HnufzyyJ3x/0H9CLCUvj6knMMRFjMblk2Pck5KtKDN7jLJasddz5htODOgfB1d+F18T/wEEHuTI/8FvPBBvB6QPzlYur9r1T+RojCCPrzuuedsQ4iCVfLiFJLsn5EPWpMlHYyy/ujgH0C+hyzl6wFTKIB2EZ9QGbNc/xEuAuaZaNgE7AqQFho=";
-		NonPlayerHumanEntity entity = new NonPlayerHumanEntity("", pc.getLocation(), textureData, textureSignature);
-		entity.spawn();
-		entity.show(pc.getPlayer());
-		RepeatingTask move = new RepeatingTask(0.2) {
-			protected void run() {
-				Location newLoc = entity.getLocation().clone();
-				newLoc.setYaw(pc.getLocation().getYaw());
-				entity.setLocation(newLoc);
-			}
-		};
-		move.schedule();
 	}
 
 }

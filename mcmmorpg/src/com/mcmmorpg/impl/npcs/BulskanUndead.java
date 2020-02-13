@@ -27,8 +27,8 @@ import com.mcmmorpg.common.time.DelayedTask;
 
 public class BulskanUndead extends NonPlayerCharacter implements Listener {
 
-	private static final Noise DEATH_NOISE = new Noise(Sound.ENTITY_ZOMBIE_DEATH);
 	private static final Noise HURT_NOISE = new Noise(Sound.ENTITY_ZOMBIE_HURT);
+	private static final Noise DEATH_NOISE = new Noise(Sound.ENTITY_ZOMBIE_DEATH);
 
 	private final Location spawnLocation;
 	private final CharacterCollider hitbox;
@@ -89,6 +89,7 @@ public class BulskanUndead extends NonPlayerCharacter implements Listener {
 	@Override
 	protected void onDeath() {
 		super.onDeath();
+		hitbox.setActive(false);
 		grantXpToNearbyPlayers();
 		entity.remove();
 		Location location = getLocation();
@@ -122,11 +123,6 @@ public class BulskanUndead extends NonPlayerCharacter implements Listener {
 
 	private int getXpToGrant() {
 		return 5 + getLevel() * 2;
-	}
-
-	@Override
-	protected Location getNameplateLocation() {
-		return getLocation().add(0, 2, 0);
 	}
 
 	@EventHandler

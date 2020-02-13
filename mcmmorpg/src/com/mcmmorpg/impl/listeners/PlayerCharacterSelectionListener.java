@@ -51,7 +51,7 @@ public class PlayerCharacterSelectionListener implements Listener {
 		DEFAULT_PLAYER_CLASS = PlayerClass.forName("Fighter");
 		STARTING_ZONE = "Melcher";
 		START_LOCATION = new Location(Worlds.ELADRADOR, 0, 70, 0);
-		MENU = ItemFactory.createItemStack(ChatColor.GREEN + "Menu", null, Material.EMERALD);
+		MENU = ItemFactory.createItemStack(ChatColor.GREEN + "Menu", null, Material.BOOK);
 		ItemFactory.registerStaticInteractable(MENU);
 		QUEST_LOG = ItemFactory.createItemStack(ChatColor.GREEN + "Quest Log", null, Material.COMPASS);
 		ItemFactory.registerStaticInteractable(QUEST_LOG);

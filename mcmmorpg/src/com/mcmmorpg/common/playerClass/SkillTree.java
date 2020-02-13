@@ -74,25 +74,28 @@ public class SkillTree implements Listener {
 		ClickType click = event.getClick();
 
 		if (!skill.prerequisitesAreMet(pc)) {
-			pc.sendMessage("Skill not available");
+			pc.sendMessage("Skill not available!");
 		}
 
 		if (click.isShiftClick()) {
 			// unlock/upgrade
 			int availableSillPoints = pc.getSkillUpgradePoints();
-			if (availableSillPoints > 0) {
+			if (availableSillPoints <= 0) {
+				pc.sendMessage("No skill points remaining!");
+
+			} else if (skill.getUpgradeLevel(pc) == skill.getMaximumUpgradeLevel()) {
+				pc.sendMessage("Skill already at maximum level!");
+			} else {
 				skill.upgrade(pc);
 				pc.setSkillUpgradePoints(pc.getSkillUpgradePoints() - 1);
 				// update skill tree inventory by reopening it
 				this.open(pc);
-			} else {
-				pc.sendMessage("No skill points remaining!");
 			}
 
 		} else {
 			// add to inventory
 			if (!skill.isUnlocked(pc)) {
-				pc.sendMessage(skill.getName() + " is not unlocked");
+				pc.sendMessage(skill.getName() + " is not unlocked!");
 				return;
 			}
 			ItemStack skillItemStack = skill.getHotbarItemStack();

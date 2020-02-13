@@ -7,7 +7,7 @@ import java.util.Map;
  * PlayerClasses can be made using JSON. Code will need to be written that deals
  * with the class's skill use, however.
  */
-public class PlayerClass {
+public final class PlayerClass {
 
 	/**
 	 * Keys are the names of the classes.
@@ -27,11 +27,11 @@ public class PlayerClass {
 		this.skills = skills;
 	}
 
-	public static final PlayerClass forName(String name) {
+	public static PlayerClass forName(String name) {
 		return playerClasses.get(name);
 	}
 
-	public final void initialize() {
+	public void initialize() {
 		for (Skill skill : skills) {
 			skill.initialize(this);
 		}
@@ -39,7 +39,7 @@ public class PlayerClass {
 		playerClasses.put(name, this);
 	}
 
-	public final String getName() {
+	public String getName() {
 		return name;
 	}
 
@@ -54,7 +54,7 @@ public class PlayerClass {
 	/**
 	 * Returns null if no skill with the specified name exists.
 	 */
-	public final Skill skillForName(String skillName) {
+	public Skill skillForName(String skillName) {
 		for (Skill skill : skills) {
 			if (skill.getName().equals(skillName)) {
 				return skill;

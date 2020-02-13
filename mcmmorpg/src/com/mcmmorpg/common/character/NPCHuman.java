@@ -25,7 +25,7 @@ import net.minecraft.server.v1_15_R1.PlayerConnection;
 import net.minecraft.server.v1_15_R1.PlayerInteractManager;
 import net.minecraft.server.v1_15_R1.WorldServer;
 
-public class NonPlayerHumanEntity {
+public class NPCHuman {
 
 	private final String name;
 	private Location location;
@@ -36,7 +36,7 @@ public class NonPlayerHumanEntity {
 	private String textureData;
 	private String textureSignature;
 
-	public NonPlayerHumanEntity(String name, Location location, String textureData, String textureSignature) {
+	public NPCHuman(String name, Location location, String textureData, String textureSignature) {
 		this.name = name;
 		this.location = location;
 		this.textureData = textureData;
@@ -112,4 +112,15 @@ public class NonPlayerHumanEntity {
 		}
 	}
 
+	public void swingArm() {
+
+	}
+
+	/**
+	 * Makes the skin light up red.
+	 */
+	public void hurt() {
+
+	}
+	
 }

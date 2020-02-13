@@ -19,6 +19,7 @@ import com.mcmmorpg.common.time.RepeatingTask;
 public abstract class NonPlayerCharacter extends AbstractCharacter {
 
 	private static final double SPAWN_PERIOD_SECONDS = 0.1;
+	private static final double DEFAULT_SPAWN_RADIUS = 25.0;
 
 	private static Set<NonPlayerCharacter> aliveNpcs = new HashSet<>();
 
@@ -116,8 +117,6 @@ public abstract class NonPlayerCharacter extends AbstractCharacter {
 		aliveNpcs.remove(this);
 		spawned = false;
 	}
-
-	private static final double DEFAULT_SPAWN_RADIUS = 25.0;
 
 	/**
 	 * Returns whether the conditions are suitable for this NPC to spawn. By
