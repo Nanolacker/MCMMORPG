@@ -11,4 +11,5 @@ public class Gabe extends NonPlayerCharacter {
 		setMaxHealth(Integer.MAX_VALUE);
 	}
 	
+	
 }
