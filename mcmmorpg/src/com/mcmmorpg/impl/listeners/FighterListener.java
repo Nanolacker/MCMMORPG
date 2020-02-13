@@ -28,7 +28,7 @@ public class FighterListener implements Listener {
 
 	private static final Noise BASH_NOISE = new Noise(Sound.ENTITY_GENERIC_EXPLODE, 0.5f, 1f);
 	private static final Noise SELF_HEAL_NOISE = new Noise(Sound.BLOCK_LAVA_EXTINGUISH);
-	private static final Noise SWEEP_NOISE = new Noise(Sound.ENTITY_GENERIC_EXPLODE, 1f, 1f);
+	private static final Noise SWEEP_NOISE = new Noise(Sound.ENTITY_GENERIC_EXPLODE);
 
 	private final PlayerClass fighter;
 	private final Skill bash;
@@ -44,8 +44,11 @@ public class FighterListener implements Listener {
 
 	@EventHandler
 	private void onUseSkill(SkillUseEvent event) {
-		Skill skill = event.getSkill();
 		PlayerCharacter pc = event.getPlayerCharacter();
+		if (pc.getPlayerClass() != fighter) {
+			return;
+		}
+		Skill skill = event.getSkill();
 		if (skill == bash) {
 			useBash(pc);
 		} else if (skill == selfHeal) {

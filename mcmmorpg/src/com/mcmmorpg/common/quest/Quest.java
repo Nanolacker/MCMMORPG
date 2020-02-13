@@ -70,6 +70,9 @@ public class Quest {
 		PlayerQuestManager questManager = pc.getQuestManager();
 		questManager.startQuest(this);
 		pc.sendMessage("Quest started: " + name);
+		if (pc.getTargetQuest() == null) {
+			pc.setTargetQuest(this);
+		}
 	}
 
 	void checkForCompletion(PlayerCharacter pc) {

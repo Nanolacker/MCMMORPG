@@ -1,0 +1,29 @@
+{
+	"name": "Mage",
+	"skills": [
+		{
+			"name": "Fireball",
+			"description": "Conjure a fireball and fire it at enemies in front of you.",
+			"manaCost": 15,
+			"cooldown": 5,
+			"minimumLevel": 1,
+			"prerequisiteSkill": null,
+			"maximumUpgradeLevel": 3,
+			"skillTreeRow": 0,
+			"skillTreeColumn": 1,
+			"icon": "MAGMA_CREAM"
+		},
+		{
+			"name": "Iceball",
+			"description": "Conjure an iceball and fire it at enemies in front of you.",
+			"manaCost": 15,
+			"cooldown": 5,
+			"minimumLevel": 1,
+			"prerequisiteSkill": null,
+			"maximumUpgradeLevel": 3,
+			"skillTreeRow": 0,
+			"skillTreeColumn": 1,
+			"icon": "SNOWBALL"
+		}
+	]
+}

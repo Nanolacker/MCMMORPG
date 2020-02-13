@@ -16,7 +16,6 @@ public class NecromancerListener {
 		necromancer = PlayerClass.forName("Necromancer");
 		raiseSkeleton = necromancer.skillForName("Raise Skeleton");
 	}
-	
 
 	@EventHandler
 	private void onUseSkill(SkillUseEvent event) {
@@ -26,9 +25,9 @@ public class NecromancerListener {
 			onRaiseSkeletonUse(pc);
 		}
 	}
-	
+
 	private void onRaiseSkeletonUse(PlayerCharacter pc) {
-		
+
 	}
-	
+
 }
