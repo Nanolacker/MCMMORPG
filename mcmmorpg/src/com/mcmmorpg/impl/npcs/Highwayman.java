@@ -72,6 +72,11 @@ public class Highwayman extends NonPlayerCharacter implements Listener {
 		ai.setSilent(true);
 		ai.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, Integer.MAX_VALUE, 1));
 		ai.setCollidable(true);
+		ai.eject();
+		Entity vehicle = ai.getVehicle();
+		if (vehicle != null) {
+			vehicle.remove();
+		}
 		ai.setRemoveWhenFarAway(false);
 		ai.getEquipment().setItemInMainHand(new ItemStack(Material.IRON_SWORD));
 		ai.getEquipment().setItemInMainHandDropChance(0f);

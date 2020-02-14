@@ -61,6 +61,11 @@ public class BulskanUndead extends NonPlayerCharacter implements Listener {
 		entity.getEquipment().clear();
 		entity.setRemoveWhenFarAway(false);
 		entity.setSilent(true);
+		entity.eject();
+		Entity vehicle = entity.getVehicle();
+		if (vehicle != null) {
+			vehicle.remove();
+		}
 		movementSyncer.setEntity(entity);
 		movementSyncer.setEnabled(true);
 	}

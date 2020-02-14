@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -15,8 +16,13 @@ import org.bukkit.inventory.ItemStack;
 
 import com.mcmmorpg.common.character.PlayerCharacter;
 import com.mcmmorpg.common.event.EventManager;
+import com.mcmmorpg.common.sound.Noise;
+
+import net.md_5.bungee.api.ChatColor;
 
 public class SkillTree implements Listener {
+
+	private static final Noise CLICK_NOISE = new Noise(Sound.BLOCK_LEVER_CLICK);
 
 	private final PlayerClass playerClass;
 	private final Map<PlayerCharacter, Inventory> inventoryMap;
@@ -74,17 +80,18 @@ public class SkillTree implements Listener {
 		ClickType click = event.getClick();
 
 		if (!skill.prerequisitesAreMet(pc)) {
-			pc.sendMessage("Skill not available!");
+			pc.sendMessage(ChatColor.RED + "Skill not available!");
+			CLICK_NOISE.play(player);
+			return;
 		}
 
 		if (click.isShiftClick()) {
 			// unlock/upgrade
 			int availableSillPoints = pc.getSkillUpgradePoints();
 			if (availableSillPoints <= 0) {
-				pc.sendMessage("No skill points remaining!");
-
+				pc.sendMessage(ChatColor.RED + "No skill points remaining!");
 			} else if (skill.getUpgradeLevel(pc) == skill.getMaximumUpgradeLevel()) {
-				pc.sendMessage("Skill already at maximum level!");
+				pc.sendMessage(ChatColor.RED + "Skill already at maximum level!");
 			} else {
 				skill.upgrade(pc);
 				pc.setSkillUpgradePoints(pc.getSkillUpgradePoints() - 1);
@@ -95,17 +102,18 @@ public class SkillTree implements Listener {
 		} else {
 			// add to inventory
 			if (!skill.isUnlocked(pc)) {
-				pc.sendMessage(skill.getName() + " is not unlocked!");
-				return;
+				pc.sendMessage(ChatColor.RED + skill.getName() + " is not unlocked!");
+			} else {
+				ItemStack skillItemStack = skill.getHotbarItemStack();
+				Inventory playerInventory = player.getInventory();
+				if (playerInventory.contains(skillItemStack)) {
+					pc.sendMessage(skill.getName() + " is already in your inventory!");
+				} else {
+					playerInventory.addItem(skillItemStack);
+				}
 			}
-			ItemStack skillItemStack = skill.getHotbarItemStack();
-			Inventory playerInventory = player.getInventory();
-			if (playerInventory.contains(skillItemStack)) {
-				pc.sendMessage(skill.getName() + " is already in your inventory!");
-				return;
-			}
-			playerInventory.addItem(skillItemStack);
 		}
+		CLICK_NOISE.play(player);
 	}
 
 	private Skill getSkillAt(int skillRow, int skillColumn) {

@@ -120,10 +120,15 @@ class ItemListener implements Listener {
 
 	@EventHandler
 	private void onThrowItem(PlayerDropItemEvent event) {
-		org.bukkit.entity.Item item = event.getItemDrop();
-		ItemStack itemStack = item.getItemStack();
+		org.bukkit.entity.Item itemEntity = event.getItemDrop();
+		ItemStack itemStack = itemEntity.getItemStack();
 		if (ItemFactory.staticInteractables.contains(itemStack)) {
 			event.setCancelled(true);
+			return;
+		}
+		Item item = Item.forItemStack(itemStack);
+		if (item == null) {
+			itemEntity.remove();
 			return;
 		}
 		Player player = (Player) event.getPlayer();
@@ -131,7 +136,7 @@ class ItemListener implements Listener {
 		if (pc == null) {
 			return;
 		}
-		droppedItemMap.put(item, pc);
+		droppedItemMap.put(itemEntity, pc);
 	}
 
 	@EventHandler

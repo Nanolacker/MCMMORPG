@@ -353,7 +353,7 @@ public class PlayerCharacter extends AbstractCharacter {
 		Noise levelUpNoise = new Noise(Sound.ENTITY_PLAYER_LEVELUP);
 		levelUpNoise.play(player);
 		sendMessage(ChatColor.GREEN + "Level up!");
-		sendMessage("+1 skill point!");
+		sendMessage(ChatColor.GREEN + "+1 skill point!");
 	}
 
 	public static int maxLevel() {
@@ -542,7 +542,9 @@ public class PlayerCharacter extends AbstractCharacter {
 	protected void onDeath() {
 		super.onDeath();
 		player.teleport(respawnLocation);
-		TitleMessage deathMessage = new TitleMessage("You died", "respawning...");
+		sendMessage(ChatColor.RED + "You died");
+		sendMessage(ChatColor.GRAY + "respawning...");
+		TitleMessage deathMessage = new TitleMessage(ChatColor.RED + "You died!", ChatColor.GRAY + "respawning...");
 		deathMessage.sendTo(player);
 		PotionEffect veilEffect = new PotionEffect(PotionEffectType.BLINDNESS, 80, 1);
 		player.addPotionEffect(veilEffect);

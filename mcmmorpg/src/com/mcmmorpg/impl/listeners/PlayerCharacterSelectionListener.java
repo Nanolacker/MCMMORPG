@@ -6,6 +6,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -19,6 +20,7 @@ import com.mcmmorpg.common.event.StaticInteractableEvent;
 import com.mcmmorpg.common.item.ItemFactory;
 import com.mcmmorpg.common.persistence.PersistentPlayerCharacterDataContainer;
 import com.mcmmorpg.common.playerClass.PlayerClass;
+import com.mcmmorpg.common.sound.Noise;
 import com.mcmmorpg.common.utils.IOUtils;
 import com.mcmmorpg.impl.Worlds;
 
@@ -36,6 +38,8 @@ public class PlayerCharacterSelectionListener implements Listener {
 	private static final ItemStack QUEST_LOG;
 	private static final ItemStack SKILL_TREE;
 
+	private static final Noise CLICK_NOISE = new Noise(Sound.BLOCK_LEVER_CLICK);
+
 	static {
 		PLAYER_CHARACTER_DATA_DIRECTORY = new File(IOUtils.getDataFolder(), "playerSaveData");
 		if (!PLAYER_CHARACTER_DATA_DIRECTORY.exists()) {
@@ -48,7 +52,7 @@ public class PlayerCharacterSelectionListener implements Listener {
 		SELECT_EXISTING_CHARACTER = ItemFactory.createItemStack(ChatColor.GREEN + "Login", null, Material.EMERALD);
 		ItemFactory.registerStaticInteractable(SELECT_EXISTING_CHARACTER);
 
-		DEFAULT_PLAYER_CLASS = PlayerClass.forName("Fighter");
+		DEFAULT_PLAYER_CLASS = PlayerClass.forName("Mage");
 		STARTING_ZONE = "Melcher";
 		START_LOCATION = new Location(Worlds.ELADRADOR, 0, 70, 0);
 		MENU = ItemFactory.createItemStack(ChatColor.GREEN + "Menu", null, Material.BOOK);
@@ -139,6 +143,7 @@ public class PlayerCharacterSelectionListener implements Listener {
 			menu.setItem(2, SKILL_TREE);
 			menu.setItem(6, QUEST_LOG);
 			player.openInventory(menu);
+			CLICK_NOISE.play(player);
 		}
 	}
 
@@ -149,6 +154,7 @@ public class PlayerCharacterSelectionListener implements Listener {
 			Player player = event.getPlayer();
 			PlayerCharacter pc = PlayerCharacter.forPlayer(player);
 			pc.openQuestLog();
+			CLICK_NOISE.play(player);
 		}
 	}
 
@@ -159,6 +165,7 @@ public class PlayerCharacterSelectionListener implements Listener {
 			Player player = event.getPlayer();
 			PlayerCharacter pc = PlayerCharacter.forPlayer(player);
 			pc.getPlayerClass().getSkillTree().open(pc);
+			CLICK_NOISE.play(player);
 		}
 	}
 

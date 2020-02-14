@@ -43,6 +43,22 @@ public class FighterListener implements Listener {
 	}
 
 	@EventHandler
+	private void onLevelUp(PlayerCharacterLevelUpEvent event) {
+		PlayerCharacter pc = event.getPlayerCharacter();
+		int level = event.getNewLevel();
+		if (level == 1) {
+			Weapon weapon = (Weapon) Item.forID(0);
+			pc.getInventory().addItem(weapon.getItemStack());
+			pc.setMaxHealth(25);
+			pc.setCurrentHealth(25);
+			pc.setHealthRegenRate(0.2);
+			pc.setMaxMana(15);
+			pc.setCurrentMana(15);
+			pc.setManaRegenRate(1);
+		}
+	}
+
+	@EventHandler
 	private void onUseSkill(SkillUseEvent event) {
 		PlayerCharacter pc = event.getPlayerCharacter();
 		if (pc.getPlayerClass() != fighter) {
@@ -121,22 +137,6 @@ public class FighterListener implements Listener {
 		effectLocation.add(xOffset, 1, zOffset);
 		world.spawnParticle(Particle.EXPLOSION_LARGE, effectLocation, 1);
 		SWEEP_NOISE.play(location);
-	}
-
-	@EventHandler
-	private void onLevelUp(PlayerCharacterLevelUpEvent event) {
-		PlayerCharacter pc = event.getPlayerCharacter();
-		int level = event.getNewLevel();
-		if (level == 1) {
-			Weapon weapon = (Weapon) Item.forID(0);
-			pc.getInventory().addItem(weapon.getItemStack());
-			pc.setMaxHealth(25);
-			pc.setCurrentHealth(25);
-			pc.setHealthRegenRate(1);
-			pc.setMaxMana(15);
-			pc.setCurrentMana(15);
-			pc.setManaRegenRate(1);
-		}
 	}
 
 	@EventHandler

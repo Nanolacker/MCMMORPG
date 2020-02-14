@@ -10,7 +10,7 @@
 			"prerequisiteSkill": null,
 			"maximumUpgradeLevel": 3,
 			"skillTreeRow": 0,
-			"skillTreeColumn": 1,
+			"skillTreeColumn": 2,
 			"icon": "MAGMA_CREAM"
 		},
 		{
@@ -22,7 +22,7 @@
 			"prerequisiteSkill": null,
 			"maximumUpgradeLevel": 3,
 			"skillTreeRow": 0,
-			"skillTreeColumn": 1,
+			"skillTreeColumn": 6,
 			"icon": "SNOWBALL"
 		}
 	]

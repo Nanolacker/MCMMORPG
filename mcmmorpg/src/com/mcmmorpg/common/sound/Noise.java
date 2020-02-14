@@ -6,6 +6,8 @@ import org.bukkit.SoundCategory;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 
+import com.mcmmorpg.common.character.PlayerCharacter;
+
 public class Noise {
 
 	private final Sound type;
@@ -33,6 +35,10 @@ public class Noise {
 	public void play(Player player) {
 		Location source = player.getLocation();
 		play(player, source);
+	}
+
+	public void play(PlayerCharacter pc) {
+		play(pc.getPlayer());
 	}
 
 	public void play(Player player, Location source) {

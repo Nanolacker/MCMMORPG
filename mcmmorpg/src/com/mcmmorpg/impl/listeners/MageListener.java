@@ -43,6 +43,7 @@ public class MageListener implements Listener {
 		if (pc.getPlayerClass() != mage) {
 			return;
 		}
+		Debug.log("rt");
 		Skill skill = event.getSkill();
 		if (skill == fireball) {
 			useFireball(pc);
@@ -52,6 +53,7 @@ public class MageListener implements Listener {
 	}
 
 	private void useFireball(PlayerCharacter pc) {
+		Debug.log("FB");
 		Location start = pc.getLocation();
 		World world = start.getWorld();
 		Vector lookDirection = start.getDirection();

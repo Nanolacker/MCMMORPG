@@ -35,6 +35,7 @@ public class Projectile {
 				onHit(other);
 			}
 		};
+		collider.setDrawingEnabled(true);
 		fired = false;
 	}
 

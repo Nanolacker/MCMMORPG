@@ -22,7 +22,7 @@ public final class Skill implements Listener {
 
 	private static final double COOLDOWN_UPDATE_PERIOD_SECONDS = 0.1;
 	private static final Material LOCKED_MATERIAL = Material.BARRIER;
-	private static final Noise ON_COOLDOWN_NOISE = new Noise(Sound.BLOCK_ANVIL_LAND);
+	private static final Noise SKILL_USE_NOISE = new Noise(Sound.BLOCK_LEVER_CLICK);
 
 	private final String name;
 	private final String description;
@@ -114,7 +114,7 @@ public final class Skill implements Listener {
 		if (data == null) {
 			// unlock
 			manager.unlockSkill(this);
-			pc.sendMessage(name + " unlocked!");
+			pc.sendMessage(ChatColor.GREEN + name + " unlocked!");
 		} else {
 			// upgrade
 			int newLevel = data.getUpgradeLevel() + 1;
@@ -174,9 +174,10 @@ public final class Skill implements Listener {
 		if (sizeOfOne.equals(hotbarItemStack)) {
 			if (isOnCooldown(pc)) {
 				pc.sendMessage(ChatColor.RED + "On cooldown! (" + (int) Math.ceil(getCooldown(pc)) + ")");
-				ON_COOLDOWN_NOISE.play(player);
+				SKILL_USE_NOISE.play(player);
 			} else if (pc.getCurrentMana() < manaCost) {
-				pc.sendMessage("Insufficient mana!");
+				pc.sendMessage(ChatColor.RED + "Insufficient " + ChatColor.AQUA + "MP" + ChatColor.RED + "!");
+				SKILL_USE_NOISE.play(player);
 			} else {
 				this.use(pc);
 			}
@@ -188,6 +189,9 @@ public final class Skill implements Listener {
 		EventManager.callEvent(event);
 		pc.setCurrentMana(pc.getCurrentMana() - manaCost);
 		cooldown(pc, cooldown);
+		SKILL_USE_NOISE.play(pc);
+		pc.sendMessage(ChatColor.YELLOW + "Used " + ChatColor.GREEN + name + ChatColor.YELLOW + "! " + ChatColor.AQUA
+				+ -manaCost + " MP");
 	}
 
 	public double getCooldown(PlayerCharacter pc) {
@@ -252,7 +256,7 @@ public final class Skill implements Listener {
 	public boolean prerequisitesAreMet(PlayerCharacter pc) {
 		if (prerequisiteSkill != null) {
 			Skill prereq = playerClass.skillForName(prerequisiteSkill);
-			if (!prereq.isUnlocked(pc)) {
+			if (!prereq.isUnlocked(pc) || pc.getLevel() < minimumLevel) {
 				return false;
 			}
 		}
