@@ -12,16 +12,14 @@ import org.bukkit.event.player.PlayerInteractEvent;
 
 import com.mcmmorpg.common.character.PlayerCharacter;
 import com.mcmmorpg.common.character.PlayerCharacter.PlayerCharacterCollider;
-import com.mcmmorpg.common.event.PlayerCharacterLevelUpEvent;
 import com.mcmmorpg.common.physics.Collider;
-import com.mcmmorpg.common.quest.Quest;
 import com.mcmmorpg.common.sound.Noise;
 import com.mcmmorpg.common.sound.PersistentSoundSequenceDataContainer;
 import com.mcmmorpg.common.sound.SoundSequence;
 import com.mcmmorpg.common.ui.TitleMessage;
 import com.mcmmorpg.common.utils.IOUtils;
 import com.mcmmorpg.impl.Worlds;
-import com.mcmmorpg.impl.npcs.BulskanUndead;
+import com.mcmmorpg.impl.npcs.Highwayman;
 
 public class BulskanRuinsListener implements Listener {
 
@@ -36,7 +34,7 @@ public class BulskanRuinsListener implements Listener {
 	}
 
 	private void getSoundtrack() {
-		File file = new File(IOUtils.getDataFolder(), "resources\\soundtracks\\bulskan_ruins.json");
+		File file = new File(IOUtils.getDataFolder(), "resources\\soundtracks\\BulskanRuins.json");
 		SoundSequence soundtrack = IOUtils.objectFromJsonFile(file, PersistentSoundSequenceDataContainer.class)
 				.toSoundSequence();
 		this.soundtrack = soundtrack;
@@ -89,9 +87,13 @@ public class BulskanRuinsListener implements Listener {
 				new Location(Worlds.ELADRADOR, 170, 67, -33), new Location(Worlds.ELADRADOR, 155, 67, -36),
 				new Location(Worlds.ELADRADOR, 145, 67, -49), new Location(Worlds.ELADRADOR, 190, 67, -42) };
 		for (Location location : undeadLocations) {
-			BulskanUndead undead = new BulskanUndead(4, location, true, 30);
-			undead.setAlive(true);
+//			BulskanUndead undead = new BulskanUndead(4, location, true, 30);
+//			undead.setAlive(true);
 		}
+		Highwayman highwayman = new Highwayman(4, new Location(Worlds.ELADRADOR, 170, 67, -33), 10);
+		Highwayman highwayman2 = new Highwayman(4, new Location(Worlds.ELADRADOR, 170, 67, -33), 10);
+		highwayman.setAlive(true);
+		highwayman2.setAlive(true);
 	}
 
 	@EventHandler
@@ -107,15 +109,6 @@ public class BulskanRuinsListener implements Listener {
 		// Lever lever = (Lever) clicked;
 		// lever.setPowered(true);
 		// }
-	}
-
-	@EventHandler
-	private void onLevel1(PlayerCharacterLevelUpEvent event) {
-		PlayerCharacter pc = event.getPlayerCharacter();
-		Quest quest = Quest.forName("Saving the Farm");
-		quest.start(pc);
-		pc.setHealthRegenRate(50);
-		pc.setMaxHealth(5000);
 	}
 
 }

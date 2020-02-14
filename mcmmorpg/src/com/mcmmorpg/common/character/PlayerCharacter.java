@@ -16,6 +16,7 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.entity.EntityCombustEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -631,9 +632,14 @@ public class PlayerCharacter extends AbstractCharacter {
 	 */
 	private static class PlayerCharacterListener implements Listener {
 		@EventHandler
-		private void onPlayerDamage(EntityDamageEvent event) {
+		private void onDamage(EntityDamageEvent event) {
 			// Screw it. Let's just put it here for all entities.
 			event.setDamage(0);
+		}
+
+		@EventHandler
+		private void onCombust(EntityCombustEvent event) {
+			event.setCancelled(true);
 		}
 	}
 

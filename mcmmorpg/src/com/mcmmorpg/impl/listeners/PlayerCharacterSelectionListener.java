@@ -37,7 +37,7 @@ public class PlayerCharacterSelectionListener implements Listener {
 	private static final ItemStack SKILL_TREE;
 
 	static {
-		PLAYER_CHARACTER_DATA_DIRECTORY = new File(IOUtils.getDataFolder(), "player_save_data");
+		PLAYER_CHARACTER_DATA_DIRECTORY = new File(IOUtils.getDataFolder(), "playerSaveData");
 		if (!PLAYER_CHARACTER_DATA_DIRECTORY.exists()) {
 			PLAYER_CHARACTER_DATA_DIRECTORY.mkdir();
 		}
@@ -65,6 +65,7 @@ public class PlayerCharacterSelectionListener implements Listener {
 		Player player = event.getPlayer();
 		player.teleport(LOBBY_SPAWN);
 		Inventory inventory = player.getInventory();
+		inventory.clear();
 		if (playerCharacterIsCreatedBy(player)) {
 			inventory.setItem(0, SELECT_EXISTING_CHARACTER);
 		} else {

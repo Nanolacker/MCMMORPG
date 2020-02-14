@@ -28,7 +28,7 @@ public class FighterListener implements Listener {
 
 	private static final Noise BASH_NOISE = new Noise(Sound.ENTITY_GENERIC_EXPLODE, 0.5f, 1f);
 	private static final Noise SELF_HEAL_NOISE = new Noise(Sound.BLOCK_LAVA_EXTINGUISH);
-	private static final Noise SWEEP_NOISE = new Noise(Sound.ENTITY_GENERIC_EXPLODE);
+	private static final Noise SWEEP_NOISE = new Noise(Sound.ENTITY_GENERIC_EXPLODE, 0.5f, 1f);
 
 	private final PlayerClass fighter;
 	private final Skill bash;
@@ -71,7 +71,7 @@ public class FighterListener implements Listener {
 				if (other instanceof CharacterCollider) {
 					AbstractCharacter target = ((CharacterCollider) other).getCharacter();
 					if (!target.isFriendly(pc)) {
-						target.damage(10, pc);
+						target.damage(10 + bash.getUpgradeLevel(pc) * 10, pc);
 					}
 				}
 			}
@@ -81,7 +81,7 @@ public class FighterListener implements Listener {
 	}
 
 	private void useSelfHeal(PlayerCharacter pc) {
-		double healAmount = 10 + selfHeal.getUpgradeLevel(pc) * 10;
+		double healAmount = selfHeal.getUpgradeLevel(pc) * 8;
 		pc.heal(healAmount, pc);
 		SELF_HEAL_NOISE.play(pc.getLocation());
 	}
@@ -89,20 +89,15 @@ public class FighterListener implements Listener {
 	private void useSweep(PlayerCharacter pc) {
 		Location location = pc.getLocation();
 		createSweepEffect(location);
-		new DelayedTask(0.25) {
-			@Override
-			protected void run() {
-				createSweepEffect(location);
-			}
-		}.schedule();
-		new DelayedTask(0.5) {
-			@Override
-			protected void run() {
-				createSweepEffect(location);
-			}
-		}.schedule();
-		SWEEP_NOISE.play(location);
-		Collider hitbox = new Collider(location, 8, 8, 8) {
+		for (int i = 0; i < 5; i++) {
+			new DelayedTask(0.1 * i) {
+				@Override
+				protected void run() {
+					createSweepEffect(location);
+				}
+			}.schedule();
+		}
+		Collider hitbox = new Collider(location, 6, 6, 6) {
 			@Override
 			protected void onCollisionEnter(Collider other) {
 				if (other instanceof CharacterCollider) {
@@ -121,11 +116,11 @@ public class FighterListener implements Listener {
 		World world = location.getWorld();
 		Location effectLocation = location.clone();
 		// add some variation
-		double xOffset = 12 * (Math.random() - 0.5);
-		double yOffset = 12 * (Math.random() - 0.5);
-		double zOffset = 12 * (Math.random() - 0.5);
-		effectLocation.add(xOffset, yOffset, zOffset);
-		world.spawnParticle(Particle.EXPLOSION_LARGE, location, 1);
+		double xOffset = 6 * (Math.random() - 0.5);
+		double zOffset = 6 * (Math.random() - 0.5);
+		effectLocation.add(xOffset, 1, zOffset);
+		world.spawnParticle(Particle.EXPLOSION_LARGE, effectLocation, 1);
+		SWEEP_NOISE.play(location);
 	}
 
 	@EventHandler
@@ -135,6 +130,12 @@ public class FighterListener implements Listener {
 		if (level == 1) {
 			Weapon weapon = (Weapon) Item.forID(0);
 			pc.getInventory().addItem(weapon.getItemStack());
+			pc.setMaxHealth(25);
+			pc.setCurrentHealth(25);
+			pc.setHealthRegenRate(1);
+			pc.setMaxMana(15);
+			pc.setCurrentMana(15);
+			pc.setManaRegenRate(1);
 		}
 	}
 
@@ -145,7 +146,7 @@ public class FighterListener implements Listener {
 			return;
 		}
 		PlayerCharacter pc = event.getPlayerCharacter();
-		double damage = pc.getLevel() * 0.25;
+		double damage = 5;
 		Location start = pc.getLocation().add(0, 1.5, 0);
 		Vector direction = start.getDirection();
 		Ray ray = new Ray(start, direction, 3);

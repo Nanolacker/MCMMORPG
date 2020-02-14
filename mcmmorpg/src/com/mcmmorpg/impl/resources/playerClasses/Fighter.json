@@ -10,7 +10,7 @@
 			"prerequisiteSkill": null,
 			"maximumUpgradeLevel": 3,
 			"skillTreeRow": 0,
-			"skillTreeColumn": 1,
+			"skillTreeColumn": 2,
 			"icon": "SHIELD"
 		},
 		{
@@ -22,7 +22,7 @@
 			"prerequisiteSkill": null,
 			"maximumUpgradeLevel": 3,
 			"skillTreeRow": 0,
-			"skillTreeColumn": 7,
+			"skillTreeColumn": 6,
 			"icon": "EMERALD"
 		},
 		{
@@ -30,7 +30,7 @@
 			"description": "Deal a large amount of damage to enemies around you.",
 			"manaCost": 10,
 			"cooldown": 30,
-			"minimumLevel": 5,
+			"minimumLevel": 1,
 			"prerequisiteSkill": null,
 			"maximumUpgradeLevel": 3,
 			"skillTreeRow": 1,

@@ -2,6 +2,7 @@ package com.mcmmorpg.impl.npcs;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
 import org.bukkit.entity.Entity;
@@ -11,6 +12,9 @@ import org.bukkit.entity.Zombie;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
 
 import com.mcmmorpg.common.character.CharacterCollider;
@@ -28,15 +32,13 @@ import com.mcmmorpg.common.time.DelayedTask;
 
 public class Highwayman extends NonPlayerCharacter implements Listener {
 
-	private static final String TEXTURE_DATA = "";
-	private static final String TEXTURE_SIGNATURE = "";
-	private static final Noise HURT_NOISE = new Noise(Sound.ENTITY_VINDICATOR_HURT);
+	private static final String TEXTURE_DATA = "eyJ0aW1lc3RhbXAiOjE1ODE2NDI5MDk5ODIsInByb2ZpbGVJZCI6IjgyYzYwNmM1YzY1MjRiNzk4YjkxYTEyZDNhNjE2OTc3IiwicHJvZmlsZU5hbWUiOiJOb3ROb3RvcmlvdXNOZW1vIiwic2lnbmF0dXJlUmVxdWlyZWQiOnRydWUsInRleHR1cmVzIjp7IlNLSU4iOnsidXJsIjoiaHR0cDovL3RleHR1cmVzLm1pbmVjcmFmdC5uZXQvdGV4dHVyZS9hZDZjMzk4NmY4N2YwYzNmZTRmMTk0NzZiYWI4MzQ0NDM5NDlmMzQ2MDFiYWNkMjk1YjljZTM5YTdiYjNjYzk4In19fQ==";
+	private static final String TEXTURE_SIGNATURE = "yXcQay1LwWqkKfAdBsgvekvigWmy3GBdrMl5xnl/QfTWLIMX0yz9JTJkCJeSnyMDM/FAif+a7mtAtsuf83C56xkqTmWhsRcGvBjKfvU83h9ejfesYEDvUQvEjfaD7BxwGYsHp9+Dy/caS9lbH0E1hFCO373w92XIXBSzjo1dJPdnXK2XyqMJeVmtqVHva3mMLInHtWExzU65eliIyCztaKQ/7YxoiSBhRtyamzp6JnoA9lw3fSFqYwrjAWY9ppoVnAIqH0qjqx85wyET2x9p4uFP983keTjekYzvKew29lmgS0iije3+7Lj4WcgF4ZAYL1X/GTEgzlEVTMf0n6A8k3FTDWcRNOThnY39L+nmFBXKz4sho9THpE4tilFqAt+qOSRyeil6+m1vHnrnmLtk4HhnLeC3n0bWUZ6+zdeTseGK2ldUbgnhW043wjrI0rDcHJFxbN/5OWGMOv8rD0Jk0cPC+uUd2iZ39/PZ5hbMOX/JCtWfDD67iPguSl/DJ/gla9Wr+faDrtXYq6Jjm1+06T4QupQL0PoU3gV+oKg/Q8DlPTxoytac2UinFweRgOXlheVdAfrfyquEGP7azJ5fxSw7IvTBuUMF0rE549B2t1rtyyvMKO8QXQzcRuE3W58tgzuz1Fa8JSJAYymxsaZxbKkscssqiJfQ3J0F53BsG5E=";
+	private static final Noise HURT_NOISE = new Noise(Sound.ENTITY_PLAYER_HURT);
 	private static final Noise DEATH_NOISE = new Noise(Sound.ENTITY_VILLAGER_DEATH);
-	private static final double RENDER_HUMAN_RADIUS = 25;
 
 	private final Location spawnLocation;
 	private final CharacterCollider hitbox;
-	private final Collider humanRenderer;
 	private final NPCHuman human;
 	/**
 	 * This moves the highwayman.
@@ -45,28 +47,11 @@ public class Highwayman extends NonPlayerCharacter implements Listener {
 	private final MovementSyncer aiSyncer;
 	private final double respawnTime;
 
-	protected Highwayman(int level, Location spawnLocation, double respawnTime) {
+	public Highwayman(int level, Location spawnLocation, double respawnTime) {
 		super(ChatColor.RED + "Highwayman", level, spawnLocation);
 		super.setMaxHealth(maxHealth(level));
 		this.spawnLocation = spawnLocation;
 		hitbox = new CharacterCollider(this, spawnLocation.clone().add(0, 1, 0), 1, 2, 1);
-		humanRenderer = new Collider(getLocation(), RENDER_HUMAN_RADIUS, RENDER_HUMAN_RADIUS, RENDER_HUMAN_RADIUS) {
-			@Override
-			protected void onCollisionEnter(Collider other) {
-				if (other instanceof PlayerCharacterCollider) {
-					PlayerCharacter pc = ((PlayerCharacterCollider) other).getCharacter();
-					human.show(pc.getPlayer());
-				}
-			}
-
-			@Override
-			protected void onCollisionExit(Collider other) {
-				if (other instanceof PlayerCharacterCollider) {
-					PlayerCharacter pc = ((PlayerCharacterCollider) other).getCharacter();
-					human.hide(pc.getPlayer());
-				}
-			}
-		};
 		human = new NPCHuman("", spawnLocation, TEXTURE_DATA, TEXTURE_SIGNATURE);
 		aiSyncer = new MovementSyncer(this, null, MovementSyncMode.CHARACTER_FOLLOWS_ENTITY);
 		this.respawnTime = respawnTime;
@@ -81,12 +66,15 @@ public class Highwayman extends NonPlayerCharacter implements Listener {
 	public void spawn() {
 		super.spawn();
 		hitbox.setActive(true);
-		human.spawn();
-		humanRenderer.setActive(true);
+		human.setVisible(true);
 		ai = (Zombie) spawnLocation.getWorld().spawnEntity(spawnLocation, EntityType.ZOMBIE);
 		ai.setBaby(true);
-		ai.setCollidable(false);
+		ai.setSilent(true);
+		ai.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, Integer.MAX_VALUE, 1));
+		ai.setCollidable(true);
 		ai.setRemoveWhenFarAway(false);
+		ai.getEquipment().setItemInMainHand(new ItemStack(Material.IRON_SWORD));
+		ai.getEquipment().setItemInMainHandDropChance(0f);
 		aiSyncer.setEntity(ai);
 		aiSyncer.setEnabled(true);
 	}
@@ -96,7 +84,7 @@ public class Highwayman extends NonPlayerCharacter implements Listener {
 		super.despawn();
 		hitbox.setActive(false);
 		aiSyncer.setEnabled(false);
-		human.remove();
+		human.setVisible(false);
 		ai.remove();
 	}
 
@@ -120,8 +108,7 @@ public class Highwayman extends NonPlayerCharacter implements Listener {
 		super.onDeath();
 		grantXpToNearbyPlayers();
 		hitbox.setActive(false);
-		humanRenderer.setActive(false);
-		human.remove();
+		human.setVisible(false);
 		ai.remove();
 		Location location = getLocation();
 		DEATH_NOISE.play(location);
@@ -166,6 +153,7 @@ public class Highwayman extends NonPlayerCharacter implements Listener {
 					return;
 				}
 				pc.damage(getDamageAmount(), this);
+				human.swingHand();
 			}
 		} else if (damaged == this.ai) {
 			DelayedTask cancelKnockback = new DelayedTask(0.1) {

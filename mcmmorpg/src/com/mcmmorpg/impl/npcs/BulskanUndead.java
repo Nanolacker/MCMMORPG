@@ -27,7 +27,7 @@ import com.mcmmorpg.common.time.DelayedTask;
 
 public class BulskanUndead extends NonPlayerCharacter implements Listener {
 
-	private static final Noise HURT_NOISE = new Noise(Sound.ENTITY_ZOMBIE_HURT);
+	private static final Noise HURT_NOISE = new Noise(Sound.ENTITY_PLAYER_HURT);
 	private static final Noise DEATH_NOISE = new Noise(Sound.ENTITY_ZOMBIE_DEATH);
 
 	private final Location spawnLocation;
@@ -60,6 +60,7 @@ public class BulskanUndead extends NonPlayerCharacter implements Listener {
 		entity.setBaby(false);
 		entity.getEquipment().clear();
 		entity.setRemoveWhenFarAway(false);
+		entity.setSilent(true);
 		movementSyncer.setEntity(entity);
 		movementSyncer.setEnabled(true);
 	}
