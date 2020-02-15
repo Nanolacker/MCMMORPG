@@ -1,4 +1,4 @@
-package com.mcmmorpg.impl.locationListeners;
+package com.mcmmorpg.impl.listeners;
 
 import java.io.File;
 import java.util.HashMap;
@@ -29,10 +29,12 @@ import com.mcmmorpg.common.item.ItemFactory;
 import com.mcmmorpg.common.persistence.PersistentPlayerCharacterDataContainer;
 import com.mcmmorpg.common.playerClass.PlayerClass;
 import com.mcmmorpg.common.sound.Noise;
+import com.mcmmorpg.common.time.DelayedTask;
+import com.mcmmorpg.common.utils.Debug;
 import com.mcmmorpg.common.utils.IOUtils;
 import com.mcmmorpg.impl.Worlds;
 
-public class PlayerCharacterSelectionListener implements Listener {
+public class MainMenuListener implements Listener {
 
 	private static final File PLAYER_CHARACTER_DATA_DIRECTORY;
 	private static final Location MAIN_MENU_LOCATION;
@@ -54,11 +56,13 @@ public class PlayerCharacterSelectionListener implements Listener {
 		if (!PLAYER_CHARACTER_DATA_DIRECTORY.exists()) {
 			PLAYER_CHARACTER_DATA_DIRECTORY.mkdir();
 		}
-		MAIN_MENU_LOCATION = new Location(Worlds.LOBBY, 0, 64, 0);
+		MAIN_MENU_LOCATION = new Location(Worlds.MAIN_MENU, 0, 64, 0);
 		SELECT_FIGHTER = ItemFactory.createItemStack(ChatColor.GREEN + "Fighter", "Excels in close range combat",
 				Material.IRON_SWORD);
+		ItemFactory.registerStaticInteractable(SELECT_FIGHTER);
 		SELECT_MAGE = ItemFactory.createItemStack(ChatColor.GREEN + "Mage", "Excels in ranged combat with magic",
-				Material.STICK);
+				Material.NETHER_STAR);
+		ItemFactory.registerStaticInteractable(SELECT_MAGE);
 		STARTING_ZONE = "Melcher";
 		START_LOCATION = new Location(Worlds.ELADRADOR, 0, 70, 0);
 		MENU = ItemFactory.createItemStack(ChatColor.GREEN + "Menu", null, Material.BOOK);
@@ -98,7 +102,15 @@ public class PlayerCharacterSelectionListener implements Listener {
 	private void onMainMenuClose(InventoryCloseEvent event) {
 		Player player = (Player) event.getPlayer();
 		if (player.getWorld() == MAIN_MENU_LOCATION.getWorld()) {
-			player.openInventory(event.getInventory());
+			if (event.getView().getTitle().equals("Main Menu")) {
+				// if we don't delay it, errors will arise
+				new DelayedTask() {
+					@Override
+					protected void run() {
+						//player.openInventory(event.getInventory());
+					}
+				}.schedule();
+			}
 		}
 	}
 
@@ -124,7 +136,11 @@ public class PlayerCharacterSelectionListener implements Listener {
 
 	private PersistentPlayerCharacterDataContainer getSaveDataFromFile(Player player, int slot) {
 		File dataFile = getDataFile(player, slot);
-		return IOUtils.objectFromJsonFile(dataFile, PersistentPlayerCharacterDataContainer.class);
+		if (dataFile.exists()) {
+			return IOUtils.objectFromJsonFile(dataFile, PersistentPlayerCharacterDataContainer.class);
+		} else {
+			return null;
+		}
 	}
 
 	private Material materialForPlayerClass(PlayerClass playerClass) {
@@ -216,12 +232,13 @@ public class PlayerCharacterSelectionListener implements Listener {
 
 	@EventHandler
 	private void onSelectExistingCharacter(StaticInteractableEvent event) {
+		Player player = event.getPlayer();
+		InventoryView inventory = player.getOpenInventory();
 		ItemStack interactable = event.getInteractable();
 		String interactableName = interactable.getItemMeta().getDisplayName();
 		if (!isCreateNewCharacterInteractable(interactable)) {
-			Player player = event.getPlayer();
 			player.sendMessage(ChatColor.GREEN + "Logging in...");
-			int slot = interactableName.charAt(15);
+			int slot = interactableName.charAt(5);
 			unregisterMainMenuInteractables(player);
 			File dataFile = getDataFile(player, slot);
 			PersistentPlayerCharacterDataContainer data = IOUtils.objectFromJsonFile(dataFile,
@@ -234,7 +251,8 @@ public class PlayerCharacterSelectionListener implements Listener {
 		ItemMeta itemMeta = interactable.getItemMeta();
 		List<String> lore = itemMeta.getLore();
 		String line0 = lore.get(0);
-		return line0.contains("Create New Character");
+		Debug.log(line0.contains("Create New"));
+		return line0.contains("Create New");
 	}
 
 	private void loadCharacterFromData(Player player, PersistentPlayerCharacterDataContainer data, int slot) {

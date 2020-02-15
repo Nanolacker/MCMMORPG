@@ -1,4 +1,4 @@
-package com.mcmmorpg.impl.locationListeners;
+package com.mcmmorpg.impl.listeners;
 
 import org.bukkit.Location;
 import org.bukkit.event.Listener;
