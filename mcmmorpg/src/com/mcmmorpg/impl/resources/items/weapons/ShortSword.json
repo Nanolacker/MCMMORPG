@@ -1,1 +1,9 @@
-{"playerClass":"Fighter","level":1,"id":0,"name":"Short Sword","rarity":"COMMON","icon":"IRON_SWORD","description":"A fighter\u0027s best friend"}
+{
+	"playerClass": "Fighter",
+	"level": 1,
+	"id": 0,
+	"name": "Short Sword",
+	"rarity": "COMMON",
+	"icon": "IRON_SWORD",
+	"description": "A fighter's best friend"
+}

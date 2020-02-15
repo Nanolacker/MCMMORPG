@@ -1,4 +1,4 @@
-package com.mcmmorpg.impl.listeners;
+package com.mcmmorpg.impl.locationListeners;
 
 import java.io.File;
 
