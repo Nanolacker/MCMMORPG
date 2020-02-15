@@ -333,7 +333,7 @@ public class PlayerCharacter extends AbstractCharacter {
 		}
 	}
 
-	private static int xpToLevel(int xp) {
+	public static int xpToLevel(int xp) {
 		for (int i = 0; i < XP_REQS.length; i++) {
 			int xpValue = XP_REQS[i];
 			xp -= xpValue;

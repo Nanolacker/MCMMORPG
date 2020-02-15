@@ -1,4 +1,4 @@
-package com.mcmmorpg.impl.listeners;
+package com.mcmmorpg.impl.playerClassListeners;
 
 import org.bukkit.Location;
 import org.bukkit.Sound;

@@ -1,11 +1,11 @@
 package com.mcmmorpg.impl;
 
 import com.mcmmorpg.common.event.EventManager;
-import com.mcmmorpg.impl.listeners.BulskanRuinsListener;
-import com.mcmmorpg.impl.listeners.FighterListener;
-import com.mcmmorpg.impl.listeners.MageListener;
-import com.mcmmorpg.impl.listeners.MelcherListener;
-import com.mcmmorpg.impl.listeners.PlayerCharacterSelectionListener;
+import com.mcmmorpg.impl.locationListeners.BulskanRuinsListener;
+import com.mcmmorpg.impl.locationListeners.MelcherListener;
+import com.mcmmorpg.impl.locationListeners.PlayerCharacterSelectionListener;
+import com.mcmmorpg.impl.playerClassListeners.FighterListener;
+import com.mcmmorpg.impl.playerClassListeners.MageListener;
 
 public class ListenerLoader {
 
