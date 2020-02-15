@@ -3,9 +3,12 @@ package com.mcmmorpg.common.physics;
 import javax.annotation.OverridingMethodsMustInvokeSuper;
 
 import org.bukkit.Location;
+import org.bukkit.Particle;
 import org.bukkit.util.Vector;
 
+import com.mcmmorpg.common.physics.Collider.ColliderDrawMode;
 import com.mcmmorpg.common.time.RepeatingTask;
+import com.mcmmorpg.common.utils.Debug;
 
 /**
  * This can be used for projectiles such as fireballs and arrows.
@@ -28,14 +31,13 @@ public class Projectile {
 		this.velocity = velocity;
 		this.maxDistance = maxDistance;
 		this.hitSize = hitSize;
-		this.location = start;
+		this.location = start.clone();
 		collider = new Collider(start, hitSize, hitSize, hitSize) {
 			@Override
 			protected void onCollisionEnter(Collider other) {
 				onHit(other);
 			}
 		};
-		collider.setDrawingEnabled(true);
 		fired = false;
 	}
 
@@ -48,8 +50,9 @@ public class Projectile {
 		updatePosition = new RepeatingTask(UPDATE_POSITION_PERIOD) {
 			@Override
 			protected void run() {
-				Location newLocation = location.add(velocity.multiply(UPDATE_POSITION_PERIOD));
+				Location newLocation = location.clone().add(velocity.clone().multiply(UPDATE_POSITION_PERIOD));
 				if (newLocation.distance(start) >= maxDistance) {
+					Debug.log("cancelled");
 					cancel();
 				} else {
 					setLocation(newLocation);

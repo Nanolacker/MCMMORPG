@@ -1,6 +1,7 @@
 package com.mcmmorpg.impl.listeners;
 
 import org.bukkit.Location;
+import org.bukkit.Particle;
 import org.bukkit.Sound;
 import org.bukkit.World;
 import org.bukkit.block.Block;
@@ -9,11 +10,14 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.util.Vector;
 
+import com.mcmmorpg.common.character.AbstractCharacter;
+import com.mcmmorpg.common.character.CharacterCollider;
 import com.mcmmorpg.common.character.PlayerCharacter;
 import com.mcmmorpg.common.event.PlayerCharacterLevelUpEvent;
 import com.mcmmorpg.common.event.PlayerCharacterUseWeaponEvent;
 import com.mcmmorpg.common.event.SkillUseEvent;
 import com.mcmmorpg.common.item.Weapon;
+import com.mcmmorpg.common.physics.Collider;
 import com.mcmmorpg.common.physics.Projectile;
 import com.mcmmorpg.common.playerClass.PlayerClass;
 import com.mcmmorpg.common.playerClass.Skill;
@@ -59,18 +63,29 @@ public class MageListener implements Listener {
 		Vector lookDirection = start.getDirection();
 		start.add(lookDirection).add(0, 1, 0);
 		FIREBALL_CONJURE.play(start);
-		Vector velocity = lookDirection.multiply(5);
+		Vector velocity = lookDirection.multiply(8);
 		Player player = pc.getPlayer();
 		Block target = player.getTargetBlock(null, 15);
 		Debug.log("target is " + target);
 		// ensure we don't shoot through walls
 		double maxDistance = start.distance(target.getLocation());
-		double hitSize = 2;
+		double hitSize = 1;
 		Projectile projectile = new Projectile(start, velocity, maxDistance, hitSize) {
 			@Override
 			protected void setLocation(Location location) {
 				super.setLocation(location);
+				world.spawnParticle(Particle.FLAME, location, 1);
 				// effect
+			}
+
+			@Override
+			protected void onHit(Collider hit) {
+				if (hit instanceof CharacterCollider) {
+					AbstractCharacter character = ((CharacterCollider) hit).getCharacter();
+					if (!character.isFriendly(pc)) {
+						character.damage(10, pc);
+					}
+				}
 			}
 		};
 		projectile.fire();
