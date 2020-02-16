@@ -59,6 +59,7 @@ public class PlayerCharacter extends AbstractCharacter {
 	private static final int[] XP_REQS = { 100, 150, 200 };
 	private static final int MAX_XP = getMaxXp();
 	private static final Noise DEATH_NOISE = new Noise(Sound.ENTITY_WITHER_SPAWN);
+	private static final double MAX_DISTANCE_WITHOUT_PLAYER_TELEPORT = 5.0;
 
 	private static final List<PlayerCharacter> pcs;
 	private static final Map<Player, PlayerCharacter> playerMap;
@@ -233,8 +234,6 @@ public class PlayerCharacter extends AbstractCharacter {
 	public PlayerClass getPlayerClass() {
 		return playerClass;
 	}
-
-	private static final double MAX_DISTANCE_WITHOUT_PLAYER_TELEPORT = 5.0;
 
 	public String getZone() {
 		return zone;

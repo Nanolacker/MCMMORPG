@@ -14,8 +14,6 @@ import com.mcmmorpg.common.item.LootChest;
 import com.mcmmorpg.common.time.GameClock;
 import com.mcmmorpg.common.ui.TextPanel;
 
-import net.md_5.bungee.api.ChatColor;
-
 public abstract class MMORPGPlugin extends JavaPlugin {
 
 	private static boolean isInitialized;

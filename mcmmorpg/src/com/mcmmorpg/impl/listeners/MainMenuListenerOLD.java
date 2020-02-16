@@ -34,7 +34,7 @@ import com.mcmmorpg.common.utils.Debug;
 import com.mcmmorpg.common.utils.IOUtils;
 import com.mcmmorpg.impl.Worlds;
 
-public class MainMenuListener implements Listener {
+public class MainMenuListenerOLD implements Listener {
 
 	private static final File PLAYER_CHARACTER_DATA_DIRECTORY;
 	private static final Location MAIN_MENU_LOCATION;
@@ -56,7 +56,7 @@ public class MainMenuListener implements Listener {
 		if (!PLAYER_CHARACTER_DATA_DIRECTORY.exists()) {
 			PLAYER_CHARACTER_DATA_DIRECTORY.mkdir();
 		}
-		MAIN_MENU_LOCATION = new Location(Worlds.MAIN_MENU, 0, 64, 0);
+		MAIN_MENU_LOCATION = new Location(Worlds.CHARACTER_SELECTION, 0, 64, 0);
 		SELECT_FIGHTER = ItemFactory.createItemStack(ChatColor.GREEN + "Fighter", "Excels in close range combat",
 				Material.IRON_SWORD);
 		ItemFactory.registerStaticInteractable(SELECT_FIGHTER);
@@ -78,9 +78,6 @@ public class MainMenuListener implements Listener {
 	private void onJoin(PlayerJoinEvent event) {
 		event.setJoinMessage(null);
 		Player player = event.getPlayer();
-		player.teleport(MAIN_MENU_LOCATION);
-		Inventory inventory = player.getInventory();
-		inventory.clear();
 		openMainMenu(player);
 	}
 
@@ -107,7 +104,7 @@ public class MainMenuListener implements Listener {
 				new DelayedTask() {
 					@Override
 					protected void run() {
-						//player.openInventory(event.getInventory());
+						// player.openInventory(event.getInventory());
 					}
 				}.schedule();
 			}
@@ -137,10 +134,16 @@ public class MainMenuListener implements Listener {
 	private PersistentPlayerCharacterDataContainer getSaveDataFromFile(Player player, int slot) {
 		File dataFile = getDataFile(player, slot);
 		if (dataFile.exists()) {
-			return IOUtils.objectFromJsonFile(dataFile, PersistentPlayerCharacterDataContainer.class);
+			return IOUtils.readJson(dataFile, PersistentPlayerCharacterDataContainer.class);
 		} else {
 			return null;
 		}
+	}
+
+	private File getDataFile(Player player, int slot) {
+		File playerFolder = new File(PLAYER_CHARACTER_DATA_DIRECTORY, player.getName());
+		File dataFile = new File(playerFolder, "saveSlot" + slot + ".json");
+		return dataFile;
 	}
 
 	private Material materialForPlayerClass(PlayerClass playerClass) {
@@ -176,12 +179,6 @@ public class MainMenuListener implements Listener {
 				ItemFactory.unregisterStaticInteractable(itemStack);
 			}
 		}
-	}
-
-	private File getDataFile(Player player, int slot) {
-		File playerFolder = new File(PLAYER_CHARACTER_DATA_DIRECTORY, player.getName());
-		File dataFile = new File(playerFolder, "saveSlot" + slot + ".json");
-		return dataFile;
 	}
 
 	@EventHandler
@@ -241,7 +238,7 @@ public class MainMenuListener implements Listener {
 			int slot = interactableName.charAt(5);
 			unregisterMainMenuInteractables(player);
 			File dataFile = getDataFile(player, slot);
-			PersistentPlayerCharacterDataContainer data = IOUtils.objectFromJsonFile(dataFile,
+			PersistentPlayerCharacterDataContainer data = IOUtils.readJson(dataFile,
 					PersistentPlayerCharacterDataContainer.class);
 			loadCharacterFromData(player, data, slot);
 		}
@@ -266,7 +263,7 @@ public class MainMenuListener implements Listener {
 
 	private void savePlayerCharacterDataToFile(Player player, PersistentPlayerCharacterDataContainer data, int slot) {
 		File dataFile = getDataFile(player, slot);
-		IOUtils.objectToJsonFile(dataFile, data);
+		IOUtils.writeJson(dataFile, data);
 	}
 
 	@EventHandler

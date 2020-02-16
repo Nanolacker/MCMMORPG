@@ -17,7 +17,7 @@ public class ItemLoader {
 
 		File[] weaponFiles = weaponsFolder.listFiles();
 		for (File file : weaponFiles) {
-			Weapon weapon = IOUtils.objectFromJsonFile(file, Weapon.class);
+			Weapon weapon = IOUtils.readJson(file, Weapon.class);
 			weapon.initialize();
 		}
 	}

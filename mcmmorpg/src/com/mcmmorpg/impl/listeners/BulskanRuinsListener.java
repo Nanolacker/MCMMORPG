@@ -35,7 +35,7 @@ public class BulskanRuinsListener implements Listener {
 
 	private void getSoundtrack() {
 		File file = new File(IOUtils.getDataFolder(), "resources\\soundtracks\\BulskanRuins.json");
-		SoundSequence soundtrack = IOUtils.objectFromJsonFile(file, PersistentSoundSequenceDataContainer.class)
+		SoundSequence soundtrack = IOUtils.readJson(file, PersistentSoundSequenceDataContainer.class)
 				.toSoundSequence();
 		this.soundtrack = soundtrack;
 	}

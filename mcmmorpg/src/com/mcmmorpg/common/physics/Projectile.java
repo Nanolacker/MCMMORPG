@@ -3,10 +3,8 @@ package com.mcmmorpg.common.physics;
 import javax.annotation.OverridingMethodsMustInvokeSuper;
 
 import org.bukkit.Location;
-import org.bukkit.Particle;
 import org.bukkit.util.Vector;
 
-import com.mcmmorpg.common.physics.Collider.ColliderDrawMode;
 import com.mcmmorpg.common.time.RepeatingTask;
 import com.mcmmorpg.common.utils.Debug;
 
