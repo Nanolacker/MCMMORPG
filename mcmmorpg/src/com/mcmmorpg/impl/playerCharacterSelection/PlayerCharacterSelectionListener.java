@@ -21,9 +21,11 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 import com.mcmmorpg.common.character.PlayerCharacter;
+import com.mcmmorpg.common.event.StaticInteractableEvent;
 import com.mcmmorpg.common.item.ItemFactory;
 import com.mcmmorpg.common.persistence.PersistentPlayerCharacterDataContainer;
 import com.mcmmorpg.common.playerClass.PlayerClass;
+import com.mcmmorpg.common.utils.Debug;
 import com.mcmmorpg.common.utils.IOUtils;
 import com.mcmmorpg.impl.Worlds;
 import com.mcmmorpg.impl.playerCharacterSelection.PlayerCharacterSelectionProfile.Menu;
@@ -32,6 +34,7 @@ public class PlayerCharacterSelectionListener implements Listener {
 
 	private static final File PLAYER_CHARACTER_DATA_DIRECTORY;
 	private static final Location CHARACTER_SELECTION_LOCATION;
+	private static final ItemStack OPEN_CHARACTER_SELECT;
 	private static final ItemStack DELETE_CHARACTER_ITEM_STACK;
 	private static final ItemStack GO_BACK_ITEM_STACK;
 	private static final Inventory PLAYER_CLASS_SELECT_INVENTORY;
@@ -47,6 +50,9 @@ public class PlayerCharacterSelectionListener implements Listener {
 			PLAYER_CHARACTER_DATA_DIRECTORY.mkdir();
 		}
 		CHARACTER_SELECTION_LOCATION = new Location(Worlds.CHARACTER_SELECTION, 0, 64, 0);
+		OPEN_CHARACTER_SELECT = ItemFactory.createItemStack(ChatColor.GREEN + "Select Character", null,
+				Material.EMERALD);
+		ItemFactory.registerStaticInteractable(OPEN_CHARACTER_SELECT);
 		DELETE_CHARACTER_ITEM_STACK = ItemFactory.createItemStack(ChatColor.RED + "Delete Character",
 				ChatColor.GRAY + "Open the character deletion menu", Material.BARRIER);
 		GO_BACK_ITEM_STACK = ItemFactory.createItemStack(ChatColor.RED + "Go back", null, Material.BARRIER);
@@ -62,7 +68,7 @@ public class PlayerCharacterSelectionListener implements Listener {
 
 		DELETE_CONFIRM_INVENTORY = Bukkit.createInventory(null, 9, "Are you sure?");
 		ItemStack confirmItemStack = ItemFactory.createItemStack(ChatColor.GREEN + "Confirm", null, Material.EMERALD);
-		ItemStack cancelItemStack = ItemFactory.createItemStack(ChatColor.GREEN + "Cancel", null, Material.BARRIER);
+		ItemStack cancelItemStack = ItemFactory.createItemStack(ChatColor.RED + "Cancel", null, Material.BARRIER);
 		DELETE_CONFIRM_INVENTORY.setItem(2, confirmItemStack);
 		DELETE_CONFIRM_INVENTORY.setItem(6, cancelItemStack);
 		STARTING_ZONE = ChatColor.GREEN + "Flinton";
@@ -76,16 +82,24 @@ public class PlayerCharacterSelectionListener implements Listener {
 	private void onJoin(PlayerJoinEvent event) {
 		event.setJoinMessage(null);
 		Player player = event.getPlayer();
-		player.getInventory().clear();
 		player.addPotionEffect(INVISIBILITY);
 		player.teleport(CHARACTER_SELECTION_LOCATION);
+		Inventory inventory = player.getInventory();
+		player.getInventory().clear();
+		inventory.addItem(OPEN_CHARACTER_SELECT);
 		File playerFolder = getPlayerFolder(player);
 		if (!playerFolder.exists()) {
 			playerFolder.mkdir();
 		}
 		PlayerCharacterSelectionProfile profile = new PlayerCharacterSelectionProfile(player);
 		profileMap.put(player, profile);
-		openCharacterSelectInventory(player);
+	}
+
+	@EventHandler
+	private void onOpenCharacterSelectInventory(StaticInteractableEvent event) {
+		if (event.getInteractable().equals(OPEN_CHARACTER_SELECT)) {
+			openCharacterDeleteInventory(event.getPlayer());
+		}
 	}
 
 	private File getPlayerFolder(Player player) {
@@ -156,7 +170,7 @@ public class PlayerCharacterSelectionListener implements Listener {
 				player.sendMessage(ChatColor.YELLOW + "Deleting...");
 				int characterSlot = profile.getCurrentCharacterSlot();
 				deleteCharacter(player, characterSlot);
-				player.sendMessage(ChatColor.GREEN + "Done!");
+				player.sendMessage(ChatColor.YELLOW + "Done!");
 				openCharacterSelectInventory(player);
 			} else if (clickedSlot == 6) {
 				player.sendMessage(ChatColor.RED + "Cancelled");
@@ -180,6 +194,8 @@ public class PlayerCharacterSelectionListener implements Listener {
 				} else {
 					selectCharacter(player, data);
 				}
+			} else if (clickedSlot == 8) {
+				openCharacterDeleteInventory(player);
 			}
 		} else if (openMenu == Menu.SELECT_PLAYER_CLASS) {
 			PlayerClass playerClass;
@@ -190,11 +206,11 @@ public class PlayerCharacterSelectionListener implements Listener {
 			} else {
 				return;
 			}
-			player.sendMessage(ChatColor.GREEN + "Creating new character...");
+			player.sendMessage(ChatColor.YELLOW + "Creating new character...");
 			int characterSlot = profile.getCurrentCharacterSlot();
 			createNewCharacter(player, playerClass, characterSlot);
 			profile.updateCharacterData(characterSlot);
-			player.sendMessage(ChatColor.GREEN + "Done!");
+			player.sendMessage(ChatColor.YELLOW + "Done!");
 			openCharacterSelectInventory(player);
 		}
 	}
@@ -214,7 +230,10 @@ public class PlayerCharacterSelectionListener implements Listener {
 	}
 
 	private void deleteCharacter(Player player, int characterSlot) {
-
+		File characterSaveFile = getCharacterSaveFile(player, characterSlot);
+		characterSaveFile.delete();
+		PlayerCharacterSelectionProfile profile = profileMap.get(player);
+		profile.updateCharacterData(characterSlot);
 	}
 
 	private void openCharacterSelectInventory(Player player) {
@@ -224,22 +243,20 @@ public class PlayerCharacterSelectionListener implements Listener {
 		player.openInventory(inventory);
 	}
 
+	private void openCharacterDeleteInventory(Player player) {
+		PlayerCharacterSelectionProfile profile = profileMap.get(player);
+		profile.setOpenMenu(Menu.DELETING_CHARACTER);
+		Inventory inventory = getCharacterDeleteInventory(player);
+		player.openInventory(inventory);
+	}
+
 	private void selectCharacter(Player player, PersistentPlayerCharacterDataContainer data) {
 		profileMap.remove(player);
+		player.sendMessage(ChatColor.YELLOW + "Logging in...");
 		PlayerCharacter.registerPlayerCharacter(player, data);
 		player.removePotionEffect(PotionEffectType.INVISIBILITY);
 		Inventory inventory = player.getInventory();
 		// add menu
-	}
-
-	@EventHandler
-	private void onCloseInventory(InventoryCloseEvent event) {
-		Player player = (Player) event.getPlayer();
-		if (player.getWorld() == CHARACTER_SELECTION_LOCATION.getWorld()) {
-			if (player.getOpenInventory() instanceof PlayerInventory) {
-				openCharacterSelectInventory(player);
-			}
-		}
 	}
 
 	/*
