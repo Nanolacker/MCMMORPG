@@ -23,6 +23,8 @@ import com.mcmmorpg.common.playerClass.PlayerClass;
 import com.mcmmorpg.common.playerClass.Skill;
 import com.mcmmorpg.common.sound.Noise;
 import com.mcmmorpg.common.time.DelayedTask;
+import com.mcmmorpg.common.time.RepeatingTask;
+import com.mcmmorpg.common.utils.Debug;
 
 public class FighterListener implements Listener {
 
@@ -104,6 +106,22 @@ public class FighterListener implements Listener {
 
 	private void useSweep(PlayerCharacter pc) {
 		Location location = pc.getLocation();
+		new RepeatingTask(0.1) {
+			int count = 0;
+
+			@Override
+			protected void run() {
+				if (count == 10) {
+					cancel();
+					return;
+				}
+				Debug.log("doing it");
+				Location loc = pc.getPlayer().getLocation();
+				loc.setY(loc.getYaw() + 20);
+				pc.getPlayer().teleport(loc);
+				count++;
+			}
+		}.schedule();
 		createSweepEffect(location);
 		for (int i = 0; i < 5; i++) {
 			new DelayedTask(0.1 * i) {

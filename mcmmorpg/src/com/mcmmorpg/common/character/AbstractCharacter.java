@@ -4,12 +4,14 @@ import javax.annotation.OverridingMethodsMustInvokeSuper;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
+import org.bukkit.util.Vector;
 
 import com.mcmmorpg.common.event.CharacterDamageEvent;
 import com.mcmmorpg.common.event.CharacterDeathEvent;
 import com.mcmmorpg.common.event.CharacterHealEvent;
 import com.mcmmorpg.common.event.CharacterKillEvent;
 import com.mcmmorpg.common.event.EventManager;
+import com.mcmmorpg.common.time.DelayedTask;
 import com.mcmmorpg.common.ui.TextPanel;
 import com.mcmmorpg.common.utils.MathUtils;
 
@@ -158,6 +160,7 @@ public abstract class AbstractCharacter implements Source {
 		updateNameplateText();
 	}
 
+	@OverridingMethodsMustInvokeSuper
 	public void damage(double amount, Source source) {
 		// Don't damage negative amount.
 		amount = Math.max(amount, 0);
@@ -169,6 +172,7 @@ public abstract class AbstractCharacter implements Source {
 		}
 	}
 
+	@OverridingMethodsMustInvokeSuper
 	public void heal(double amount, Source source) {
 		// Don't heal negative amount.
 		amount = Math.max(amount, 0);

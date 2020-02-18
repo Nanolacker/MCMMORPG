@@ -42,7 +42,9 @@ public class SkillTree implements Listener {
 	private Inventory createInventory(PlayerCharacter pc) {
 		Player player = pc.getPlayer();
 		int size = 6 * 9;
-		String title = playerClass.getName() + " Skill Tree    " + pc.getSkillUpgradePoints() + " skill points";
+		int upgradePoints = pc.getSkillUpgradePoints();
+		String title = playerClass.getName() + " Skill Tree    " + upgradePoints + " skill point"
+				+ (upgradePoints == 1 ? "" : "s");
 		Inventory inventory = Bukkit.createInventory(player, size, title);
 		Skill[] skills = playerClass.getSkills();
 		for (int i = 0; i < skills.length; i++) {
