@@ -21,6 +21,10 @@ public abstract class CommonTask {
 		scheduleBukkitTask();
 	}
 
+	public boolean isScheduled() {
+		return scheduled;
+	}
+
 	public void cancel() {
 		if (!scheduled) {
 			throw new IllegalStateException("Cannot cancel a task that isn't scheduled");

@@ -2,6 +2,7 @@ package com.mcmmorpg.common.ui;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 import org.bukkit.craftbukkit.v1_15_R1.entity.CraftPlayer;
 import org.bukkit.entity.Player;
@@ -22,7 +23,8 @@ public class ActionBarText {
 		RepeatingTask applyTask = new RepeatingTask(APPLY_TASK_PERIOD_SECONDS) {
 			@Override
 			public void run() {
-				for (Player player : actionBarMap.keySet()) {
+				Set<Player> keySet = actionBarMap.keySet();
+				for (Player player : keySet) {
 					ActionBarText text = actionBarMap.get(player);
 					text.apply0(player);
 				}
@@ -49,6 +51,10 @@ public class ActionBarText {
 
 	private void apply0(Player player) {
 		((CraftPlayer) player).getHandle().playerConnection.sendPacket(packet);
+	}
+
+	public static void clear(Player player) {
+		actionBarMap.remove(player);
 	}
 
 }

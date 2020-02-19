@@ -351,7 +351,7 @@ public class PlayerCharacter extends AbstractCharacter {
 		EventManager.callEvent(event);
 		Noise levelUpNoise = new Noise(Sound.ENTITY_PLAYER_LEVELUP);
 		levelUpNoise.play(player);
-		sendMessage(ChatColor.GREEN + "Level up!");
+		sendMessage(ChatColor.GOLD + "Level up!");
 		sendMessage(ChatColor.GREEN + "+1 skill point!");
 	}
 
@@ -623,9 +623,11 @@ public class PlayerCharacter extends AbstractCharacter {
 		active = false;
 		collider.setActive(false);
 		movementSyncer.setEnabled(false);
+		pcs.remove(this);
 		playerMap.remove(player);
 		PlayerCharacterRemoveEvent event = new PlayerCharacterRemoveEvent(this);
 		EventManager.callEvent(event);
+		ActionBarText.clear(player);
 	}
 
 	/**

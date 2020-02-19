@@ -69,6 +69,13 @@ public class NPCHuman {
 
 	private void render() {
 		World world = location.getWorld();
+		for (int i = 0; i < viewers.size(); i++) {
+			Player player = viewers.get(i);
+			World playerWorld = player.getWorld();
+			if (playerWorld != world) {
+				viewers.remove(player);
+			}
+		}
 		Collection<Entity> nearby = world.getNearbyEntities(location, RENDER_RADIUS, RENDER_RADIUS, RENDER_RADIUS);
 		Entity[] nearby0 = nearby.toArray(new Entity[nearby.size()]);
 		for (Entity entity : nearby0) {

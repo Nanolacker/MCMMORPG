@@ -6,7 +6,6 @@ import org.bukkit.Location;
 import org.bukkit.util.Vector;
 
 import com.mcmmorpg.common.time.RepeatingTask;
-import com.mcmmorpg.common.utils.Debug;
 
 /**
  * This can be used for projectiles such as fireballs and arrows.
@@ -44,20 +43,19 @@ public class Projectile {
 			throw new IllegalStateException("Projectile already fired");
 		}
 		fired = true;
-		collider.setActive(true);
 		updatePosition = new RepeatingTask(UPDATE_POSITION_PERIOD) {
 			@Override
 			protected void run() {
 				Location newLocation = location.clone().add(velocity.clone().multiply(UPDATE_POSITION_PERIOD));
 				if (newLocation.distance(start) >= maxDistance) {
-					Debug.log("cancelled");
-					cancel();
+					remove();
 				} else {
 					setLocation(newLocation);
 				}
 			}
 		};
 		updatePosition.schedule();
+		collider.setActive(true);
 	}
 
 	public final Vector getVelocity() {
@@ -99,16 +97,23 @@ public class Projectile {
 		return fired;
 	}
 
+	public final void setDrawingEnabled(boolean enabled) {
+		collider.setDrawingEnabled(enabled);
+	}
+
 	protected void onHit(Collider hit) {
 	}
 
 	@OverridingMethodsMustInvokeSuper
 	public void remove() {
 		if (fired) {
-			collider.setActive(false);
-			updatePosition.cancel();
+			// checks if this method has been called before--if so, ignore this call
+			if (updatePosition.isScheduled()) {
+				collider.setActive(false);
+				updatePosition.cancel();
+			}
 		} else {
-			throw new IllegalStateException("Projectile not being fired");
+			throw new IllegalStateException("Projectile not yet fired");
 		}
 	}
 

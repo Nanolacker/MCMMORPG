@@ -26,6 +26,7 @@ import com.mcmmorpg.common.character.PlayerCharacter;
 import com.mcmmorpg.common.character.PlayerCharacter.PlayerCharacterCollider;
 import com.mcmmorpg.common.character.Source;
 import com.mcmmorpg.common.event.EventManager;
+import com.mcmmorpg.common.item.LootChest;
 import com.mcmmorpg.common.physics.Collider;
 import com.mcmmorpg.common.sound.Noise;
 import com.mcmmorpg.common.time.DelayedTask;
@@ -71,7 +72,6 @@ public class Highwayman extends NonPlayerCharacter implements Listener {
 		ai.setBaby(true);
 		ai.setSilent(true);
 		ai.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, Integer.MAX_VALUE, 1));
-		ai.setCollidable(true);
 		ai.eject();
 		Entity vehicle = ai.getVehicle();
 		if (vehicle != null) {
@@ -119,6 +119,7 @@ public class Highwayman extends NonPlayerCharacter implements Listener {
 		DEATH_NOISE.play(location);
 		location.getWorld().spawnParticle(Particle.CLOUD, location, 10);
 		setLocation(spawnLocation);
+		new LootChest(location, new ItemStack[0]);
 		DelayedTask respawn = new DelayedTask(respawnTime) {
 			@Override
 			protected void run() {

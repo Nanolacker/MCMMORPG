@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Particle;
@@ -19,6 +20,7 @@ import org.bukkit.util.Vector;
 import com.mcmmorpg.common.character.PlayerCharacter;
 import com.mcmmorpg.common.time.DelayedTask;
 import com.mcmmorpg.common.time.RepeatingTask;
+import com.mcmmorpg.common.ui.ProgressBar;
 
 public class LootChest {
 
@@ -58,29 +60,33 @@ public class LootChest {
 	private final Location location;
 	private final Particle aura;
 	private final ItemStack[] contents;
-	private PlayerCharacter owner;
+	private final PlayerCharacter owner;
 	private boolean removed;
+	private final ProgressBar lifetimeBar;
 
 	/**
 	 * The default loot chest.
 	 */
 	public LootChest(Location location, ItemStack[] contents) {
-		this(location, Material.CHEST, Particle.VILLAGER_HAPPY, 30, contents);
+		this(location, ChatColor.GOLD + "Loot Chest", Material.CHEST, Particle.VILLAGER_HAPPY, 30, contents, null);
 	}
 
-	public LootChest(Location location, Material material, Particle aura, double lifetimeSeconds,
-			ItemStack[] contents) {
+	public LootChest(Location location, String title, Material material, Particle aura, double lifetimeSeconds,
+			ItemStack[] contents, PlayerCharacter owner) {
 		this.location = getNearestEmptyBlock(location);
 		this.aura = aura;
 		this.contents = contents;
-		if (location == null) {
-			return;
-		}
 		// starting owner state
-		owner = null;
+		this.owner = owner;
 		this.removed = false;
+
 		Block block = this.location.getBlock();
 		block.setType(material);
+
+		Location lifetimeBarLocation = this.location.clone().add(0.5, 1.1, 0.5);
+		lifetimeBar = new ProgressBar(lifetimeBarLocation, title, 16, ChatColor.WHITE);
+		lifetimeBar.setRate(1 / lifetimeSeconds);
+
 		chestMap.put(this.location, this);
 		new DelayedTask(lifetimeSeconds) {
 			@Override
@@ -121,16 +127,13 @@ public class LootChest {
 		return owner;
 	}
 
-	public void setOwner(PlayerCharacter owner) {
-		this.owner = owner;
-	}
-
 	public void remove() {
 		if (removed) {
 			return;
 		}
 		chestMap.remove(location);
 		location.getBlock().setType(Material.AIR);
+		lifetimeBar.dispose();
 		removed = true;
 	}
 

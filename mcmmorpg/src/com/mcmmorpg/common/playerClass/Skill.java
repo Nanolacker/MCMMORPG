@@ -140,14 +140,41 @@ public final class Skill implements Listener {
 	ItemStack getSkillTreeItemStack(PlayerCharacter pc) {
 		PlayerSkillManager manager = pc.getSkillManager();
 		PlayerSkillData data = manager.getSkillData(this);
+		boolean unlocked = isUnlocked(pc);
 		int upgradeLevel = data == null ? 0 : data.getUpgradeLevel();
-		Material material = isUnlocked(pc) ? icon : LOCKED_MATERIAL;
+		Material material = unlocked ? icon : LOCKED_MATERIAL;
 		StringBuilder lore = new StringBuilder();
-		lore.append(ChatColor.GOLD + "Level " + minimumLevel + " skill");
-		lore.append("\nUpgraded " + upgradeLevel + "/" + maximumUpgradeLevel);
+		lore.append(ChatColor.GOLD + "\nUpgraded " + upgradeLevel + "/" + maximumUpgradeLevel);
 		lore.append(ChatColor.AQUA + "\nCost: " + manaCost);
 		lore.append(ChatColor.YELLOW + "\nCooldown: " + cooldown);
 		lore.append(ChatColor.WHITE + "\n\n" + description);
+
+		boolean underLevel = pc.getLevel() < minimumLevel;
+		Skill prerequisiteSkill0 = playerClass.skillForName(prerequisiteSkill);
+		boolean prerequisiteSkillLocked = prerequisiteSkill0 != null && !prerequisiteSkill0.isUnlocked(pc);
+		boolean isUnavailable = underLevel || prerequisiteSkillLocked;
+		if (isUnavailable) {
+			lore.append(ChatColor.RED + "\n");
+		}
+		if (underLevel) {
+			lore.append("\nRequires level " + minimumLevel);
+		}
+		if (prerequisiteSkillLocked) {
+			lore.append("\nRequires " + prerequisiteSkill);
+		}
+
+		if (!isUnavailable) {
+			lore.append(ChatColor.GRAY + "\n");
+			if (unlocked) {
+				lore.append(ChatColor.GRAY + "\nClick to add to hotbar");
+				if (upgradeLevel < maximumUpgradeLevel) {
+					lore.append("\nShift click to upgrade (1 skill point)");
+				}
+			} else {
+				lore.append("\nShift click to unlock (1 skill point)");
+			}
+		}
+
 		ItemStack itemStack = ItemFactory.createItemStack(ChatColor.GREEN + name, lore.toString(), material);
 		return itemStack;
 	}

@@ -11,9 +11,6 @@ import com.mcmmorpg.common.utils.StringUtils;
  * A bar that uses a text panel to display progress in the form of a bar that
  * fills up over time. The method onComplete() can be overridden in subclasses
  * to provide additional functionality.
- * 
- * @author conno
- *
  */
 public class ProgressBar {
 
@@ -22,7 +19,7 @@ public class ProgressBar {
 	 */
 	private static final double UPDATE_PERIOD = 0.25;
 
-	private String caption;
+	private String title;
 	private int width;
 	private ChatColor color;
 	private double progress;
@@ -30,8 +27,8 @@ public class ProgressBar {
 	private final TextPanel textPanel;
 	private final RepeatingTask updateProgress;
 
-	public ProgressBar(Location location, String caption, int width, ChatColor color) {
-		this.caption = caption;
+	public ProgressBar(Location location, String title, int width, ChatColor color) {
+		this.title = title;
 		this.width = width;
 		this.color = color;
 		progress = 0;
@@ -50,7 +47,7 @@ public class ProgressBar {
 	private final void update() {
 		progress += rate * UPDATE_PERIOD;
 		StringBuilder text = new StringBuilder();
-		text.append(caption);
+		text.append(title);
 		text.append("\n");
 		text.append(ChatColor.WHITE + "[");
 		int numColoredPipes = (int) (progress * width);
@@ -73,12 +70,12 @@ public class ProgressBar {
 		textPanel.setLocation(location);
 	}
 
-	public final String getCaption() {
-		return caption;
+	public final String getTitle() {
+		return title;
 	}
 
-	public final void setCaption(String caption) {
-		this.caption = caption;
+	public final void setTitle(String title) {
+		this.title = title;
 	}
 
 	public final int getWidth() {
@@ -134,7 +131,9 @@ public class ProgressBar {
 	 */
 	public final void dispose() {
 		textPanel.setVisible(false);
-		updateProgress.cancel();
+		if (updateProgress.isScheduled()) {
+			updateProgress.cancel();
+		}
 	}
 
 	/**

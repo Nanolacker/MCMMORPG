@@ -24,7 +24,6 @@ import com.mcmmorpg.common.playerClass.Skill;
 import com.mcmmorpg.common.sound.Noise;
 import com.mcmmorpg.common.time.DelayedTask;
 import com.mcmmorpg.common.time.RepeatingTask;
-import com.mcmmorpg.common.utils.Debug;
 
 public class FighterListener implements Listener {
 
@@ -111,15 +110,13 @@ public class FighterListener implements Listener {
 
 			@Override
 			protected void run() {
-				if (count == 10) {
-					cancel();
-					return;
-				}
-				Debug.log("doing it");
-				Location loc = pc.getPlayer().getLocation();
-				loc.setY(loc.getYaw() + 20);
+				Location loc = pc.getLocation();
+				loc.setYaw(loc.getYaw() + 60);
 				pc.getPlayer().teleport(loc);
 				count++;
+				if (count == 6) {
+					cancel();
+				}
 			}
 		}.schedule();
 		createSweepEffect(location);
@@ -160,7 +157,7 @@ public class FighterListener implements Listener {
 	@EventHandler
 	private void onWeaponUse(PlayerCharacterUseWeaponEvent event) {
 		Weapon weapon = event.getWeapon();
-		if (weapon.getID() != 0) {
+		if (weapon != null) {
 			return;
 		}
 		PlayerCharacter pc = event.getPlayerCharacter();

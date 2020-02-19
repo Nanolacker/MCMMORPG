@@ -8,6 +8,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -24,7 +25,8 @@ import com.mcmmorpg.common.event.StaticInteractableEvent;
 import com.mcmmorpg.common.item.ItemFactory;
 import com.mcmmorpg.common.persistence.PersistentPlayerCharacterDataContainer;
 import com.mcmmorpg.common.playerClass.PlayerClass;
-import com.mcmmorpg.common.ui.ActionBarText;
+import com.mcmmorpg.common.sound.Noise;
+import com.mcmmorpg.common.ui.TitleMessage;
 import com.mcmmorpg.common.utils.IOUtils;
 import com.mcmmorpg.impl.Worlds;
 import com.mcmmorpg.impl.playerCharacterSelection.PlayerCharacterSelectionProfile.Menu;
@@ -50,6 +52,11 @@ public class PlayerCharacterSelectionListener implements Listener {
 	private static final String STARTING_ZONE;
 	private static final Location STARTING_LOCATION;
 	private static final PotionEffect INVISIBILITY;
+
+	private static final Noise CLICK_NOISE = new Noise(Sound.BLOCK_LEVER_CLICK);
+	private static final Noise CHARACTER_TRANSITION_NOISE = new Noise(Sound.ENTITY_ZOMBIE_VILLAGER_CONVERTED);
+	private static final Noise CHARACTER_DELETION_NOISE = new Noise(Sound.ENTITY_ZOMBIE_VILLAGER_CONVERTED);
+	private static final Noise SELECT_CHARACTER_NOISE = new Noise(Sound.BLOCK_PORTAL_TRAVEL, 0.2f, 1);
 
 	static {
 		PLAYER_CHARACTER_DATA_DIRECTORY = new File(IOUtils.getDataFolder(), "playerSaveData");
@@ -109,8 +116,7 @@ public class PlayerCharacterSelectionListener implements Listener {
 		player.setFoodLevel(20);
 		player.setLevel(1);
 		player.setExp(0);
-		ActionBarText emptyActionBarText = new ActionBarText("");
-		emptyActionBarText.apply(player);
+
 		player.teleport(CHARACTER_SELECTION_LOCATION);
 		Inventory inventory = player.getInventory();
 		player.getInventory().clear();
@@ -128,12 +134,20 @@ public class PlayerCharacterSelectionListener implements Listener {
 		event.setJoinMessage(null);
 		Player player = event.getPlayer();
 		sendToCharacterSelection(player);
+		if (!player.hasPlayedBefore()) {
+			player.sendMessage(ChatColor.YELLOW
+					+ "Welcome newcomer! Thank you for choosing MCMMORPG! Start playing by creating a new character!");
+		}
 	}
 
 	@EventHandler
 	private void onQuit(PlayerQuitEvent event) {
 		event.setQuitMessage(null);
 		Player player = event.getPlayer();
+		PlayerCharacter pc = PlayerCharacter.forPlayer(player);
+		if (pc != null) {
+			removeAndSavePlayerCharacter(pc);
+		}
 		profileMap.remove(player);
 	}
 
@@ -142,27 +156,34 @@ public class PlayerCharacterSelectionListener implements Listener {
 		ItemStack interactable = event.getInteractable();
 		if (interactable.equals(OPEN_MENU_ITEM_STACK)) {
 			Player player = event.getPlayer();
+			CLICK_NOISE.play(player);
 			player.openInventory(MENU_INVENTORY);
 		} else if (interactable.equals(OPEN_QUEST_LOG_ITEM_STACK)) {
 			Player player = event.getPlayer();
+			CLICK_NOISE.play(player);
 			PlayerCharacter pc = PlayerCharacter.forPlayer(player);
 			pc.openQuestLog();
 		} else if (interactable.equals(OPEN_SKILL_TREE_ITEM_STACK)) {
 			Player player = event.getPlayer();
+			CLICK_NOISE.play(player);
 			PlayerCharacter pc = PlayerCharacter.forPlayer(player);
 			pc.getPlayerClass().getSkillTree().open(pc);
 		} else if (interactable.equals(CHANGE_CHARACTER_SELECTION_ITEM_STACK)) {
 			Player player = event.getPlayer();
+			player.sendMessage(ChatColor.YELLOW + "Logging out...");
 			PlayerCharacter pc = PlayerCharacter.forPlayer(player);
-			removePlayerCharacter(pc);
+			removeAndSavePlayerCharacter(pc);
 			sendToCharacterSelection(player);
+			CHARACTER_TRANSITION_NOISE.play(player);
 		}
 	}
 
 	@EventHandler
 	private void onOpenCharacterSelectInventory(StaticInteractableEvent event) {
 		if (event.getInteractable().equals(OPEN_CHARACTER_SELECT_ITEM_STACK)) {
-			openCharacterSelectInventory(event.getPlayer());
+			Player player = event.getPlayer();
+			CLICK_NOISE.play(player);
+			openCharacterSelectInventory(player);
 		}
 	}
 
@@ -252,6 +273,7 @@ public class PlayerCharacterSelectionListener implements Listener {
 			if (clickedSlot == 2) {
 				int characterSlot = profile.getCurrentCharacterSlot();
 				deleteCharacter(player, characterSlot);
+				CHARACTER_DELETION_NOISE.play(player);
 				player.sendMessage(ChatColor.YELLOW + "Deleted " + ChatColor.GOLD + "Character " + characterSlot
 						+ ChatColor.YELLOW + "!");
 				openCharacterSelectInventory(player);
@@ -262,20 +284,25 @@ public class PlayerCharacterSelectionListener implements Listener {
 			if (clickedSlot == 8) {
 				// go back
 				openCharacterSelectInventory(player);
+				CLICK_NOISE.play(player);
 			} else if (clickedSlot % 2 == 0) {
 				int characterSlot = clickedSlot / 2 + 1;
 				if (profile.getCharacterData(characterSlot) == null) {
 					player.sendMessage(ChatColor.RED + "No character created");
+					CLICK_NOISE.play(player);
 				} else {
 					profile.setOpenMenu(Menu.CONFIRM_DELETION);
 					profile.setCurrentCharacterSlot(characterSlot);
 					player.openInventory(DELETE_CONFIRM_INVENTORY);
+					CLICK_NOISE.play(player);
 				}
 			}
 		} else if (openMenu == Menu.SELECT_CHARACTER) {
 			if (clickedSlot == 8) {
 				openCharacterDeleteInventory(player);
+				CLICK_NOISE.play(player);
 			} else if (clickedSlot % 2 == 0) {
+				CLICK_NOISE.play(player);
 				int characterSlot = clickedSlot / 2 + 1;
 				profile.setCurrentCharacterSlot(characterSlot);
 				PersistentPlayerCharacterDataContainer data = profile.getCharacterData(characterSlot);
@@ -284,14 +311,15 @@ public class PlayerCharacterSelectionListener implements Listener {
 					player.openInventory(PLAYER_CLASS_SELECT_INVENTORY);
 				} else {
 					selectCharacter(player, data);
+					SELECT_CHARACTER_NOISE.play(player);
 				}
 			}
 		} else if (openMenu == Menu.SELECT_PLAYER_CLASS) {
-			PlayerClass playerClass;
+			String playerClassName;
 			if (clickedSlot == 2) {
-				playerClass = PlayerClass.forName("Fighter");
+				playerClassName = "Fighter";
 			} else if (clickedSlot == 6) {
-				playerClass = PlayerClass.forName("Mage");
+				playerClassName = "Mage";
 			} else if (clickedSlot == 8) {
 				// go back
 				openCharacterSelectInventory(player);
@@ -299,10 +327,13 @@ public class PlayerCharacterSelectionListener implements Listener {
 			} else {
 				return;
 			}
+			PlayerClass playerClass = PlayerClass.forName(playerClassName);
 			int characterSlot = profile.getCurrentCharacterSlot();
 			createNewCharacter(player, playerClass, characterSlot);
 			player.sendMessage(ChatColor.YELLOW + "Created " + ChatColor.GOLD + "Character " + characterSlot
 					+ ChatColor.YELLOW + "!");
+			TitleMessage title = new TitleMessage(ChatColor.GREEN + playerClassName, ChatColor.GREEN + "selected");
+			title.sendTo(player);
 			profile.updateCharacterData(characterSlot);
 			openCharacterSelectInventory(player);
 		}
@@ -352,7 +383,7 @@ public class PlayerCharacterSelectionListener implements Listener {
 		inventory.setItem(8, OPEN_MENU_ITEM_STACK);
 	}
 
-	private void removePlayerCharacter(PlayerCharacter pc) {
+	private void removeAndSavePlayerCharacter(PlayerCharacter pc) {
 		Player player = pc.getPlayer();
 		PlayerCharacterSelectionProfile profile = profileMap.get(player);
 		int characterSlot = profile.getCurrentCharacterSlot();
@@ -361,13 +392,5 @@ public class PlayerCharacterSelectionListener implements Listener {
 		IOUtils.writeJson(saveFile, data);
 		pc.remove();
 	}
-
-	/*
-	 * - select character menu - slot 1 - slot 2 - slot 3 - slot 4 - delete
-	 * character - select player class menu - fighter - mage - back - delete
-	 * character menu - slot 1 - slot 2 - slot 3 - slot 4 - back - delete confirm
-	 * menu - confirm - cancel
-	 * 
-	 */
 
 }
