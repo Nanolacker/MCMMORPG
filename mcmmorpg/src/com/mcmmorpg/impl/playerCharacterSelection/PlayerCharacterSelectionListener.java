@@ -13,6 +13,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.player.PlayerItemHeldEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.Inventory;
@@ -391,6 +392,18 @@ public class PlayerCharacterSelectionListener implements Listener {
 		File saveFile = getCharacterSaveFile(player, characterSlot);
 		IOUtils.writeJson(saveFile, data);
 		pc.remove();
+	}
+
+	@EventHandler
+	private void onChangeHeldItem(PlayerItemHeldEvent event) {
+		Player player = event.getPlayer();
+		PlayerCharacter pc = PlayerCharacter.forPlayer(player);
+		if (pc == null) {
+			return;
+		}
+		if (event.getNewSlot() == 8) {
+			player.openInventory(MENU_INVENTORY);
+		}
 	}
 
 }

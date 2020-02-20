@@ -30,6 +30,7 @@ import com.mcmmorpg.common.event.PlayerCharacterRegisterEvent;
 import com.mcmmorpg.common.event.PlayerCharacterRemoveEvent;
 import com.mcmmorpg.common.item.ArmorItem;
 import com.mcmmorpg.common.item.Item;
+import com.mcmmorpg.common.item.Weapon;
 import com.mcmmorpg.common.persistence.PersistentPlayerCharacterDataContainer;
 import com.mcmmorpg.common.playerClass.PlayerClass;
 import com.mcmmorpg.common.playerClass.PlayerSkillData;
@@ -49,7 +50,7 @@ import com.mcmmorpg.common.ui.TitleMessage;
 import com.mcmmorpg.common.utils.MathUtils;
 import com.mcmmorpg.common.utils.StringUtils;
 
-public class PlayerCharacter extends AbstractCharacter {
+public final class PlayerCharacter extends AbstractCharacter {
 
 	/**
 	 * The value at index 0 is the amount of xp it takes to level up from level 1 to
@@ -447,6 +448,16 @@ public class PlayerCharacter extends AbstractCharacter {
 	private static double getMitigatedDamage(double damage, double protections) {
 		double damageMultiplier = damage / (damage + protections);
 		return damage * damageMultiplier;
+	}
+
+	public Weapon getWeapon() {
+		ItemStack itemStack = getInventory().getItem(0);
+		Item item = Item.forItemStack(itemStack);
+		if (item instanceof Weapon) {
+			return (Weapon) item;
+		} else {
+			return null;
+		}
 	}
 
 	public double getProtections() {

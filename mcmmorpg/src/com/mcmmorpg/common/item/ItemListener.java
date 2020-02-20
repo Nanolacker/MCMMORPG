@@ -17,6 +17,7 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerItemHeldEvent;
 import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.Inventory;
@@ -47,21 +48,13 @@ class ItemListener implements Listener {
 	@EventHandler
 	private void onInteractWithItem(PlayerInteractEvent event) {
 		event.setCancelled(true);
-		Player player = event.getPlayer();
-		ItemStack itemStack = event.getItem();
-		Action action = event.getAction();
-		if (itemStack == null) {
-			if (action == Action.LEFT_CLICK_AIR || action == Action.LEFT_CLICK_BLOCK) {
-				PlayerCharacter pc = PlayerCharacter.forPlayer(player);
-				if (pc != null) {
-					EventManager.callEvent(new PlayerCharacterUseWeaponEvent(pc, null));
-				}
-			}
-			return;
-		}
 		if (event.getHand() != EquipmentSlot.HAND) {
 			return;
 		}
+		Player player = event.getPlayer();
+		ItemStack itemStack = event.getItem();
+		Action action = event.getAction();
+
 		if (ItemFactory.staticInteractables.contains(itemStack)) {
 			if (action == Action.RIGHT_CLICK_AIR || action == Action.RIGHT_CLICK_BLOCK) {
 				EventManager.callEvent(new StaticInteractableEvent(player, itemStack));
@@ -73,36 +66,8 @@ class ItemListener implements Listener {
 			return;
 		}
 
-		Item item = Item.forItemStack(itemStack);
-		if (item == null) {
-			return;
-		}
-
-		if (item instanceof Weapon) {
-			if (action == Action.LEFT_CLICK_AIR || action == Action.LEFT_CLICK_BLOCK) {
-				Weapon weaopn = (Weapon) item;
-				if (pc.getPlayerClass() != weaopn.getPlayerClass()) {
-					pc.sendMessage(ChatColor.RED + "Your class cannot use this item!");
-				} else if (pc.getLevel() >= weaopn.getLevel()) {
-					EventManager.callEvent(new PlayerCharacterUseWeaponEvent(pc, weaopn));
-				} else {
-					pc.sendMessage(ChatColor.RED + "Your level is too low to use this item!");
-				}
-			}
-			return;
-		}
-
-		if (item instanceof ConsumableItem) {
-			if (action == Action.RIGHT_CLICK_AIR || action == Action.RIGHT_CLICK_BLOCK) {
-				ConsumableItem consumableItem = (ConsumableItem) item;
-				if (pc.getLevel() >= consumableItem.getLevel()) {
-					itemStack.setAmount(itemStack.getAmount() - 1);
-					EventManager.callEvent(new PlayerCharacterUseConsumableItemEvent(pc, consumableItem));
-				} else {
-					pc.sendMessage("Your level is too low to use!");
-				}
-			}
-			return;
+		if (action == Action.LEFT_CLICK_AIR || action == Action.LEFT_CLICK_BLOCK) {
+			handlePlayerCharacterUseWeapon(pc);
 		}
 	}
 
@@ -115,17 +80,48 @@ class ItemListener implements Listener {
 			if (pc == null) {
 				return;
 			}
-			ItemStack itemStack = player.getItemInHand();
-			if (itemStack == null) {
-				EventManager.callEvent(new PlayerCharacterUseWeaponEvent(pc, null));
+			handlePlayerCharacterUseWeapon(pc);
+		}
+	}
+
+	private void handlePlayerCharacterUseWeapon(PlayerCharacter pc) {
+		Weapon weapon = pc.getWeapon();
+		// if weapon == null, punch
+		if (weapon != null) {
+			if (pc.getPlayerClass() != weapon.getPlayerClass()) {
+				pc.sendMessage(ChatColor.RED + "Your class cannot use this item!");
+				return;
+			} else if (pc.getLevel() < weapon.getLevel()) {
+				pc.sendMessage(ChatColor.RED + "Your level is too low to use this item!");
 				return;
 			}
-			Item item = Item.forItemStack(itemStack);
-			if (item instanceof Weapon) {
-				Weapon weapon = (Weapon) item;
-				EventManager.callEvent(new PlayerCharacterUseWeaponEvent(pc, weapon));
+		}
+		EventManager.callEvent(new PlayerCharacterUseWeaponEvent(pc, weapon));
+	}
+
+	@EventHandler
+	private void onChangeHeldItem(PlayerItemHeldEvent event) {
+		Player player = event.getPlayer();
+		PlayerCharacter pc = PlayerCharacter.forPlayer(player);
+		if (pc == null) {
+			return;
+		}
+		Inventory inventory = player.getInventory();
+		int slot = event.getNewSlot();
+		ItemStack itemStack = inventory.getItem(slot);
+		Item item = Item.forItemStack(itemStack);
+		if (item instanceof ConsumableItem) {
+			ConsumableItem consumable = (ConsumableItem) item;
+			int level = consumable.getLevel();
+			if (pc.getLevel() < level) {
+				pc.sendMessage(ChatColor.RED + "Your level is too low to use this item!");
+			} else {
+				PlayerCharacterUseConsumableItemEvent consumableEvent = new PlayerCharacterUseConsumableItemEvent(pc,
+						consumable);
+				EventManager.callEvent(consumableEvent);
 			}
 		}
+		player.getInventory().setHeldItemSlot(0);
 	}
 
 	@EventHandler

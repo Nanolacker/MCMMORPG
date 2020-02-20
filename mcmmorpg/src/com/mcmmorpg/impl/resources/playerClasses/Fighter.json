@@ -19,8 +19,8 @@
 			"manaCost": 15,
 			"cooldown": 15,
 			"minimumLevel": 4,
-			"prerequisiteSkill": null,
-			"maximumUpgradeLevel": "Bash",
+			"prerequisiteSkill": "Bash",
+			"maximumUpgradeLevel": 3,
 			"skillTreeRow": 2,
 			"skillTreeColumn": 6,
 			"icon": "EMERALD"
@@ -43,9 +43,9 @@
 			"manaCost": 15,
 			"cooldown": 10,
 			"minimumLevel": 10,
-			"prerequisiteSkill": null,
+			"prerequisiteSkill": "Lunge",
 			"maximumUpgradeLevel": 3,
-			"skillTreeRow": 1,
+			"skillTreeRow": 4,
 			"skillTreeColumn": 1,
 			"icon": "HOPPER"
 		},
@@ -55,10 +55,10 @@
 			"manaCost": 30,
 			"cooldown": 30,
 			"minimumLevel": 13,
-			"prerequisiteSkill": null,
+			"prerequisiteSkill": "Self Heal",
 			"maximumUpgradeLevel": 3,
-			"skillTreeRow": 1,
-			"skillTreeColumn": 1,
+			"skillTreeRow": 4,
+			"skillTreeColumn": 6,
 			"icon": "HONEYCOMB"
 		},
 		{
@@ -67,10 +67,10 @@
 			"manaCost": 30,
 			"cooldown": 15,
 			"minimumLevel": 16,
-			"prerequisiteSkill": null,
+			"prerequisiteSkill": "Lunge",
 			"maximumUpgradeLevel": 4,
-			"skillTreeRow": 1,
-			"skillTreeColumn": 1,
+			"skillTreeRow": 4,
+			"skillTreeColumn": 3,
 			"icon": "SKELETON_SKULL"
 		}
 	]

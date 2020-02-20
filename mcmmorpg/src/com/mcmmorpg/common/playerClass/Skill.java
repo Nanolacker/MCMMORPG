@@ -6,7 +6,7 @@ import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerItemHeldEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -180,7 +180,7 @@ public final class Skill implements Listener {
 	}
 
 	@EventHandler
-	private void onUse(PlayerInteractEvent event) {
+	private void onChangeHeldItem(PlayerItemHeldEvent event) {
 		Player player = event.getPlayer();
 		PlayerCharacter pc = PlayerCharacter.forPlayer(player);
 		if (pc == null) {
@@ -189,10 +189,9 @@ public final class Skill implements Listener {
 		if (pc.getPlayerClass() != this.playerClass) {
 			return;
 		}
-		if (event.getHand() != EquipmentSlot.HAND) {
-			return;
-		}
-		ItemStack itemStack = event.getItem();
+		Inventory inventory = player.getInventory();
+		int slot = event.getNewSlot();
+		ItemStack itemStack = inventory.getItem(slot);
 		if (itemStack == null) {
 			return;
 		}
