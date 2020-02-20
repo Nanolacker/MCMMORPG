@@ -3,27 +3,75 @@
 	"skills": [
 		{
 			"name": "Fireball",
-			"description": "Conjure a fireball and fire it at enemies in front of you.",
+			"description": "Shoot a fireball toward enemies in front of you that explodes on impact",
 			"manaCost": 15,
-			"cooldown": 5,
+			"cooldown": 4,
 			"minimumLevel": 1,
 			"prerequisiteSkill": null,
 			"maximumUpgradeLevel": 3,
 			"skillTreeRow": 0,
 			"skillTreeColumn": 2,
-			"icon": "MAGMA_CREAM"
+			"icon": "BLAZE_POWDER"
 		},
 		{
-			"name": "Iceball",
-			"description": "Conjure an iceball and fire it at enemies in front of you.",
+			"name": "Ice Beam",
+			"description": "Channel a line of ice shards at enemies in front of you",
 			"manaCost": 15,
-			"cooldown": 5,
+			"cooldown": 10,
 			"minimumLevel": 1,
 			"prerequisiteSkill": null,
 			"maximumUpgradeLevel": 3,
 			"skillTreeRow": 0,
 			"skillTreeColumn": 6,
-			"icon": "SNOWBALL"
+			"icon": "PRISMARINE_SHARD"
+		},
+		{
+			"name": "Whirlwind",
+			"description": "Summon a whirlwind that damages enemies and boosts allies' movement speed",
+			"manaCost": 15,
+			"cooldown": 10,
+			"minimumLevel": 7,
+			"prerequisiteSkill": null,
+			"maximumUpgradeLevel": 3,
+			"skillTreeRow": 2,
+			"skillTreeColumn": 2,
+			"icon": "FEATHER"
+		},
+		{
+			"name": "Earthquake",
+			"description": "Make the earth rumble, damaging enemies around you",
+			"manaCost": 15,
+			"cooldown": 10,
+			"minimumLevel": 7,
+			"prerequisiteSkill": "Ice Beam",
+			"maximumUpgradeLevel": 3,
+			"skillTreeRow": 2,
+			"skillTreeColumn": 6,
+			"icon": "MELON_SEEDS"
+		},
+		{
+			"name": "Restore",
+			"description": "Shoot a ball of light that heals allies on impact",
+			"manaCost": 15,
+			"cooldown": 10,
+			"minimumLevel": 13,
+			"prerequisiteSkill": "Whirlwind",
+			"maximumUpgradeLevel": 3,
+			"skillTreeRow": 4,
+			"skillTreeColumn": 2,
+			"icon": "HONEYCOMB"
+		},
+		{
+			"name": "Dark Pulse",
+			"description": "Channel a line of ice shards at enemies in front of you",
+			"manaCost": 15,
+			"cooldown": 15,
+			"minimumLevel": 13,
+			"prerequisiteSkill": "Earthquake",
+			"maximumUpgradeLevel": 4,
+			"skillTreeRow": 4,
+			"skillTreeColumn": 6,
+			"icon": "ENDER_PEARL"
 		}
 	]
 }

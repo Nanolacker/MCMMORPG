@@ -10,32 +10,68 @@
 			"prerequisiteSkill": null,
 			"maximumUpgradeLevel": 3,
 			"skillTreeRow": 0,
-			"skillTreeColumn": 2,
+			"skillTreeColumn": 4,
 			"icon": "SHIELD"
 		},
 		{
 			"name": "Self Heal",
-			"description": "Heal yourself for a small amount.",
+			"description": "Heal yourself for a small amount",
 			"manaCost": 15,
 			"cooldown": 15,
-			"minimumLevel": 2,
+			"minimumLevel": 4,
 			"prerequisiteSkill": null,
-			"maximumUpgradeLevel": 3,
-			"skillTreeRow": 0,
+			"maximumUpgradeLevel": "Bash",
+			"skillTreeRow": 2,
 			"skillTreeColumn": 6,
 			"icon": "EMERALD"
 		},
 		{
-			"name": "Sweep",
-			"description": "Deal a large amount of damage to enemies around you.",
+			"name": "Lunge",
+			"description": "Lunge forward and damage enemies in front of you",
 			"manaCost": 10,
-			"cooldown": 30,
-			"minimumLevel": 1,
+			"cooldown": 10,
+			"minimumLevel": 7,
+			"prerequisiteSkill": "Bash",
+			"maximumUpgradeLevel": 3,
+			"skillTreeRow": 2,
+			"skillTreeColumn": 2,
+			"icon": "ARROW"
+		},
+		{
+			"name": "Cyclone",
+			"description": "Swing your weapon about, damaging enemies around you",
+			"manaCost": 15,
+			"cooldown": 10,
+			"minimumLevel": 10,
 			"prerequisiteSkill": null,
 			"maximumUpgradeLevel": 3,
 			"skillTreeRow": 1,
 			"skillTreeColumn": 1,
-			"icon": "EMERALD"
+			"icon": "HOPPER"
+		},
+		{
+			"name": "Inspire",
+			"description": "Inspire your allies by healing them in a radius around you",
+			"manaCost": 30,
+			"cooldown": 30,
+			"minimumLevel": 13,
+			"prerequisiteSkill": null,
+			"maximumUpgradeLevel": 3,
+			"skillTreeRow": 1,
+			"skillTreeColumn": 1,
+			"icon": "HONEYCOMB"
+		},
+		{
+			"name": "Overhead Strike",
+			"description": "Leap into the air and strike down enemies from above",
+			"manaCost": 30,
+			"cooldown": 15,
+			"minimumLevel": 16,
+			"prerequisiteSkill": null,
+			"maximumUpgradeLevel": 4,
+			"skillTreeRow": 1,
+			"skillTreeColumn": 1,
+			"icon": "SKELETON_SKULL"
 		}
 	]
 }
