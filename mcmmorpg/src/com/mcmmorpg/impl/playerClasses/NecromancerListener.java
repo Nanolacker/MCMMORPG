@@ -1,4 +1,4 @@
-package com.mcmmorpg.impl.playerClassListeners;
+package com.mcmmorpg.impl.playerClasses;
 
 import org.bukkit.event.EventHandler;
 

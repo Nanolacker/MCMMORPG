@@ -83,7 +83,7 @@ public class PersistentPlayerCharacterDataContainer {
 		List<Quest> completedQuests = questManager.getCompletedQuests();
 		PlayerQuestData[] allQuestData = pc.getQuestManager().getQuestData();
 		PlayerSkillData[] skillData = pc.getSkillManager().getAllSkillData();
-		ItemStack[] inventoryContents = pc.getInventory().getContents();
+		ItemStack[] inventoryContents = pc.getPlayer().getInventory().getContents();
 		String[] tags = pc.getTags();
 		return new PersistentPlayerCharacterDataContainer(false, playerClass, zone, location, respawnLocation, xp,
 				skillUpgradePoints, currency, maxHealth, currentHealth, healthRegenRate, maxMana, currentMana,
@@ -193,7 +193,7 @@ public class PersistentPlayerCharacterDataContainer {
 	public ItemStack[] getInventoryContents() {
 		return inventory.getContents();
 	}
-	
+
 	public String[] getTags() {
 		return tags;
 	}

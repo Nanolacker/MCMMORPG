@@ -43,6 +43,7 @@ import com.mcmmorpg.common.quest.QuestObjective;
 import com.mcmmorpg.common.quest.QuestStatus;
 import com.mcmmorpg.common.sound.Noise;
 import com.mcmmorpg.common.sound.PlayerSoundtrackPlayer;
+import com.mcmmorpg.common.time.DelayedTask;
 import com.mcmmorpg.common.time.RepeatingTask;
 import com.mcmmorpg.common.ui.ActionBarText;
 import com.mcmmorpg.common.ui.SidebarText;
@@ -57,7 +58,8 @@ public final class PlayerCharacter extends AbstractCharacter {
 	 * level 2. The value at index 1 is the xp it takes to level up from level 2 to
 	 * level 3.
 	 */
-	private static final int[] XP_REQS = { 100, 150, 200 };
+	private static final int[] XP_REQS = { 100, 150, 225, 325, 450, 600, 775, 975, 1200, 1450, 1725, 2025, 2350, 2700,
+			3075, 3475, 3900, 4350, 4825 };
 	private static final int MAX_XP = getMaxXp();
 	private static final Noise DEATH_NOISE = new Noise(Sound.ENTITY_WITHER_SPAWN);
 	private static final double MAX_DISTANCE_WITHOUT_PLAYER_TELEPORT = 5.0;
@@ -84,6 +86,7 @@ public final class PlayerCharacter extends AbstractCharacter {
 	private final PlayerSoundtrackPlayer soundtrackPlayer;
 	private CharacterCollider collider;
 	private final MovementSyncer movementSyncer;
+	private transient boolean isSilenced;
 
 	static {
 		pcs = new ArrayList<>();
@@ -105,7 +108,6 @@ public final class PlayerCharacter extends AbstractCharacter {
 		this.xp = xp;
 		this.skillUpgradePoints = skillUpgradePoints;
 		this.currency = currency;
-		super.setCurrentHealth(currentHealth);
 		super.setMaxHealth(maxHealth);
 		this.healthRegenRate = healthRegenRate;
 		this.currentMana = currentMana;
@@ -127,6 +129,7 @@ public final class PlayerCharacter extends AbstractCharacter {
 
 		active = true;
 		setAlive(true);
+		super.setCurrentHealth(currentHealth);
 		pcs.add(this);
 		playerMap.put(player, this);
 
@@ -141,6 +144,7 @@ public final class PlayerCharacter extends AbstractCharacter {
 			PlayerCharacterLevelUpEvent event = new PlayerCharacterLevelUpEvent(this, 1);
 			EventManager.callEvent(event);
 		}
+		isSilenced = false;
 	}
 
 	public static class PlayerCharacterCollider extends CharacterCollider {
@@ -270,7 +274,7 @@ public final class PlayerCharacter extends AbstractCharacter {
 		int rMaxMana = (int) Math.round(maxMana);
 		int currentLevelXp = getCurrentLevelXp();
 		int level = getLevel();
-		int targetXp = XP_REQS[level - 1];
+		int targetXp = level == maxLevel() ? 0 : XP_REQS[level - 1];
 		String text = String.format(
 				ChatColor.RED + "HP: %d/%d    " + ChatColor.AQUA + "MP: %d/%d    " + ChatColor.GREEN + "XP: %d/%d",
 				rCurrentHealth, rMaxHealth, rCurrentMana, rMaxMana, currentLevelXp, targetXp);
@@ -305,9 +309,9 @@ public final class PlayerCharacter extends AbstractCharacter {
 	private void updateXpDisplay() {
 		int level = getLevel();
 		player.setLevel(level);
-		int xpTarget = XP_REQS[level - 1];
+		int xpTarget = level == maxLevel() ? 0 : XP_REQS[level - 1];
 		int currentLevelXp = getCurrentLevelXp();
-		float levelProgress = (float) currentLevelXp / xpTarget;
+		float levelProgress = level == maxLevel() ? 0f : (float) currentLevelXp / xpTarget;
 		player.setExp(levelProgress);
 	}
 
@@ -357,7 +361,7 @@ public final class PlayerCharacter extends AbstractCharacter {
 	}
 
 	public static int maxLevel() {
-		return XP_REQS.length;
+		return XP_REQS.length + 1;
 	}
 
 	public int getSkillUpgradePoints() {
@@ -451,7 +455,7 @@ public final class PlayerCharacter extends AbstractCharacter {
 	}
 
 	public Weapon getWeapon() {
-		ItemStack itemStack = getInventory().getItem(0);
+		ItemStack itemStack = player.getInventory().getItem(0);
 		Item item = Item.forItemStack(itemStack);
 		if (item instanceof Weapon) {
 			return (Weapon) item;
@@ -464,42 +468,58 @@ public final class PlayerCharacter extends AbstractCharacter {
 		double protections = 0;
 		int level = getLevel();
 		ArmorItem head = getHeadArmor();
-		if (head != null && head.getLevel() >= level) {
-			protections += head.getProtections();
+		if (head != null) {
+			if (level >= head.getLevel() && playerClass == head.getPlayerClass()) {
+				protections += head.getProtections();
+			} else {
+				sendMessage(ChatColor.GRAY + "Unable to equip " + head);
+			}
 		}
 		ArmorItem chest = getChestArmor();
-		if (chest != null && chest.getLevel() >= level) {
-			protections += chest.getProtections();
+		if (chest != null) {
+			if (level >= chest.getLevel() && playerClass == chest.getPlayerClass()) {
+				protections += chest.getProtections();
+			} else {
+				sendMessage(ChatColor.GRAY + "Unable to equip " + chest);
+			}
 		}
 		ArmorItem legs = getLegArmor();
-		if (legs != null && legs.getLevel() >= level) {
-			protections += legs.getProtections();
+		if (legs != null) {
+			if (level >= legs.getLevel() && playerClass == legs.getPlayerClass()) {
+				protections += legs.getProtections();
+			} else {
+				sendMessage(ChatColor.GRAY + "Unable to equip " + legs);
+			}
 		}
 		ArmorItem feet = getFeetArmor();
-		if (feet != null && feet.getLevel() >= level) {
-			protections += feet.getProtections();
+		if (feet != null) {
+			if (level >= feet.getLevel() && playerClass == feet.getPlayerClass()) {
+				protections += feet.getProtections();
+			} else {
+				sendMessage(ChatColor.GRAY + "Unable to equip " + feet);
+			}
 		}
 		return protections;
 	}
 
 	public ArmorItem getHeadArmor() {
-		return getArmorItem(103);
+		return getArmorItem(39);
 	}
 
 	public ArmorItem getChestArmor() {
-		return getArmorItem(102);
+		return getArmorItem(38);
 	}
 
 	public ArmorItem getLegArmor() {
-		return getArmorItem(101);
+		return getArmorItem(37);
 	}
 
 	public ArmorItem getFeetArmor() {
-		return getArmorItem(100);
+		return getArmorItem(36);
 	}
 
 	private ArmorItem getArmorItem(int inventorySlot) {
-		ItemStack itemStack = getInventory().getItem(inventorySlot);
+		ItemStack itemStack = player.getInventory().getItem(inventorySlot);
 		Item item = Item.forItemStack(itemStack);
 		if (item instanceof ArmorItem) {
 			return (ArmorItem) item;
@@ -546,6 +566,24 @@ public final class PlayerCharacter extends AbstractCharacter {
 
 	public String[] getTags() {
 		return tags.toArray(new String[tags.size()]);
+	}
+
+	public boolean isSilenced() {
+		return isSilenced;
+	}
+
+	/**
+	 * Prevent this player character from performing actions for the duration
+	 * specified.
+	 */
+	public void silence(double duration) {
+		isSilenced = true;
+		new DelayedTask(duration) {
+			@Override
+			protected void run() {
+				isSilenced = false;
+			}
+		}.schedule();
 	}
 
 	@Override
@@ -609,8 +647,40 @@ public final class PlayerCharacter extends AbstractCharacter {
 		player.sendMessage(message);
 	}
 
-	public Inventory getInventory() {
-		return player.getInventory();
+	public void giveItem(Item item) {
+		giveItem(item, 1);
+	}
+
+	public void giveItem(Item item, int amount) {
+		ItemStack itemStack = item.getItemStack();
+		itemStack.setAmount(amount);
+		Inventory inventory = player.getInventory();
+		inventory.addItem(itemStack);
+	}
+
+	public void removeItem(Item item, int amount) {
+		ItemStack itemStack = item.getItemStack();
+		itemStack.setAmount(amount);
+		Inventory inventory = player.getInventory();
+		inventory.remove(itemStack);
+	}
+
+	/**
+	 * Returns how many of the item the player is carrying in their inventory.
+	 */
+	public int getItemCount(Item item) {
+		int count = 0;
+		ItemStack target = item.getItemStack();
+		Inventory inventory = player.getInventory();
+		ItemStack[] contents = inventory.getContents();
+		for (ItemStack itemStack : contents) {
+			ItemStack unitItemStack = itemStack.clone();
+			unitItemStack.setAmount(1);
+			if (unitItemStack.equals(target)) {
+				count += itemStack.getAmount();
+			}
+		}
+		return count;
 	}
 
 	/**

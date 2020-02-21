@@ -5,6 +5,8 @@ import java.util.Map;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.Sound;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
@@ -19,6 +21,7 @@ import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerItemHeldEvent;
 import org.bukkit.event.player.PlayerPickupItemEvent;
+import org.bukkit.event.player.PlayerSwapHandItemsEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -28,20 +31,40 @@ import com.mcmmorpg.common.event.EventManager;
 import com.mcmmorpg.common.event.PlayerCharacterUseConsumableItemEvent;
 import com.mcmmorpg.common.event.PlayerCharacterUseWeaponEvent;
 import com.mcmmorpg.common.event.StaticInteractableEvent;
+import com.mcmmorpg.common.sound.Noise;
 
 class ItemListener implements Listener {
+
+	private static final Noise CLICK_NOISE = new Noise(Sound.BLOCK_LEVER_CLICK);
 
 	private Map<org.bukkit.entity.Item, PlayerCharacter> droppedItemMap = new HashMap<>();
 
 	@EventHandler
 	private void onClickItem(InventoryClickEvent event) {
 		Player player = (Player) event.getWhoClicked();
-		ItemStack itemStack = event.getCurrentItem();
-		if (ItemFactory.staticInteractables.contains(itemStack)) {
+		ItemStack clickedItemStack = event.getCurrentItem();
+		ItemStack cursorItemStack = event.getCursor();
+		if (ItemFactory.staticInteractables.contains(clickedItemStack)) {
 			event.setCancelled(true);
-			StaticInteractableEvent consumableUseEvent = new StaticInteractableEvent(player, itemStack);
-			EventManager.callEvent(consumableUseEvent);
+			if (cursorItemStack.getType() == Material.AIR) {
+				StaticInteractableEvent consumableUseEvent = new StaticInteractableEvent(player, clickedItemStack);
+				EventManager.callEvent(consumableUseEvent);
+				return;
+			}
+		}
+
+		PlayerCharacter pc = PlayerCharacter.forPlayer(player);
+		if (pc == null) {
 			return;
+		}
+
+		Item clickedItem = Item.forItemStack(clickedItemStack);
+		if (event.isShiftClick()) {
+			event.setCancelled(true);
+			if (clickedItem instanceof ConsumableItem) {
+				ConsumableItem consumable = (ConsumableItem) clickedItem;
+				handlePlayerCharacterUseConsumable(pc, consumable, clickedItemStack);
+			}
 		}
 	}
 
@@ -72,6 +95,11 @@ class ItemListener implements Listener {
 	}
 
 	@EventHandler
+	private void onSwapHands(PlayerSwapHandItemsEvent event) {
+		event.setCancelled(true);
+	}
+
+	@EventHandler
 	private void onWeaponHit(EntityDamageByEntityEvent event) {
 		Entity damager = event.getDamager();
 		if (damager instanceof Player) {
@@ -82,21 +110,6 @@ class ItemListener implements Listener {
 			}
 			handlePlayerCharacterUseWeapon(pc);
 		}
-	}
-
-	private void handlePlayerCharacterUseWeapon(PlayerCharacter pc) {
-		Weapon weapon = pc.getWeapon();
-		// if weapon == null, punch
-		if (weapon != null) {
-			if (pc.getPlayerClass() != weapon.getPlayerClass()) {
-				pc.sendMessage(ChatColor.RED + "Your class cannot use this item!");
-				return;
-			} else if (pc.getLevel() < weapon.getLevel()) {
-				pc.sendMessage(ChatColor.RED + "Your level is too low to use this item!");
-				return;
-			}
-		}
-		EventManager.callEvent(new PlayerCharacterUseWeaponEvent(pc, weapon));
 	}
 
 	@EventHandler
@@ -112,16 +125,38 @@ class ItemListener implements Listener {
 		Item item = Item.forItemStack(itemStack);
 		if (item instanceof ConsumableItem) {
 			ConsumableItem consumable = (ConsumableItem) item;
-			int level = consumable.getLevel();
-			if (pc.getLevel() < level) {
-				pc.sendMessage(ChatColor.RED + "Your level is too low to use this item!");
-			} else {
-				PlayerCharacterUseConsumableItemEvent consumableEvent = new PlayerCharacterUseConsumableItemEvent(pc,
-						consumable);
-				EventManager.callEvent(consumableEvent);
-			}
+			handlePlayerCharacterUseConsumable(pc, consumable, itemStack);
 		}
 		player.getInventory().setHeldItemSlot(0);
+	}
+
+	private void handlePlayerCharacterUseWeapon(PlayerCharacter pc) {
+		Weapon weapon = pc.getWeapon();
+		// if weapon == null, punch
+		if (pc.isSilenced()) {
+			return;
+		}
+		if (weapon != null) {
+			if (pc.getLevel() < weapon.getLevel() || pc.getPlayerClass() != weapon.getPlayerClass()) {
+				pc.sendMessage(ChatColor.GRAY + "Unable to wield " + weapon);
+				return;
+			}
+		}
+		EventManager.callEvent(new PlayerCharacterUseWeaponEvent(pc, weapon));
+	}
+
+	private void handlePlayerCharacterUseConsumable(PlayerCharacter pc, ConsumableItem consumable,
+			ItemStack itemStack) {
+		if (pc.isSilenced()) {
+		} else if (pc.getLevel() < consumable.getLevel()) {
+			pc.sendMessage(ChatColor.GRAY + "Your level is too low to use this item");
+		} else {
+			itemStack.setAmount(itemStack.getAmount() - 1);
+			PlayerCharacterUseConsumableItemEvent consumableEvent = new PlayerCharacterUseConsumableItemEvent(pc,
+					consumable);
+			EventManager.callEvent(consumableEvent);
+		}
+		CLICK_NOISE.play(pc);
 	}
 
 	@EventHandler
@@ -186,26 +221,29 @@ class ItemListener implements Listener {
 			chest.open(pc);
 			chest.remove();
 		} else {
-			pc.sendMessage(ChatColor.RED + "This chest does not belong to you!");
+			pc.sendMessage(ChatColor.GRAY + "This chest does not belong to you");
 		}
 	}
 
 	@EventHandler
 	private void onClickInLootChest(InventoryClickEvent event) {
 		Inventory inventory = event.getInventory();
+		Inventory clickedInventory = event.getClickedInventory();
 		if (LootChest.inventories.contains(inventory)) {
 			event.setCancelled(true);
+		}
+		if (LootChest.inventories.contains(clickedInventory)) {
 			ItemStack itemStack = event.getCurrentItem();
 			if (itemStack == null) {
 				return;
 			}
 			int slot = event.getSlot();
-			inventory.setItem(slot, null);
+			clickedInventory.setItem(slot, null);
 			Player player = (Player) event.getWhoClicked();
 			PlayerCharacter pc = PlayerCharacter.forPlayer(player);
 			// pc should never be null
-			pc.getInventory().addItem(itemStack);
-			boolean empty = inventoryIsEmpty(inventory);
+			pc.getPlayer().getInventory().addItem(itemStack);
+			boolean empty = inventoryIsEmpty(clickedInventory);
 			if (empty) {
 				player.closeInventory();
 			}

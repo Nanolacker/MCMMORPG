@@ -12,7 +12,6 @@ import org.bukkit.plugin.java.JavaPlugin;
 import com.mcmmorpg.common.character.NonPlayerCharacter;
 import com.mcmmorpg.common.item.LootChest;
 import com.mcmmorpg.common.time.GameClock;
-import com.mcmmorpg.common.ui.TextPanel;
 
 public abstract class MMORPGPlugin extends JavaPlugin {
 
@@ -21,36 +20,20 @@ public abstract class MMORPGPlugin extends JavaPlugin {
 	@Override
 	public final void onEnable() {
 		isInitialized = false;
+		removeAllEntities();
 		GameClock.start();
 		NonPlayerCharacter.startNPCSpawner();
 		LootChest.init();
-		try {
-			onMMORPGStart();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+		onMMORPGStart();
 		isInitialized = true;
 	}
 
 	@Override
 	public final void onDisable() {
-		try {
-			onMMORPGStop();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+		onMMORPGStop();
 		kickAllPlayers();
 		NonPlayerCharacter.despawnAll();
 		LootChest.removeAll();
-		TextPanel.removeAllEntities();
-		removeAllEntities();
-	}
-
-	private void kickAllPlayers() {
-		Collection<? extends Player> players = Bukkit.getOnlinePlayers();
-		for (Player player : players) {
-			player.kickPlayer("Reloading Server");
-		}
 	}
 
 	private static void removeAllEntities() {
@@ -60,6 +43,13 @@ public abstract class MMORPGPlugin extends JavaPlugin {
 			for (Entity entity : entities) {
 				entity.remove();
 			}
+		}
+	}
+
+	private void kickAllPlayers() {
+		Collection<? extends Player> players = Bukkit.getOnlinePlayers();
+		for (Player player : players) {
+			player.kickPlayer("Reloading Server");
 		}
 	}
 

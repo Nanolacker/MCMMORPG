@@ -6,8 +6,10 @@ import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.inventory.InventoryAction;
+import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.event.player.PlayerItemHeldEvent;
-import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
@@ -22,7 +24,7 @@ public final class Skill implements Listener {
 
 	private static final double COOLDOWN_UPDATE_PERIOD_SECONDS = 0.1;
 	private static final Material LOCKED_MATERIAL = Material.BARRIER;
-	private static final Noise SKILL_USE_NOISE = new Noise(Sound.BLOCK_LEVER_CLICK);
+	private static final Noise CLICK_NOISE = new Noise(Sound.BLOCK_LEVER_CLICK);
 
 	private final String name;
 	private final String description;
@@ -114,12 +116,12 @@ public final class Skill implements Listener {
 		if (data == null) {
 			// unlock
 			manager.unlockSkill(this);
-			pc.sendMessage(ChatColor.GREEN + name + " unlocked!");
+			pc.sendMessage(ChatColor.GREEN + name + ChatColor.YELLOW + " unlocked!");
 		} else {
 			// upgrade
 			int newLevel = data.getUpgradeLevel() + 1;
 			data.setUpgradeLevel(newLevel);
-			pc.sendMessage(name + " upgraded to level " + newLevel);
+			pc.sendMessage(ChatColor.GREEN + name + ChatColor.GOLD + " upgraded to level " + newLevel + "!");
 		}
 	}
 
@@ -129,7 +131,7 @@ public final class Skill implements Listener {
 
 	private ItemStack createHotbarItemStack() {
 		StringBuilder lore = new StringBuilder();
-		lore.append(ChatColor.GOLD + "Level " + minimumLevel + " skill");
+		lore.append(ChatColor.GOLD + playerClass.getName() + " Skill");
 		lore.append(ChatColor.AQUA + "\nCost: " + manaCost);
 		lore.append(ChatColor.YELLOW + "\nCooldown: " + cooldown);
 		lore.append(ChatColor.WHITE + "\n\n" + description);
@@ -144,7 +146,7 @@ public final class Skill implements Listener {
 		int upgradeLevel = data == null ? 0 : data.getUpgradeLevel();
 		Material material = unlocked ? icon : LOCKED_MATERIAL;
 		StringBuilder lore = new StringBuilder();
-		lore.append(ChatColor.GOLD + "\nUpgraded " + upgradeLevel + "/" + maximumUpgradeLevel);
+		lore.append(ChatColor.GOLD + "Upgraded " + upgradeLevel + "/" + maximumUpgradeLevel);
 		lore.append(ChatColor.AQUA + "\nCost: " + manaCost);
 		lore.append(ChatColor.YELLOW + "\nCooldown: " + cooldown);
 		lore.append(ChatColor.WHITE + "\n\n" + description);
@@ -168,10 +170,10 @@ public final class Skill implements Listener {
 			if (unlocked) {
 				lore.append(ChatColor.GRAY + "\nClick to add to hotbar");
 				if (upgradeLevel < maximumUpgradeLevel) {
-					lore.append("\nShift click to upgrade (1 skill point)");
+					lore.append("\nShift-click to upgrade (1 skill point)");
 				}
 			} else {
-				lore.append("\nShift click to unlock (1 skill point)");
+				lore.append("\nShift-click to unlock (1 skill point)");
 			}
 		}
 
@@ -199,15 +201,81 @@ public final class Skill implements Listener {
 		sizeOfOne.setAmount(1);
 		if (sizeOfOne.equals(hotbarItemStack)) {
 			if (isOnCooldown(pc)) {
-				pc.sendMessage(ChatColor.RED + "On cooldown! (" + (int) Math.ceil(getCooldown(pc)) + ")");
-				SKILL_USE_NOISE.play(player);
+				pc.sendMessage(ChatColor.GRAY + "On cooldown (" + ChatColor.YELLOW + (int) Math.ceil(getCooldown(pc))
+						+ ChatColor.GRAY + ")");
+				CLICK_NOISE.play(player);
 			} else if (pc.getCurrentMana() < manaCost) {
-				pc.sendMessage(ChatColor.RED + "Insufficient " + ChatColor.AQUA + "MP" + ChatColor.RED + "!");
-				SKILL_USE_NOISE.play(player);
+				pc.sendMessage(ChatColor.GRAY + "Insufficient " + ChatColor.AQUA + "MP");
+				CLICK_NOISE.play(player);
+			} else if (pc.isSilenced()) {
+				CLICK_NOISE.play(player);
 			} else {
 				this.use(pc);
 			}
 		}
+	}
+
+	@EventHandler
+	private void onClickSkillItem(InventoryClickEvent event) {
+		if (event.isShiftClick() || event.getAction() == InventoryAction.HOTBAR_SWAP) {
+			event.setCancelled(true);
+			return;
+		}
+		Player player = (Player) event.getWhoClicked();
+		PlayerCharacter pc = PlayerCharacter.forPlayer(player);
+		if (pc == null) {
+			return;
+		}
+		if (pc.getPlayerClass() != this.playerClass) {
+			return;
+		}
+		ItemStack clickedItem = event.getCurrentItem();
+		ItemStack droppedItem = event.getCursor();
+		if (isHotbarItemStack(clickedItem)) {
+			clickedItem.setAmount(1);
+		}
+		if (isHotbarItemStack(droppedItem)) {
+			int slot = event.getRawSlot();
+			if (slot == 36) {
+				event.setCancelled(true);
+				player.sendMessage(ChatColor.GRAY + "Only weapons can be placed here");
+			} else if (slot < 37 || slot > 44) {
+				event.setCancelled(true);
+				player.sendMessage(ChatColor.GRAY + "Skills can only be placed on your hotbar");
+			}
+		}
+	}
+
+	@EventHandler
+	private void onDragSkillItem(InventoryDragEvent event) {
+		Player player = (Player) event.getWhoClicked();
+		PlayerCharacter pc = PlayerCharacter.forPlayer(player);
+		if (pc == null) {
+			return;
+		}
+		if (pc.getPlayerClass() != this.playerClass) {
+			return;
+		}
+		ItemStack droppedItem = event.getOldCursor();
+		if (isHotbarItemStack(droppedItem)) {
+			int slot = (int) event.getRawSlots().toArray()[0];
+			if (slot == 36) {
+				event.setCancelled(true);
+				player.sendMessage(ChatColor.GRAY + "Only weapons can be placed here");
+			} else if (slot < 36 || slot > 44) {
+				event.setCancelled(true);
+				player.sendMessage(ChatColor.GRAY + "Skills can only be placed on your hotbar");
+			}
+		}
+	}
+
+	private boolean isHotbarItemStack(ItemStack itemStack) {
+		if (itemStack == null) {
+			return false;
+		}
+		ItemStack sizeOfOne = itemStack.clone();
+		sizeOfOne.setAmount(1);
+		return sizeOfOne.equals(this.hotbarItemStack);
 	}
 
 	private void use(PlayerCharacter pc) {
@@ -215,9 +283,8 @@ public final class Skill implements Listener {
 		EventManager.callEvent(event);
 		pc.setCurrentMana(pc.getCurrentMana() - manaCost);
 		cooldown(pc, cooldown);
-		SKILL_USE_NOISE.play(pc);
-		pc.sendMessage(ChatColor.YELLOW + "Used " + ChatColor.GREEN + name + ChatColor.YELLOW + "! " + ChatColor.AQUA
-				+ -manaCost + " MP");
+		CLICK_NOISE.play(pc);
+		pc.sendMessage(ChatColor.YELLOW + "Used " + ChatColor.GREEN + name + " " + ChatColor.AQUA + -manaCost + " MP");
 	}
 
 	public double getCooldown(PlayerCharacter pc) {
@@ -261,15 +328,13 @@ public final class Skill implements Listener {
 	 * Displays the updated cooldown.
 	 */
 	private void updateItemStack(PlayerCharacter pc, double cooldownSeconds) {
-		Inventory inventory = pc.getInventory();
+		Inventory inventory = pc.getPlayer().getInventory();
 		for (int i = 0; i < 9; i++) {
 			ItemStack itemStack = inventory.getItem(i);
 			if (itemStack == null) {
 				continue;
 			}
-			ItemStack sizeOfOne = itemStack.clone();
-			sizeOfOne.setAmount(1);
-			if (sizeOfOne.equals(this.hotbarItemStack)) {
+			if (isHotbarItemStack(itemStack)) {
 				int newAmount = (int) Math.ceil(cooldownSeconds);
 				if (itemStack.getAmount() != newAmount) {
 					itemStack.setAmount(newAmount);
@@ -277,6 +342,7 @@ public final class Skill implements Listener {
 				return;
 			}
 		}
+
 	}
 
 	public boolean prerequisitesAreMet(PlayerCharacter pc) {

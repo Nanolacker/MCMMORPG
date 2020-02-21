@@ -109,19 +109,6 @@ public class TextPanel {
 	}
 
 	/**
-	 * Removes all entities associated with any {@code TextPanel}s to keep worlds
-	 * clean.
-	 * <p>
-	 * <b>Only to be invoked once during runtime, when the server is stopping.</b>
-	 */
-	public static void removeAllEntities() {
-		for (int i = 0; i < activeTextPanels.size(); i++) {
-			TextPanel textPanel = activeTextPanels.get(i);
-			textPanel.setVisible(false);
-		}
-	}
-
-	/**
 	 * Initializes the {@code RepeatingTask} used to manage spawning entities
 	 * associated with this {@code TextPanel}.
 	 */

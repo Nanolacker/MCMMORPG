@@ -4,7 +4,7 @@ import org.bukkit.ChatColor;
 
 public enum ItemRarity {
 
-	COMMON(ChatColor.GRAY, "Common"), UNCOMMON(ChatColor.GREEN, "Green"), RARE(ChatColor.BLUE, "Rare"),
+	COMMON(ChatColor.GRAY, "Common"), UNCOMMON(ChatColor.GREEN, "Uncommon"), RARE(ChatColor.BLUE, "Rare"),
 	EPIC(ChatColor.LIGHT_PURPLE, "Epic"), LEGENDARY(ChatColor.GOLD, "Legendary");
 
 	private final ChatColor color;

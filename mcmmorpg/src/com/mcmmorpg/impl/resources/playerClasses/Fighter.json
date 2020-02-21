@@ -56,7 +56,7 @@
 			"cooldown": 30,
 			"minimumLevel": 13,
 			"prerequisiteSkill": "Self Heal",
-			"maximumUpgradeLevel": 3,
+			"maximumUpgradeLevel": 4,
 			"skillTreeRow": 4,
 			"skillTreeColumn": 6,
 			"icon": "HONEYCOMB"

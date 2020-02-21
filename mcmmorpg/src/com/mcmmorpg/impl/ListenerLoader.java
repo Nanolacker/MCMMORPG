@@ -4,8 +4,8 @@ import com.mcmmorpg.common.event.EventManager;
 import com.mcmmorpg.impl.listeners.BulskanRuinsListener;
 import com.mcmmorpg.impl.listeners.MelcherListener;
 import com.mcmmorpg.impl.playerCharacterSelection.PlayerCharacterSelectionListener;
-import com.mcmmorpg.impl.playerClassListeners.FighterListener;
-import com.mcmmorpg.impl.playerClassListeners.MageListener;
+import com.mcmmorpg.impl.playerClasses.FighterListener;
+import com.mcmmorpg.impl.playerClasses.MageListener;
 
 public class ListenerLoader {
 

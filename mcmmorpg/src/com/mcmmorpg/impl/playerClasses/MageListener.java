@@ -1,4 +1,4 @@
-package com.mcmmorpg.impl.playerClassListeners;
+package com.mcmmorpg.impl.playerClasses;
 
 import org.bukkit.Effect;
 import org.bukkit.Location;
@@ -22,31 +22,35 @@ import com.mcmmorpg.common.event.SkillUseEvent;
 import com.mcmmorpg.common.item.Weapon;
 import com.mcmmorpg.common.physics.Collider;
 import com.mcmmorpg.common.physics.Projectile;
+import com.mcmmorpg.common.physics.Ray;
+import com.mcmmorpg.common.physics.Raycast;
 import com.mcmmorpg.common.playerClass.PlayerClass;
 import com.mcmmorpg.common.playerClass.Skill;
 import com.mcmmorpg.common.sound.Noise;
 import com.mcmmorpg.common.time.DelayedTask;
+import com.mcmmorpg.common.time.RepeatingTask;
 
 public class MageListener implements Listener {
 
 	private static final Noise FIREBALL_CONJURE = new Noise(Sound.ENTITY_GHAST_SHOOT);
 	private static final Noise FIREBALL_HIT_1 = new Noise(Sound.ENTITY_GENERIC_EXPLODE);
 	private static final Noise FIREBALL_HIT_2 = new Noise(Sound.BLOCK_FIRE_AMBIENT);
-	private static final Noise ICEBALL_CONJURE = new Noise(Sound.BLOCK_LAVA_EXTINGUISH);
-	private static final Noise ICEBALL_HIT = new Noise(Sound.BLOCK_LAVA_EXTINGUISH);
+	private static final Noise ICE_BEAM_CONJURE = new Noise(Sound.BLOCK_LAVA_EXTINGUISH);
 
 	private final PlayerClass mage;
 	private final Skill fireball;
-	private final Skill iceball;
+	private final Skill iceBeam;
 	private final Skill restore;
 	private final Skill earthquake;
+	private final Skill darkPulse;
 
 	public MageListener() {
 		mage = PlayerClass.forName("Mage");
 		fireball = mage.skillForName("Fireball");
-		iceball = mage.skillForName("Iceball");
+		iceBeam = mage.skillForName("Ice Beam");
 		restore = mage.skillForName("Restore");
 		earthquake = mage.skillForName("Iceball");
+		darkPulse = mage.skillForName("Dark Pulse");
 	}
 
 	@EventHandler
@@ -58,8 +62,12 @@ public class MageListener implements Listener {
 		Skill skill = event.getSkill();
 		if (skill == fireball) {
 			useFireball(pc);
+		} else if (skill == iceBeam) {
+			useIceBeam(pc);
 		} else if (skill == earthquake) {
 			useEarthquake(pc);
+		} else if (skill == darkPulse) {
+			useDarkPulse(pc);
 		}
 	}
 
@@ -117,8 +125,39 @@ public class MageListener implements Listener {
 		projectile.fire();
 	}
 
-	private void useIceball(PlayerCharacter pc) {
+	private void useIceBeam(PlayerCharacter pc) {
+		double duration = 4;
+		double period = 0.2;
+		double range = 15;
+		double maxCount = duration / period;
+		RepeatingTask channel = new RepeatingTask(period) {
+			int count = 0;
 
+			@Override
+			protected void run() {
+				Location location = pc.getLocation().add(0, 1.25, 0);
+				ICE_BEAM_CONJURE.play(location);
+				Vector direction = location.getDirection();
+				location.add(direction);
+				Ray ray = new Ray(location, direction, range);
+				ray.setDrawParticle(Particle.CRIT_MAGIC);
+				ray.draw();
+				Raycast raycast = new Raycast(ray, CharacterCollider.class);
+				Collider[] hits = raycast.getHits();
+				for (Collider hit : hits) {
+					AbstractCharacter character = ((CharacterCollider) hit).getCharacter();
+					if (!character.isFriendly(pc)) {
+						character.damage(1.5, pc);
+					}
+				}
+				count++;
+				if (count == maxCount) {
+					cancel();
+				}
+			}
+		};
+		channel.schedule();
+		pc.silence(duration);
 	}
 
 	private void useEarthquake(PlayerCharacter pc) {
@@ -133,6 +172,10 @@ public class MageListener implements Listener {
 			Location particleLocation = center.clone().add(offsetX, 0.1, offsetZ);
 			world.spawnParticle(Particle.CAMPFIRE_COSY_SMOKE, particleLocation, 1);
 		}
+	}
+
+	private void useDarkPulse(PlayerCharacter pc) {
+		Particle particle = Particle.SPELL_WITCH;
 	}
 
 	@EventHandler

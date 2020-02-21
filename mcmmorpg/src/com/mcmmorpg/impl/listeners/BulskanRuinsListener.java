@@ -19,6 +19,8 @@ import com.mcmmorpg.common.sound.SoundSequence;
 import com.mcmmorpg.common.ui.TitleMessage;
 import com.mcmmorpg.common.utils.IOUtils;
 import com.mcmmorpg.impl.Worlds;
+import com.mcmmorpg.impl.npcs.CultistAcolyte;
+import com.mcmmorpg.impl.npcs.GelatinousCube;
 import com.mcmmorpg.impl.npcs.Highwayman;
 
 public class BulskanRuinsListener implements Listener {
@@ -35,8 +37,7 @@ public class BulskanRuinsListener implements Listener {
 
 	private void getSoundtrack() {
 		File file = new File(IOUtils.getDataFolder(), "resources\\soundtracks\\BulskanRuins.json");
-		SoundSequence soundtrack = IOUtils.readJson(file, PersistentSoundSequenceDataContainer.class)
-				.toSoundSequence();
+		SoundSequence soundtrack = IOUtils.readJson(file, PersistentSoundSequenceDataContainer.class).toSoundSequence();
 		this.soundtrack = soundtrack;
 	}
 
@@ -89,11 +90,8 @@ public class BulskanRuinsListener implements Listener {
 		for (Location location : undeadLocations) {
 //			BulskanUndead undead = new BulskanUndead(4, location, true, 30);
 //			undead.setAlive(true);
+			new CultistAcolyte(4, location).setAlive(true);
 		}
-		Highwayman highwayman = new Highwayman(4, new Location(Worlds.ELADRADOR, 170, 67, -33), 10);
-		Highwayman highwayman2 = new Highwayman(4, new Location(Worlds.ELADRADOR, 170, 67, -33), 10);
-		highwayman.setAlive(true);
-		highwayman2.setAlive(true);
 	}
 
 	@EventHandler

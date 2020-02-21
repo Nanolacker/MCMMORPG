@@ -4,6 +4,7 @@ import javax.annotation.OverridingMethodsMustInvokeSuper;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
+
 import com.mcmmorpg.common.event.CharacterDamageEvent;
 import com.mcmmorpg.common.event.CharacterDeathEvent;
 import com.mcmmorpg.common.event.CharacterHealEvent;

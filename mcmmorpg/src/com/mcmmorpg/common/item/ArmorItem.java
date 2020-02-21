@@ -1,5 +1,6 @@
 package com.mcmmorpg.common.item;
 
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
@@ -14,7 +15,7 @@ public class ArmorItem extends Item {
 	private transient PlayerClass playerClass0;
 
 	public ArmorItem(int id, String name, ItemRarity rarity, Material icon, String description, String playerClass,
-			int level, double protections) {
+			int level, int protections) {
 		super(id, name, rarity, icon, description);
 		this.playerClass = playerClass;
 		this.level = level;
@@ -22,7 +23,7 @@ public class ArmorItem extends Item {
 	}
 
 	@Override
-	protected void initialize() {
+	public void initialize() {
 		super.initialize();
 		playerClass0 = PlayerClass.forName(playerClass);
 	}
@@ -30,7 +31,9 @@ public class ArmorItem extends Item {
 	@Override
 	protected ItemStack createItemStack() {
 		ItemRarity rarity = getRarity();
-		String lore = rarity + " Armor\n" + getDescription();
+		String lore = ChatColor.GOLD + playerClass + " Armor Item" + ChatColor.GOLD + "\nLevel " + level + "\n"
+				+ (int) protections + " Protections\n" + rarity.getColor() + rarity + " Item\n\n" + ChatColor.RESET
+				+ getDescription();
 		return ItemFactory.createItemStack(rarity.getColor() + getName(), lore, getIcon());
 	}
 

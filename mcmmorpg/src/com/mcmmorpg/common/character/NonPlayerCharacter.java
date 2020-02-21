@@ -1,13 +1,12 @@
 package com.mcmmorpg.common.character;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.annotation.OverridingMethodsMustInvokeSuper;
 
 import org.bukkit.Location;
 
-import com.mcmmorpg.common.MMORPGPlugin;
 import com.mcmmorpg.common.event.EventManager;
 import com.mcmmorpg.common.event.NonPlayerCharacterSpawnEvent;
 import com.mcmmorpg.common.time.RepeatingTask;
@@ -16,23 +15,21 @@ import com.mcmmorpg.common.time.RepeatingTask;
  * Represents an NPC. Methods can be overridden in subclasses and should invoke
  * super.
  */
-public abstract class NonPlayerCharacter extends AbstractCharacter {
+public class NonPlayerCharacter extends AbstractCharacter {
 
 	private static final double SPAWN_PERIOD_SECONDS = 0.1;
 	private static final double DEFAULT_SPAWN_RADIUS = 25.0;
 
-	private static Set<NonPlayerCharacter> aliveNpcs = new HashSet<>();
+	private static List<NonPlayerCharacter> aliveNpcs = new ArrayList<>();
 
 	private boolean spawned;
 
 	public static void startNPCSpawner() {
-		if (MMORPGPlugin.isInitialized()) {
-			throw new IllegalStateException("Plugin must be uninitialized");
-		}
 		RepeatingTask npcSpawner = new RepeatingTask(SPAWN_PERIOD_SECONDS) {
 			@Override
 			public void run() {
-				for (NonPlayerCharacter npc : aliveNpcs) {
+				for (int i = 0; i < aliveNpcs.size(); i++) {
+					NonPlayerCharacter npc = aliveNpcs.get(i);
 					boolean alive = npc.isAlive();
 					if (alive) {
 						boolean canSpawn = npc.canSpawn();

@@ -69,6 +69,8 @@ public class SkillTree implements Listener {
 		}
 		Inventory inventory = event.getClickedInventory();
 		if (mappedInventory != inventory) {
+			// when player clicks bottom inventory while skill tree open
+			event.setCancelled(true);
 			return;
 		}
 		event.setCancelled(true);
@@ -91,9 +93,9 @@ public class SkillTree implements Listener {
 			// unlock/upgrade
 			int availableSillPoints = pc.getSkillUpgradePoints();
 			if (availableSillPoints <= 0) {
-				pc.sendMessage(ChatColor.RED + "No skill points remaining!");
+				pc.sendMessage(ChatColor.GRAY + "No skill points remaining");
 			} else if (skill.getUpgradeLevel(pc) == skill.getMaximumUpgradeLevel()) {
-				pc.sendMessage(ChatColor.RED + "Skill already at maximum level!");
+				pc.sendMessage(ChatColor.GRAY + "Skill already at maximum level");
 			} else {
 				skill.upgrade(pc);
 				pc.setSkillUpgradePoints(pc.getSkillUpgradePoints() - 1);
@@ -104,18 +106,30 @@ public class SkillTree implements Listener {
 		} else {
 			// add to inventory
 			if (!skill.isUnlocked(pc)) {
-				pc.sendMessage(ChatColor.RED + skill.getName() + " is not unlocked!");
+				pc.sendMessage(ChatColor.GRAY + skill.getName() + " is not unlocked");
 			} else {
 				ItemStack skillItemStack = skill.getHotbarItemStack();
 				Inventory playerInventory = player.getInventory();
 				if (playerInventory.contains(skillItemStack)) {
-					pc.sendMessage(skill.getName() + " is already in your inventory!");
+					pc.sendMessage(ChatColor.GRAY + skill.getName() + " is already in your inventory");
+				} else if (hotbarIsOccupied(player)) {
+					pc.sendMessage(ChatColor.GRAY + "No room on hotbar");
 				} else {
 					playerInventory.addItem(skillItemStack);
 				}
 			}
 		}
 		CLICK_NOISE.play(player);
+	}
+
+	private boolean hotbarIsOccupied(Player player) {
+		Inventory inventory = player.getInventory();
+		for (int i = 1; i < 9; i++) {
+			if (inventory.getItem(i) == null) {
+				return false;
+			}
+		}
+		return true;
 	}
 
 	private Skill getSkillAt(int skillRow, int skillColumn) {

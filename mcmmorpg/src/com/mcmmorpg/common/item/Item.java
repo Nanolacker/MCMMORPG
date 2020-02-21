@@ -6,6 +6,8 @@ import java.util.Map;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
+import net.md_5.bungee.api.ChatColor;
+
 public class Item {
 
 	private static final Map<ItemStack, Item> itemStackMap = new HashMap<>();
@@ -27,14 +29,14 @@ public class Item {
 		this.description = description;
 	}
 
-	protected void initialize() {
+	public void initialize() {
 		this.itemStack = createItemStack();
 		itemStackMap.put(itemStack, this);
 		idMap.put(id, this);
 	}
 
 	protected ItemStack createItemStack() {
-		String lore = rarity + "\n" + description;
+		String lore = rarity.getColor() + rarity.toString() + " Item\n\n" + ChatColor.RESET + description;
 		return ItemFactory.createItemStack(rarity.getColor() + name, lore, icon);
 	}
 
@@ -46,7 +48,12 @@ public class Item {
 	 * Returns null if the specified item stack does not correspond to an item.
 	 */
 	public static Item forItemStack(ItemStack itemStack) {
-		return itemStackMap.get(itemStack);
+		if (itemStack == null) {
+			return null;
+		}
+		ItemStack unitItemStack = itemStack.clone();
+		unitItemStack.setAmount(1);
+		return itemStackMap.get(unitItemStack);
 	}
 
 	public final int getID() {
@@ -70,7 +77,12 @@ public class Item {
 	}
 
 	public final ItemStack getItemStack() {
-		return itemStack;
+		return itemStack.clone();
+	}
+
+	@Override
+	public String toString() {
+		return rarity.getColor() + name;
 	}
 
 }

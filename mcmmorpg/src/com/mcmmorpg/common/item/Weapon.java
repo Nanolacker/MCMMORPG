@@ -1,5 +1,6 @@
 package com.mcmmorpg.common.item;
 
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
@@ -28,7 +29,8 @@ public class Weapon extends Item {
 	@Override
 	protected ItemStack createItemStack() {
 		ItemRarity rarity = getRarity();
-		String lore = rarity.getColor() + rarity.toString() + " Weapon\n" + getDescription();
+		String lore = ChatColor.GOLD + playerClass + " Weapon" + ChatColor.GOLD + "\nLevel " + level + "\n"
+				+ rarity.getColor() + rarity + " Item\n\n" + ChatColor.RESET + getDescription();
 		return ItemFactory.createItemStack(rarity.getColor() + getName(), lore, getIcon());
 	}
 

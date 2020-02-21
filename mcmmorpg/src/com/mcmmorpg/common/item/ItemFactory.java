@@ -35,7 +35,8 @@ public class ItemFactory {
 			itemMeta.setLore(lore);
 		}
 		itemMeta.setUnbreakable(true);
-		itemMeta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES, ItemFlag.HIDE_UNBREAKABLE);
+		itemMeta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES, ItemFlag.HIDE_DESTROYS, ItemFlag.HIDE_ENCHANTS,
+				ItemFlag.HIDE_PLACED_ON, ItemFlag.HIDE_POTION_EFFECTS, ItemFlag.HIDE_UNBREAKABLE);
 		itemStack.setItemMeta(itemMeta);
 		return itemStack;
 	}
