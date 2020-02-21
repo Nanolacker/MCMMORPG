@@ -18,7 +18,6 @@ public final class Ray {
 	public Ray(Location start, Location end) {
 		this.start = start;
 		this.end = end;
-		drawingEnabled = false;
 		drawParticle = DEFAULT_DRAW_PARTICLE;
 	}
 

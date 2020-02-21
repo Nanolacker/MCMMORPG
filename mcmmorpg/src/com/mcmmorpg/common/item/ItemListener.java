@@ -1,7 +1,9 @@
 package com.mcmmorpg.common.item;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -32,12 +34,18 @@ import com.mcmmorpg.common.event.PlayerCharacterUseConsumableItemEvent;
 import com.mcmmorpg.common.event.PlayerCharacterUseWeaponEvent;
 import com.mcmmorpg.common.event.StaticInteractableEvent;
 import com.mcmmorpg.common.sound.Noise;
+import com.mcmmorpg.common.time.DelayedTask;
 
 class ItemListener implements Listener {
 
 	private static final Noise CLICK_NOISE = new Noise(Sound.BLOCK_LEVER_CLICK);
 
-	private Map<org.bukkit.entity.Item, PlayerCharacter> droppedItemMap = new HashMap<>();
+	private final Map<org.bukkit.entity.Item, PlayerCharacter> droppedItemMap = new HashMap<>();
+	/**
+	 * Used to ensure that players only use weapons once when multiple types of
+	 * events are fired.
+	 */
+	private final Set<PlayerCharacter> swingingHands = new HashSet<>();
 
 	@EventHandler
 	private void onClickItem(InventoryClickEvent event) {
@@ -112,6 +120,31 @@ class ItemListener implements Listener {
 		}
 	}
 
+	private void handlePlayerCharacterUseWeapon(PlayerCharacter pc) {
+		if (swingingHands.contains(pc)) {
+			return;
+		}
+		swingingHands.add(pc);
+		new DelayedTask(0.1) {
+			@Override
+			protected void run() {
+				swingingHands.remove(pc);
+			}
+		}.schedule();
+		Weapon weapon = pc.getWeapon();
+		// if weapon == null, punch
+		if (pc.isSilenced()) {
+			return;
+		}
+		if (weapon != null) {
+			if (pc.getLevel() < weapon.getLevel() || pc.getPlayerClass() != weapon.getPlayerClass()) {
+				pc.sendMessage(ChatColor.GRAY + "Unable to wield " + weapon);
+				return;
+			}
+		}
+		EventManager.callEvent(new PlayerCharacterUseWeaponEvent(pc, weapon));
+	}
+
 	@EventHandler
 	private void onChangeHeldItem(PlayerItemHeldEvent event) {
 		Player player = event.getPlayer();
@@ -128,21 +161,6 @@ class ItemListener implements Listener {
 			handlePlayerCharacterUseConsumable(pc, consumable, itemStack);
 		}
 		player.getInventory().setHeldItemSlot(0);
-	}
-
-	private void handlePlayerCharacterUseWeapon(PlayerCharacter pc) {
-		Weapon weapon = pc.getWeapon();
-		// if weapon == null, punch
-		if (pc.isSilenced()) {
-			return;
-		}
-		if (weapon != null) {
-			if (pc.getLevel() < weapon.getLevel() || pc.getPlayerClass() != weapon.getPlayerClass()) {
-				pc.sendMessage(ChatColor.GRAY + "Unable to wield " + weapon);
-				return;
-			}
-		}
-		EventManager.callEvent(new PlayerCharacterUseWeaponEvent(pc, weapon));
 	}
 
 	private void handlePlayerCharacterUseConsumable(PlayerCharacter pc, ConsumableItem consumable,

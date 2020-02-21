@@ -19,9 +19,8 @@ import com.mcmmorpg.common.sound.SoundSequence;
 import com.mcmmorpg.common.ui.TitleMessage;
 import com.mcmmorpg.common.utils.IOUtils;
 import com.mcmmorpg.impl.Worlds;
-import com.mcmmorpg.impl.npcs.CultistAcolyte;
-import com.mcmmorpg.impl.npcs.GelatinousCube;
 import com.mcmmorpg.impl.npcs.Highwayman;
+import com.mcmmorpg.impl.npcs.TrainingDummy;
 
 public class BulskanRuinsListener implements Listener {
 
@@ -90,7 +89,7 @@ public class BulskanRuinsListener implements Listener {
 		for (Location location : undeadLocations) {
 //			BulskanUndead undead = new BulskanUndead(4, location, true, 30);
 //			undead.setAlive(true);
-			new CultistAcolyte(4, location).setAlive(true);
+			new TrainingDummy(location).setAlive(true);
 		}
 	}
 

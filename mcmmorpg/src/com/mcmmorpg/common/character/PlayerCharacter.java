@@ -4,8 +4,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -16,8 +18,12 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityCombustEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.player.PlayerInteractAtEntityEvent;
+import org.bukkit.event.player.PlayerInteractEntityEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
@@ -32,6 +38,9 @@ import com.mcmmorpg.common.item.ArmorItem;
 import com.mcmmorpg.common.item.Item;
 import com.mcmmorpg.common.item.Weapon;
 import com.mcmmorpg.common.persistence.PersistentPlayerCharacterDataContainer;
+import com.mcmmorpg.common.physics.Collider;
+import com.mcmmorpg.common.physics.Ray;
+import com.mcmmorpg.common.physics.Raycast;
 import com.mcmmorpg.common.playerClass.PlayerClass;
 import com.mcmmorpg.common.playerClass.PlayerSkillData;
 import com.mcmmorpg.common.playerClass.PlayerSkillManager;
@@ -63,6 +72,7 @@ public final class PlayerCharacter extends AbstractCharacter {
 	private static final int MAX_XP = getMaxXp();
 	private static final Noise DEATH_NOISE = new Noise(Sound.ENTITY_WITHER_SPAWN);
 	private static final double MAX_DISTANCE_WITHOUT_PLAYER_TELEPORT = 5.0;
+	private static final double INTERACT_RANGE = 4;
 
 	private static final List<PlayerCharacter> pcs;
 	private static final Map<Player, PlayerCharacter> playerMap;
@@ -715,6 +725,54 @@ public final class PlayerCharacter extends AbstractCharacter {
 	 * Handles events pertaining to player characters.
 	 */
 	private static class PlayerCharacterListener implements Listener {
+
+		/**
+		 * Used to ensure that the player does not interact multiple times with one
+		 * click due to multiple types of events being fired.
+		 */
+		private final Set<PlayerCharacter> interactingPlayers = new HashSet<>();
+
+		@EventHandler
+		private void onInteract(PlayerInteractEvent event) {
+			Action action = event.getAction();
+			if (action == Action.RIGHT_CLICK_AIR || action == Action.RIGHT_CLICK_BLOCK) {
+				handleInteraction(event.getPlayer());
+			}
+		}
+
+		@EventHandler
+		private void onInteract(PlayerInteractEntityEvent event) {
+			handleInteraction(event.getPlayer());
+		}
+
+		@EventHandler
+		private void onInteract(PlayerInteractAtEntityEvent event) {
+			handleInteraction(event.getPlayer());
+		}
+
+		private void handleInteraction(Player player) {
+			PlayerCharacter pc = PlayerCharacter.forPlayer(player);
+			if (pc == null || interactingPlayers.contains(pc)) {
+				return;
+			}
+			Location start = pc.getLocation().add(0, 1.5, 0);
+			Ray ray = new Ray(start, start.getDirection(), INTERACT_RANGE);
+			ray.draw();
+			Raycast raycast = new Raycast(ray, PlayerCharacterInteractionCollider.class);
+			Collider[] hits = raycast.getHits();
+			for (Collider hit : hits) {
+				PlayerCharacterInteractionCollider collider = (PlayerCharacterInteractionCollider) hit;
+				collider.onInteract(pc);
+			}
+			interactingPlayers.add(pc);
+			new DelayedTask(0.1) {
+				@Override
+				protected void run() {
+					interactingPlayers.remove(pc);
+				}
+			}.schedule();
+		}
+
 		@EventHandler
 		private void onDamage(EntityDamageEvent event) {
 			// Screw it. Let's just put it here for all entities.

@@ -138,6 +138,25 @@ public class NPCHuman {
 		}
 	}
 
+	public void setMainHand(ItemStack itemStack) {
+
+	}
+
+	public void setOffHand(ItemStack itemStack) {
+	}
+
+	public void setHelmet(ItemStack itemStack) {
+	}
+
+	public void setChestplate(ItemStack itemStack) {
+	}
+
+	public void setLeggings(ItemStack itemStack) {
+	}
+
+	public void setBoots(ItemStack itemStack) {
+	}
+
 	public void swingHand() {
 		ItemStack itemStack = new ItemStack(Material.IRON_SWORD);
 		entityPlayer.setEquipment(EnumItemSlot.MAINHAND, CraftItemStack.asNMSCopy(itemStack));

@@ -148,6 +148,7 @@ public class MageListener implements Listener {
 					AbstractCharacter character = ((CharacterCollider) hit).getCharacter();
 					if (!character.isFriendly(pc)) {
 						character.damage(1.5, pc);
+						hit.getWorld().spawnParticle(Particle.SNOW_SHOVEL, hit.getCenter(), 5);
 					}
 				}
 				count++;

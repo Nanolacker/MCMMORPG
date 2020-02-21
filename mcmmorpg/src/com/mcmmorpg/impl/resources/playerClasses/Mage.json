@@ -18,7 +18,7 @@
 			"description": "Channel a line of ice shards at enemies in front of you",
 			"manaCost": 5,
 			"cooldown": 10,
-			"minimumLevel": 1,
+			"minimumLevel": 2,
 			"prerequisiteSkill": null,
 			"maximumUpgradeLevel": 3,
 			"skillTreeRow": 0,
