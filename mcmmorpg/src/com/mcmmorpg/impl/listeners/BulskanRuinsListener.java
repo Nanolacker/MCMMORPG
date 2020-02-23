@@ -20,7 +20,6 @@ import com.mcmmorpg.common.ui.TitleMessage;
 import com.mcmmorpg.common.utils.IOUtils;
 import com.mcmmorpg.impl.Worlds;
 import com.mcmmorpg.impl.npcs.Highwayman;
-import com.mcmmorpg.impl.npcs.TrainingDummy;
 
 public class BulskanRuinsListener implements Listener {
 
@@ -87,9 +86,9 @@ public class BulskanRuinsListener implements Listener {
 				new Location(Worlds.ELADRADOR, 170, 67, -33), new Location(Worlds.ELADRADOR, 155, 67, -36),
 				new Location(Worlds.ELADRADOR, 145, 67, -49), new Location(Worlds.ELADRADOR, 190, 67, -42) };
 		for (Location location : undeadLocations) {
-//			BulskanUndead undead = new BulskanUndead(4, location, true, 30);
-//			undead.setAlive(true);
-			new TrainingDummy(location).setAlive(true);
+			// BulskanUndead undead = new BulskanUndead(4, location, true, 30);
+			// undead.setAlive(true);
+			new Highwayman(5, location, 10).setAlive(true);
 		}
 	}
 

@@ -1,8 +1,6 @@
 package com.mcmmorpg.common.item;
 
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 
 import org.bukkit.ChatColor;
@@ -16,13 +14,11 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.bukkit.event.entity.ItemDespawnEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerItemHeldEvent;
-import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.event.player.PlayerSwapHandItemsEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.Inventory;
@@ -40,7 +36,6 @@ class ItemListener implements Listener {
 
 	private static final Noise CLICK_NOISE = new Noise(Sound.BLOCK_LEVER_CLICK);
 
-	private final Map<org.bukkit.entity.Item, PlayerCharacter> droppedItemMap = new HashMap<>();
 	/**
 	 * Used to ensure that players only use weapons once when multiple types of
 	 * events are fired.
@@ -133,7 +128,7 @@ class ItemListener implements Listener {
 		}.schedule();
 		Weapon weapon = pc.getWeapon();
 		// if weapon == null, punch
-		if (pc.isSilenced()) {
+		if (pc.isDisarmed()) {
 			return;
 		}
 		if (weapon != null) {
@@ -188,35 +183,7 @@ class ItemListener implements Listener {
 		Item item = Item.forItemStack(itemStack);
 		if (item == null) {
 			itemEntity.remove();
-			return;
 		}
-		Player player = (Player) event.getPlayer();
-		PlayerCharacter pc = PlayerCharacter.forPlayer(player);
-		if (pc == null) {
-			return;
-		}
-		droppedItemMap.put(itemEntity, pc);
-	}
-
-	@EventHandler
-	private void onPickupItem(PlayerPickupItemEvent event) {
-		Player player = event.getPlayer();
-		PlayerCharacter pc = PlayerCharacter.forPlayer(player);
-		if (pc == null) {
-			return;
-		}
-		org.bukkit.entity.Item item = event.getItem();
-		if (droppedItemMap.get(item) == pc) {
-			droppedItemMap.remove(item);
-		} else {
-			event.setCancelled(true);
-		}
-	}
-
-	@EventHandler
-	private void onItemDespawn(ItemDespawnEvent event) {
-		org.bukkit.entity.Item item = event.getEntity();
-		droppedItemMap.remove(item);
 	}
 
 	@EventHandler
@@ -235,11 +202,12 @@ class ItemListener implements Listener {
 		if (chest == null) {
 			return;
 		}
-		if (chest.getOwner() == null || chest.getOwner() == pc) {
+		PlayerCharacter owner = chest.getOwner();
+		if (owner == null || chest.getOwner() == pc) {
 			chest.open(pc);
 			chest.remove();
 		} else {
-			pc.sendMessage(ChatColor.GRAY + "This chest does not belong to you");
+			pc.sendMessage(ChatColor.GRAY + "This chest belongs to " + owner.getName());
 		}
 	}
 

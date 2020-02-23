@@ -96,6 +96,7 @@ public final class PlayerCharacter extends AbstractCharacter {
 	private final PlayerSoundtrackPlayer soundtrackPlayer;
 	private CharacterCollider collider;
 	private final MovementSyncer movementSyncer;
+	private boolean isDisarmed;
 	private transient boolean isSilenced;
 
 	static {
@@ -154,6 +155,7 @@ public final class PlayerCharacter extends AbstractCharacter {
 			PlayerCharacterLevelUpEvent event = new PlayerCharacterLevelUpEvent(this, 1);
 			EventManager.callEvent(event);
 		}
+		isDisarmed = false;
 		isSilenced = false;
 	}
 
@@ -578,13 +580,30 @@ public final class PlayerCharacter extends AbstractCharacter {
 		return tags.toArray(new String[tags.size()]);
 	}
 
+	public boolean isDisarmed() {
+		return isDisarmed;
+	}
+
+	/**
+	 * Prevent this player character from using weapons for the duration specified.
+	 */
+	public void disarm(double duration) {
+		isDisarmed = true;
+		new DelayedTask(duration) {
+			@Override
+			protected void run() {
+				isDisarmed = false;
+			}
+		}.schedule();
+	}
+
 	public boolean isSilenced() {
 		return isSilenced;
 	}
 
 	/**
-	 * Prevent this player character from performing actions for the duration
-	 * specified.
+	 * Prevent this player character from using skills and consumables for the
+	 * duration specified.
 	 */
 	public void silence(double duration) {
 		isSilenced = true;
@@ -600,6 +619,8 @@ public final class PlayerCharacter extends AbstractCharacter {
 	protected void onDeath() {
 		super.onDeath();
 		player.teleport(respawnLocation);
+		disarm(3);
+		silence(3);
 		sendMessage(ChatColor.RED + "You died");
 		sendMessage(ChatColor.GRAY + "respawning...");
 		TitleMessage deathMessage = new TitleMessage(ChatColor.RED + "You died!", ChatColor.GRAY + "respawning...");
@@ -757,7 +778,6 @@ public final class PlayerCharacter extends AbstractCharacter {
 			}
 			Location start = pc.getLocation().add(0, 1.5, 0);
 			Ray ray = new Ray(start, start.getDirection(), INTERACT_RANGE);
-			ray.draw();
 			Raycast raycast = new Raycast(ray, PlayerCharacterInteractionCollider.class);
 			Collider[] hits = raycast.getHits();
 			for (Collider hit : hits) {

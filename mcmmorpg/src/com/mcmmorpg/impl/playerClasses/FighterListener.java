@@ -36,9 +36,10 @@ import com.mcmmorpg.common.time.RepeatingTask;
 
 public class FighterListener implements Listener {
 
-	private static final Noise BASH_NOISE = new Noise(Sound.ENTITY_GENERIC_EXPLODE, 0.5f, 1f);
+	private static final Noise BASH_MISS_NOISE = new Noise(Sound.ENTITY_WITHER_SHOOT, 1, 2);
+	private static final Noise BASH_HIT_NOISE = new Noise(Sound.ENTITY_ZOMBIE_ATTACK_IRON_DOOR, 0.5f, 1f);
 	private static final Noise SELF_HEAL_NOISE = new Noise(Sound.BLOCK_LAVA_EXTINGUISH);
-	private static final Noise SWEEP_NOISE = new Noise(Sound.ENTITY_GENERIC_EXPLODE, 0.5f, 1f);
+	private static final Noise CYCLONE_HIT_NOISE = new Noise(Sound.ENTITY_ZOMBIE_ATTACK_IRON_DOOR, 0.5f, 1f);
 
 	private final PlayerClass fighter;
 	private final Skill bash;
@@ -108,22 +109,27 @@ public class FighterListener implements Listener {
 		Location location = pc.getLocation();
 		Vector lookDirection = location.getDirection();
 		World world = location.getWorld();
-		location.add(lookDirection).add(0, 1, 0);
+		location.add(lookDirection.multiply(2.75)).add(0, 1, 0);
 		world.spawnParticle(Particle.EXPLOSION_LARGE, location, 1);
-		BASH_NOISE.play(location);
-		Collider hitbox = new Collider(location, 2, 2, 2) {
+		boolean[] hit = { false };
+		Collider hitbox = new Collider(location, 4, 4, 4) {
 			@Override
 			protected void onCollisionEnter(Collider other) {
 				if (other instanceof CharacterCollider) {
 					AbstractCharacter target = ((CharacterCollider) other).getCharacter();
 					if (!target.isFriendly(pc)) {
 						target.damage(10 + bash.getUpgradeLevel(pc) * 10, pc);
+						BASH_HIT_NOISE.play(location);
+						hit[0] = true;
 					}
 				}
 			}
 		};
 		hitbox.setActive(true);
 		hitbox.setActive(false);
+		if (!hit[0]) {
+			BASH_MISS_NOISE.play(location);
+		}
 	}
 
 	private void useSelfHeal(PlayerCharacter pc) {
@@ -143,33 +149,27 @@ public class FighterListener implements Listener {
 				loc.setYaw(loc.getYaw() + 60);
 				pc.getPlayer().teleport(loc);
 				count++;
-				if (count == 6) {
+				BASH_MISS_NOISE.play(loc);
+				Collider hitbox = new Collider(location, 10, 10, 10) {
+					@Override
+					protected void onCollisionEnter(Collider other) {
+						if (other instanceof CharacterCollider) {
+							AbstractCharacter target = ((CharacterCollider) other).getCharacter();
+							if (!target.isFriendly(pc)) {
+								target.damage(2, pc);
+								CYCLONE_HIT_NOISE.play(target.getLocation());
+							}
+						}
+					}
+				};
+				hitbox.setActive(true);
+				hitbox.setActive(false);
+				createCycloneEffect(location);
+				if (count == 12) {
 					cancel();
 				}
 			}
 		}.schedule();
-		createCycloneEffect(location);
-		for (int i = 0; i < 5; i++) {
-			new DelayedTask(0.1 * i) {
-				@Override
-				protected void run() {
-					createCycloneEffect(location);
-				}
-			}.schedule();
-		}
-		Collider hitbox = new Collider(location, 8, 8, 8) {
-			@Override
-			protected void onCollisionEnter(Collider other) {
-				if (other instanceof CharacterCollider) {
-					AbstractCharacter target = ((CharacterCollider) other).getCharacter();
-					if (!target.isFriendly(pc)) {
-						target.damage(10, pc);
-					}
-				}
-			}
-		};
-		hitbox.setActive(true);
-		hitbox.setActive(false);
 	}
 
 	private void createCycloneEffect(Location location) {
@@ -180,10 +180,9 @@ public class FighterListener implements Listener {
 		double zOffset = 6 * (Math.random() - 0.5);
 		effectLocation.add(xOffset, 1, zOffset);
 		world.spawnParticle(Particle.EXPLOSION_LARGE, effectLocation, 1);
-		SWEEP_NOISE.play(location);
 	}
 
-	private final Set<Player> playersUsingOverheadStrike = new HashSet<>();
+	private final Set<Player> airbornePlayers = new HashSet<>();
 
 	private void useOverheadStrike(PlayerCharacter pc) {
 		Player player = pc.getPlayer();
@@ -194,7 +193,7 @@ public class FighterListener implements Listener {
 		new DelayedTask(0.1) {
 			@Override
 			protected void run() {
-				playersUsingOverheadStrike.add(player);
+				airbornePlayers.add(player);
 			}
 		}.schedule();
 	}
@@ -202,7 +201,7 @@ public class FighterListener implements Listener {
 	@EventHandler
 	private void onPlayerMove(PlayerMoveEvent event) {
 		Player player = event.getPlayer();
-		if (playersUsingOverheadStrike.contains(player)) {
+		if (airbornePlayers.contains(player)) {
 			if (player.isOnGround()) {
 				PlayerCharacter pc = PlayerCharacter.forPlayer(player);
 				Location location = player.getLocation();
@@ -221,7 +220,7 @@ public class FighterListener implements Listener {
 				hitbox.setActive(false);
 				new Noise(Sound.ENTITY_GENERIC_EXPLODE).play(location);
 				location.getWorld().spawnParticle(Particle.EXPLOSION_HUGE, location, 1);
-				playersUsingOverheadStrike.remove(player);
+				airbornePlayers.remove(player);
 			}
 		}
 	}
@@ -264,7 +263,7 @@ public class FighterListener implements Listener {
 				character.damage(damage, pc);
 			}
 		}
-		pc.silence(0.75);
+		pc.disarm(0.75);
 	}
 
 	private void useShortSword(PlayerCharacter pc) {
@@ -280,7 +279,7 @@ public class FighterListener implements Listener {
 				character.damage(damage, pc);
 			}
 		}
-		pc.silence(0.75);
+		pc.disarm(0.75);
 	}
 
 }

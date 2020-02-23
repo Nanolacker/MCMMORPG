@@ -32,10 +32,9 @@ import com.mcmmorpg.common.time.RepeatingTask;
 
 public class MageListener implements Listener {
 
-	private static final Noise FIREBALL_CONJURE = new Noise(Sound.ENTITY_GHAST_SHOOT);
+	private static final Noise FIREBALL_CONJURE = new Noise(Sound.ENTITY_ZOMBIE_VILLAGER_CURE);
 	private static final Noise FIREBALL_HIT_1 = new Noise(Sound.ENTITY_GENERIC_EXPLODE);
 	private static final Noise FIREBALL_HIT_2 = new Noise(Sound.BLOCK_FIRE_AMBIENT);
-	private static final Noise ICE_BEAM_CONJURE = new Noise(Sound.BLOCK_LAVA_EXTINGUISH);
 
 	private final PlayerClass mage;
 	private final Skill fireball;
@@ -99,11 +98,9 @@ public class MageListener implements Listener {
 						Location location = getLocation();
 						FIREBALL_HIT_1.play(location);
 						world.spawnParticle(Particle.EXPLOSION_LARGE, location, 1);
-						world.playEffect(location, Effect.MOBSPAWNER_FLAMES, 1);
-						world.playEffect(location, Effect.MOBSPAWNER_FLAMES, 1);
-						world.playEffect(location, Effect.MOBSPAWNER_FLAMES, 1);
-						world.playEffect(location, Effect.MOBSPAWNER_FLAMES, 1);
-						world.playEffect(location, Effect.MOBSPAWNER_FLAMES, 1);
+						for (int i = 0; i < 5; i++) {
+							world.playEffect(location, Effect.MOBSPAWNER_FLAMES, 1);
+						}
 						this.setHitSize(2);
 						this.remove();
 						new DelayedTask(1) {
@@ -136,11 +133,10 @@ public class MageListener implements Listener {
 			@Override
 			protected void run() {
 				Location location = pc.getLocation().add(0, 1.25, 0);
-				ICE_BEAM_CONJURE.play(location);
 				Vector direction = location.getDirection();
 				location.add(direction);
 				Ray ray = new Ray(location, direction, range);
-				ray.setDrawParticle(Particle.CRIT_MAGIC);
+				ray.setDrawParticle(Particle.SNOW_SHOVEL);
 				ray.draw();
 				Raycast raycast = new Raycast(ray, CharacterCollider.class);
 				Collider[] hits = raycast.getHits();
@@ -148,7 +144,7 @@ public class MageListener implements Listener {
 					AbstractCharacter character = ((CharacterCollider) hit).getCharacter();
 					if (!character.isFriendly(pc)) {
 						character.damage(1.5, pc);
-						hit.getWorld().spawnParticle(Particle.SNOW_SHOVEL, hit.getCenter(), 5);
+						new Noise(Sound.BLOCK_GLASS_BREAK).play(character.getLocation());
 					}
 				}
 				count++;

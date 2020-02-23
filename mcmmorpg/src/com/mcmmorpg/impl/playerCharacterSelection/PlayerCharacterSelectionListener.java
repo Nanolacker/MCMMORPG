@@ -263,7 +263,7 @@ public class PlayerCharacterSelectionListener implements Listener {
 			return;
 		}
 		event.setCancelled(true);
-		int clickedSlot = event.getSlot();
+		int clickedSlot = event.getRawSlot();
 		Inventory inventory = event.getClickedInventory();
 		if (inventory == null || inventory.getItem(clickedSlot) == null) {
 			return;
