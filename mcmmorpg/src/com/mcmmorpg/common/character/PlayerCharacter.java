@@ -700,11 +700,17 @@ public final class PlayerCharacter extends AbstractCharacter {
 	 * Returns how many of the item the player is carrying in their inventory.
 	 */
 	public int getItemCount(Item item) {
+		if (item == null) {
+			throw new IllegalArgumentException("null item");
+		}
 		int count = 0;
 		ItemStack target = item.getItemStack();
 		Inventory inventory = player.getInventory();
 		ItemStack[] contents = inventory.getContents();
 		for (ItemStack itemStack : contents) {
+			if (itemStack == null) {
+				continue;
+			}
 			ItemStack unitItemStack = itemStack.clone();
 			unitItemStack.setAmount(1);
 			if (unitItemStack.equals(target)) {

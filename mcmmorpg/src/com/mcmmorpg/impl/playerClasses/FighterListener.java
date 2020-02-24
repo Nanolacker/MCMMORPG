@@ -60,6 +60,9 @@ public class FighterListener implements Listener {
 	@EventHandler
 	private void onLevelUp(PlayerCharacterLevelUpEvent event) {
 		PlayerCharacter pc = event.getPlayerCharacter();
+		if (pc.getPlayerClass() != fighter) {
+			return;
+		}
 		int level = event.getNewLevel();
 		if (level == 1) {
 			Weapon weapon = (Weapon) Item.forID(0);
@@ -71,17 +74,6 @@ public class FighterListener implements Listener {
 			pc.setCurrentMana(15);
 			pc.setManaRegenRate(1);
 			pc.grantXp(Integer.MAX_VALUE);
-			ConsumableItem consumable = new ConsumableItem(1, "Healing Potion", ItemRarity.UNCOMMON,
-					Material.GLASS_BOTTLE, "Heal yourself a small amount", 10);
-			consumable.initialize();
-			Item item = new Item(1, "Grass", ItemRarity.LEGENDARY, Material.GRASS, "Treasure of the fields of bleh");
-			item.initialize();
-			pc.giveItem(item);
-			pc.giveItem(consumable, 10);
-			ArmorItem armor = new ArmorItem(4, "Helmet", ItemRarity.COMMON, Material.IRON_HELMET, "A terrible helmet",
-					"Fighter", 1, 10);
-			armor.initialize();
-			pc.giveItem(armor);
 		}
 	}
 
@@ -146,10 +138,10 @@ public class FighterListener implements Listener {
 			@Override
 			protected void run() {
 				Location loc = pc.getLocation();
-				loc.setYaw(loc.getYaw() + 60);
+				loc.setYaw(loc.getYaw() + 90);
 				pc.getPlayer().teleport(loc);
 				count++;
-				BASH_MISS_NOISE.play(loc);
+				// BASH_MISS_NOISE.play(loc);
 				Collider hitbox = new Collider(location, 10, 10, 10) {
 					@Override
 					protected void onCollisionEnter(Collider other) {
@@ -165,7 +157,7 @@ public class FighterListener implements Listener {
 				hitbox.setActive(true);
 				hitbox.setActive(false);
 				createCycloneEffect(location);
-				if (count == 12) {
+				if (count == 4) {
 					cancel();
 				}
 			}
@@ -277,6 +269,7 @@ public class FighterListener implements Listener {
 			AbstractCharacter character = ((CharacterCollider) hit).getCharacter();
 			if (!character.isFriendly(pc)) {
 				character.damage(damage, pc);
+				new Noise(Sound.ENTITY_ZOMBIE_ATTACK_IRON_DOOR).play(character.getLocation());
 			}
 		}
 		pc.disarm(0.75);

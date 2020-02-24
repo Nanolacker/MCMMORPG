@@ -19,6 +19,7 @@ import com.mcmmorpg.common.character.PlayerCharacter;
 import com.mcmmorpg.common.event.PlayerCharacterLevelUpEvent;
 import com.mcmmorpg.common.event.PlayerCharacterUseWeaponEvent;
 import com.mcmmorpg.common.event.SkillUseEvent;
+import com.mcmmorpg.common.item.Item;
 import com.mcmmorpg.common.item.Weapon;
 import com.mcmmorpg.common.physics.Collider;
 import com.mcmmorpg.common.physics.Projectile;
@@ -178,15 +179,50 @@ public class MageListener implements Listener {
 	@EventHandler
 	private void onLevelUp(PlayerCharacterLevelUpEvent event) {
 		PlayerCharacter pc = event.getPlayerCharacter();
+		if (pc.getPlayerClass() != mage) {
+			return;
+		}
 		int level = event.getNewLevel();
 		if (level == 1) {
-			// starting gear
+			pc.giveItem(Item.forID(1));
+			pc.setMaxHealth(25);
+			pc.setCurrentHealth(25);
+			pc.setHealthRegenRate(0.2);
+			pc.setMaxMana(15);
+			pc.setCurrentMana(15);
+			pc.setManaRegenRate(1);
+			pc.grantXp(Integer.MAX_VALUE);
 		}
 	}
 
 	@EventHandler
 	private void onWeaponUse(PlayerCharacterUseWeaponEvent event) {
+		PlayerCharacter pc = event.getPlayerCharacter();
+		if (pc.getPlayerClass() != mage) {
+			return;
+		}
 		Weapon weapon = event.getWeapon();
+		if (weapon == null) {
+			useFists(pc);
+		}
+		if (weapon.getID() == 1) {
+			useFireball(pc);
+		}
 	}
 
+	private void useFists(PlayerCharacter pc) {
+		double damage = 1;
+		Location start = pc.getLocation().add(0, 1.5, 0);
+		Vector direction = start.getDirection();
+		Ray ray = new Ray(start, direction, 3);
+		Raycast raycast = new Raycast(ray, CharacterCollider.class);
+		Collider[] hits = raycast.getHits();
+		for (Collider hit : hits) {
+			AbstractCharacter character = ((CharacterCollider) hit).getCharacter();
+			if (!character.isFriendly(pc)) {
+				character.damage(damage, pc);
+			}
+		}
+		pc.disarm(1.25);
+	}
 }

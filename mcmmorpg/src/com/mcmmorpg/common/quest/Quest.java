@@ -59,6 +59,10 @@ public class Quest {
 		return objectives;
 	}
 
+	public QuestObjective getObjective(int index) {
+		return objectives[index];
+	}
+
 	public QuestStatus getStatus(PlayerCharacter pc) {
 		return pc.getQuestManager().getStatus(this);
 	}

@@ -17,6 +17,7 @@ import com.mcmmorpg.common.character.PlayerCharacter;
 import com.mcmmorpg.common.event.EventManager;
 import com.mcmmorpg.common.event.SkillUseEvent;
 import com.mcmmorpg.common.item.ItemFactory;
+import com.mcmmorpg.common.item.Weapon;
 import com.mcmmorpg.common.sound.Noise;
 import com.mcmmorpg.common.time.RepeatingTask;
 
@@ -200,7 +201,10 @@ public final class Skill implements Listener {
 		ItemStack sizeOfOne = itemStack.clone();
 		sizeOfOne.setAmount(1);
 		if (sizeOfOne.equals(hotbarItemStack)) {
-			if (isOnCooldown(pc)) {
+			Weapon weapon = pc.getWeapon();
+			if (weapon == null || pc.getPlayerClass() != weapon.getPlayerClass()) {
+				pc.sendMessage(ChatColor.GRAY + "You must wield a weapon to use skills");
+			} else if (isOnCooldown(pc)) {
 				pc.sendMessage(ChatColor.GRAY + "On cooldown (" + ChatColor.YELLOW + (int) Math.ceil(getCooldown(pc))
 						+ ChatColor.GRAY + ")");
 				CLICK_NOISE.play(player);
