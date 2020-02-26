@@ -27,7 +27,6 @@ import com.mcmmorpg.common.item.ItemFactory;
 import com.mcmmorpg.common.persistence.PersistentPlayerCharacterDataContainer;
 import com.mcmmorpg.common.playerClass.PlayerClass;
 import com.mcmmorpg.common.sound.Noise;
-import com.mcmmorpg.common.ui.TitleMessage;
 import com.mcmmorpg.common.utils.IOUtils;
 import com.mcmmorpg.impl.Worlds;
 import com.mcmmorpg.impl.playerCharacterSelection.PlayerCharacterSelectionProfile.Menu;
@@ -136,7 +135,7 @@ public class PlayerCharacterSelectionListener implements Listener {
 		Player player = event.getPlayer();
 		sendToCharacterSelection(player);
 		if (!player.hasPlayedBefore()) {
-			player.sendMessage(ChatColor.YELLOW
+			player.sendMessage(ChatColor.GRAY
 					+ "Welcome newcomer! Thank you for choosing MCMMORPG! Start playing by creating a new character!");
 		}
 	}
@@ -171,7 +170,7 @@ public class PlayerCharacterSelectionListener implements Listener {
 			pc.getPlayerClass().getSkillTree().open(pc);
 		} else if (interactable.equals(CHANGE_CHARACTER_SELECTION_ITEM_STACK)) {
 			Player player = event.getPlayer();
-			player.sendMessage(ChatColor.YELLOW + "Logging out...");
+			player.sendMessage(ChatColor.GRAY + "Logging out...");
 			PlayerCharacter pc = PlayerCharacter.forPlayer(player);
 			removeAndSavePlayerCharacter(pc);
 			sendToCharacterSelection(player);
@@ -275,8 +274,8 @@ public class PlayerCharacterSelectionListener implements Listener {
 				int characterSlot = profile.getCurrentCharacterSlot();
 				deleteCharacter(player, characterSlot);
 				CHARACTER_DELETION_NOISE.play(player);
-				player.sendMessage(ChatColor.YELLOW + "Deleted " + ChatColor.GOLD + "Character " + characterSlot
-						+ ChatColor.YELLOW + "!");
+				player.sendMessage(ChatColor.GRAY + "Deleted " + ChatColor.GOLD + "Character " + characterSlot
+						+ ChatColor.GRAY + "!");
 				openCharacterSelectInventory(player);
 			} else if (clickedSlot == 6) {
 				openCharacterSelectInventory(player);
@@ -289,7 +288,7 @@ public class PlayerCharacterSelectionListener implements Listener {
 			} else if (clickedSlot % 2 == 0) {
 				int characterSlot = clickedSlot / 2 + 1;
 				if (profile.getCharacterData(characterSlot) == null) {
-					player.sendMessage(ChatColor.RED + "No character created");
+					player.sendMessage(ChatColor.GRAY + "No character created");
 					CLICK_NOISE.play(player);
 				} else {
 					profile.setOpenMenu(Menu.CONFIRM_DELETION);
@@ -331,10 +330,8 @@ public class PlayerCharacterSelectionListener implements Listener {
 			PlayerClass playerClass = PlayerClass.forName(playerClassName);
 			int characterSlot = profile.getCurrentCharacterSlot();
 			createNewCharacter(player, playerClass, characterSlot);
-			player.sendMessage(ChatColor.YELLOW + "Created " + ChatColor.GOLD + "Character " + characterSlot
-					+ ChatColor.YELLOW + "!");
-			TitleMessage title = new TitleMessage(ChatColor.GREEN + playerClassName, ChatColor.GREEN + "selected");
-			title.sendTo(player);
+			player.sendMessage(
+					ChatColor.GRAY + "Created " + ChatColor.GOLD + "Character " + characterSlot + ChatColor.GRAY + "!");
 			profile.updateCharacterData(characterSlot);
 			openCharacterSelectInventory(player);
 		}
@@ -376,7 +373,7 @@ public class PlayerCharacterSelectionListener implements Listener {
 	}
 
 	private void selectCharacter(Player player, PersistentPlayerCharacterDataContainer data) {
-		player.sendMessage(ChatColor.YELLOW + "Logging in...");
+		player.sendMessage(ChatColor.GRAY + "Logging in...");
 		Inventory inventory = player.getInventory();
 		inventory.clear();
 		PlayerCharacter.registerPlayerCharacter(player, data);

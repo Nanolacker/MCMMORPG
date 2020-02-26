@@ -43,8 +43,8 @@ public class SkillTree implements Listener {
 		Player player = pc.getPlayer();
 		int size = 6 * 9;
 		int upgradePoints = pc.getSkillUpgradePoints();
-		String title = playerClass.getName() + " Skill Tree    " + upgradePoints + " skill point"
-				+ (upgradePoints == 1 ? "" : "s");
+		String title = playerClass.getName() + " Skill Tree (" + upgradePoints + " skill point"
+				+ (upgradePoints == 1 ? "" : "s") + ")";
 		Inventory inventory = Bukkit.createInventory(player, size, title);
 		Skill[] skills = playerClass.getSkills();
 		for (int i = 0; i < skills.length; i++) {
@@ -84,7 +84,7 @@ public class SkillTree implements Listener {
 		ClickType click = event.getClick();
 
 		if (!skill.prerequisitesAreMet(pc)) {
-			pc.sendMessage(ChatColor.RED + "Skill not available!");
+			pc.sendMessage(ChatColor.GREEN + skill.getName() + ChatColor.GRAY + " is not available");
 			CLICK_NOISE.play(player);
 			return;
 		}
@@ -95,7 +95,7 @@ public class SkillTree implements Listener {
 			if (availableSillPoints <= 0) {
 				pc.sendMessage(ChatColor.GRAY + "No skill points remaining");
 			} else if (skill.getUpgradeLevel(pc) == skill.getMaximumUpgradeLevel()) {
-				pc.sendMessage(ChatColor.GRAY + "Skill already at maximum level");
+				pc.sendMessage(ChatColor.GREEN + skill.getName() + ChatColor.GRAY + " is already at maximum level");
 			} else {
 				skill.upgrade(pc);
 				pc.setSkillUpgradePoints(pc.getSkillUpgradePoints() - 1);
@@ -106,30 +106,31 @@ public class SkillTree implements Listener {
 		} else {
 			// add to inventory
 			if (!skill.isUnlocked(pc)) {
-				pc.sendMessage(ChatColor.GRAY + skill.getName() + " is not unlocked");
+				pc.sendMessage(ChatColor.GREEN + skill.getName() + ChatColor.GRAY + " is not unlocked");
 			} else {
 				ItemStack skillItemStack = skill.getHotbarItemStack();
 				Inventory playerInventory = player.getInventory();
 				if (playerInventory.contains(skillItemStack)) {
-					pc.sendMessage(ChatColor.GRAY + skill.getName() + " is already in your inventory");
-				} else if (hotbarIsOccupied(player)) {
-					pc.sendMessage(ChatColor.GRAY + "No room on hotbar");
+					pc.sendMessage(
+							ChatColor.GREEN + skill.getName() + ChatColor.GRAY + " is already on  your hotbar");
 				} else {
-					playerInventory.addItem(skillItemStack);
+					boolean noRoom = true;
+					for (int i = 1; i < 9; i++) {
+						ItemStack itemStack = playerInventory.getItem(i);
+						if (itemStack == null) {
+							playerInventory.setItem(i, skillItemStack);
+							pc.sendMessage(ChatColor.GREEN + skill.getName() + ChatColor.GRAY + " added to hotbar");
+							noRoom = false;
+							break;
+						}
+					}
+					if (noRoom) {
+						pc.sendMessage(ChatColor.GRAY + "No room on hotbar");
+					}
 				}
 			}
 		}
 		CLICK_NOISE.play(player);
-	}
-
-	private boolean hotbarIsOccupied(Player player) {
-		Inventory inventory = player.getInventory();
-		for (int i = 1; i < 9; i++) {
-			if (inventory.getItem(i) == null) {
-				return false;
-			}
-		}
-		return true;
 	}
 
 	private Skill getSkillAt(int skillRow, int skillColumn) {

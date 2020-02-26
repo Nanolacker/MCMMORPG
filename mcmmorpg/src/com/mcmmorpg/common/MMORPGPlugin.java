@@ -12,6 +12,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import com.mcmmorpg.common.character.NonPlayerCharacter;
 import com.mcmmorpg.common.item.LootChest;
 import com.mcmmorpg.common.time.GameClock;
+import com.mcmmorpg.common.ui.MMORPGCommandExecutor;
 
 public abstract class MMORPGPlugin extends JavaPlugin {
 
@@ -20,6 +21,7 @@ public abstract class MMORPGPlugin extends JavaPlugin {
 	@Override
 	public final void onEnable() {
 		isInitialized = false;
+		MMORPGCommandExecutor.registerCommands();
 		removeAllEntities();
 		GameClock.start();
 		NonPlayerCharacter.startNPCSpawner();

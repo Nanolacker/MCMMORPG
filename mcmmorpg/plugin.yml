@@ -2,3 +2,10 @@ name: MCMMORPG
 version: 1.0
 main: com.mcmmorpg.impl.Main
 api-version: 1.13
+commands:
+    help:
+        description: Print helpful information about the game.
+        usage: /<command>
+    kill:
+        description: If your character is stuck, use this to respawn elsewhere.
+        usage: /<command>

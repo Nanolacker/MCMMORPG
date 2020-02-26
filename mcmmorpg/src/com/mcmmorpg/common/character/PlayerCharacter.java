@@ -57,6 +57,7 @@ import com.mcmmorpg.common.time.RepeatingTask;
 import com.mcmmorpg.common.ui.ActionBarText;
 import com.mcmmorpg.common.ui.SidebarText;
 import com.mcmmorpg.common.ui.TitleMessage;
+import com.mcmmorpg.common.utils.Debug;
 import com.mcmmorpg.common.utils.MathUtils;
 import com.mcmmorpg.common.utils.StringUtils;
 
@@ -549,6 +550,8 @@ public final class PlayerCharacter extends AbstractCharacter {
 		}
 		this.targetQuest = targetQuest;
 		updateQuestDisplay();
+		Debug.log("fix quest name color");
+		sendMessage(ChatColor.GRAY + "Tracking " + targetQuest.getName());
 	}
 
 	public PlayerQuestManager getQuestManager() {
@@ -621,9 +624,13 @@ public final class PlayerCharacter extends AbstractCharacter {
 		player.teleport(respawnLocation);
 		disarm(3);
 		silence(3);
-		sendMessage(ChatColor.RED + "You died");
-		sendMessage(ChatColor.GRAY + "respawning...");
-		TitleMessage deathMessage = new TitleMessage(ChatColor.RED + "You died!", ChatColor.GRAY + "respawning...");
+		new DelayedTask(1) {
+			@Override
+			protected void run() {
+				sendMessage(ChatColor.GRAY + "Respawning...");
+			}
+		}.schedule();
+		TitleMessage deathMessage = new TitleMessage(ChatColor.RED + "YOU DIED", "");
 		deathMessage.sendTo(player);
 		PotionEffect veilEffect = new PotionEffect(PotionEffectType.BLINDNESS, 80, 1);
 		player.addPotionEffect(veilEffect);

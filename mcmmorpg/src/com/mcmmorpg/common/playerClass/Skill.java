@@ -117,12 +117,12 @@ public final class Skill implements Listener {
 		if (data == null) {
 			// unlock
 			manager.unlockSkill(this);
-			pc.sendMessage(ChatColor.GREEN + name + ChatColor.YELLOW + " unlocked!");
+			pc.sendMessage(ChatColor.GREEN + name + ChatColor.GRAY + " unlocked!");
 		} else {
 			// upgrade
 			int newLevel = data.getUpgradeLevel() + 1;
 			data.setUpgradeLevel(newLevel);
-			pc.sendMessage(ChatColor.GREEN + name + ChatColor.GOLD + " upgraded to level " + newLevel + "!");
+			pc.sendMessage(ChatColor.GREEN + name + ChatColor.GRAY + " upgraded to level " + newLevel + "!");
 		}
 	}
 
@@ -240,7 +240,9 @@ public final class Skill implements Listener {
 		}
 		if (isHotbarItemStack(droppedItem)) {
 			int slot = event.getRawSlot();
-			if (slot == 36) {
+			if (slot == -999) {
+				player.sendMessage(ChatColor.GREEN + name + ChatColor.GRAY + " removed from hotbar");
+			} else if (slot == 36) {
 				event.setCancelled(true);
 				player.sendMessage(ChatColor.GRAY + "Only weapons can be placed here");
 			} else if (slot < 37 || slot > 44) {
@@ -288,7 +290,7 @@ public final class Skill implements Listener {
 		pc.setCurrentMana(pc.getCurrentMana() - manaCost);
 		cooldown(pc, cooldown);
 		CLICK_NOISE.play(pc);
-		pc.sendMessage(ChatColor.YELLOW + "Used " + ChatColor.GREEN + name + " " + ChatColor.AQUA + -manaCost + " MP");
+		pc.sendMessage(ChatColor.GRAY + "Used " + ChatColor.GREEN + name + " " + ChatColor.AQUA + -manaCost + " MP");
 	}
 
 	public double getCooldown(PlayerCharacter pc) {
