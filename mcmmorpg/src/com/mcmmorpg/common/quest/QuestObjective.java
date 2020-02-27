@@ -52,29 +52,31 @@ public class QuestObjective {
 	}
 
 	/**
-	 * Returns the progress of the player character on this objective. If the player
-	 * has not started this quest or has already completed it, an exception is
-	 * thrown.
+	 * Returns the progress of the player character on this objective.
 	 */
 	public int getProgress(PlayerCharacter pc) {
 		PlayerQuestManager statusManager = pc.getQuestManager();
 		PlayerQuestData data = statusManager.getQuestData(quest);
 		if (data == null) {
-			throw new IllegalArgumentException("Quest not in progress for player character");
+			QuestStatus status = quest.getStatus(pc);
+			if (status == QuestStatus.COMPLETED) {
+				return goal;
+			} else if (status == QuestStatus.NOT_STARTED) {
+				return 0;
+			}
 		}
 		return data.getProgress(this.index);
 	}
 
 	/**
-	 * Sets the progress of the player character on this objective. If the player
-	 * has not started this quest or has already completed it, an exception is
-	 * thrown.
+	 * Sets the progress of the player character on this objective.
 	 */
 	public void setProgress(PlayerCharacter pc, int progress) {
 		PlayerQuestManager questManager = pc.getQuestManager();
 		PlayerQuestData data = questManager.getQuestData(quest);
 		if (data == null) {
-			throw new IllegalArgumentException("Quest not in progress for player character");
+			// don't do anything
+			return;
 		}
 		int previousProgress = getProgress(pc);
 		progress = (int) MathUtils.clamp(progress, 0, goal);
@@ -90,8 +92,7 @@ public class QuestObjective {
 
 	/**
 	 * Equivalent to setProgress(getProgress() + progressToAdd). Negative progress
-	 * to add will remove progress.If the player has not started this quest or has
-	 * already completed it, an exception is thrown.
+	 * to add will remove progress.
 	 */
 	public void addProgress(PlayerCharacter pc, int progressToAdd) {
 		int progress = getProgress(pc);
@@ -104,17 +105,7 @@ public class QuestObjective {
 	 * character has not started this quest.
 	 */
 	public boolean isComplete(PlayerCharacter pc) {
-		QuestStatus status = quest.getStatus(pc);
-		switch (status) {
-		case NOT_STARTED:
-			return false;
-		case IN_PROGRESS:
-			return getProgress(pc) == this.goal;
-		case COMPLETED:
-			return true;
-		default:
-			return false;
-		}
+		return getProgress(pc) == this.goal;
 	}
 
 }
