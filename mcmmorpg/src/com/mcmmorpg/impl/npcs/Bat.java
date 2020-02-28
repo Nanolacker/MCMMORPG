@@ -98,7 +98,6 @@ public class Bat extends NonPlayerCharacter implements Listener {
 		DEATH_NOISE.play(location);
 		location.getWorld().spawnParticle(Particle.CLOUD, location, 10);
 		setLocation(spawnLocation);
-		new LootChest(location, new ItemStack[0]);
 		DelayedTask respawn = new DelayedTask(respawnTime) {
 			@Override
 			protected void run() {

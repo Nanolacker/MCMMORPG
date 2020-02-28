@@ -31,6 +31,7 @@ import com.mcmmorpg.common.event.PlayerCharacterUseWeaponEvent;
 import com.mcmmorpg.common.event.StaticInteractableEvent;
 import com.mcmmorpg.common.sound.Noise;
 import com.mcmmorpg.common.time.DelayedTask;
+import com.mcmmorpg.common.utils.Debug;
 
 class ItemListener implements Listener {
 
@@ -188,6 +189,9 @@ class ItemListener implements Listener {
 
 	@EventHandler
 	private void onOpenLootChest(PlayerInteractEvent event) {
+		if (event.getAction() != Action.RIGHT_CLICK_BLOCK) {
+			return;
+		}
 		Player player = event.getPlayer();
 		PlayerCharacter pc = PlayerCharacter.forPlayer(player);
 		if (pc == null) {

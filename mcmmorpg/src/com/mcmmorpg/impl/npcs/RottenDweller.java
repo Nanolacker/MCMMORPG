@@ -28,6 +28,7 @@ import com.mcmmorpg.common.item.LootChest;
 import com.mcmmorpg.common.physics.Collider;
 import com.mcmmorpg.common.sound.Noise;
 import com.mcmmorpg.common.time.DelayedTask;
+import com.mcmmorpg.common.utils.MathUtils;
 
 public class RottenDweller extends NonPlayerCharacter {
 
@@ -49,7 +50,7 @@ public class RottenDweller extends NonPlayerCharacter {
 		hitbox = new CharacterCollider(this, spawnLocation, 1.5, 1, 1.5);
 		movementSyncer = new MovementSyncer(this, null, MovementSyncMode.CHARACTER_FOLLOWS_ENTITY);
 		bossBar = Bukkit.createBossBar(getName(), BarColor.RED, BarStyle.SEGMENTED_10);
-		bossBarArea = new Collider(spawnLocation, 15, 6, 15) {
+		bossBarArea = new Collider(spawnLocation, 30, 6, 30) {
 			@Override
 			protected void onCollisionEnter(Collider other) {
 				if (other instanceof PlayerCharacterCollider) {
@@ -76,6 +77,7 @@ public class RottenDweller extends NonPlayerCharacter {
 		spider.setSilent(true);
 		spider.setRemoveWhenFarAway(false);
 		movementSyncer.setEntity(spider);
+		bossBarArea.setActive(true);
 		movementSyncer.setEnabled(true);
 	}
 
@@ -99,7 +101,8 @@ public class RottenDweller extends NonPlayerCharacter {
 	@Override
 	public void setCurrentHealth(double currentHealth) {
 		super.setCurrentHealth(currentHealth);
-		bossBar.setProgress(currentHealth / getMaxHealth());
+		double progress = MathUtils.clamp(currentHealth / getMaxHealth(), 0, 1);
+		bossBar.setProgress(progress);
 	}
 
 	@Override
@@ -108,6 +111,12 @@ public class RottenDweller extends NonPlayerCharacter {
 		// for light up red effect
 		spider.damage(0);
 		HURT_NOISE.play(getLocation());
+	}
+
+	@Override
+	protected void onLive() {
+		super.onLive();
+		bossBar.setProgress(1);
 	}
 
 	@Override
@@ -122,7 +131,7 @@ public class RottenDweller extends NonPlayerCharacter {
 		DEATH_NOISE.play(location);
 		location.getWorld().spawnParticle(Particle.CLOUD, location, 10);
 		setLocation(spawnLocation);
-		new LootChest(location, new ItemStack[0]);
+		LootChest.spawnLootChest(location, new ItemStack[0]);
 		DelayedTask respawn = new DelayedTask(RESPAWN_TIME) {
 			@Override
 			protected void run() {

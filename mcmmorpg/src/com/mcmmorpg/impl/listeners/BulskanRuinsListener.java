@@ -22,6 +22,7 @@ import com.mcmmorpg.impl.Worlds;
 import com.mcmmorpg.impl.npcs.Bat;
 import com.mcmmorpg.impl.npcs.GelatinousCube;
 import com.mcmmorpg.impl.npcs.Highwayman;
+import com.mcmmorpg.impl.npcs.RottenDweller;
 
 public class BulskanRuinsListener implements Listener {
 
@@ -93,6 +94,7 @@ public class BulskanRuinsListener implements Listener {
 		for (int i = 0; i < 5; i++) {
 			new Bat(3, new Location(Worlds.ELADRADOR, 170, 70, 0), 20).setAlive(true);
 		}
+		new RottenDweller(locations[1]).setAlive(true);
 	}
 
 	@EventHandler

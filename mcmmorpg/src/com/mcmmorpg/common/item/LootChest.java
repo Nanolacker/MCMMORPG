@@ -21,6 +21,7 @@ import com.mcmmorpg.common.character.PlayerCharacter;
 import com.mcmmorpg.common.time.DelayedTask;
 import com.mcmmorpg.common.time.RepeatingTask;
 import com.mcmmorpg.common.ui.ProgressBar;
+import com.mcmmorpg.common.utils.Debug;
 
 public class LootChest {
 
@@ -47,16 +48,6 @@ public class LootChest {
 		particleTask.schedule();
 	}
 
-	/**
-	 * Called when the plugin is disabled.
-	 */
-	public static void removeAll() {
-		List<LootChest> chests = new ArrayList<>(chestMap.values());
-		for (LootChest chest : chests) {
-			chest.remove();
-		}
-	}
-
 	private final Location location;
 	private final Particle aura;
 	private final ItemStack[] contents;
@@ -64,14 +55,7 @@ public class LootChest {
 	private boolean removed;
 	private final ProgressBar lifetimeBar;
 
-	/**
-	 * The default loot chest.
-	 */
-	public LootChest(Location location, ItemStack[] contents) {
-		this(location, ChatColor.GOLD + "Loot Chest", Material.CHEST, Particle.VILLAGER_HAPPY, 30, contents, null);
-	}
-
-	public LootChest(Location location, String title, Material material, Particle aura, double lifetimeSeconds,
+	private LootChest(Location location, String title, Material material, Particle aura, double lifetimeSeconds,
 			ItemStack[] contents, PlayerCharacter owner) {
 		this.location = getNearestEmptyBlock(location);
 		this.aura = aura;
@@ -94,6 +78,29 @@ public class LootChest {
 				LootChest.this.remove();
 			}
 		}.schedule();
+	}
+
+	/**
+	 * The default loot chest.
+	 */
+	public static LootChest spawnLootChest(Location location, ItemStack[] contents) {
+		return spawnLootChest(location, ChatColor.GOLD + "Loot Chest", Material.CHEST, Particle.VILLAGER_HAPPY, 30,
+				contents, null);
+	}
+
+	public static LootChest spawnLootChest(Location location, String title, Material material, Particle aura,
+			double lifetimeSeconds, ItemStack[] contents, PlayerCharacter owner) {
+		return new LootChest(location, title, material, aura, lifetimeSeconds, contents, owner);
+	}
+
+	/**
+	 * Called when the plugin is disabled.
+	 */
+	public static void removeAll() {
+		List<LootChest> chests = new ArrayList<>(chestMap.values());
+		for (LootChest chest : chests) {
+			chest.remove();
+		}
 	}
 
 	private Location getNearestEmptyBlock(Location location) {

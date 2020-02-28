@@ -108,7 +108,7 @@ public class CultistAcolyte extends NonPlayerCharacter {
 		DEATH_NOISE.play(location);
 		location.getWorld().spawnParticle(Particle.CLOUD, location, 10);
 		setLocation(spawnLocation);
-		new LootChest(location, new ItemStack[0]);
+		LootChest.spawnLootChest(location, new ItemStack[0]);
 		DelayedTask respawn = new DelayedTask(RESPAWN_TIME) {
 			@Override
 			protected void run() {

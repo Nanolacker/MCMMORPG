@@ -5,10 +5,8 @@ import org.bukkit.Location;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
 import org.bukkit.World;
-import org.bukkit.block.Block;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Fireball;
-import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.potion.PotionEffect;
@@ -32,7 +30,9 @@ import com.mcmmorpg.common.playerClass.Skill;
 import com.mcmmorpg.common.sound.Noise;
 import com.mcmmorpg.common.time.DelayedTask;
 import com.mcmmorpg.common.time.RepeatingTask;
-import com.mcmmorpg.common.utils.Debug;
+import com.mcmmorpg.common.ui.TextPanel;
+
+import net.md_5.bungee.api.ChatColor;
 
 public class MageListener implements Listener {
 
@@ -170,7 +170,6 @@ public class MageListener implements Listener {
 		Location targetTemp = null;
 		Location location = pc.getLocation().add(0, 1.5, 0);
 		Ray ray = new Ray(location, location.getDirection(), 15);
-		ray.draw();
 		Raycast raycast = new Raycast(ray, CharacterCollider.class);
 		Collider[] hits = raycast.getHits();
 		for (Collider hit : hits) {
