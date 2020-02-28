@@ -167,9 +167,30 @@ public class MageListener implements Listener {
 	}
 
 	private void useWhirlwind(PlayerCharacter pc) {
-		Player player = pc.getPlayer();
-		Location target = pc.getTargetLocation(15);
-		Collider hitbox = new Collider(target.clone().add(0, 2, 0), 2, 4, 2) {
+		Location targetTemp = null;
+		Location location = pc.getLocation().add(0, 1.5, 0);
+		Ray ray = new Ray(location, location.getDirection(), 15);
+		ray.draw();
+		Raycast raycast = new Raycast(ray, CharacterCollider.class);
+		Collider[] hits = raycast.getHits();
+		for (Collider hit : hits) {
+			if (hit instanceof CharacterCollider) {
+				AbstractCharacter character = ((CharacterCollider) hit).getCharacter();
+				if (!character.isFriendly(pc)) {
+					Location hitLocation = hit.getCenter().subtract(0, 1, 0);
+					if (targetTemp == null) {
+						targetTemp = hitLocation;
+					} else if (hitLocation.distanceSquared(location) < targetTemp.distanceSquared(location)) {
+						targetTemp = hitLocation;
+					}
+				}
+			}
+		}
+		if (targetTemp == null) {
+			targetTemp = pc.getTargetLocation(15);
+		}
+		final Location target = targetTemp;
+		Collider hitbox = new Collider(targetTemp.clone().add(0, 2, 0), 3, 5, 3) {
 			@Override
 			protected void onCollisionEnter(Collider other) {
 				if (other instanceof CharacterCollider) {
@@ -197,7 +218,7 @@ public class MageListener implements Listener {
 					if (collider instanceof CharacterCollider) {
 						AbstractCharacter character = ((CharacterCollider) collider).getCharacter();
 						if (!character.isFriendly(pc)) {
-							character.damage(1, pc);
+							character.damage(5, pc);
 							WHIRLWIND_DAMAGE_NOISE.play(target);
 						}
 					}
