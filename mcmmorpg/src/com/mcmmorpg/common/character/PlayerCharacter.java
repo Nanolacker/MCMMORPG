@@ -280,6 +280,15 @@ public final class PlayerCharacter extends AbstractCharacter {
 		this.respawnLocation = respawnLocation;
 	}
 
+	/**
+	 * Returns the location of the player's target block or the location that is a
+	 * distance of maxRange away from the player in their look direction.
+	 */
+	public Location getTargetLocation(int maxRange) {
+		// add 0.5 to average
+		return player.getTargetBlock(null, maxRange).getLocation().add(0.5, 0.5, 0.5);
+	}
+
 	private void updateActionBar() {
 		int rCurrentHealth = (int) Math.round(getCurrentHealth());
 		int rMaxHealth = (int) Math.round(getMaxHealth());

@@ -1,7 +1,7 @@
 {
-	"level": 1,
-	"id": 21,
-	"name": "Potion of Lesser Healing",
+	"level": 5,
+	"id": 20,
+	"name": "Potion of Minor Healing",
 	"rarity": "UNCOMMON",
 	"icon": "EMPTY_BOTTLE",
 	"description": "Rocover XX HP"

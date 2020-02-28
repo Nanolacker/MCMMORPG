@@ -19,6 +19,8 @@ import com.mcmmorpg.common.sound.SoundSequence;
 import com.mcmmorpg.common.ui.TitleMessage;
 import com.mcmmorpg.common.utils.IOUtils;
 import com.mcmmorpg.impl.Worlds;
+import com.mcmmorpg.impl.npcs.Bat;
+import com.mcmmorpg.impl.npcs.GelatinousCube;
 import com.mcmmorpg.impl.npcs.Highwayman;
 
 public class BulskanRuinsListener implements Listener {
@@ -82,13 +84,14 @@ public class BulskanRuinsListener implements Listener {
 	}
 
 	private void spawnNpcs() {
-		Location[] undeadLocations = { new Location(Worlds.ELADRADOR, 174, 67, -35),
+		Location[] locations = { new Location(Worlds.ELADRADOR, 174, 67, -35),
 				new Location(Worlds.ELADRADOR, 170, 67, -33), new Location(Worlds.ELADRADOR, 155, 67, -36),
 				new Location(Worlds.ELADRADOR, 145, 67, -49), new Location(Worlds.ELADRADOR, 190, 67, -42) };
-		for (Location location : undeadLocations) {
-			// BulskanUndead undead = new BulskanUndead(4, location, true, 30);
-			// undead.setAlive(true);
-			new Highwayman(5, location, 10).setAlive(true);
+
+		new Highwayman(5, locations[0], 10).setAlive(true);
+		new GelatinousCube(5, new Location(Worlds.ELADRADOR, 170, 70, 10), true).setAlive(true);
+		for (int i = 0; i < 5; i++) {
+			new Bat(3, new Location(Worlds.ELADRADOR, 170, 70, 0), 20).setAlive(true);
 		}
 	}
 

@@ -177,9 +177,10 @@ public class Collider {
 			updateOccupiedBuckets();
 			checkForCollision();
 		} else {
-			for (Collider collidingWith : collidingColliders) {
-				onCollisionExit(collidingWith);
-				collidingWith.onCollisionExit(this);
+			// need to copy to prevent comodification in handleCollisionExit()
+			List<Collider> collidingCollidersCopy = new ArrayList<>(collidingColliders);
+			for (Collider collidingWith : collidingCollidersCopy) {
+				handleCollisionExit(collidingWith);
 			}
 			for (ColliderBucket bucket : occupiedBuckets) {
 				bucket.removeCollider(this);
