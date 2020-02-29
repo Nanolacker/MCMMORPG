@@ -7,6 +7,7 @@ import org.bukkit.inventory.ItemStack;
 
 import com.mcmmorpg.common.character.PlayerCharacter;
 import com.mcmmorpg.common.quest.Quest;
+import com.mcmmorpg.common.quest.QuestStatus;
 import com.mcmmorpg.common.ui.MessageSequence;
 import com.mcmmorpg.common.utils.Debug;
 
@@ -22,13 +23,17 @@ public class TutorialGuide extends StaticHuman {
 		getHuman().setHelmet(new ItemStack(Material.IRON_SWORD));
 
 		String name = getName();
-		String[] messages = { formatDialogue("Hello there!"), formatDialogue("How do you do?") };
+		String[] messages = { formatDialogue("Hello there!"), formatDialogue("How do you do?"),
+				formatDialogue("How is your day?"), formatDialogue("The weather is nice, yes?"),
+				formatDialogue("I'm running out of things to say."), formatDialogue("Farewell!") };
 		messageSequence = new MessageSequence(messages, 2) {
 			@Override
 			protected void onAdvance(PlayerCharacter pc, int messageIndex) {
 				if (messageIndex == messages.length - 1) {
 					Quest quest = Quest.forName("Skills Tutorial");
-					quest.start(pc);
+					if (quest.getStatus(pc) == QuestStatus.NOT_STARTED) {
+						quest.start(pc);
+					}
 				}
 			}
 		};

@@ -8,17 +8,12 @@ import org.bukkit.util.Vector;
 
 public final class Ray {
 
-	private static final Particle DEFAULT_DRAW_PARTICLE = Particle.CRIT;
-	private static final double DRAW_THICKNESS = 4.0;
-
 	private Location start;
 	private Location end;
-	private Particle drawParticle;
 
 	public Ray(Location start, Location end) {
 		this.start = start;
 		this.end = end;
-		drawParticle = DEFAULT_DRAW_PARTICLE;
 	}
 
 	public Ray(Location start, Vector direction, double distance) {
@@ -54,27 +49,19 @@ public final class Ray {
 		return result != null;
 	}
 
-	public void draw() {
+	public void draw(Particle particle, double particleDensity) {
 		World world = start.getWorld();
 		Vector v = end.clone().subtract(start).toVector();
 		double length = v.length();
 		Vector direction = v.normalize();
-		int particleCount = (int) (length * DRAW_THICKNESS);
+		int particleCount = (int) (length * particleDensity);
 		Location particleLocation = start.clone();
-		double spaceDistance = 1 / DRAW_THICKNESS;
+		double spaceDistance = 1 / particleDensity;
 		Vector increment = direction.multiply(spaceDistance);
 		for (int i = 0; i < particleCount; i++) {
-			world.spawnParticle(drawParticle, particleLocation, 0);
+			world.spawnParticle(particle, particleLocation, 0);
 			particleLocation.add(increment);
 		}
-	}
-
-	public final Particle getDrawParticle() {
-		return drawParticle;
-	}
-
-	public final void setDrawParticle(Particle particle) {
-		drawParticle = particle;
 	}
 
 }

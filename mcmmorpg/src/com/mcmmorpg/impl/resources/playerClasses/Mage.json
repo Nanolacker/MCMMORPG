@@ -62,8 +62,8 @@
 			"icon": "HONEYCOMB"
 		},
 		{
-			"name": "Dark Pulse",
-			"description": "Channel a line of ice shards at enemies in front of you",
+			"name": "Shadow Void",
+			"description": "Summon a pool of darkness that consumes enemies after a short duration",
 			"manaCost": 15,
 			"cooldown": 15,
 			"minimumLevel": 13,

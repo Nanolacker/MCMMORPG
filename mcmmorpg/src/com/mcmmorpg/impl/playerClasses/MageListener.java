@@ -32,14 +32,16 @@ import com.mcmmorpg.common.playerClass.Skill;
 import com.mcmmorpg.common.sound.Noise;
 import com.mcmmorpg.common.time.DelayedTask;
 import com.mcmmorpg.common.time.RepeatingTask;
+import com.mcmmorpg.common.utils.Debug;
 
 public class MageListener implements Listener {
 
 	private static final Noise FIREBALL_CONJURE = new Noise(Sound.ENTITY_ZOMBIE_VILLAGER_CURE);
 	private static final Noise FIREBALL_HIT_1 = new Noise(Sound.ENTITY_GENERIC_EXPLODE);
 	private static final Noise FIREBALL_HIT_2 = new Noise(Sound.BLOCK_FIRE_AMBIENT);
+	private static final Noise WHIRLWIND_AMBIENT_NOISE = new Noise(Sound.ENTITY_WITHER_DEATH);
 	private static final Noise WHIRLWIND_SPEED_NOISE = new Noise(Sound.ENTITY_WITHER_SHOOT, 1, 2);
-	private static final Noise WHIRLWIND_DAMAGE_NOISE = new Noise(Sound.ENTITY_PLAYER_HURT);
+	private static final Noise SHADOW_VOID_NOISE = new Noise(Sound.BLOCK_PORTAL_TRIGGER);
 
 	private final PlayerClass mage;
 	private final Skill fireball;
@@ -47,7 +49,7 @@ public class MageListener implements Listener {
 	private final Skill whirlwind;
 	private final Skill restore;
 	private final Skill earthquake;
-	private final Skill darkPulse;
+	private final Skill shadowVoid;
 
 	public MageListener() {
 		mage = PlayerClass.forName("Mage");
@@ -56,7 +58,7 @@ public class MageListener implements Listener {
 		whirlwind = mage.skillForName("Whirlwind");
 		restore = mage.skillForName("Restore");
 		earthquake = mage.skillForName("Earthquake");
-		darkPulse = mage.skillForName("Dark Pulse");
+		shadowVoid = mage.skillForName("Shadow Void");
 	}
 
 	@EventHandler
@@ -74,8 +76,8 @@ public class MageListener implements Listener {
 			useWhirlwind(pc);
 		} else if (skill == earthquake) {
 			useEarthquake(pc);
-		} else if (skill == darkPulse) {
-			useDarkPulse(pc);
+		} else if (skill == shadowVoid) {
+			useShadowVoid(pc);
 		}
 	}
 
@@ -132,8 +134,9 @@ public class MageListener implements Listener {
 
 	private void useIceBeam(PlayerCharacter pc) {
 		double duration = 4;
-		double period = 0.2;
+		double period = 0.1;
 		double maxCount = duration / period;
+		World world = pc.getLocation().getWorld();
 		RepeatingTask channel = new RepeatingTask(period) {
 			int count = 0;
 
@@ -144,15 +147,18 @@ public class MageListener implements Listener {
 				start.add(direction);
 				Location end = pc.getTargetLocation(15);
 				Ray ray = new Ray(start, end);
-				ray.setDrawParticle(Particle.SNOW_SHOVEL);
-				ray.draw();
-				Raycast raycast = new Raycast(ray, CharacterCollider.class);
-				Collider[] hits = raycast.getHits();
-				for (Collider hit : hits) {
-					AbstractCharacter character = ((CharacterCollider) hit).getCharacter();
-					if (!character.isFriendly(pc)) {
-						character.damage(1.5, pc);
-						new Noise(Sound.BLOCK_GLASS_BREAK).play(character.getLocation());
+				ray.draw(Particle.CRIT_MAGIC, 2);
+				if (count % 5 == 0) {
+					Raycast raycast = new Raycast(ray, CharacterCollider.class);
+					Collider[] hits = raycast.getHits();
+					for (Collider hit : hits) {
+						AbstractCharacter character = ((CharacterCollider) hit).getCharacter();
+						if (!character.isFriendly(pc)) {
+							character.damage(1.5, pc);
+							Location hitLocation = hit.getCenter();
+							world.spawnParticle(Particle.SNOW_SHOVEL, hitLocation, 6);
+							new Noise(Sound.BLOCK_GLASS_BREAK).play(hitLocation);
+						}
 					}
 				}
 				count++;
@@ -202,6 +208,7 @@ public class MageListener implements Listener {
 			}
 		};
 		hitbox.setActive(true);
+		WHIRLWIND_AMBIENT_NOISE.play(target);
 		RepeatingTask update = new RepeatingTask(0.5) {
 			int count = 0;
 
@@ -214,7 +221,6 @@ public class MageListener implements Listener {
 						AbstractCharacter character = ((CharacterCollider) collider).getCharacter();
 						if (!character.isFriendly(pc)) {
 							character.damage(5, pc);
-							WHIRLWIND_DAMAGE_NOISE.play(target);
 						}
 					}
 				}
@@ -243,13 +249,13 @@ public class MageListener implements Listener {
 
 	private void useEarthquake(PlayerCharacter pc) {
 		Location center = pc.getLocation();
-		double size = 20;
+		double size = 15;
 		Collider hitbox = new Collider(center, size, 1, size);
 		hitbox.setActive(true);
 		int particleCount = 100;
 		World world = center.getWorld();
 		BlockData particleData = Material.DIRT.createBlockData();
-		RepeatingTask update = new RepeatingTask(0.25) {
+		RepeatingTask update = new RepeatingTask(0.1) {
 			int count = 0;
 
 			@Override
@@ -264,17 +270,19 @@ public class MageListener implements Listener {
 						world.spawnParticle(Particle.BLOCK_DUST, particleLocation, 0, particleData);
 					}
 				}
-				Collider[] colliders = hitbox.getCollidingColliders();
-				for (Collider collider : colliders) {
-					if (collider instanceof CharacterCollider) {
-						AbstractCharacter character = ((CharacterCollider) collider).getCharacter();
-						if (!character.isFriendly(pc)) {
-							character.damage(2, pc);
+				if (count % 5 == 0) {
+					Collider[] colliders = hitbox.getCollidingColliders();
+					for (Collider collider : colliders) {
+						if (collider instanceof CharacterCollider) {
+							AbstractCharacter character = ((CharacterCollider) collider).getCharacter();
+							if (!character.isFriendly(pc)) {
+								character.damage(2, pc);
+							}
 						}
 					}
 				}
 				count++;
-				if (count == 20) {
+				if (count == 50) {
 					hitbox.setActive(false);
 					cancel();
 				}
@@ -283,8 +291,10 @@ public class MageListener implements Listener {
 		update.schedule();
 	}
 
-	private void useDarkPulse(PlayerCharacter pc) {
+	private void useShadowVoid(PlayerCharacter pc) {
 		Particle particle = Particle.SPELL_WITCH;
+		SHADOW_VOID_NOISE.play(pc.getLocation());
+		Debug.log("shadow void");
 	}
 
 	@EventHandler
