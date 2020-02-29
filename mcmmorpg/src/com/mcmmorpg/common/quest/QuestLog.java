@@ -17,22 +17,13 @@ import org.bukkit.inventory.ItemStack;
 
 import com.mcmmorpg.common.character.PlayerCharacter;
 import com.mcmmorpg.common.event.EventManager;
-import com.mcmmorpg.common.item.ItemFactory;
+import com.mcmmorpg.common.utils.Debug;
 
 public class QuestLog {
 
-	private static final Map<Quest, ItemStack> questsToItemStacks = new HashMap<>();
-	private static final Map<ItemStack, Quest> itemStacksToQuests = new HashMap<>();
-	private static final Map<PlayerCharacter, Inventory> inventoryMap = new HashMap<>();
+	private static final List<Inventory> questLogInventories = new ArrayList<>();
 
 	static {
-		List<Quest> quests = Quest.getAll();
-		for (Quest quest : quests) {
-			ItemStack interactable = ItemFactory.createItemStack(quest.getName(), null, Material.BOOK);
-			ItemFactory.registerStaticInteractable(interactable);
-			questsToItemStacks.put(quest, interactable);
-			itemStacksToQuests.put(interactable, quest);
-		}
 		EventManager.registerEvents(new QuestLogListener());
 	}
 
@@ -43,12 +34,12 @@ public class QuestLog {
 	}
 
 	private Inventory createInventory() {
-		int size = 27;
+		int size = 9 * 1;
 		Inventory inventory = Bukkit.createInventory(null, size, "Quest Log");
 		List<Quest> inProgressQuests = getInProgressQuests();
 		for (int i = 0; i < size && i < inProgressQuests.size(); i++) {
 			Quest quest = inProgressQuests.get(i);
-			ItemStack itemStack = questsToItemStacks.get(quest);
+			ItemStack itemStack = quest.getQuestLogItemStack(pc);
 			inventory.setItem(i, itemStack);
 		}
 		return inventory;
@@ -68,7 +59,7 @@ public class QuestLog {
 	public void open() {
 		Inventory inventory = createInventory();
 		pc.getPlayer().openInventory(inventory);
-		inventoryMap.put(pc, inventory);
+		questLogInventories.add(inventory);
 	}
 
 	private static class QuestLogListener implements Listener {
@@ -79,22 +70,27 @@ public class QuestLog {
 			if (pc == null) {
 				return;
 			}
-			ItemStack itemStack = event.getCurrentItem();
-			Quest quest = itemStacksToQuests.get(itemStack);
-			// Clicking an empty slot resets the quest tracking.
-			pc.setTargetQuest(quest);
+			Inventory topInventory = event.getInventory();
+			if (questLogInventories.contains(topInventory)) {
+				event.setCancelled(true);
+				Inventory clickedInventory = event.getClickedInventory();
+				if (clickedInventory == topInventory) {
+					// Clicking an empty slot resets the quest tracking.
+					ItemStack itemStack = event.getCurrentItem();
+					if (itemStack == null) {
+						pc.setTargetQuest(null);
+					} else {
+						String questName = itemStack.getItemMeta().getDisplayName().substring(2);
+						Quest quest = Quest.forName(questName);
+						pc.setTargetQuest(quest);
+					}
+				}
+			}
 		}
 
 		@EventHandler
 		private void onClose(InventoryCloseEvent event) {
-			Player player = (Player) event.getPlayer();
-			PlayerCharacter pc = PlayerCharacter.forPlayer(player);
-			if (pc == null) {
-				return;
-			}
-			if (inventoryMap.get(pc) == event.getInventory()) {
-				inventoryMap.remove(pc);
-			}
+			questLogInventories.remove(event.getInventory());
 		}
 	}
 

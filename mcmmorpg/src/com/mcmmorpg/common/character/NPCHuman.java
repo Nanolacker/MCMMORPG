@@ -8,22 +8,20 @@ import java.util.UUID;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.craftbukkit.v1_15_R1.CraftServer;
 import org.bukkit.craftbukkit.v1_15_R1.CraftWorld;
 import org.bukkit.craftbukkit.v1_15_R1.entity.CraftPlayer;
-import org.bukkit.craftbukkit.v1_15_R1.inventory.CraftItemStack;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import com.mcmmorpg.common.time.RepeatingTask;
+import com.mcmmorpg.common.utils.Debug;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
 
 import net.minecraft.server.v1_15_R1.EntityPlayer;
-import net.minecraft.server.v1_15_R1.EnumItemSlot;
 import net.minecraft.server.v1_15_R1.MinecraftServer;
 import net.minecraft.server.v1_15_R1.PacketPlayOutAnimation;
 import net.minecraft.server.v1_15_R1.PacketPlayOutEntityHeadRotation;
@@ -139,7 +137,6 @@ public class NPCHuman {
 	}
 
 	public void setMainHand(ItemStack itemStack) {
-
 	}
 
 	public void setOffHand(ItemStack itemStack) {
@@ -158,8 +155,6 @@ public class NPCHuman {
 	}
 
 	public void swingHand() {
-		ItemStack itemStack = new ItemStack(Material.IRON_SWORD);
-		entityPlayer.setEquipment(EnumItemSlot.MAINHAND, CraftItemStack.asNMSCopy(itemStack));
 		PacketPlayOutAnimation swingHand = new PacketPlayOutAnimation(entityPlayer, 0);
 		for (int i = 0; i < viewers.size(); i++) {
 			PlayerConnection playerConnection = ((CraftPlayer) viewers.get(i)).getHandle().playerConnection;

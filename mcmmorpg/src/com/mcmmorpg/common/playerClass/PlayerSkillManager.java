@@ -14,7 +14,6 @@ public class PlayerSkillManager {
 	public PlayerSkillManager(PlayerCharacter pc, PlayerSkillData[] allSkillData) {
 		this.pc = pc;
 		skillDataMap = new HashMap<>();
-		// to account for players who logged out with skills on cooldown
 		for (PlayerSkillData skillData : allSkillData) {
 			Skill skill = skillData.getSkill();
 			skillDataMap.put(skill, skillData);

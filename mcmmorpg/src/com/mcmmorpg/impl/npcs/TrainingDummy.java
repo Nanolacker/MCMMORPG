@@ -81,6 +81,8 @@ public class TrainingDummy extends NonPlayerCharacter {
 	public void damage(double amount, Source source) {
 		super.damage(amount, source);
 		DAMAGE_NOISE.play(getLocation());
+		Quest quest = Quest.forName("Skills Tutorial");
+		quest.getObjective(0).addProgress((PlayerCharacter) source, 1);
 	}
 
 	@Override

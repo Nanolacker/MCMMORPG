@@ -93,7 +93,7 @@ public class RottenDweller extends NonPlayerCharacter {
 	@Override
 	public void setLocation(Location location) {
 		super.setLocation(location);
-		hitbox.setCenter(location.clone().add(0, 1, 0));
+		hitbox.setCenter(location.clone().add(0, 0.5, 0));
 		bossBarArea.setCenter(location.clone().add(0, 2, 0));
 		spider.teleport(location);
 	}
@@ -177,6 +177,11 @@ public class RottenDweller extends NonPlayerCharacter {
 			};
 			cancelKnockback.schedule();
 		}
+	}
+
+	@Override
+	protected Location getNameplateLocation() {
+		return getLocation().add(0, 1.5, 0);
 	}
 
 }

@@ -270,4 +270,8 @@ public abstract class AbstractCharacter implements Source {
 		return false;
 	}
 
+	public String formatDialogue(String dialogue) {
+		return name + ChatColor.RESET + ": " + dialogue;
+	}
+
 }

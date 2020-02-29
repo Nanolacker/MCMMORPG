@@ -23,10 +23,12 @@ import com.mcmmorpg.impl.npcs.Bat;
 import com.mcmmorpg.impl.npcs.GelatinousCube;
 import com.mcmmorpg.impl.npcs.Highwayman;
 import com.mcmmorpg.impl.npcs.RottenDweller;
+import com.mcmmorpg.impl.npcs.TrainingDummy;
+import com.mcmmorpg.impl.npcs.TutorialGuide;
 
 public class BulskanRuinsListener implements Listener {
 
-	private static String ZONE_NAME = "Bulskan Ruins";
+	private static String ZONE_NAME = ChatColor.GRAY + "Bulskan Ruins";
 
 	private SoundSequence soundtrack;
 
@@ -43,10 +45,6 @@ public class BulskanRuinsListener implements Listener {
 	}
 
 	private void setUpBounds() {
-		TitleMessage entranceMessage = new TitleMessage(ChatColor.GRAY + "Bulskan Ruins", ChatColor.GOLD + "Level 5");
-		TitleMessage exitMessage = new TitleMessage(ChatColor.GREEN + "Melcher", ChatColor.GOLD + "Level 1");
-		Noise entranceNoise = new Noise(Sound.AMBIENT_CAVE);
-
 		Collider entranceCollider = new Collider(Worlds.ELADRADOR, 135, 65, -57, 207, 85, -17) {
 			@Override
 			public void onCollisionEnter(Collider other) {
@@ -57,8 +55,6 @@ public class BulskanRuinsListener implements Listener {
 					}
 					pc.setZone(ZONE_NAME);
 					Player player = pc.getPlayer();
-					entranceMessage.sendTo(player);
-					entranceNoise.play(player);
 					pc.getSoundTrackPlayer().setSoundtrack(soundtrack);
 				}
 			}
@@ -72,10 +68,9 @@ public class BulskanRuinsListener implements Listener {
 					if (!pc.getZone().equals(ZONE_NAME)) {
 						return;
 					}
-					pc.setZone("Melcher");
+					pc.setZone(ChatColor.GREEN + "Melcher");
 					pc.getSoundTrackPlayer().setSoundtrack(null);
 					Player player = pc.getPlayer();
-					exitMessage.sendTo(player);
 				}
 			}
 		};
@@ -89,12 +84,14 @@ public class BulskanRuinsListener implements Listener {
 				new Location(Worlds.ELADRADOR, 170, 67, -33), new Location(Worlds.ELADRADOR, 155, 67, -36),
 				new Location(Worlds.ELADRADOR, 145, 67, -49), new Location(Worlds.ELADRADOR, 190, 67, -42) };
 
-		new Highwayman(5, locations[0], 10).setAlive(true);
-		new GelatinousCube(5, new Location(Worlds.ELADRADOR, 170, 70, 10), true).setAlive(true);
-		for (int i = 0; i < 5; i++) {
-			new Bat(3, new Location(Worlds.ELADRADOR, 170, 70, 0), 20).setAlive(true);
-		}
-		new RottenDweller(locations[1]).setAlive(true);
+//		new Highwayman(5, locations[0], 10).setAlive(true);
+//		new GelatinousCube(5, new Location(Worlds.ELADRADOR, 170, 70, 10), true).setAlive(true);
+//		for (int i = 0; i < 5; i++) {
+//			new Bat(3, new Location(Worlds.ELADRADOR, 170, 70, 0), 20).setAlive(true);
+//		}
+//		new RottenDweller(locations[1]).setAlive(true);
+		new TutorialGuide(locations[1]).setAlive(true);
+		new TrainingDummy(locations[0]).setAlive(true);
 	}
 
 	@EventHandler

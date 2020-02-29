@@ -57,7 +57,6 @@ import com.mcmmorpg.common.time.RepeatingTask;
 import com.mcmmorpg.common.ui.ActionBarText;
 import com.mcmmorpg.common.ui.SidebarText;
 import com.mcmmorpg.common.ui.TitleMessage;
-import com.mcmmorpg.common.utils.Debug;
 import com.mcmmorpg.common.utils.MathUtils;
 import com.mcmmorpg.common.utils.StringUtils;
 
@@ -112,7 +111,7 @@ public final class PlayerCharacter extends AbstractCharacter {
 			double currentHealth, double healthRegenRate, double maxMana, double currentMana, double manaRegenRate,
 			Quest targetQuest, Quest[] completedQuests, PlayerQuestData[] questData, PlayerSkillData[] skillData,
 			ItemStack[] inventoryContents, String[] tags) {
-		super(player.getName(), xpToLevel(xp), location);
+		super(ChatColor.GREEN + player.getName(), xpToLevel(xp), location);
 		this.player = player;
 		this.playerClass = playerClass;
 		this.zone = zone;
@@ -259,6 +258,7 @@ public final class PlayerCharacter extends AbstractCharacter {
 
 	public void setZone(String zone) {
 		this.zone = zone;
+		sendMessage(ChatColor.GRAY + "Entering " + zone);
 	}
 
 	@Override
@@ -370,6 +370,10 @@ public final class PlayerCharacter extends AbstractCharacter {
 		return maxLevel();
 	}
 
+	public static int maxLevel() {
+		return XP_REQS.length + 1;
+	}
+
 	private void levelUp() {
 		int newLevel = getLevel() + 1;
 		setLevel(newLevel);
@@ -378,12 +382,8 @@ public final class PlayerCharacter extends AbstractCharacter {
 		EventManager.callEvent(event);
 		Noise levelUpNoise = new Noise(Sound.ENTITY_PLAYER_LEVELUP);
 		levelUpNoise.play(player);
-		sendMessage(ChatColor.GOLD + "Level up!");
-		sendMessage(ChatColor.GREEN + "+1 skill point!");
-	}
-
-	public static int maxLevel() {
-		return XP_REQS.length + 1;
+		sendMessage(ChatColor.GRAY + "Level increased to " + ChatColor.GOLD + newLevel + ChatColor.GRAY + "!");
+		sendMessage(ChatColor.GRAY + "+1 skill point!");
 	}
 
 	public int getSkillUpgradePoints() {
@@ -559,8 +559,6 @@ public final class PlayerCharacter extends AbstractCharacter {
 		}
 		this.targetQuest = targetQuest;
 		updateQuestDisplay();
-		Debug.log("fix quest name color");
-		sendMessage(ChatColor.GRAY + "Tracking " + targetQuest.getName());
 	}
 
 	public PlayerQuestManager getQuestManager() {
@@ -661,22 +659,9 @@ public final class PlayerCharacter extends AbstractCharacter {
 		if (targetQuest == null) {
 			SidebarText.clear(player);
 		} else {
-			String questTitle = ChatColor.GOLD + targetQuest.getName();
-			String objectivesText = StringUtils.repeat("-", StringUtils.STANDARD_LINE_LENGTH) + "\n";
-			for (QuestObjective objective : targetQuest.getObjectives()) {
-				int progress = objective.getProgress(this);
-				int goal = objective.getGoal();
-				String progressText = "";
-				if (progress < goal) {
-					progressText = ChatColor.YELLOW + "";
-				} else {
-					progressText = ChatColor.GREEN + "";
-				}
-				progressText += progress + "" + ChatColor.WHITE + "/" + ChatColor.GREEN + "" + goal;
-				objectivesText += progressText + " " + ChatColor.RESET + objective.getDescription() + ChatColor.RESET
-						+ "\n\n";
-			}
-			SidebarText questDisplay = new SidebarText(questTitle, objectivesText);
+			String questTitle = ChatColor.YELLOW + targetQuest.getName();
+			String lines = "\n" + targetQuest.getQuestLogLines(this);
+			SidebarText questDisplay = new SidebarText(questTitle, lines);
 			questDisplay.apply(player);
 		}
 	}
@@ -762,6 +747,7 @@ public final class PlayerCharacter extends AbstractCharacter {
 		PlayerCharacterRemoveEvent event = new PlayerCharacterRemoveEvent(this);
 		EventManager.callEvent(event);
 		ActionBarText.clear(player);
+		SidebarText.clear(player);
 	}
 
 	/**

@@ -26,6 +26,7 @@ public final class Skill implements Listener {
 	private static final double COOLDOWN_UPDATE_PERIOD_SECONDS = 0.1;
 	private static final Material LOCKED_MATERIAL = Material.BARRIER;
 	private static final Noise CLICK_NOISE = new Noise(Sound.BLOCK_LEVER_CLICK);
+	private static final Noise UPGRADE_NOISE = new Noise(Sound.ENTITY_EXPERIENCE_ORB_PICKUP);
 
 	private final String name;
 	private final String description;
@@ -118,11 +119,13 @@ public final class Skill implements Listener {
 			// unlock
 			manager.unlockSkill(this);
 			pc.sendMessage(ChatColor.GREEN + name + ChatColor.GRAY + " unlocked!");
+			UPGRADE_NOISE.play(pc);
 		} else {
 			// upgrade
 			int newLevel = data.getUpgradeLevel() + 1;
 			data.setUpgradeLevel(newLevel);
 			pc.sendMessage(ChatColor.GREEN + name + ChatColor.GRAY + " upgraded to level " + newLevel + "!");
+			UPGRADE_NOISE.play(pc);
 		}
 	}
 
@@ -133,8 +136,8 @@ public final class Skill implements Listener {
 	private ItemStack createHotbarItemStack() {
 		StringBuilder lore = new StringBuilder();
 		lore.append(ChatColor.GOLD + playerClass.getName() + " Skill");
-		lore.append(ChatColor.AQUA + "\nCost: " + manaCost);
-		lore.append(ChatColor.YELLOW + "\nCooldown: " + cooldown);
+		lore.append(ChatColor.AQUA + "\nCost: " + (int) Math.ceil(manaCost));
+		lore.append(ChatColor.YELLOW + "\nCooldown: " + (int) Math.ceil(cooldown));
 		lore.append(ChatColor.WHITE + "\n\n" + description);
 		ItemStack itemStack = ItemFactory.createItemStack(ChatColor.GREEN + name, lore.toString(), icon);
 		return itemStack;
@@ -148,8 +151,8 @@ public final class Skill implements Listener {
 		Material material = unlocked ? icon : LOCKED_MATERIAL;
 		StringBuilder lore = new StringBuilder();
 		lore.append(ChatColor.GOLD + "Upgraded " + upgradeLevel + "/" + maximumUpgradeLevel);
-		lore.append(ChatColor.AQUA + "\nCost: " + manaCost);
-		lore.append(ChatColor.YELLOW + "\nCooldown: " + cooldown);
+		lore.append(ChatColor.AQUA + "\nCost: " + (int) Math.ceil(manaCost));
+		lore.append(ChatColor.YELLOW + "\nCooldown: " + (int) Math.ceil(cooldown));
 		lore.append(ChatColor.WHITE + "\n\n" + description);
 
 		boolean underLevel = pc.getLevel() < minimumLevel;
@@ -209,7 +212,8 @@ public final class Skill implements Listener {
 						+ ChatColor.GRAY + ")");
 				CLICK_NOISE.play(player);
 			} else if (pc.getCurrentMana() < manaCost) {
-				pc.sendMessage(ChatColor.GRAY + "Insufficient " + ChatColor.AQUA + "MP");
+				pc.sendMessage(ChatColor.GRAY + "Insufficient MP (" + ChatColor.AQUA + (int) Math.ceil(manaCost)
+						+ ChatColor.GRAY + ")");
 				CLICK_NOISE.play(player);
 			} else if (pc.isSilenced()) {
 				CLICK_NOISE.play(player);
@@ -290,7 +294,8 @@ public final class Skill implements Listener {
 		pc.setCurrentMana(pc.getCurrentMana() - manaCost);
 		cooldown(pc, cooldown);
 		CLICK_NOISE.play(pc);
-		pc.sendMessage(ChatColor.GRAY + "Used " + ChatColor.GREEN + name + " " + ChatColor.AQUA + -manaCost + " MP");
+		pc.sendMessage(ChatColor.GRAY + "Used " + ChatColor.GREEN + name + " " + ChatColor.AQUA
+				+ -(int) Math.ceil(manaCost) + " MP");
 	}
 
 	public double getCooldown(PlayerCharacter pc) {

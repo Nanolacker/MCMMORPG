@@ -88,9 +88,9 @@ public class PlayerCharacterSelectionListener implements Listener {
 		MENU_INVENTORY.setItem(7, CHANGE_CHARACTER_SELECTION_ITEM_STACK);
 
 		PLAYER_CLASS_SELECT_INVENTORY = Bukkit.createInventory(null, 9, "Select a Class");
-		ItemStack selectFighterItemStack = ItemFactory.createItemStack(ChatColor.GREEN + "Fighter",
+		ItemStack selectFighterItemStack = ItemFactory.createItemStack(ChatColor.GOLD + "Fighter",
 				ChatColor.GRAY + "Excels at martial combat", Material.IRON_SWORD);
-		ItemStack selectMageItemStack = ItemFactory.createItemStack(ChatColor.GREEN + "Mage",
+		ItemStack selectMageItemStack = ItemFactory.createItemStack(ChatColor.GOLD + "Mage",
 				ChatColor.GRAY + "Uses magic and excels at ranged combat", Material.STICK);
 		PLAYER_CLASS_SELECT_INVENTORY.setItem(2, selectFighterItemStack);
 		PLAYER_CLASS_SELECT_INVENTORY.setItem(6, selectMageItemStack);
@@ -204,16 +204,15 @@ public class PlayerCharacterSelectionListener implements Listener {
 	private ItemStack getCharacterSelectItemStack(Player player, int characterSlot) {
 		PlayerCharacterSelectionProfile profile = profileMap.get(player);
 		PersistentPlayerCharacterDataContainer data = profile.getCharacterData(characterSlot);
-		String title = ChatColor.GOLD + "Character " + characterSlot;
+		String title = ChatColor.GREEN + "Character " + characterSlot;
 		if (data == null) {
 			return ItemFactory.createItemStack(title, ChatColor.GRAY + "Create new character", Material.GLASS);
 		} else {
 			PlayerClass playerClass = data.getPlayerClass();
 			Material material = materialForPlayerClass(playerClass);
 			int level = PlayerCharacter.xpToLevel(data.getXP());
-			String lore = ChatColor.GREEN + "Class: " + playerClass.getName() + ChatColor.GOLD + "\nLevel " + level
-					+ ChatColor.GREEN + "\nZone: " + data.getZone() + ChatColor.GRAY
-					+ "\n\nClick to play this character";
+			String lore = ChatColor.GOLD + "Level " + level + " " + playerClass.getName() + "\n" + data.getZone()
+					+ ChatColor.GRAY + "\n\nClick to play this character";
 			return ItemFactory.createItemStack(title, lore, material);
 		}
 	}
@@ -221,16 +220,15 @@ public class PlayerCharacterSelectionListener implements Listener {
 	private ItemStack getCharacterDeleteItemStack(Player player, int characterSlot) {
 		PlayerCharacterSelectionProfile profile = profileMap.get(player);
 		PersistentPlayerCharacterDataContainer data = profile.getCharacterData(characterSlot);
-		String title = ChatColor.GOLD + "Character " + characterSlot;
+		String title = ChatColor.RED + "Character " + characterSlot;
 		if (data == null) {
 			return ItemFactory.createItemStack(title, ChatColor.GRAY + "No character created", Material.GLASS);
 		} else {
 			PlayerClass playerClass = data.getPlayerClass();
 			Material material = Material.BARRIER;
 			int level = PlayerCharacter.xpToLevel(data.getXP());
-			String lore = ChatColor.GREEN + "Class: " + playerClass.getName() + ChatColor.GOLD + "\nLevel " + level
-					+ ChatColor.GREEN + "\nZone: " + data.getZone() + ChatColor.GRAY
-					+ "\n\nClick to delete this character";
+			String lore = ChatColor.GOLD + "Level " + level + " " + playerClass.getName() + "\n" + data.getZone()
+					+ ChatColor.GRAY + "\n\nClick to delete this character";
 			return ItemFactory.createItemStack(title, lore, material);
 		}
 	}
@@ -274,7 +272,7 @@ public class PlayerCharacterSelectionListener implements Listener {
 				int characterSlot = profile.getCurrentCharacterSlot();
 				deleteCharacter(player, characterSlot);
 				CHARACTER_DELETION_NOISE.play(player);
-				player.sendMessage(ChatColor.GRAY + "Deleted " + ChatColor.GOLD + "Character " + characterSlot
+				player.sendMessage(ChatColor.GRAY + "Deleted " + ChatColor.RED + "Character " + characterSlot
 						+ ChatColor.GRAY + "!");
 				openCharacterSelectInventory(player);
 			} else if (clickedSlot == 6) {
@@ -330,8 +328,8 @@ public class PlayerCharacterSelectionListener implements Listener {
 			PlayerClass playerClass = PlayerClass.forName(playerClassName);
 			int characterSlot = profile.getCurrentCharacterSlot();
 			createNewCharacter(player, playerClass, characterSlot);
-			player.sendMessage(
-					ChatColor.GRAY + "Created " + ChatColor.GOLD + "Character " + characterSlot + ChatColor.GRAY + "!");
+			player.sendMessage(ChatColor.GRAY + "Created " + ChatColor.GREEN + "Character " + characterSlot
+					+ ChatColor.GRAY + "!");
 			profile.updateCharacterData(characterSlot);
 			openCharacterSelectInventory(player);
 		}
@@ -399,7 +397,15 @@ public class PlayerCharacterSelectionListener implements Listener {
 			return;
 		}
 		if (event.getNewSlot() == 8) {
+			CLICK_NOISE.play(player);
 			player.openInventory(MENU_INVENTORY);
+		}
+	}
+
+	@EventHandler
+	private void onClickInMenu(InventoryClickEvent event) {
+		if (event.getInventory() == MENU_INVENTORY) {
+			event.setCancelled(true);
 		}
 	}
 

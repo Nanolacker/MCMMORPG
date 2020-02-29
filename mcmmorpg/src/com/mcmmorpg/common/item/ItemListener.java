@@ -8,14 +8,14 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.block.Block;
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
-import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
+import org.bukkit.event.player.PlayerAnimationEvent;
+import org.bukkit.event.player.PlayerAnimationType;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerItemHeldEvent;
@@ -31,17 +31,113 @@ import com.mcmmorpg.common.event.PlayerCharacterUseWeaponEvent;
 import com.mcmmorpg.common.event.StaticInteractableEvent;
 import com.mcmmorpg.common.sound.Noise;
 import com.mcmmorpg.common.time.DelayedTask;
-import com.mcmmorpg.common.utils.Debug;
 
 class ItemListener implements Listener {
 
 	private static final Noise CLICK_NOISE = new Noise(Sound.BLOCK_LEVER_CLICK);
 
 	/**
-	 * Used to ensure that players only use weapons once when multiple types of
-	 * events are fired.
+	 * Used to ensure that players only use weapons once when intended.
 	 */
 	private final Set<PlayerCharacter> swingingHands = new HashSet<>();
+	/**
+	 * Used to ensure that PlayerAnimationEvents are being used correctly.
+	 */
+	private final Set<PlayerCharacter> falseAttackers = new HashSet<>();
+
+	/**
+	 * Removes the player character after a very short duration.
+	 */
+	private void addPCToSet(Set<PlayerCharacter> set, PlayerCharacter pc) {
+		set.add(pc);
+		new DelayedTask(0.1) {
+			@Override
+			protected void run() {
+				set.remove(pc);
+			}
+		}.schedule();
+	}
+
+	@EventHandler
+	private void onSwingArm(PlayerAnimationEvent event) {
+		if (event.getAnimationType() != PlayerAnimationType.ARM_SWING) {
+			// future proof
+			return;
+		}
+		Player player = event.getPlayer();
+		PlayerCharacter pc = PlayerCharacter.forPlayer(player);
+		if (pc == null) {
+			return;
+		}
+		if (falseAttackers.contains(pc)) {
+			return;
+		}
+		handlePlayerCharacterUseWeapon(pc);
+	}
+
+	@EventHandler
+	private void onInteractWithItem(PlayerInteractEvent event) {
+		event.setCancelled(true);
+		if (event.getHand() != EquipmentSlot.HAND) {
+			return;
+		}
+		Player player = event.getPlayer();
+		ItemStack itemStack = event.getItem();
+		Action action = event.getAction();
+
+		if (ItemFactory.staticInteractables.contains(itemStack)) {
+			if (action == Action.RIGHT_CLICK_AIR || action == Action.RIGHT_CLICK_BLOCK) {
+				EventManager.callEvent(new StaticInteractableEvent(player, itemStack));
+			}
+			return;
+		}
+		PlayerCharacter pc = PlayerCharacter.forPlayer(player);
+		if (pc == null) {
+			return;
+		}
+
+		if (action != Action.LEFT_CLICK_AIR && action != Action.LEFT_CLICK_BLOCK) {
+			addPCToSet(falseAttackers, pc);
+		}
+	}
+
+	@EventHandler
+	private void onThrowItem(PlayerDropItemEvent event) {
+		org.bukkit.entity.Item itemEntity = event.getItemDrop();
+		ItemStack itemStack = itemEntity.getItemStack();
+		if (ItemFactory.staticInteractables.contains(itemStack)) {
+			event.setCancelled(true);
+			return;
+		}
+		Item item = Item.forItemStack(itemStack);
+		if (item == null) {
+			itemEntity.remove();
+		} else {
+			PlayerCharacter pc = PlayerCharacter.forPlayer(event.getPlayer());
+			addPCToSet(falseAttackers, pc);
+			itemEntity.setCustomName(item.getRarity().getColor() + item.getName());
+			itemEntity.setCustomNameVisible(true);
+		}
+	}
+
+	private void handlePlayerCharacterUseWeapon(PlayerCharacter pc) {
+		if (swingingHands.contains(pc)) {
+			return;
+		}
+		addPCToSet(swingingHands, pc);
+		Weapon weapon = pc.getWeapon();
+		// if weapon == null, punch
+		if (pc.isDisarmed()) {
+			return;
+		}
+		if (weapon != null) {
+			if (pc.getLevel() < weapon.getLevel() || pc.getPlayerClass() != weapon.getPlayerClass()) {
+				pc.sendMessage(ChatColor.GRAY + "Unable to wield " + weapon);
+				return;
+			}
+		}
+		EventManager.callEvent(new PlayerCharacterUseWeaponEvent(pc, weapon));
+	}
 
 	@EventHandler
 	private void onClickItem(InventoryClickEvent event) {
@@ -70,75 +166,6 @@ class ItemListener implements Listener {
 				handlePlayerCharacterUseConsumable(pc, consumable, clickedItemStack);
 			}
 		}
-	}
-
-	@EventHandler
-	private void onInteractWithItem(PlayerInteractEvent event) {
-		event.setCancelled(true);
-		if (event.getHand() != EquipmentSlot.HAND) {
-			return;
-		}
-		Player player = event.getPlayer();
-		ItemStack itemStack = event.getItem();
-		Action action = event.getAction();
-
-		if (ItemFactory.staticInteractables.contains(itemStack)) {
-			if (action == Action.RIGHT_CLICK_AIR || action == Action.RIGHT_CLICK_BLOCK) {
-				EventManager.callEvent(new StaticInteractableEvent(player, itemStack));
-			}
-			return;
-		}
-		PlayerCharacter pc = PlayerCharacter.forPlayer(player);
-		if (pc == null) {
-			return;
-		}
-
-		if (action == Action.LEFT_CLICK_AIR || action == Action.LEFT_CLICK_BLOCK) {
-			handlePlayerCharacterUseWeapon(pc);
-		}
-	}
-
-	@EventHandler
-	private void onSwapHands(PlayerSwapHandItemsEvent event) {
-		event.setCancelled(true);
-	}
-
-	@EventHandler
-	private void onWeaponHit(EntityDamageByEntityEvent event) {
-		Entity damager = event.getDamager();
-		if (damager instanceof Player) {
-			Player player = (Player) damager;
-			PlayerCharacter pc = PlayerCharacter.forPlayer(player);
-			if (pc == null) {
-				return;
-			}
-			handlePlayerCharacterUseWeapon(pc);
-		}
-	}
-
-	private void handlePlayerCharacterUseWeapon(PlayerCharacter pc) {
-		if (swingingHands.contains(pc)) {
-			return;
-		}
-		swingingHands.add(pc);
-		new DelayedTask(0.1) {
-			@Override
-			protected void run() {
-				swingingHands.remove(pc);
-			}
-		}.schedule();
-		Weapon weapon = pc.getWeapon();
-		// if weapon == null, punch
-		if (pc.isDisarmed()) {
-			return;
-		}
-		if (weapon != null) {
-			if (pc.getLevel() < weapon.getLevel() || pc.getPlayerClass() != weapon.getPlayerClass()) {
-				pc.sendMessage(ChatColor.GRAY + "Unable to wield " + weapon);
-				return;
-			}
-		}
-		EventManager.callEvent(new PlayerCharacterUseWeaponEvent(pc, weapon));
 	}
 
 	@EventHandler
@@ -171,20 +198,6 @@ class ItemListener implements Listener {
 			EventManager.callEvent(consumableEvent);
 		}
 		CLICK_NOISE.play(pc);
-	}
-
-	@EventHandler
-	private void onThrowItem(PlayerDropItemEvent event) {
-		org.bukkit.entity.Item itemEntity = event.getItemDrop();
-		ItemStack itemStack = itemEntity.getItemStack();
-		if (ItemFactory.staticInteractables.contains(itemStack)) {
-			event.setCancelled(true);
-			return;
-		}
-		Item item = Item.forItemStack(itemStack);
-		if (item == null) {
-			itemEntity.remove();
-		}
 	}
 
 	@EventHandler
@@ -256,6 +269,11 @@ class ItemListener implements Listener {
 		if (LootChest.inventories.contains(inventory)) {
 			LootChest.inventories.remove(inventory);
 		}
+	}
+
+	@EventHandler
+	private void onSwapHands(PlayerSwapHandItemsEvent event) {
+		event.setCancelled(true);
 	}
 
 }

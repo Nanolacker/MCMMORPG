@@ -2,9 +2,11 @@ package com.mcmmorpg.impl.playerClasses;
 
 import org.bukkit.Effect;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
 import org.bukkit.World;
+import org.bukkit.block.data.BlockData;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Fireball;
 import org.bukkit.event.EventHandler;
@@ -30,9 +32,6 @@ import com.mcmmorpg.common.playerClass.Skill;
 import com.mcmmorpg.common.sound.Noise;
 import com.mcmmorpg.common.time.DelayedTask;
 import com.mcmmorpg.common.time.RepeatingTask;
-import com.mcmmorpg.common.ui.TextPanel;
-
-import net.md_5.bungee.api.ChatColor;
 
 public class MageListener implements Listener {
 
@@ -167,7 +166,7 @@ public class MageListener implements Listener {
 	}
 
 	private void useWhirlwind(PlayerCharacter pc) {
-		Location targetTemp = null;
+		Location targetTemp = pc.getTargetLocation(15);
 		Location location = pc.getLocation().add(0, 1.5, 0);
 		Ray ray = new Ray(location, location.getDirection(), 15);
 		Raycast raycast = new Raycast(ray, CharacterCollider.class);
@@ -184,9 +183,6 @@ public class MageListener implements Listener {
 					}
 				}
 			}
-		}
-		if (targetTemp == null) {
-			targetTemp = pc.getTargetLocation(15);
 		}
 		final Location target = targetTemp;
 		Collider hitbox = new Collider(targetTemp.clone().add(0, 2, 0), 3, 5, 3) {
@@ -234,7 +230,7 @@ public class MageListener implements Listener {
 
 	private void drawWhirlwind(Location location) {
 		double height = 0;
-		double radius = 0.1;
+		double radius = 0.5;
 		for (double t = 0; t < 50; t += 0.05) {
 			double x = radius * Math.cos(t);
 			double z = radius * Math.sin(t);
@@ -247,19 +243,40 @@ public class MageListener implements Listener {
 
 	private void useEarthquake(PlayerCharacter pc) {
 		Location center = pc.getLocation();
-		double size = 8;
+		double size = 20;
 		Collider hitbox = new Collider(center, size, 1, size);
-		hitbox.setDrawingEnabled(true);
-		int particleCount = 10;
+		hitbox.setActive(true);
+		int particleCount = 100;
 		World world = center.getWorld();
-		RepeatingTask update = new RepeatingTask(0.1) {
+		BlockData particleData = Material.DIRT.createBlockData();
+		RepeatingTask update = new RepeatingTask(0.25) {
+			int count = 0;
+
 			@Override
 			protected void run() {
 				for (int i = 0; i < particleCount; i++) {
 					double offsetX = (0.5 - Math.random()) * size;
 					double offsetZ = (0.5 - Math.random()) * size;
 					Location particleLocation = center.clone().add(offsetX, 0.1, offsetZ);
-					world.spawnParticle(Particle.CAMPFIRE_COSY_SMOKE, particleLocation, 1);
+					if (i % 10 == 0) {
+						world.spawnParticle(Particle.CAMPFIRE_COSY_SMOKE, particleLocation, 0);
+					} else {
+						world.spawnParticle(Particle.BLOCK_DUST, particleLocation, 0, particleData);
+					}
+				}
+				Collider[] colliders = hitbox.getCollidingColliders();
+				for (Collider collider : colliders) {
+					if (collider instanceof CharacterCollider) {
+						AbstractCharacter character = ((CharacterCollider) collider).getCharacter();
+						if (!character.isFriendly(pc)) {
+							character.damage(2, pc);
+						}
+					}
+				}
+				count++;
+				if (count == 20) {
+					hitbox.setActive(false);
+					cancel();
 				}
 			}
 		};
