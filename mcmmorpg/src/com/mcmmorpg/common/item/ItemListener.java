@@ -147,8 +147,7 @@ class ItemListener implements Listener {
 		if (ItemFactory.staticInteractables.contains(clickedItemStack)) {
 			event.setCancelled(true);
 			if (cursorItemStack.getType() == Material.AIR) {
-				StaticInteractableEvent consumableUseEvent = new StaticInteractableEvent(player, clickedItemStack);
-				EventManager.callEvent(consumableUseEvent);
+				EventManager.callEvent(new StaticInteractableEvent(player, clickedItemStack));
 				return;
 			}
 		}

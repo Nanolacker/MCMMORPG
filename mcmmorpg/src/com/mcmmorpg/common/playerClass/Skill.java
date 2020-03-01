@@ -3,30 +3,22 @@ package com.mcmmorpg.common.playerClass;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.Sound;
-import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
-import org.bukkit.event.inventory.InventoryAction;
-import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.event.inventory.InventoryDragEvent;
-import org.bukkit.event.player.PlayerItemHeldEvent;
-import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 import com.mcmmorpg.common.character.PlayerCharacter;
 import com.mcmmorpg.common.event.EventManager;
 import com.mcmmorpg.common.event.SkillUseEvent;
 import com.mcmmorpg.common.item.ItemFactory;
-import com.mcmmorpg.common.item.Weapon;
 import com.mcmmorpg.common.sound.Noise;
 import com.mcmmorpg.common.time.RepeatingTask;
 
-public final class Skill implements Listener {
+public final class Skill {
 
 	private static final double COOLDOWN_UPDATE_PERIOD_SECONDS = 0.1;
 	private static final Material LOCKED_MATERIAL = Material.BARRIER;
 	private static final Noise CLICK_NOISE = new Noise(Sound.BLOCK_LEVER_CLICK);
 	private static final Noise UPGRADE_NOISE = new Noise(Sound.ENTITY_EXPERIENCE_ORB_PICKUP);
+	static final Material DISABLED_MATERIAL = Material.BARRIER;
 
 	private final String name;
 	private final String description;
@@ -61,7 +53,6 @@ public final class Skill implements Listener {
 	void initialize(PlayerClass playerClass) {
 		this.playerClass = playerClass;
 		hotbarItemStack = createHotbarItemStack();
-		EventManager.registerEvents(this);
 	}
 
 	public String getName() {
@@ -70,6 +61,10 @@ public final class Skill implements Listener {
 
 	public String getDescription() {
 		return description;
+	}
+
+	public double getManaCost() {
+		return manaCost;
 	}
 
 	public int getMinimumLevel() {
@@ -90,6 +85,10 @@ public final class Skill implements Listener {
 
 	public int getSkillTreeColumn() {
 		return skillTreeColumn;
+	}
+
+	public Material getIcon() {
+		return icon;
 	}
 
 	public PlayerClass getPlayerClass() {
@@ -185,119 +184,6 @@ public final class Skill implements Listener {
 		return itemStack;
 	}
 
-	@EventHandler
-	private void onChangeHeldItem(PlayerItemHeldEvent event) {
-		Player player = event.getPlayer();
-		PlayerCharacter pc = PlayerCharacter.forPlayer(player);
-		if (pc == null) {
-			return;
-		}
-		if (pc.getPlayerClass() != this.playerClass) {
-			return;
-		}
-		Inventory inventory = player.getInventory();
-		int slot = event.getNewSlot();
-		ItemStack itemStack = inventory.getItem(slot);
-		if (itemStack == null) {
-			return;
-		}
-		ItemStack sizeOfOne = itemStack.clone();
-		sizeOfOne.setAmount(1);
-		if (sizeOfOne.equals(hotbarItemStack)) {
-			Weapon weapon = pc.getWeapon();
-			if (weapon == null || pc.getPlayerClass() != weapon.getPlayerClass()) {
-				pc.sendMessage(ChatColor.GRAY + "You must wield a weapon to use skills");
-			} else if (isOnCooldown(pc)) {
-				pc.sendMessage(ChatColor.GRAY + "On cooldown (" + ChatColor.YELLOW + (int) Math.ceil(getCooldown(pc))
-						+ ChatColor.GRAY + ")");
-				CLICK_NOISE.play(player);
-			} else if (pc.getCurrentMana() < manaCost) {
-				pc.sendMessage(ChatColor.GRAY + "Insufficient MP (" + ChatColor.AQUA + (int) Math.ceil(manaCost)
-						+ ChatColor.GRAY + ")");
-				CLICK_NOISE.play(player);
-			} else if (pc.isSilenced()) {
-				CLICK_NOISE.play(player);
-			} else {
-				this.use(pc);
-			}
-		}
-	}
-
-	@EventHandler
-	private void onClickSkillItem(InventoryClickEvent event) {
-		if (event.isShiftClick() || event.getAction() == InventoryAction.HOTBAR_SWAP) {
-			event.setCancelled(true);
-			return;
-		}
-		Player player = (Player) event.getWhoClicked();
-		PlayerCharacter pc = PlayerCharacter.forPlayer(player);
-		if (pc == null) {
-			return;
-		}
-		if (pc.getPlayerClass() != this.playerClass) {
-			return;
-		}
-		ItemStack clickedItem = event.getCurrentItem();
-		ItemStack droppedItem = event.getCursor();
-		if (isHotbarItemStack(clickedItem)) {
-			clickedItem.setAmount(1);
-		}
-		if (isHotbarItemStack(droppedItem)) {
-			int slot = event.getRawSlot();
-			if (slot == -999) {
-				player.sendMessage(ChatColor.GREEN + name + ChatColor.GRAY + " removed from hotbar");
-			} else if (slot == 36) {
-				event.setCancelled(true);
-				player.sendMessage(ChatColor.GRAY + "Only weapons can be placed here");
-			} else if (slot < 37 || slot > 44) {
-				event.setCancelled(true);
-				player.sendMessage(ChatColor.GRAY + "Skills can only be placed on your hotbar");
-			}
-		}
-	}
-
-	@EventHandler
-	private void onDragSkillItem(InventoryDragEvent event) {
-		Player player = (Player) event.getWhoClicked();
-		PlayerCharacter pc = PlayerCharacter.forPlayer(player);
-		if (pc == null) {
-			return;
-		}
-		if (pc.getPlayerClass() != this.playerClass) {
-			return;
-		}
-		ItemStack droppedItem = event.getOldCursor();
-		if (isHotbarItemStack(droppedItem)) {
-			int slot = (int) event.getRawSlots().toArray()[0];
-			if (slot == 36) {
-				event.setCancelled(true);
-				player.sendMessage(ChatColor.GRAY + "Only weapons can be placed here");
-			} else if (slot < 36 || slot > 44) {
-				event.setCancelled(true);
-				player.sendMessage(ChatColor.GRAY + "Skills can only be placed on your hotbar");
-			}
-		}
-	}
-
-	private boolean isHotbarItemStack(ItemStack itemStack) {
-		if (itemStack == null) {
-			return false;
-		}
-		ItemStack sizeOfOne = itemStack.clone();
-		sizeOfOne.setAmount(1);
-		return sizeOfOne.equals(this.hotbarItemStack);
-	}
-
-	private void use(PlayerCharacter pc) {
-		SkillUseEvent event = new SkillUseEvent(pc, this);
-		EventManager.callEvent(event);
-		pc.setCurrentMana(pc.getCurrentMana() - manaCost);
-		cooldown(pc, cooldown);
-		CLICK_NOISE.play(pc);
-		pc.sendMessage(ChatColor.GRAY + "Used " + ChatColor.GREEN + name + " " + ChatColor.AQUA
-				+ -(int) Math.ceil(manaCost) + " MP");
-	}
-
 	public double getCooldown(PlayerCharacter pc) {
 		if (getUpgradeLevel(pc) == 0) {
 			throw new IllegalArgumentException("Player has not unlocked skill");
@@ -329,31 +215,9 @@ public final class Skill implements Listener {
 					return;
 				}
 				data.setCooldown(newCooldown);
-				updateItemStack(pc, newCooldown);
 			}
 		};
 		cooldownTask.schedule();
-	}
-
-	/**
-	 * Displays the updated cooldown.
-	 */
-	private void updateItemStack(PlayerCharacter pc, double cooldownSeconds) {
-		Inventory inventory = pc.getPlayer().getInventory();
-		for (int i = 0; i < 9; i++) {
-			ItemStack itemStack = inventory.getItem(i);
-			if (itemStack == null) {
-				continue;
-			}
-			if (isHotbarItemStack(itemStack)) {
-				int newAmount = (int) Math.ceil(cooldownSeconds);
-				if (itemStack.getAmount() != newAmount) {
-					itemStack.setAmount(newAmount);
-				}
-				return;
-			}
-		}
-
 	}
 
 	public boolean prerequisitesAreMet(PlayerCharacter pc) {
@@ -364,6 +228,16 @@ public final class Skill implements Listener {
 			}
 		}
 		return pc.getLevel() >= minimumLevel;
+	}
+
+	void use(PlayerCharacter pc) {
+		SkillUseEvent event = new SkillUseEvent(pc, this);
+		EventManager.callEvent(event);
+		pc.setCurrentMana(pc.getCurrentMana() - manaCost);
+		cooldown(pc, cooldown);
+		CLICK_NOISE.play(pc);
+		pc.sendMessage(ChatColor.GRAY + "Used " + ChatColor.GREEN + name + " " + ChatColor.AQUA
+				+ -(int) Math.ceil(manaCost) + " MP");
 	}
 
 }
