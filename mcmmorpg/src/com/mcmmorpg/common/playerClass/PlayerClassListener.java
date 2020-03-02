@@ -1,10 +1,8 @@
 package com.mcmmorpg.common.playerClass;
 
-import java.util.Arrays;
 import java.util.List;
 
 import org.bukkit.ChatColor;
-import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -21,7 +19,6 @@ import org.bukkit.inventory.ItemStack;
 import com.mcmmorpg.common.character.PlayerCharacter;
 import com.mcmmorpg.common.sound.Noise;
 import com.mcmmorpg.common.time.RepeatingTask;
-import com.mcmmorpg.common.utils.Debug;
 
 class PlayerClassListener implements Listener {
 
@@ -42,10 +39,13 @@ class PlayerClassListener implements Listener {
 						if (skill != null) {
 							if (pc.isSilenced() || skill.isOnCooldown(pc)) {
 								itemStack.setType(Skill.DISABLED_MATERIAL);
+								int cooldown = (int) Math.ceil(skill.getCooldown(pc));
+								if (cooldown != 0) {
+									itemStack.setAmount(cooldown);
+								}
 							} else {
 								itemStack.setType(skill.getIcon());
 							}
-							itemStack.setAmount(j + 1);
 						}
 					}
 				}
@@ -80,12 +80,13 @@ class PlayerClassListener implements Listener {
 			pc.sendMessage(ChatColor.GRAY + "You must wield a weapon to use skills");
 			CLICK_NOISE.play(player);
 		} else if (skill.isOnCooldown(pc)) {
-			pc.sendMessage(ChatColor.GRAY + "On cooldown (" + ChatColor.YELLOW + (int) Math.ceil(skill.getCooldown(pc))
-					+ ChatColor.GRAY + ")");
+			pc.sendMessage(ChatColor.GREEN + skill.getName() + ChatColor.GRAY + " is on cooldown (" + ChatColor.YELLOW
+					+ (int) Math.ceil(skill.getCooldown(pc)) + ChatColor.GRAY + ")");
 			CLICK_NOISE.play(player);
 		} else if (pc.getCurrentMana() < skill.getManaCost()) {
-			pc.sendMessage(ChatColor.GRAY + "Insufficient MP (" + ChatColor.AQUA + (int) Math.ceil(skill.getManaCost())
-					+ ChatColor.GRAY + ")");
+			pc.sendMessage(ChatColor.GRAY + "Not enough " + ChatColor.AQUA + "MP " + ChatColor.GRAY + "to use "
+					+ ChatColor.GREEN + skill.getName() + ChatColor.GRAY + " (" + ChatColor.AQUA
+					+ (int) Math.ceil(skill.getManaCost()) + ChatColor.GRAY + ")");
 			CLICK_NOISE.play(player);
 		} else {
 			skill.use(pc);
@@ -147,10 +148,6 @@ class PlayerClassListener implements Listener {
 		} else if (slot < 36 || slot > 44) {
 			event.setCancelled(true);
 			player.sendMessage(ChatColor.GRAY + "Skills can only be placed on your hotbar");
-		} else {
-			Material hotbarItemStackMaterial = pc.isSilenced() || skill.isOnCooldown(pc) ? Skill.DISABLED_MATERIAL
-					: skill.getIcon();
-			droppedItemStack.setType(hotbarItemStackMaterial);
 		}
 	}
 
@@ -224,7 +221,16 @@ class PlayerClassListener implements Listener {
 			} else {
 				ItemStack skillItemStack = skill.getHotbarItemStack();
 				Inventory playerInventory = player.getInventory();
-				if (playerInventory.contains(skillItemStack)) {
+				boolean alreadyOnHotbar = false;
+				for (int i = 1; i < 9; i++) {
+					ItemStack itemStack = playerInventory.getItem(i);
+					Skill hotbarSkill = playerClass.skillForHotbarItemStack(itemStack);
+					if (skill == hotbarSkill) {
+						alreadyOnHotbar = true;
+						break;
+					}
+				}
+				if (alreadyOnHotbar) {
 					pc.sendMessage(ChatColor.GREEN + skill.getName() + ChatColor.GRAY + " is already on  your hotbar");
 				} else {
 					boolean noRoom = true;

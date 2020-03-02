@@ -22,6 +22,7 @@ import com.mcmmorpg.common.event.SkillUseEvent;
 import com.mcmmorpg.common.item.Item;
 import com.mcmmorpg.common.item.Weapon;
 import com.mcmmorpg.common.physics.Collider;
+import com.mcmmorpg.common.physics.Projectile;
 import com.mcmmorpg.common.physics.Ray;
 import com.mcmmorpg.common.physics.Raycast;
 import com.mcmmorpg.common.playerClass.PlayerClass;
@@ -36,6 +37,8 @@ public class FighterListener implements Listener {
 	private static final Noise BASH_HIT_NOISE = new Noise(Sound.ENTITY_ZOMBIE_ATTACK_IRON_DOOR);
 	private static final Noise SELF_HEAL_NOISE = new Noise(Sound.BLOCK_LAVA_EXTINGUISH);
 	private static final Noise CYCLONE_HIT_NOISE = new Noise(Sound.ENTITY_ZOMBIE_ATTACK_IRON_DOOR);
+	private static final Noise LUNGE_HIT_NOISE = new Noise(Sound.ENTITY_ZOMBIE_ATTACK_IRON_DOOR);
+	private static final Noise INSPIRE_NOISE = new Noise(Sound.BLOCK_LAVA_EXTINGUISH);
 
 	private final PlayerClass fighter;
 	private final Skill bash;
@@ -43,6 +46,7 @@ public class FighterListener implements Listener {
 	private final Skill lunge;
 	private final Skill cyclone;
 	private final Skill overheadStrike;
+	private final Skill inspire;
 
 	public FighterListener() {
 		fighter = PlayerClass.forName("Fighter");
@@ -51,6 +55,7 @@ public class FighterListener implements Listener {
 		lunge = fighter.skillForName("Lunge");
 		cyclone = fighter.skillForName("Cyclone");
 		overheadStrike = fighter.skillForName("Overhead Strike");
+		inspire = fighter.skillForName("Inspire");
 	}
 
 	@EventHandler
@@ -90,6 +95,8 @@ public class FighterListener implements Listener {
 			useCyclone(pc);
 		} else if (skill == overheadStrike) {
 			useOverheadStrike(pc);
+		} else if (skill == inspire) {
+			useInspire(pc);
 		}
 	}
 
@@ -214,13 +221,56 @@ public class FighterListener implements Listener {
 	}
 
 	private void useLunge(PlayerCharacter pc) {
+		double damageAmount = 5 * lunge.getUpgradeLevel(pc);
 		Player player = pc.getPlayer();
 		Location location = player.getLocation();
 		Vector direction = location.getDirection();
 		direction.setY(0);
-		direction.multiply(3);
+		direction.multiply(1.5);
 		player.setVelocity(direction);
+		Vector velocity = direction.multiply(10);
+		Projectile projectile = new Projectile(location.clone().add(0, 1, 0), velocity, 6, 2) {
+			@Override
+			protected void onHit(Collider hit) {
+				if (hit instanceof CharacterCollider) {
+					AbstractCharacter character = ((CharacterCollider) hit).getCharacter();
+					if (!character.isFriendly(pc)) {
+						character.damage(damageAmount, pc);
+						LUNGE_HIT_NOISE.play(character.getLocation());
+					}
+				}
+			}
+		};
+		projectile.fire();
+	}
 
+	private void useInspire(PlayerCharacter pc) {
+		double healAmount = inspire.getUpgradeLevel(pc) * 5;
+		double size = 8;
+		Location location = pc.getLocation().add(0, 1, 0);
+		Collider hitbox = new Collider(location, size, 2, size) {
+			@Override
+			protected void onCollisionEnter(Collider other) {
+				if (other instanceof CharacterCollider) {
+					AbstractCharacter character = ((CharacterCollider) other).getCharacter();
+					if (character.isFriendly(pc)) {
+						character.heal(healAmount, pc);
+					}
+				}
+			}
+		};
+		int particleCount = 50;
+		World world = location.getWorld();
+		for (int i = 0; i < particleCount; i++) {
+			double xOffset = (Math.random() - 0.5) * size;
+			double yOffset = (Math.random() - 0.5) * 1;
+			double zOffset = (Math.random() - 0.5) * size;
+			Location particleLocation = location.clone().add(xOffset, yOffset, zOffset);
+			world.spawnParticle(Particle.VILLAGER_HAPPY, particleLocation, 1);
+		}
+		INSPIRE_NOISE.play(location);
+		hitbox.setActive(true);
+		hitbox.setActive(false);
 	}
 
 	@EventHandler

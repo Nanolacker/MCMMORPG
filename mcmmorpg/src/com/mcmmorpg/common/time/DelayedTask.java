@@ -19,7 +19,7 @@ public abstract class DelayedTask extends CommonTask {
 	}
 
 	@Override
-	protected void scheduleBukkitTask() {
+	protected final void scheduleBukkitTask() {
 		BukkitScheduler scheduler = Bukkit.getScheduler();
 		Plugin plugin = MMORPGPlugin.getPlugin(MMORPGPlugin.class);
 		Runnable runnable = () -> run();

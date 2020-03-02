@@ -27,6 +27,7 @@ import com.mcmmorpg.common.item.ItemFactory;
 import com.mcmmorpg.common.persistence.PersistentPlayerCharacterDataContainer;
 import com.mcmmorpg.common.playerClass.PlayerClass;
 import com.mcmmorpg.common.sound.Noise;
+import com.mcmmorpg.common.ui.TextPanel;
 import com.mcmmorpg.common.utils.IOUtils;
 import com.mcmmorpg.impl.Worlds;
 import com.mcmmorpg.impl.playerCharacterSelection.PlayerCharacterSelectionProfile.Menu;
@@ -63,7 +64,7 @@ public class PlayerCharacterSelectionListener implements Listener {
 		if (!PLAYER_CHARACTER_DATA_DIRECTORY.exists()) {
 			PLAYER_CHARACTER_DATA_DIRECTORY.mkdir();
 		}
-		CHARACTER_SELECTION_LOCATION = new Location(Worlds.CHARACTER_SELECTION, 0, 64, 0);
+		CHARACTER_SELECTION_LOCATION = new Location(Worlds.CHARACTER_SELECTION, 0, 32, 0);
 		OPEN_CHARACTER_SELECT_ITEM_STACK = ItemFactory.createItemStack(ChatColor.GREEN + "Select Character", null,
 				Material.EMERALD);
 		ItemFactory.registerStaticInteractable(OPEN_CHARACTER_SELECT_ITEM_STACK);
@@ -72,7 +73,6 @@ public class PlayerCharacterSelectionListener implements Listener {
 		GO_BACK_ITEM_STACK = ItemFactory.createItemStack(ChatColor.RED + "Go back", null, Material.BARRIER);
 
 		OPEN_MENU_ITEM_STACK = ItemFactory.createItemStack(ChatColor.YELLOW + "Menu", null, Material.COMPASS);
-		OPEN_MENU_ITEM_STACK.setAmount(9);
 		ItemFactory.registerStaticInteractable(OPEN_MENU_ITEM_STACK);
 		OPEN_QUEST_LOG_ITEM_STACK = ItemFactory.createItemStack(ChatColor.YELLOW + "Quest Log",
 				ChatColor.GRAY + "View and track your status on quests", Material.BOOK);
@@ -107,6 +107,16 @@ public class PlayerCharacterSelectionListener implements Listener {
 		STARTING_ZONE = ChatColor.GREEN + "Flinton";
 		STARTING_LOCATION = new Location(Worlds.ELADRADOR, 0, 64, 0);
 		INVISIBILITY = new PotionEffect(PotionEffectType.INVISIBILITY, Integer.MAX_VALUE, 1);
+	}
+
+	public PlayerCharacterSelectionListener() {
+		setUpTextPanels();
+	}
+
+	private void setUpTextPanels() {
+		Location titleLocation = new Location(Worlds.CHARACTER_SELECTION, 0, 33.5, 2);
+		TextPanel title = new TextPanel(titleLocation, ChatColor.GREEN + "Welcome to MCMMORPG!");
+		title.setVisible(true);
 	}
 
 	private Map<Player, PlayerCharacterSelectionProfile> profileMap = new HashMap<>();

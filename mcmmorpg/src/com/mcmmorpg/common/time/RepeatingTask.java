@@ -15,7 +15,7 @@ public abstract class RepeatingTask extends CommonTask {
 	}
 
 	@Override
-	protected void scheduleBukkitTask() {
+	protected final void scheduleBukkitTask() {
 		BukkitScheduler scheduler = Bukkit.getScheduler();
 		MMORPGPlugin plugin = MMORPGPlugin.getPlugin(MMORPGPlugin.class);
 		Runnable runnable = () -> run();

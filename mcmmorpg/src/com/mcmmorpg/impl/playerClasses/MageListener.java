@@ -292,9 +292,62 @@ public class MageListener implements Listener {
 	}
 
 	private void useShadowVoid(PlayerCharacter pc) {
-		Particle particle = Particle.SPELL_WITCH;
+		double size = 10;
+		double damageAmount = 10 * shadowVoid.getUpgradeLevel(pc);
 		SHADOW_VOID_NOISE.play(pc.getLocation());
-		Debug.log("shadow void");
+		Location targetTemp = pc.getTargetLocation(15);
+		Location location = pc.getLocation().add(0, 1.5, 0);
+		Ray ray = new Ray(location, location.getDirection(), 15);
+		Raycast raycast = new Raycast(ray, CharacterCollider.class);
+		Collider[] hits = raycast.getHits();
+		for (Collider hit : hits) {
+			if (hit instanceof CharacterCollider) {
+				AbstractCharacter character = ((CharacterCollider) hit).getCharacter();
+				if (!character.isFriendly(pc)) {
+					Location hitLocation = hit.getCenter().subtract(0, 1, 0);
+					if (targetTemp == null) {
+						targetTemp = hitLocation;
+					} else if (hitLocation.distanceSquared(location) < targetTemp.distanceSquared(location)) {
+						targetTemp = hitLocation;
+					}
+				}
+			}
+		}
+		final Location target = targetTemp;
+		World world = target.getWorld();
+		new RepeatingTask(0.2) {
+			int count = 0;
+			int max = 19;
+
+			@Override
+			protected void run() {
+				if (count == max) {
+					Collider hitbox = new Collider(target.clone().add(0, 1, 0), size, 2, size) {
+						@Override
+						protected void onCollisionEnter(Collider other) {
+							if (other instanceof CharacterCollider) {
+								AbstractCharacter character = ((CharacterCollider) other).getCharacter();
+								if (!character.isFriendly(pc)) {
+									character.damage(damageAmount, pc);
+								}
+							}
+						}
+					};
+					hitbox.setActive(true);
+					hitbox.setActive(false);
+					cancel();
+				}
+				int particleCount = count * 25;
+				for (int i = 0; i < particleCount; i++) {
+					double offsetX = (Math.random() - 0.5) * size;
+					double offsetY = (Math.random() - 0.5) * 0.5;
+					double offsetZ = (Math.random() - 0.5) * size;
+					Location particleLocation = target.clone().add(offsetX, offsetY, offsetZ);
+					world.spawnParticle(Particle.SPELL_WITCH, particleLocation, 1);
+				}
+				count++;
+			}
+		}.schedule();
 	}
 
 	@EventHandler

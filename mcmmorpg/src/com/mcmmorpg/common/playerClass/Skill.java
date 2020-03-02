@@ -123,7 +123,8 @@ public final class Skill {
 			// upgrade
 			int newLevel = data.getUpgradeLevel() + 1;
 			data.setUpgradeLevel(newLevel);
-			pc.sendMessage(ChatColor.GREEN + name + ChatColor.GRAY + " upgraded to level " + newLevel + "!");
+			pc.sendMessage(ChatColor.GREEN + name + ChatColor.GRAY + " upgraded to " + ChatColor.GOLD + "level "
+					+ newLevel + ChatColor.GRAY + "!");
 			UPGRADE_NOISE.play(pc);
 		}
 	}
@@ -236,8 +237,8 @@ public final class Skill {
 		pc.setCurrentMana(pc.getCurrentMana() - manaCost);
 		cooldown(pc, cooldown);
 		CLICK_NOISE.play(pc);
-		pc.sendMessage(ChatColor.GRAY + "Used " + ChatColor.GREEN + name + " " + ChatColor.AQUA
-				+ -(int) Math.ceil(manaCost) + " MP");
+		pc.sendMessage(ChatColor.GRAY + "Used " + ChatColor.GREEN + name + " " + ChatColor.GRAY + "(" + ChatColor.AQUA
+				+ -(int) Math.ceil(manaCost) + " MP" + ChatColor.GRAY + ")");
 	}
 
 }

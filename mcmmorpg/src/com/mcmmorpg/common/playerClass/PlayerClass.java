@@ -7,7 +7,6 @@ import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
 import com.mcmmorpg.common.event.EventManager;
-import com.mcmmorpg.common.utils.Debug;
 
 /**
  * PlayerClasses can be made using JSON. Code will need to be written that deals
@@ -81,7 +80,7 @@ public final class PlayerClass {
 		return null;
 	}
 
-	public Skill skillForHotbarItemStack(ItemStack itemStack) {
+	Skill skillForHotbarItemStack(ItemStack itemStack) {
 		if (itemStack == null) {
 			return null;
 		}
