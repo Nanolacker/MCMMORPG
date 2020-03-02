@@ -74,6 +74,8 @@ public class MageListener implements Listener {
 			useIceBeam(pc);
 		} else if (skill == whirlwind) {
 			useWhirlwind(pc);
+		} else if (skill == restore) {
+			useRestore(pc);
 		} else if (skill == earthquake) {
 			useEarthquake(pc);
 		} else if (skill == shadowVoid) {
@@ -245,6 +247,10 @@ public class MageListener implements Listener {
 			height += 0.005;
 			radius += 0.0025;
 		}
+	}
+
+	private void useRestore(PlayerCharacter pc) {
+		Debug.log("restore");
 	}
 
 	private void useEarthquake(PlayerCharacter pc) {

@@ -6,5 +6,6 @@
 			"goal": 3,
 			"description": "Use a skill on a training dummy"
 		}
-	]
+	],
+	"icon": "EMERALD"
 }

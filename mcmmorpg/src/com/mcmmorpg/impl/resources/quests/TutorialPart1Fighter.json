@@ -1,0 +1,11 @@
+{
+	"name": "Tutorial Part 1 (Fighter)",
+	"level": 1,
+	"objectives": [
+		{
+			"goal": 1,
+			"description": "Speak with [Trainer 2] at (x, y, z) to receive an Apprentice Sword"
+		}
+	],
+	"icon": "EMERALD"
+}
