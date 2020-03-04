@@ -9,3 +9,15 @@ commands:
     kill:
         description: If your character is stuck, use this to respawn elsewhere.
         usage: /<command>
+    printlocation:
+        description: Prints the coordinates of your location.
+        usage: /<command>
+    heal:
+        description: Heals you for the specified amount.
+        usage: /<command>
+    restoremana:
+        description: Restores the specified amount of mana.
+        usage: /<command>
+    grantxp:
+        description: Grants the specified amount of XP.
+        usage: /<command>

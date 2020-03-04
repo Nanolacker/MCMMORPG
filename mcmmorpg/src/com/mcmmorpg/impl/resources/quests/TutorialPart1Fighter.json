@@ -4,7 +4,7 @@
 	"objectives": [
 		{
 			"goal": 1,
-			"description": "Speak with [Trainer 2] at (x, y, z) to receive an Apprentice Sword"
+			"description": "Speak with §a[Trainer]§f at (x, y, z) to begin your training"
 		}
 	],
 	"icon": "EMERALD"

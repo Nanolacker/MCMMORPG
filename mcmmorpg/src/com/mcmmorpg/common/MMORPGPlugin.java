@@ -59,7 +59,7 @@ public abstract class MMORPGPlugin extends JavaPlugin {
 		return isInitialized;
 	}
 
-	public static MMORPGPlugin getPlugin() {
+	public static MMORPGPlugin getInstance() {
 		return getPlugin(MMORPGPlugin.class);
 	}
 

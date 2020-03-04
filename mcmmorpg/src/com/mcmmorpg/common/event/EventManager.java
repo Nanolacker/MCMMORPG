@@ -13,7 +13,7 @@ import com.mcmmorpg.common.MMORPGPlugin;
 public class EventManager {
 
 	public static void registerEvents(Listener listener) {
-		Plugin plugin = MMORPGPlugin.getPlugin();
+		Plugin plugin = MMORPGPlugin.getInstance();
 		Bukkit.getPluginManager().registerEvents(listener, plugin);
 	}
 

@@ -8,6 +8,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import com.mcmmorpg.common.character.PlayerCharacter;
+import com.mcmmorpg.common.item.Weapon;
 import com.mcmmorpg.common.playerClass.PlayerClass;
 import com.mcmmorpg.common.playerClass.PlayerSkillData;
 import com.mcmmorpg.common.quest.PlayerQuestData;
@@ -91,7 +92,7 @@ public class PersistentPlayerCharacterDataContainer {
 	}
 
 	public static PersistentPlayerCharacterDataContainer createFreshSaveData(Player player, PlayerClass playerClass,
-			String startZone, Location startLocation) {
+			String startZone, Location startLocation, Weapon startWeapon) {
 		Location respawnLocation = startLocation;
 		int xp = 0;
 		int skillUpgradePoints = 0;
@@ -104,7 +105,7 @@ public class PersistentPlayerCharacterDataContainer {
 		double manaRegenRate = 0;
 		PlayerQuestData[] questData = {};
 		PlayerSkillData[] skillData = {};
-		ItemStack[] inventoryContents = {};
+		ItemStack[] inventoryContents = { startWeapon.getItemStack() };
 		String[] tags = {};
 		return new PersistentPlayerCharacterDataContainer(true, playerClass, startZone, startLocation, respawnLocation,
 				xp, skillUpgradePoints, currency, maxHealth, currentHealth, healthRegenRate, maxMana, currentMana,

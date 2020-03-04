@@ -33,7 +33,7 @@ public class ArmorItem extends Item {
 		ItemRarity rarity = getRarity();
 		String lore = ChatColor.GOLD + playerClass + " Armor Item" + ChatColor.GOLD + "\nLevel " + level + "\n"
 				+ (int) protections + " Protections\n" + rarity.getColor() + rarity + " Item\n\n" + ChatColor.RESET
-				+ getDescription();
+				+ getDescription() + ChatColor.GRAY + "\n\nDrag and drop to equip";
 		return ItemFactory.createItemStack(rarity.getColor() + getName(), lore, getIcon());
 	}
 
@@ -47,6 +47,10 @@ public class ArmorItem extends Item {
 
 	public double getProtections() {
 		return protections;
+	}
+
+	public static enum ArmorType {
+		HEAD, CHEST, LEGS, FEET
 	}
 
 }

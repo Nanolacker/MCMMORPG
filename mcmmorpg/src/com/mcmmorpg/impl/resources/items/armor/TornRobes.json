@@ -2,7 +2,7 @@
 	"id": 10,
 	"name": "Torn Robes",
 	"rarity": "COMMON",
-	"icon": "LEATHER_TUNIC",
+	"icon": "LEATHER_CHESTPLATE",
 	"description": "FILL",
 	"playerClass": "Mage",
 	"level": 3,

@@ -221,9 +221,9 @@ public abstract class AbstractCharacter implements Source {
 	private final String nameplateText() {
 		int numBars = 20;
 		StringBuilder text = new StringBuilder();
-		text.append(ChatColor.WHITE + "[" + ChatColor.GOLD + "Lv. " + level + ChatColor.WHITE + "] " + ChatColor.RESET
+		text.append(ChatColor.GRAY + "[" + ChatColor.GOLD + "Lv. " + level + ChatColor.GRAY + "] " + ChatColor.RESET
 				+ name + '\n');
-		text.append(ChatColor.WHITE + "[");
+		text.append(ChatColor.GRAY + "[");
 		double currentToMaxHealthRatio = currentHealth / maxHealth;
 		int numRedBars = (int) (numBars * currentToMaxHealthRatio);
 		text.append(ChatColor.RED.toString());
@@ -234,7 +234,7 @@ public abstract class AbstractCharacter implements Source {
 		for (int i = numRedBars; i < numBars; i++) {
 			text.append('|');
 		}
-		text.append(ChatColor.WHITE + "]");
+		text.append(ChatColor.GRAY + "]");
 		return text.toString();
 	}
 
@@ -271,7 +271,22 @@ public abstract class AbstractCharacter implements Source {
 	}
 
 	public String formatDialogue(String dialogue) {
-		return name + ChatColor.RESET + ": " + dialogue;
+		return ChatColor.GRAY + "[" + ChatColor.RESET + name + ChatColor.GRAY + "]: " + ChatColor.RESET + dialogue;
+	}
+
+	public String[] formatDialgoue(String[] dialogue) {
+		String[] formattedDialogue = new String[dialogue.length];
+		for (int i = 0; i < dialogue.length; i++) {
+			formattedDialogue[i] = formatDialogue(dialogue[i]);
+		}
+		return formattedDialogue;
+	}
+
+	public void say(String dialogue, AbstractCharacter recipient) {
+		if (recipient instanceof PlayerCharacter) {
+			String formattedDialogue = formatDialogue(dialogue);
+			((PlayerCharacter) recipient).sendMessage(formattedDialogue);
+		}
 	}
 
 }

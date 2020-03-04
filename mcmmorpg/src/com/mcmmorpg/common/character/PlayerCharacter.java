@@ -48,7 +48,6 @@ import com.mcmmorpg.common.quest.PlayerQuestData;
 import com.mcmmorpg.common.quest.PlayerQuestManager;
 import com.mcmmorpg.common.quest.Quest;
 import com.mcmmorpg.common.quest.QuestLog;
-import com.mcmmorpg.common.quest.QuestObjective;
 import com.mcmmorpg.common.quest.QuestStatus;
 import com.mcmmorpg.common.sound.Noise;
 import com.mcmmorpg.common.sound.PlayerSoundtrackPlayer;
@@ -58,7 +57,6 @@ import com.mcmmorpg.common.ui.ActionBarText;
 import com.mcmmorpg.common.ui.SidebarText;
 import com.mcmmorpg.common.ui.TitleMessage;
 import com.mcmmorpg.common.utils.MathUtils;
-import com.mcmmorpg.common.utils.StringUtils;
 
 public final class PlayerCharacter extends AbstractCharacter {
 
@@ -284,9 +282,9 @@ public final class PlayerCharacter extends AbstractCharacter {
 	 * Returns the location of the player's target block or the location that is a
 	 * distance of maxRange away from the player in their look direction.
 	 */
-	public Location getTargetLocation(int maxRange) {
+	public Location getTargetLocation(double maxRange) {
 		// add 0.5 to average
-		return player.getTargetBlock(null, maxRange).getLocation().add(0.5, 0.5, 0.5);
+		return player.getTargetBlock(null, (int) maxRange).getLocation().add(0.5, 0.5, 0.5);
 	}
 
 	private void updateActionBar() {
@@ -478,12 +476,7 @@ public final class PlayerCharacter extends AbstractCharacter {
 
 	public Weapon getWeapon() {
 		ItemStack itemStack = player.getInventory().getItem(0);
-		Item item = Item.forItemStack(itemStack);
-		if (item instanceof Weapon) {
-			return (Weapon) item;
-		} else {
-			return null;
-		}
+		return (Weapon) Item.forItemStack(itemStack);
 	}
 
 	public double getProtections() {

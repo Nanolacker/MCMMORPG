@@ -49,12 +49,12 @@ public class ProgressBar {
 		StringBuilder text = new StringBuilder();
 		text.append(title);
 		text.append("\n");
-		text.append(ChatColor.WHITE + "[");
+		text.append(ChatColor.GRAY + "[");
 		int numColoredPipes = (int) (progress * width);
 		int numGrayPipes = width - numColoredPipes;
 		text.append(color + StringUtils.repeat("|", numColoredPipes));
 		text.append(ChatColor.GRAY + StringUtils.repeat("|", numGrayPipes));
-		text.append(ChatColor.WHITE + "]");
+		text.append(ChatColor.GRAY + "]");
 		textPanel.setText(text.toString());
 		if (progress >= 1) {
 			onComplete();

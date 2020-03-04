@@ -7,7 +7,7 @@ import org.bukkit.inventory.ItemStack;
 import com.mcmmorpg.common.playerClass.PlayerClass;
 
 public class Weapon extends Item {
-
+	
 	private final String playerClass;
 	private final int level;
 
@@ -30,7 +30,8 @@ public class Weapon extends Item {
 	protected ItemStack createItemStack() {
 		ItemRarity rarity = getRarity();
 		String lore = ChatColor.GOLD + playerClass + " Weapon" + ChatColor.GOLD + "\nLevel " + level + "\n"
-				+ rarity.getColor() + rarity + " Item\n\n" + ChatColor.RESET + getDescription();
+				+ rarity.getColor() + rarity + " Item\n\n" + ChatColor.RESET + getDescription() + ChatColor.GRAY
+				+ "\n\nShift-click to equip";
 		return ItemFactory.createItemStack(rarity.getColor() + getName(), lore, getIcon());
 	}
 

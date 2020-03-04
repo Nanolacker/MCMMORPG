@@ -5,8 +5,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.bukkit.Bukkit;
-import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
@@ -28,9 +26,10 @@ public class MessageSequence {
 	private final Map<PlayerCharacter, MessageSequencePlayer> sequencePlayerMap = new HashMap<>();
 
 	/**
-	 * @param period the delay between messages in seconds
+	 * @param period
+	 *            the delay between messages in seconds
 	 */
-	public MessageSequence(String[] messages, double period) {
+	public MessageSequence(double period, String... messages) {
 		this.messages = messages;
 		this.period = period;
 	}

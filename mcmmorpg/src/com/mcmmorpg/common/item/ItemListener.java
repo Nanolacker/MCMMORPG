@@ -29,6 +29,7 @@ import com.mcmmorpg.common.event.EventManager;
 import com.mcmmorpg.common.event.PlayerCharacterUseConsumableItemEvent;
 import com.mcmmorpg.common.event.PlayerCharacterUseWeaponEvent;
 import com.mcmmorpg.common.event.StaticInteractableEvent;
+import com.mcmmorpg.common.playerClass.PlayerClass;
 import com.mcmmorpg.common.sound.Noise;
 import com.mcmmorpg.common.time.DelayedTask;
 
@@ -113,7 +114,12 @@ class ItemListener implements Listener {
 		if (item == null) {
 			itemEntity.remove();
 		} else {
-			PlayerCharacter pc = PlayerCharacter.forPlayer(event.getPlayer());
+			Player player = event.getPlayer();
+			if (player.getInventory().getItem(36) == null) {
+				// when the player tries to throw their weapon
+				event.setCancelled(true);
+			}
+			PlayerCharacter pc = PlayerCharacter.forPlayer(player);
 			addPCToSet(falseAttackers, pc);
 			itemEntity.setCustomName(item.getRarity().getColor() + item.getName());
 			itemEntity.setCustomNameVisible(true);
@@ -157,12 +163,43 @@ class ItemListener implements Listener {
 			return;
 		}
 
+		if (event.getRawSlot() == 36) {
+			// don't let the player fiddle with throwing away their weapon
+			event.setCancelled(true);
+			return;
+		}
+
 		Item clickedItem = Item.forItemStack(clickedItemStack);
 		if (event.isShiftClick()) {
 			event.setCancelled(true);
 			if (clickedItem instanceof ConsumableItem) {
 				ConsumableItem consumable = (ConsumableItem) clickedItem;
 				handlePlayerCharacterUseConsumable(pc, consumable, clickedItemStack);
+			} else if (clickedItem instanceof Weapon) {
+				int rawSlot = event.getRawSlot();
+				if (rawSlot != 36) {
+					Weapon weapon = (Weapon) clickedItem;
+					PlayerClass weaponPlayerClass = weapon.getPlayerClass();
+					int weaponLevel = weapon.getLevel();
+					if (pc.getPlayerClass() != weaponPlayerClass) {
+						pc.sendMessage(ChatColor.GRAY + "Only " + ChatColor.GOLD + weaponPlayerClass.getName() + "s "
+								+ ChatColor.GRAY + "can wield " + weapon);
+					} else if (pc.getLevel() < weaponLevel) {
+						pc.sendMessage(ChatColor.GRAY + "You must be " + ChatColor.GOLD + "level " + weaponLevel
+								+ ChatColor.GRAY + " to wield " + weapon);
+					} else {
+						// equip new weapon
+						Inventory inventory = player.getInventory();
+						// must go back to non-raw slots here
+						int slot = event.getSlot();
+						inventory.setItem(slot, null);
+						ItemStack currentWeaponItemStack = inventory.getItem(0);
+						inventory.setItem(0, clickedItemStack);
+						pc.sendMessage(ChatColor.GRAY + "Equipped " + weapon);
+						inventory.setItem(slot, currentWeaponItemStack);
+					}
+					CLICK_NOISE.play(player);
+				}
 			}
 		}
 	}

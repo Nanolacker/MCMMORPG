@@ -3,6 +3,6 @@
 	"id": 20,
 	"name": "Potion of Minor Healing",
 	"rarity": "UNCOMMON",
-	"icon": "EMPTY_BOTTLE",
+	"icon": "GLASS_BOTTLE",
 	"description": "Rocover XX HP"
 }

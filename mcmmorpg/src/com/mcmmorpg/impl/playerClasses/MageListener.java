@@ -37,11 +37,12 @@ import com.mcmmorpg.common.utils.Debug;
 public class MageListener implements Listener {
 
 	private static final Noise FIREBALL_CONJURE = new Noise(Sound.ENTITY_ZOMBIE_VILLAGER_CURE);
-	private static final Noise FIREBALL_HIT_1 = new Noise(Sound.ENTITY_GENERIC_EXPLODE);
-	private static final Noise FIREBALL_HIT_2 = new Noise(Sound.BLOCK_FIRE_AMBIENT);
+	private static final Noise FIREBALL_EXPLODE_1_NOISE = new Noise(Sound.ENTITY_GENERIC_EXPLODE);
+	private static final Noise FIREBALL_EXPLODE_2_NOISE = new Noise(Sound.BLOCK_FIRE_AMBIENT);
 	private static final Noise WHIRLWIND_AMBIENT_NOISE = new Noise(Sound.ENTITY_WITHER_DEATH);
 	private static final Noise WHIRLWIND_SPEED_NOISE = new Noise(Sound.ENTITY_WITHER_SHOOT, 1, 2);
-	private static final Noise SHADOW_VOID_NOISE = new Noise(Sound.BLOCK_PORTAL_TRIGGER);
+	private static final Noise SHADOW_VOID_USE_NOISE = new Noise(Sound.BLOCK_PORTAL_TRIGGER);
+	private static final Noise SHADOW_VOID_HIT_NOISE = new Noise(Sound.ENTITY_DRAGON_FIREBALL_EXPLODE);
 
 	private final PlayerClass mage;
 	private final Skill fireball;
@@ -84,18 +85,23 @@ public class MageListener implements Listener {
 	}
 
 	private void useFireball(PlayerCharacter pc) {
+		double damageAmount = 10 * fireball.getUpgradeLevel(pc);
+		double range = 15;
 		Location start = pc.getLocation();
 		Vector lookDirection = start.getDirection();
 		start.add(lookDirection).add(0, 1, 0);
 		FIREBALL_CONJURE.play(start);
 		Vector velocity = lookDirection.multiply(8);
 		// ensure we don't shoot through walls
-		Location end = pc.getTargetLocation(15);
+		Location end = pc.getTargetLocation(range);
 		double maxDistance = start.distance(end);
-		double hitSize = 0.5;
+		double hitSize = 0.75;
 		World world = start.getWorld();
 		Fireball fireball = (Fireball) world.spawnEntity(start, EntityType.FIREBALL);
 		Projectile projectile = new Projectile(start, velocity, maxDistance, hitSize) {
+			// -40 to account for error
+			boolean explode = start.distanceSquared(end) < range * range - 40;
+
 			@Override
 			protected void setLocation(Location location) {
 				super.setLocation(location);
@@ -106,21 +112,8 @@ public class MageListener implements Listener {
 				if (hit instanceof CharacterCollider) {
 					AbstractCharacter character = ((CharacterCollider) hit).getCharacter();
 					if (!character.isFriendly(pc)) {
-						character.damage(10, pc);
-						Location location = getLocation();
-						FIREBALL_HIT_1.play(location);
-						world.spawnParticle(Particle.EXPLOSION_LARGE, location, 1);
-						for (int i = 0; i < 5; i++) {
-							world.playEffect(location, Effect.MOBSPAWNER_FLAMES, 1);
-						}
-						this.setHitSize(2);
+						explode = true;
 						this.remove();
-						new DelayedTask(1) {
-							@Override
-							protected void run() {
-								FIREBALL_HIT_2.play(location);
-							}
-						}.schedule();
 					}
 				}
 			}
@@ -129,6 +122,33 @@ public class MageListener implements Listener {
 			public void remove() {
 				super.remove();
 				fireball.remove();
+				Location location = getLocation();
+				if (explode) {
+					FIREBALL_EXPLODE_1_NOISE.play(location);
+					world.spawnParticle(Particle.EXPLOSION_LARGE, location, 1);
+					for (int i = 0; i < 5; i++) {
+						world.playEffect(location, Effect.MOBSPAWNER_FLAMES, 1);
+					}
+					new DelayedTask(1) {
+						@Override
+						protected void run() {
+							FIREBALL_EXPLODE_2_NOISE.play(getLocation());
+						}
+					}.schedule();
+					Collider hitbox = new Collider(getLocation(), 2, 2, 2) {
+						@Override
+						protected void onCollisionEnter(Collider other) {
+							if (other instanceof CharacterCollider) {
+								AbstractCharacter character = ((CharacterCollider) other).getCharacter();
+								if (!character.isFriendly(pc)) {
+									character.damage(damageAmount, pc);
+								}
+							}
+						}
+					};
+					hitbox.setActive(true);
+					hitbox.setActive(false);
+				}
 			}
 		};
 		projectile.fire();
@@ -300,7 +320,7 @@ public class MageListener implements Listener {
 	private void useShadowVoid(PlayerCharacter pc) {
 		double size = 10;
 		double damageAmount = 10 * shadowVoid.getUpgradeLevel(pc);
-		SHADOW_VOID_NOISE.play(pc.getLocation());
+		SHADOW_VOID_USE_NOISE.play(pc.getLocation());
 		Location targetTemp = pc.getTargetLocation(15);
 		Location location = pc.getLocation().add(0, 1.5, 0);
 		Ray ray = new Ray(location, location.getDirection(), 15);
@@ -335,6 +355,7 @@ public class MageListener implements Listener {
 								AbstractCharacter character = ((CharacterCollider) other).getCharacter();
 								if (!character.isFriendly(pc)) {
 									character.damage(damageAmount, pc);
+									SHADOW_VOID_HIT_NOISE.play(character.getLocation());
 								}
 							}
 						}
@@ -364,7 +385,6 @@ public class MageListener implements Listener {
 		}
 		int level = event.getNewLevel();
 		if (level == 1) {
-			pc.giveItem(Item.forID(1));
 			pc.setMaxHealth(25);
 			pc.setCurrentHealth(25);
 			pc.setHealthRegenRate(0.2);

@@ -40,9 +40,10 @@ public class TrainingDummy extends NonPlayerCharacter {
 					Source source = event.getKiller();
 					if (source instanceof PlayerCharacter) {
 						PlayerCharacter pc = (PlayerCharacter) source;
-//						if (skillsTutorial.getStatus(pc) == QuestStatus.IN_PROGRESS) {
-//							skillsTutorial.getObjectives()[0].addProgress(pc, 1);
-//						}
+						Quest.forName("Tutorial Part 2 (Fighter)").getObjective(0).addProgress(pc, 1);
+						Quest.forName("Tutorial Part 3 (Fighter)").getObjective(1).addProgress(pc, 1);
+						Quest.forName("Tutorial Part 2 (Mage)").getObjective(0).addProgress(pc, 1);
+						Quest.forName("Tutorial Part 3 (Mage)").getObjective(1).addProgress(pc, 1);
 					}
 				}
 			}

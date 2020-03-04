@@ -65,7 +65,7 @@ public class IOUtils {
 	 * The folder in which the plugin's data should be contained.
 	 */
 	public static File getDataFolder() {
-		File dataFolder = MMORPGPlugin.getPlugin().getDataFolder();
+		File dataFolder = MMORPGPlugin.getInstance().getDataFolder();
 		if (!dataFolder.exists()) {
 			dataFolder.mkdir();
 		}

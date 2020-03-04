@@ -24,11 +24,13 @@ import org.bukkit.potion.PotionEffectType;
 import com.mcmmorpg.common.character.PlayerCharacter;
 import com.mcmmorpg.common.event.StaticInteractableEvent;
 import com.mcmmorpg.common.item.ItemFactory;
+import com.mcmmorpg.common.item.Weapon;
 import com.mcmmorpg.common.persistence.PersistentPlayerCharacterDataContainer;
 import com.mcmmorpg.common.playerClass.PlayerClass;
 import com.mcmmorpg.common.sound.Noise;
 import com.mcmmorpg.common.ui.TextPanel;
 import com.mcmmorpg.common.utils.IOUtils;
+import com.mcmmorpg.impl.ItemManager;
 import com.mcmmorpg.impl.Worlds;
 import com.mcmmorpg.impl.playerCharacterSelection.PlayerCharacterSelectionProfile.Menu;
 
@@ -104,8 +106,8 @@ public class PlayerCharacterSelectionListener implements Listener {
 				ChatColor.GRAY + "No, do not delete this character", Material.BARRIER);
 		DELETE_CONFIRM_INVENTORY.setItem(2, confirmItemStack);
 		DELETE_CONFIRM_INVENTORY.setItem(6, cancelItemStack);
-		STARTING_ZONE = ChatColor.GREEN + "Flinton";
-		STARTING_LOCATION = new Location(Worlds.ELADRADOR, 0, 64, 0);
+		STARTING_ZONE = ChatColor.GREEN + "Melcher";
+		STARTING_LOCATION = new Location(Worlds.ELADRADOR, -500, 65, -92);
 		INVISIBILITY = new PotionEffect(PotionEffectType.INVISIBILITY, Integer.MAX_VALUE, 1);
 	}
 
@@ -349,8 +351,17 @@ public class PlayerCharacterSelectionListener implements Listener {
 	private void createNewCharacter(Player player, PlayerClass playerClass, int characterSlot) {
 		File characterSaveFile = getCharacterSaveFile(player, characterSlot);
 		IOUtils.createFile(characterSaveFile);
+		Weapon startWeapon;
+		String playerClassName = playerClass.getName();
+		if (playerClassName.equals("Fighter")) {
+			startWeapon = ItemManager.APPRENTICE_SWORD;
+		} else if (playerClassName.equals("Mage")) {
+			startWeapon = ItemManager.APPRENTICE_STAFF;
+		} else {
+			startWeapon = null;
+		}
 		PersistentPlayerCharacterDataContainer data = PersistentPlayerCharacterDataContainer.createFreshSaveData(player,
-				playerClass, STARTING_ZONE, STARTING_LOCATION);
+				playerClass, STARTING_ZONE, STARTING_LOCATION, startWeapon);
 		IOUtils.writeJson(characterSaveFile, data);
 	}
 

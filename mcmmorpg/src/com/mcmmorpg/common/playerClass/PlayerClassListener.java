@@ -37,7 +37,8 @@ class PlayerClassListener implements Listener {
 						ItemStack itemStack = inventory.getItem(j);
 						Skill skill = playerClass.skillForHotbarItemStack(itemStack);
 						if (skill != null) {
-							if (pc.isSilenced() || skill.isOnCooldown(pc)) {
+							if (pc.isSilenced() || skill.isOnCooldown(pc)
+									|| pc.getCurrentMana() < skill.getManaCost()) {
 								itemStack.setType(Skill.DISABLED_MATERIAL);
 								int cooldown = (int) Math.ceil(skill.getCooldown(pc));
 								if (cooldown != 0) {
@@ -75,9 +76,6 @@ class PlayerClassListener implements Listener {
 		}
 
 		if (pc.isSilenced()) {
-			CLICK_NOISE.play(player);
-		} else if (pc.getWeapon() == null || pc.getPlayerClass() != pc.getWeapon().getPlayerClass()) {
-			pc.sendMessage(ChatColor.GRAY + "You must wield a weapon to use skills");
 			CLICK_NOISE.play(player);
 		} else if (skill.isOnCooldown(pc)) {
 			pc.sendMessage(ChatColor.GREEN + skill.getName() + ChatColor.GRAY + " is on cooldown (" + ChatColor.YELLOW
