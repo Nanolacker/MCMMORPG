@@ -89,7 +89,9 @@ public class MessageSequence {
 
 		private void advance() {
 			String message = sequence.messages[messageIndex];
-			pc.sendMessage(message);
+			if (message != null) {
+				pc.sendMessage(message);
+			}
 			sequence.onAdvance(pc, messageIndex);
 			messageIndex++;
 			final int nextMessageIndex = messageIndex;

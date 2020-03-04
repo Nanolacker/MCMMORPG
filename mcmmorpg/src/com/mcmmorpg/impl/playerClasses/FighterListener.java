@@ -127,6 +127,7 @@ public class FighterListener implements Listener {
 		if (!hit[0]) {
 			BASH_MISS_NOISE.play(location);
 		}
+		Quest.forName("Tutorial Part 3 (Fighter)").getObjective(0).addProgress(pc, 1);
 	}
 
 	private void useSelfHeal(PlayerCharacter pc) {
