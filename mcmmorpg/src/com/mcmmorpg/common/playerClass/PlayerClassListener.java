@@ -118,7 +118,7 @@ class PlayerClassListener implements Listener {
 				player.sendMessage(ChatColor.GREEN + droppedSkill.getName() + ChatColor.GRAY + " removed from hotbar");
 			} else if (slot == 36) {
 				event.setCancelled(true);
-				player.sendMessage(ChatColor.GRAY + "Only weapons can be placed here");
+				player.sendMessage(ChatColor.GRAY + "The first slot of your hotbar is reserved for your weapon");
 			} else if (slot < 37 || slot > 44) {
 				event.setCancelled(true);
 				player.sendMessage(ChatColor.GRAY + "Skills can only be placed on your hotbar");
@@ -142,7 +142,7 @@ class PlayerClassListener implements Listener {
 		int slot = (int) event.getRawSlots().toArray()[0];
 		if (slot == 36) {
 			event.setCancelled(true);
-			player.sendMessage(ChatColor.GRAY + "Only weapons can be placed on the first slot of your hotbar");
+			player.sendMessage(ChatColor.GRAY + "The first slot of your hotbar is reserved for your weapon");
 		} else if (slot < 36 || slot > 44) {
 			event.setCancelled(true);
 			player.sendMessage(ChatColor.GRAY + "Skills can only be placed on your hotbar");

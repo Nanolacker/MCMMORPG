@@ -10,15 +10,17 @@ public class ArmorItem extends Item {
 
 	private final String playerClass;
 	private final int level;
+	private final ArmorType type;
 	private final double protections;
 
 	private transient PlayerClass playerClass0;
 
 	public ArmorItem(int id, String name, ItemRarity rarity, Material icon, String description, String playerClass,
-			int level, int protections) {
+			int level, ArmorType type, int protections) {
 		super(id, name, rarity, icon, description);
 		this.playerClass = playerClass;
 		this.level = level;
+		this.type = type;
 		this.protections = protections;
 	}
 
@@ -33,7 +35,7 @@ public class ArmorItem extends Item {
 		ItemRarity rarity = getRarity();
 		String lore = ChatColor.GOLD + playerClass + " Armor Item" + ChatColor.GOLD + "\nLevel " + level + "\n"
 				+ (int) protections + " Protections\n" + rarity.getColor() + rarity + " Item\n\n" + ChatColor.RESET
-				+ getDescription() + ChatColor.GRAY + "\n\nDrag and drop to equip";
+				+ getDescription() + ChatColor.GRAY + "\n\nShift-click to equip/unequip";
 		return ItemFactory.createItemStack(rarity.getColor() + getName(), lore, getIcon());
 	}
 
@@ -45,12 +47,16 @@ public class ArmorItem extends Item {
 		return level;
 	}
 
+	public ArmorType getType() {
+		return type;
+	}
+
 	public double getProtections() {
 		return protections;
 	}
 
 	public static enum ArmorType {
-		HEAD, CHEST, LEGS, FEET
+		FEET, LEGS, CHEST, HEAD
 	}
 
 }

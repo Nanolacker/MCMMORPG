@@ -8,6 +8,7 @@ import java.util.Map;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
+import com.mcmmorpg.common.character.AbstractCharacter;
 import com.mcmmorpg.common.character.PlayerCharacter;
 import com.mcmmorpg.common.event.EventManager;
 import com.mcmmorpg.common.event.PlayerCharacterRemoveEvent;
@@ -26,12 +27,15 @@ public class MessageSequence {
 	private final Map<PlayerCharacter, MessageSequencePlayer> sequencePlayerMap = new HashMap<>();
 
 	/**
-	 * @param period
-	 *            the delay between messages in seconds
+	 * @param period the delay between messages in seconds
 	 */
 	public MessageSequence(double period, String... messages) {
 		this.messages = messages;
 		this.period = period;
+	}
+
+	public MessageSequence(double period, AbstractCharacter speaker, String... messages) {
+		this(period, speaker.formatDialogue(messages));
 	}
 
 	static {

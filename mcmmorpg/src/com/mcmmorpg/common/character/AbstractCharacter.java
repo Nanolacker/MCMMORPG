@@ -278,7 +278,7 @@ public abstract class AbstractCharacter implements Source {
 		}
 	}
 
-	public String[] formatDialgoue(String[] dialogue) {
+	public String[] formatDialogue(String[] dialogue) {
 		String[] formattedDialogue = new String[dialogue.length];
 		for (int i = 0; i < dialogue.length; i++) {
 			formattedDialogue[i] = formatDialogue(dialogue[i]);
