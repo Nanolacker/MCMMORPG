@@ -21,3 +21,12 @@ commands:
     grantxp:
         description: Grants the specified amount of XP.
         usage: /<command>
+    giveitem:
+        description: Gives the item with the specified ID.
+        usage: /<command>
+    startquest:
+        description: Starts the quest with the specified name.
+        usage: /<command>
+    completequest:
+        description: Completes the quest with the specified name.
+        usage: /<command>

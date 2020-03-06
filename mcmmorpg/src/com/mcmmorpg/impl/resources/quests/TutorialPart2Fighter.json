@@ -4,12 +4,12 @@
 	"objectives": [
 		{
 			"goal": 5,
-			"description": "Slay 5 §cTraining Dummies"
+			"description": "Slay 5 §7[§cTraining Dummy§7]"
 		},
 		{
 			"goal": 1,
-			"description": "Return to §a[Trainer]§f when done"
+			"description": "Return to §7[§aCombat Trainer§7]§f when done"
 		}
 	],
-	"icon": "EMERALD"
+	"icon": "WOODEN_SWORD"
 }

@@ -33,9 +33,9 @@ public class ArmorItem extends Item {
 	@Override
 	protected ItemStack createItemStack() {
 		ItemRarity rarity = getRarity();
-		String lore = ChatColor.GOLD + playerClass + " Armor Item" + ChatColor.GOLD + "\nLevel " + level + "\n"
-				+ (int) protections + " Protections\n" + rarity.getColor() + rarity + " Item\n\n" + ChatColor.RESET
-				+ getDescription() + ChatColor.GRAY + "\n\nShift-click to equip/unequip";
+		String lore = ChatColor.GOLD + playerClass + " Armor Item" + ChatColor.GOLD + "\nLevel " + level + "\n" + type
+				+ "\n" + (int) protections + " Protections\n" + rarity.getColor() + rarity + " Item\n\n"
+				+ ChatColor.RESET + getDescription() + ChatColor.GRAY + "\n\nShift-click to equip/unequip";
 		return ItemFactory.createItemStack(rarity.getColor() + getName(), lore, getIcon());
 	}
 
@@ -56,7 +56,18 @@ public class ArmorItem extends Item {
 	}
 
 	public static enum ArmorType {
-		FEET, LEGS, CHEST, HEAD
+		FEET("Feet"), LEGS("Legs"), CHEST("Chest"), HEAD("Head");
+
+		private final String name;
+
+		ArmorType(String name) {
+			this.name = name;
+		}
+
+		@Override
+		public String toString() {
+			return name;
+		}
 	}
 
 }

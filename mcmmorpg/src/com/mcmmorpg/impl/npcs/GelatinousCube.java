@@ -146,7 +146,7 @@ public class GelatinousCube extends NonPlayerCharacter implements Listener {
 		// DEATH_NOISE.play(location);
 		location.getWorld().spawnParticle(Particle.CLOUD, location, 10);
 		setLocation(spawnLocation);
-		LootChest.spawnLootChest(location, new ItemStack[0]);
+		LootChest.spawnLootChest(location);
 		if (respawn) {
 			DelayedTask respawnTask = new DelayedTask(10) {
 				@Override

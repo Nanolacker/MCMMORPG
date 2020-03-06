@@ -4,8 +4,8 @@
 	"objectives": [
 		{
 			"goal": 1,
-			"description": "Speak with §a[Trainer]§f at (x, y, z) to begin your training"
+			"description": "Speak with §7[§aCombat Trainer]§f at (x, y, z) to begin your training"
 		}
 	],
-	"icon": "EMERALD"
+	"icon": "WOODEN_SWORD"
 }

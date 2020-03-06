@@ -17,7 +17,7 @@ import com.mcmmorpg.common.sound.SoundSequence;
 import com.mcmmorpg.common.utils.IOUtils;
 import com.mcmmorpg.impl.Worlds;
 import com.mcmmorpg.impl.npcs.TrainingDummy;
-import com.mcmmorpg.impl.npcs.TutorialGuide;
+import com.mcmmorpg.impl.npcs.CombatTrainer;
 import com.mcmmorpg.impl.npcs.WildBoar;
 import com.mcmmorpg.impl.npcs.Witch;
 
@@ -86,7 +86,6 @@ public class BulskanRuinsListener implements Listener {
 		// new Bat(3, new Location(Worlds.ELADRADOR, 170, 70, 0), 20).setAlive(true);
 		// }
 		// new RottenDweller(locations[1]).setAlive(true);
-		new TutorialGuide(locations[1]).setAlive(true);
 		new TrainingDummy(locations[0]).setAlive(true);
 		new WildBoar(1, locations[2]).setAlive(true);
 		Witch witch = new Witch(ChatColor.GREEN + "Witch", 7, locations[3]) {

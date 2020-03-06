@@ -12,7 +12,6 @@ import org.bukkit.entity.PolarBear;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
@@ -25,6 +24,7 @@ import com.mcmmorpg.common.character.PlayerCharacter;
 import com.mcmmorpg.common.character.PlayerCharacter.PlayerCharacterCollider;
 import com.mcmmorpg.common.character.Source;
 import com.mcmmorpg.common.event.EventManager;
+import com.mcmmorpg.common.item.Item;
 import com.mcmmorpg.common.item.LootChest;
 import com.mcmmorpg.common.physics.Collider;
 import com.mcmmorpg.common.sound.Noise;
@@ -32,7 +32,7 @@ import com.mcmmorpg.common.time.DelayedTask;
 
 public class WildBoar extends NonPlayerCharacter implements Listener {
 
-	private static final double respawnTime = 30;
+	private static final double respawnTime = 5;
 	private static final Noise DAMAGE_NOISE = new Noise(Sound.ENTITY_PIG_HURT, 1, 0.5f);
 	private static final Noise DEATH_NOISE = new Noise(Sound.ENTITY_PIG_DEATH, 1, 0.5f);
 
@@ -114,7 +114,7 @@ public class WildBoar extends NonPlayerCharacter implements Listener {
 		DEATH_NOISE.play(location);
 		location.getWorld().spawnParticle(Particle.CLOUD, location, 10);
 		setLocation(spawnLocation);
-		LootChest.spawnLootChest(location, new ItemStack[0]);
+		LootChest.spawnLootChest(location, Item.forID(10));
 		DelayedTask respawn = new DelayedTask(respawnTime) {
 			@Override
 			protected void run() {

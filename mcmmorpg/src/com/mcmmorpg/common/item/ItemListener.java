@@ -14,6 +14,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
+import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.event.player.PlayerAnimationEvent;
 import org.bukkit.event.player.PlayerAnimationType;
 import org.bukkit.event.player.PlayerDropItemEvent;
@@ -115,7 +116,7 @@ class ItemListener implements Listener {
 			itemEntity.remove();
 		} else {
 			Player player = event.getPlayer();
-			if (player.getInventory().getItem(36) == null) {
+			if (player.getInventory().getItem(0) == null) {
 				// when the player tries to throw their weapon
 				event.setCancelled(true);
 			}
@@ -158,8 +159,9 @@ class ItemListener implements Listener {
 		}
 
 		int rawSlot = event.getRawSlot();
-		if (rawSlot == 36 || (rawSlot >= 5 && rawSlot < 8)) {
+		if (rawSlot == 36 || rawSlot == 45 || (rawSlot >= 5 && rawSlot < 8)) {
 			// don't let the player fiddle with throwing away their equipment
+			// 45 = offhand
 			event.setCancelled(true);
 		}
 
@@ -195,7 +197,7 @@ class ItemListener implements Listener {
 				}
 			} else if (clickedItem instanceof ArmorItem) {
 				ArmorItem armorItem = (ArmorItem) clickedItem;
-				Inventory inventory = event.getInventory();
+				Inventory inventory = player.getInventory();
 				int slot = event.getSlot();
 				if (rawSlot >= 5 && rawSlot < 9) {
 					// unequip
@@ -217,16 +219,16 @@ class ItemListener implements Listener {
 						int armorSlot;
 						switch (armorItem.getType()) {
 						case FEET:
-							armorSlot = 100;
+							armorSlot = 36;
 							break;
 						case LEGS:
-							armorSlot = 101;
+							armorSlot = 37;
 							break;
 						case CHEST:
-							armorSlot = 102;
+							armorSlot = 38;
 							break;
 						case HEAD:
-							armorSlot = 103;
+							armorSlot = 39;
 							break;
 						default:
 							armorSlot = -1;
@@ -240,6 +242,20 @@ class ItemListener implements Listener {
 				}
 				CLICK_NOISE.play(player);
 			}
+		}
+	}
+
+	@EventHandler
+	private void onDragItem(InventoryDragEvent event) {
+		Player player = (Player) event.getWhoClicked();
+		PlayerCharacter pc = PlayerCharacter.forPlayer(player);
+		if (pc == null) {
+			return;
+		}
+		int rawSlot = (int) event.getRawSlots().toArray()[0];
+		if (rawSlot == 45 || (rawSlot >= 5 && rawSlot < 8)) {
+			// 45 = offhand
+			event.setCancelled(true);
 		}
 	}
 

@@ -116,7 +116,7 @@ public class Highwayman extends NonPlayerCharacter implements Listener {
 		DEATH_NOISE.play(location);
 		location.getWorld().spawnParticle(Particle.CLOUD, location, 10);
 		setLocation(spawnLocation);
-		LootChest.spawnLootChest(location, new ItemStack[0]);
+		LootChest.spawnLootChest(location);
 		DelayedTask respawn = new DelayedTask(respawnTime) {
 			@Override
 			protected void run() {

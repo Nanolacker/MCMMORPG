@@ -82,9 +82,9 @@ class PlayerClassListener implements Listener {
 					+ (int) Math.ceil(skill.getCooldown(pc)) + ChatColor.GRAY + ")");
 			CLICK_NOISE.play(player);
 		} else if (pc.getCurrentMana() < skill.getManaCost()) {
-			pc.sendMessage(ChatColor.GRAY + "Not enough " + ChatColor.AQUA + "MP " + ChatColor.GRAY + "to use "
-					+ ChatColor.GREEN + skill.getName() + ChatColor.GRAY + " (" + ChatColor.AQUA
-					+ (int) Math.ceil(skill.getManaCost()) + ChatColor.GRAY + ")");
+			pc.sendMessage(ChatColor.GREEN + skill.getName() + ChatColor.GRAY + " requires more " + ChatColor.AQUA
+					+ "MP " + ChatColor.GRAY + "(" + ChatColor.AQUA + (int) Math.ceil(skill.getManaCost())
+					+ ChatColor.GRAY + ")");
 			CLICK_NOISE.play(player);
 		} else {
 			skill.use(pc);

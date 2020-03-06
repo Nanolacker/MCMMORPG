@@ -78,9 +78,17 @@ public class Quest {
 		return pc.getQuestManager().getStatus(this);
 	}
 
+	/**
+	 * Returns true if the player character's status on this quest is equal to the
+	 * one specified.
+	 */
+	public boolean compareStatus(PlayerCharacter pc, QuestStatus status) {
+		return getStatus(pc) == status;
+	}
+
 	public void start(PlayerCharacter pc) {
 		if (getStatus(pc) != QuestStatus.NOT_STARTED) {
-			throw new IllegalArgumentException("Player has already started quest");
+			return;
 		}
 		PlayerQuestManager questManager = pc.getQuestManager();
 		questManager.startQuest(this);

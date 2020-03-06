@@ -1,0 +1,11 @@
+{
+	"name": "Reporting for Duty",
+	"level": 1,
+	"objectives": [
+		{
+			"goal": 1,
+			"description": "Speak with §7[§aBandit Quest Giver§7]§f"
+		}
+	],
+	"icon": "IRON_SWORD"
+}

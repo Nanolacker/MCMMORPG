@@ -33,6 +33,7 @@ import com.mcmmorpg.common.sound.Noise;
 import com.mcmmorpg.common.time.DelayedTask;
 import com.mcmmorpg.common.time.RepeatingTask;
 import com.mcmmorpg.common.utils.Debug;
+import com.mcmmorpg.impl.ItemManager;
 
 public class MageListener implements Listener {
 
@@ -60,6 +61,24 @@ public class MageListener implements Listener {
 		restore = mage.skillForName("Restore");
 		earthquake = mage.skillForName("Earthquake");
 		shadowVoid = mage.skillForName("Shadow Void");
+	}
+
+	@EventHandler
+	private void onLevelUp(PlayerCharacterLevelUpEvent event) {
+		PlayerCharacter pc = event.getPlayerCharacter();
+		if (pc.getPlayerClass() != mage) {
+			return;
+		}
+		int level = event.getNewLevel();
+		if (level == 1) {
+			pc.setMaxHealth(25);
+			pc.setCurrentHealth(25);
+			pc.setHealthRegenRate(0.2);
+			pc.setMaxMana(15);
+			pc.setCurrentMana(15);
+			pc.setManaRegenRate(1);
+			pc.giveItem(Item.forID(10));
+		}
 	}
 
 	@EventHandler
@@ -378,38 +397,18 @@ public class MageListener implements Listener {
 	}
 
 	@EventHandler
-	private void onLevelUp(PlayerCharacterLevelUpEvent event) {
-		PlayerCharacter pc = event.getPlayerCharacter();
-		if (pc.getPlayerClass() != mage) {
-			return;
-		}
-		int level = event.getNewLevel();
-		if (level == 1) {
-			pc.setMaxHealth(25);
-			pc.setCurrentHealth(25);
-			pc.setHealthRegenRate(0.2);
-			pc.setMaxMana(15);
-			pc.setCurrentMana(15);
-			pc.setManaRegenRate(1);
-			pc.grantXp(Integer.MAX_VALUE);
-		}
-	}
-
-	@EventHandler
 	private void onWeaponUse(PlayerCharacterUseWeaponEvent event) {
 		PlayerCharacter pc = event.getPlayerCharacter();
 		if (pc.getPlayerClass() != mage) {
 			return;
 		}
 		Weapon weapon = event.getWeapon();
-		if (weapon == null) {
-			useFists(pc);
-		} else if (weapon.getID() == 1) {
-			useFists(pc);
+		if (weapon == ItemManager.APPRENTICE_STAFF) {
+			useApprenticeStaff(pc);
 		}
 	}
 
-	private void useFists(PlayerCharacter pc) {
+	private void useApprenticeStaff(PlayerCharacter pc) {
 		double damage = 1;
 		Location start = pc.getLocation().add(0, 1.5, 0);
 		Vector direction = start.getDirection();

@@ -2,6 +2,7 @@ package com.mcmmorpg.common.item;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -21,7 +22,6 @@ import com.mcmmorpg.common.character.PlayerCharacter;
 import com.mcmmorpg.common.time.DelayedTask;
 import com.mcmmorpg.common.time.RepeatingTask;
 import com.mcmmorpg.common.ui.ProgressBar;
-import com.mcmmorpg.common.utils.Debug;
 
 public class LootChest {
 
@@ -49,19 +49,21 @@ public class LootChest {
 	}
 
 	private final Location location;
+	private final int size;
 	private final Particle aura;
-	private final ItemStack[] contents;
 	private final PlayerCharacter owner;
+	private final Item[] contents;
 	private boolean removed;
 	private final ProgressBar lifetimeBar;
 
-	private LootChest(Location location, String title, Material material, Particle aura, double lifetimeSeconds,
-			ItemStack[] contents, PlayerCharacter owner) {
+	private LootChest(Location location, String title, int size, Material material, Particle aura,
+			double lifetimeSeconds, PlayerCharacter owner, Item[] contents) {
 		this.location = getNearestEmptyBlock(location);
+		this.size = size;
 		this.aura = aura;
-		this.contents = contents;
 		// starting owner state
 		this.owner = owner;
+		this.contents = contents;
 		this.removed = false;
 
 		Block block = this.location.getBlock();
@@ -83,14 +85,14 @@ public class LootChest {
 	/**
 	 * The default loot chest.
 	 */
-	public static LootChest spawnLootChest(Location location, ItemStack[] contents) {
-		return spawnLootChest(location, ChatColor.GOLD + "Loot Chest", Material.CHEST, Particle.VILLAGER_HAPPY, 30,
-				contents, null);
+	public static LootChest spawnLootChest(Location location, Item... contents) {
+		return spawnLootChest(location, ChatColor.GOLD + "Loot Chest", 27, Material.CHEST, Particle.VILLAGER_HAPPY, 30,
+				null, contents);
 	}
 
-	public static LootChest spawnLootChest(Location location, String title, Material material, Particle aura,
-			double lifetimeSeconds, ItemStack[] contents, PlayerCharacter owner) {
-		return new LootChest(location, title, material, aura, lifetimeSeconds, contents, owner);
+	public static LootChest spawnLootChest(Location location, String title, int size, Material material, Particle aura,
+			double lifetimeSeconds, PlayerCharacter owner, Item... contents) {
+		return new LootChest(location, title, size, material, aura, lifetimeSeconds, owner, contents);
 	}
 
 	/**
@@ -124,8 +126,17 @@ public class LootChest {
 	}
 
 	void open(PlayerCharacter pc) {
-		Inventory inventory = Bukkit.createInventory(null, 9, "Loot");
-		inventory.setContents(contents);
+		Inventory inventory = Bukkit.createInventory(null, size, "Loot");
+		ArrayList<ItemStack> itemStacks = new ArrayList<>(size);
+		for (int i = 0; i < contents.length; i++) {
+			ItemStack itemStack = contents[i].getItemStack();
+			itemStacks.add(itemStack);
+		}
+		for (int i = contents.length; i < size; i++) {
+			itemStacks.add(null);
+		}
+		Collections.shuffle(itemStacks);
+		inventory.setContents(itemStacks.toArray(new ItemStack[itemStacks.size()]));
 		pc.getPlayer().openInventory(inventory);
 		inventories.add(inventory);
 	}

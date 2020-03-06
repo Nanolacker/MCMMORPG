@@ -215,35 +215,41 @@ public class PlayerCharacterSelectionListener implements Listener {
 	}
 
 	private ItemStack getCharacterSelectItemStack(Player player, int characterSlot) {
+		ItemStack itemStack;
 		PlayerCharacterSelectionProfile profile = profileMap.get(player);
 		PersistentPlayerCharacterDataContainer data = profile.getCharacterData(characterSlot);
 		String title = ChatColor.GREEN + "Character " + characterSlot;
 		if (data == null) {
-			return ItemFactory.createItemStack(title, ChatColor.GRAY + "Create new character", Material.GLASS);
+			itemStack = ItemFactory.createItemStack(title, ChatColor.GRAY + "Create new character", Material.GLASS);
 		} else {
 			PlayerClass playerClass = data.getPlayerClass();
 			Material material = materialForPlayerClass(playerClass);
 			int level = PlayerCharacter.xpToLevel(data.getXP());
 			String lore = ChatColor.GOLD + "Level " + level + " " + playerClass.getName() + "\n" + data.getZone()
 					+ ChatColor.GRAY + "\n\nClick to play this character";
-			return ItemFactory.createItemStack(title, lore, material);
+			itemStack = ItemFactory.createItemStack(title, lore, material);
 		}
+		itemStack.setAmount(characterSlot);
+		return itemStack;
 	}
 
 	private ItemStack getCharacterDeleteItemStack(Player player, int characterSlot) {
+		ItemStack itemStack;
 		PlayerCharacterSelectionProfile profile = profileMap.get(player);
 		PersistentPlayerCharacterDataContainer data = profile.getCharacterData(characterSlot);
 		String title = ChatColor.RED + "Character " + characterSlot;
 		if (data == null) {
-			return ItemFactory.createItemStack(title, ChatColor.GRAY + "No character created", Material.GLASS);
+			itemStack = ItemFactory.createItemStack(title, ChatColor.GRAY + "No character created", Material.GLASS);
 		} else {
 			PlayerClass playerClass = data.getPlayerClass();
 			Material material = Material.BARRIER;
 			int level = PlayerCharacter.xpToLevel(data.getXP());
 			String lore = ChatColor.GOLD + "Level " + level + " " + playerClass.getName() + "\n" + data.getZone()
 					+ ChatColor.GRAY + "\n\nClick to delete this character";
-			return ItemFactory.createItemStack(title, lore, material);
+			itemStack = ItemFactory.createItemStack(title, lore, material);
 		}
+		itemStack.setAmount(characterSlot);
+		return itemStack;
 	}
 
 	private Material materialForPlayerClass(PlayerClass playerClass) {

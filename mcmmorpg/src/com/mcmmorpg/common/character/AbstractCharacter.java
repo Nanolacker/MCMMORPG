@@ -270,11 +270,15 @@ public abstract class AbstractCharacter implements Source {
 		return false;
 	}
 
+	public String formatName() {
+		return ChatColor.GRAY + "[" + ChatColor.RESET + name + ChatColor.GRAY + "]" + ChatColor.RESET;
+	}
+
 	public String formatDialogue(String dialogue) {
 		if (dialogue == null) {
 			return null;
 		} else {
-			return ChatColor.GRAY + "[" + ChatColor.RESET + name + ChatColor.GRAY + "]: " + ChatColor.RESET + dialogue;
+			return formatName() + ChatColor.GRAY + ": " + ChatColor.RESET + dialogue;
 		}
 	}
 
