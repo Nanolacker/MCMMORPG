@@ -99,6 +99,10 @@ public class QuestObjective {
 		setProgress(pc, progress + progressToAdd);
 	}
 
+	public void complete(PlayerCharacter pc) {
+		setProgress(pc, goal);
+	}
+
 	/**
 	 * Returns whether the player character has completed this objective. Returns
 	 * true if the player character has finished this quest or false if the player

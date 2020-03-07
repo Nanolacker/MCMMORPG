@@ -8,6 +8,9 @@ import com.mcmmorpg.common.quest.Quest;
 import com.mcmmorpg.common.quest.QuestStatus;
 import com.mcmmorpg.common.sound.Noise;
 import com.mcmmorpg.common.ui.MessageSequence;
+import com.mcmmorpg.common.ui.QuestNotice;
+
+import net.md_5.bungee.api.ChatColor;
 
 public class BanditQuestGiver extends StaticHuman {
 
@@ -19,9 +22,12 @@ public class BanditQuestGiver extends StaticHuman {
 	private static final Quest SLAYING_THE_THIEVES = Quest.forName("Slaying the Thieves");
 
 	private final MessageSequence sequence1;
+	private final MessageSequence sequence2;
 
 	public BanditQuestGiver(Location location) {
-		super("Bandit Quest Giver", 7, location, TEXTURE_DATA, TEXTURE_SIGNATURE);
+		super(ChatColor.GREEN + "Bandit Quest Giver", 7, location, TEXTURE_DATA, TEXTURE_SIGNATURE);
+		QuestNotice.createQuestNotice(location.clone().add(0, 2.25, 0));
+
 		sequence1 = new MessageSequence(3, this, "Greetings adventurer.", null, "Go kill some thieves.", null) {
 			@Override
 			protected void onAdvance(PlayerCharacter pc, int messageIndex) {
@@ -34,14 +40,33 @@ public class BanditQuestGiver extends StaticHuman {
 				}
 			}
 		};
+
+		sequence2 = new MessageSequence(3, this, "Thank you for your help.", null) {
+			@Override
+			protected void onAdvance(PlayerCharacter pc, int messageIndex) {
+				if (messageIndex == 1) {
+					SLAYING_THE_THIEVES.getObjective(1).complete(pc);
+				} else {
+					SPEAK_NOISE.play(pc);
+				}
+			}
+		};
 	}
 
 	@Override
 	protected void onInteract(PlayerCharacter pc) {
-		if (SLAYING_THE_THIEVES.compareStatus(pc, QuestStatus.NOT_STARTED)
+		if (REPORTING_FOR_DUTY.compareStatus(pc, QuestStatus.NOT_STARTED)) {
+			say("You should complete your training, adventurer.", pc);
+		} else if (SLAYING_THE_THIEVES.compareStatus(pc, QuestStatus.NOT_STARTED)
 				&& (REPORTING_FOR_DUTY.compareStatus(pc, QuestStatus.IN_PROGRESS)
 						|| REPORTING_FOR_DUTY.compareStatus(pc, QuestStatus.COMPLETED))) {
 			sequence1.advance(pc);
+		} else if (SLAYING_THE_THIEVES.compareStatus(pc, QuestStatus.IN_PROGRESS)) {
+			if (SLAYING_THE_THIEVES.getObjective(0).isComplete(pc)) {
+				sequence2.advance(pc);
+			} else {
+				say("Go get those bandits.", pc);
+			}
 		}
 	}
 

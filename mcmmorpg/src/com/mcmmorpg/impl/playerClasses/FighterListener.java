@@ -30,6 +30,7 @@ import com.mcmmorpg.common.quest.Quest;
 import com.mcmmorpg.common.sound.Noise;
 import com.mcmmorpg.common.time.DelayedTask;
 import com.mcmmorpg.common.time.RepeatingTask;
+import com.mcmmorpg.impl.ItemManager;
 
 public class FighterListener implements Listener {
 
@@ -37,13 +38,13 @@ public class FighterListener implements Listener {
 	private static final Noise BASH_HIT_NOISE = new Noise(Sound.ENTITY_ZOMBIE_ATTACK_IRON_DOOR);
 	private static final Noise SELF_HEAL_NOISE = new Noise(Sound.BLOCK_LAVA_EXTINGUISH);
 	private static final Noise CYCLONE_HIT_NOISE = new Noise(Sound.ENTITY_ZOMBIE_ATTACK_IRON_DOOR);
-	private static final Noise LUNGE_HIT_NOISE = new Noise(Sound.ENTITY_ZOMBIE_ATTACK_IRON_DOOR);
+	private static final Noise CHARGE_HIT_NOISE = new Noise(Sound.ENTITY_ZOMBIE_ATTACK_IRON_DOOR);
 	private static final Noise INSPIRE_NOISE = new Noise(Sound.BLOCK_LAVA_EXTINGUISH);
 
 	private final PlayerClass fighter;
 	private final Skill bash;
 	private final Skill selfHeal;
-	private final Skill lunge;
+	private final Skill charge;
 	private final Skill cyclone;
 	private final Skill overheadStrike;
 	private final Skill inspire;
@@ -52,7 +53,7 @@ public class FighterListener implements Listener {
 		fighter = PlayerClass.forName("Fighter");
 		bash = fighter.skillForName("Bash");
 		selfHeal = fighter.skillForName("Self Heal");
-		lunge = fighter.skillForName("Lunge");
+		charge = fighter.skillForName("Charge");
 		cyclone = fighter.skillForName("Cyclone");
 		overheadStrike = fighter.skillForName("Overhead Strike");
 		inspire = fighter.skillForName("Inspire");
@@ -69,9 +70,9 @@ public class FighterListener implements Listener {
 			pc.setMaxHealth(25);
 			pc.setCurrentHealth(25);
 			pc.setHealthRegenRate(0.2);
-			pc.setMaxMana(15);
-			pc.setCurrentMana(15);
-			pc.setManaRegenRate(1);
+			pc.setMaxMana(100);
+			pc.setCurrentMana(100);
+			pc.setManaRegenRate(10);
 			Quest.forName("Tutorial Part 1 (Fighter)").start(pc);
 		}
 	}
@@ -87,8 +88,8 @@ public class FighterListener implements Listener {
 			useBash(pc);
 		} else if (skill == selfHeal) {
 			useSelfHeal(pc);
-		} else if (skill == lunge) {
-			useLunge(pc);
+		} else if (skill == charge) {
+			useCharge(pc);
 		} else if (skill == cyclone) {
 			useCyclone(pc);
 		} else if (skill == overheadStrike) {
@@ -219,8 +220,8 @@ public class FighterListener implements Listener {
 		}
 	}
 
-	private void useLunge(PlayerCharacter pc) {
-		double damageAmount = 5 * lunge.getUpgradeLevel(pc);
+	private void useCharge(PlayerCharacter pc) {
+		double damageAmount = 5 * charge.getUpgradeLevel(pc);
 		Player player = pc.getPlayer();
 		Location location = player.getLocation();
 		Vector direction = location.getDirection();
@@ -235,7 +236,7 @@ public class FighterListener implements Listener {
 					AbstractCharacter character = ((CharacterCollider) hit).getCharacter();
 					if (!character.isFriendly(pc)) {
 						character.damage(damageAmount, pc);
-						LUNGE_HIT_NOISE.play(character.getLocation());
+						CHARGE_HIT_NOISE.play(character.getLocation());
 					}
 				}
 			}
@@ -279,34 +280,18 @@ public class FighterListener implements Listener {
 		if (pc.getPlayerClass() != fighter) {
 			return;
 		}
-		if (weapon == null) {
-			useFists(pc);
-		} else if (weapon.getID() == 0) {
-			useShortSword(pc);
+		if (weapon == ItemManager.APPRENTICE_SWORD) {
+			useApprenticeSword(pc);
 		}
 
 	}
 
-	private void useFists(PlayerCharacter pc) {
-		double damage = 1;
-		Location start = pc.getLocation().add(0, 1.5, 0);
-		Vector direction = start.getDirection();
-		Ray ray = new Ray(start, direction, 3);
-		Raycast raycast = new Raycast(ray, CharacterCollider.class);
-		Collider[] hits = raycast.getHits();
-		for (Collider hit : hits) {
-			AbstractCharacter character = ((CharacterCollider) hit).getCharacter();
-			if (!character.isFriendly(pc)) {
-				character.damage(damage, pc);
-			}
-		}
-		pc.disarm(0.75);
-	}
-
-	private void useShortSword(PlayerCharacter pc) {
+	private void useApprenticeSword(PlayerCharacter pc) {
 		double damage = 5;
 		Location start = pc.getLocation().add(0, 1.5, 0);
 		Vector direction = start.getDirection();
+		Location particleLocation = start.clone().add(direction.clone().multiply(2));
+		start.getWorld().spawnParticle(Particle.SWEEP_ATTACK, particleLocation, 0);
 		Ray ray = new Ray(start, direction, 3);
 		Raycast raycast = new Raycast(ray, CharacterCollider.class);
 		Collider[] hits = raycast.getHits();
@@ -317,7 +302,7 @@ public class FighterListener implements Listener {
 				new Noise(Sound.ENTITY_ZOMBIE_ATTACK_IRON_DOOR).play(character.getLocation());
 			}
 		}
-		pc.disarm(0.75);
+		pc.disarm(0.5);
 	}
 
 }

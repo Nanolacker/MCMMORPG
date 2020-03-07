@@ -10,6 +10,7 @@ import com.mcmmorpg.common.quest.Quest;
 import com.mcmmorpg.common.quest.QuestStatus;
 import com.mcmmorpg.common.sound.Noise;
 import com.mcmmorpg.common.ui.MessageSequence;
+import com.mcmmorpg.common.ui.QuestNotice;
 
 public class CombatTrainer extends StaticHuman {
 
@@ -31,6 +32,8 @@ public class CombatTrainer extends StaticHuman {
 
 	public CombatTrainer(Location location) {
 		super(ChatColor.GREEN + "Combat Trainer", 5, location, TEXTURE_DATA, TEXTURE_SIGNATURE);
+		QuestNotice.createQuestNotice(location.clone().add(0, 2.25, 0));
+		
 		fighter1Sequence = new MessageSequence(3, this, new String[] { "Welcome newcomer!", null,
 				"What brings you to Eladrador?", "Fame? Riches? Or perhaps serving the greater good?",
 				"Very well. Allow me to put you on the path to success.",
@@ -65,7 +68,7 @@ public class CombatTrainer extends StaticHuman {
 			protected void onAdvance(PlayerCharacter pc, int messageIndex) {
 				if (messageIndex == 1) {
 					FIGHTER_2.getObjective(1).setProgress(pc, 1);
-					pc.grantXp(40);
+					pc.grantXp(30);
 				} else if (messageIndex == 10) {
 					FIGHTER_3.start(pc);
 				} else {
@@ -82,7 +85,7 @@ public class CombatTrainer extends StaticHuman {
 			protected void onAdvance(PlayerCharacter pc, int messageIndex) {
 				if (messageIndex == 1) {
 					FIGHTER_3.getObjective(2).setProgress(pc, 1);
-					pc.grantXp(40);
+					pc.grantXp(30);
 				} else if (messageIndex == 5) {
 					REPORTING_FOR_DUTY.start(pc);
 				} else {

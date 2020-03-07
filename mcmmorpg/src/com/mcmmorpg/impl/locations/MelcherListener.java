@@ -6,6 +6,7 @@ import org.bukkit.event.Listener;
 import com.mcmmorpg.impl.Worlds;
 import com.mcmmorpg.impl.npcs.BanditQuestGiver;
 import com.mcmmorpg.impl.npcs.CombatTrainer;
+import com.mcmmorpg.impl.npcs.FoodQuestGiver;
 import com.mcmmorpg.impl.npcs.Thief;
 import com.mcmmorpg.impl.npcs.TrainingDummy;
 
@@ -29,6 +30,10 @@ public class MelcherListener implements Listener {
 		BanditQuestGiver banditQuestGiver = new BanditQuestGiver(banditQuestGiverLocation);
 		banditQuestGiver.setAlive(true);
 
+		Location foodQuestGiverLocation = new Location(Worlds.ELADRADOR, -485, 67, -117);
+		FoodQuestGiver foodQuestGiver = new FoodQuestGiver(foodQuestGiverLocation);
+		foodQuestGiver.setAlive(true);
+
 		Location[] trainingDummyLocations = { new Location(Worlds.ELADRADOR, -482, 66, -135),
 				new Location(Worlds.ELADRADOR, 479, 66, -131, 5, 13), new Location(Worlds.ELADRADOR, -488, 66, -133),
 				new Location(Worlds.ELADRADOR, -488, 66, -129), new Location(Worlds.ELADRADOR, -471, 66, -131),
@@ -37,7 +42,9 @@ public class MelcherListener implements Listener {
 			new TrainingDummy(location).setAlive(true);
 		}
 
-		Location[] thiefLocations = { new Location(Worlds.ELADRADOR, -441, 67, -117) };
+		Location[] thiefLocations = { new Location(Worlds.ELADRADOR, -441, 67, -117),
+				new Location(Worlds.ELADRADOR, -441, 67, -117), new Location(Worlds.ELADRADOR, -441, 67, -117),
+				new Location(Worlds.ELADRADOR, -441, 67, -117), new Location(Worlds.ELADRADOR, -441, 67, -117) };
 		for (Location location : thiefLocations) {
 			new Thief(3, location).setAlive(true);
 		}

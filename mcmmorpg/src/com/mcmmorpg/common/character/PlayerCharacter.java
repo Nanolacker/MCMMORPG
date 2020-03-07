@@ -685,9 +685,20 @@ public final class PlayerCharacter extends AbstractCharacter {
 
 	public void removeItem(Item item, int amount) {
 		ItemStack itemStack = item.getItemStack();
-		itemStack.setAmount(amount);
 		Inventory inventory = player.getInventory();
-		inventory.remove(itemStack);
+		ItemStack[] contents = inventory.getContents();
+		for (ItemStack content : contents) {
+			ItemStack unitContent = content.clone();
+			unitContent.setAmount(1);
+			if (itemStack.equals(unitContent)) {
+				int reduction = Math.min(amount, content.getAmount());
+				amount -= reduction;
+				content.setAmount(content.getAmount() - reduction);
+				if (amount == 0) {
+					break;
+				}
+			}
+		}
 	}
 
 	/**

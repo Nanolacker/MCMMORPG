@@ -26,8 +26,8 @@
 			"icon": "EMERALD"
 		},
 		{
-			"name": "Lunge",
-			"description": "Lunge forward and damage enemies in front of you",
+			"name": "Charge",
+			"description": "Charge forward and damage enemies in front of you",
 			"manaCost": 10,
 			"cooldown": 10,
 			"minimumLevel": 7,
@@ -43,7 +43,7 @@
 			"manaCost": 15,
 			"cooldown": 10,
 			"minimumLevel": 10,
-			"prerequisiteSkill": "Lunge",
+			"prerequisiteSkill": "Charge",
 			"maximumUpgradeLevel": 3,
 			"skillTreeRow": 4,
 			"skillTreeColumn": 1,
@@ -67,7 +67,7 @@
 			"manaCost": 30,
 			"cooldown": 15,
 			"minimumLevel": 16,
-			"prerequisiteSkill": "Lunge",
+			"prerequisiteSkill": "Charge",
 			"maximumUpgradeLevel": 4,
 			"skillTreeRow": 4,
 			"skillTreeColumn": 3,

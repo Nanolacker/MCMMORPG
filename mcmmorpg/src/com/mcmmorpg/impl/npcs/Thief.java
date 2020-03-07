@@ -31,6 +31,7 @@ import com.mcmmorpg.common.physics.Collider;
 import com.mcmmorpg.common.quest.Quest;
 import com.mcmmorpg.common.sound.Noise;
 import com.mcmmorpg.common.time.DelayedTask;
+import com.mcmmorpg.impl.ItemManager;
 
 public class Thief extends NonPlayerCharacter implements Listener {
 
@@ -117,7 +118,7 @@ public class Thief extends NonPlayerCharacter implements Listener {
 		DEATH_NOISE.play(location);
 		location.getWorld().spawnParticle(Particle.CLOUD, location, 10);
 		setLocation(spawnLocation);
-		LootChest.spawnLootChest(location);
+		LootChest.spawnLootChest(location, ItemManager.FOOD_SUPPLIES);
 		DelayedTask respawn = new DelayedTask(RESPAWN_TIME) {
 			@Override
 			protected void run() {
