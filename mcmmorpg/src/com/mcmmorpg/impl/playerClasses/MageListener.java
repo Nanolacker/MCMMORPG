@@ -32,7 +32,6 @@ import com.mcmmorpg.common.playerClass.Skill;
 import com.mcmmorpg.common.sound.Noise;
 import com.mcmmorpg.common.time.DelayedTask;
 import com.mcmmorpg.common.time.RepeatingTask;
-import com.mcmmorpg.common.utils.Debug;
 import com.mcmmorpg.impl.ItemManager;
 
 public class MageListener implements Listener {
@@ -42,8 +41,9 @@ public class MageListener implements Listener {
 	private static final Noise FIREBALL_EXPLODE_2_NOISE = new Noise(Sound.BLOCK_FIRE_AMBIENT);
 	private static final Noise WHIRLWIND_AMBIENT_NOISE = new Noise(Sound.ENTITY_WITHER_DEATH);
 	private static final Noise WHIRLWIND_SPEED_NOISE = new Noise(Sound.ENTITY_WITHER_SHOOT, 1, 2);
+	private static final Noise EARTHQUAKE_NOISE = new Noise(Sound.BLOCK_GRAVEL_FALL, 1, 0.5f);
 	private static final Noise SHADOW_VOID_USE_NOISE = new Noise(Sound.BLOCK_PORTAL_TRIGGER);
-	private static final Noise SHADOW_VOID_HIT_NOISE = new Noise(Sound.ENTITY_DRAGON_FIREBALL_EXPLODE);
+	private static final Noise SHADOW_VOID_EXPLODE_NOISE = new Noise(Sound.ENTITY_WITHER_HURT);
 
 	private final PlayerClass mage;
 	private final Skill fireball;
@@ -94,10 +94,10 @@ public class MageListener implements Listener {
 			useIceBeam(pc);
 		} else if (skill == whirlwind) {
 			useWhirlwind(pc);
-		} else if (skill == restore) {
-			useRestore(pc);
 		} else if (skill == earthquake) {
 			useEarthquake(pc);
+		} else if (skill == restore) {
+			useRestore(pc);
 		} else if (skill == shadowVoid) {
 			useShadowVoid(pc);
 		}
@@ -183,24 +183,37 @@ public class MageListener implements Listener {
 
 			@Override
 			protected void run() {
-				Location start = pc.getLocation().add(0, 1.25, 0);
-				Vector direction = start.getDirection();
-				start.add(direction);
-				Location end = pc.getTargetLocation(15);
-				Ray ray = new Ray(start, end);
-				ray.draw(Particle.CRIT_MAGIC, 2);
-				if (count % 5 == 0) {
-					Raycast raycast = new Raycast(ray, CharacterCollider.class);
-					Collider[] hits = raycast.getHits();
-					for (Collider hit : hits) {
+				Location targetLocationTemp = pc.getTargetLocation(15);
+				AbstractCharacter targetCharacterTemp = null;
+				Location startLocation = pc.getLocation().add(0, 1.25, 0);
+				Ray ray = new Ray(startLocation, startLocation.getDirection(), 15);
+				Raycast raycast = new Raycast(ray, CharacterCollider.class);
+				Collider[] hits = raycast.getHits();
+				for (Collider hit : hits) {
+					if (hit instanceof CharacterCollider) {
 						AbstractCharacter character = ((CharacterCollider) hit).getCharacter();
 						if (!character.isFriendly(pc)) {
-							character.damage(1.5, pc);
 							Location hitLocation = hit.getCenter();
-							world.spawnParticle(Particle.SNOW_SHOVEL, hitLocation, 6);
-							new Noise(Sound.BLOCK_GLASS_BREAK).play(hitLocation);
+							if (targetLocationTemp == null) {
+								targetLocationTemp = hitLocation;
+							} else if (hitLocation.distanceSquared(startLocation) < targetLocationTemp
+									.distanceSquared(startLocation)) {
+								targetLocationTemp = hitLocation;
+								targetCharacterTemp = character;
+							}
 						}
 					}
+				}
+				final Location targetLocation = targetLocationTemp;
+				final AbstractCharacter targetCharacter = targetCharacterTemp;
+
+				Ray beam = new Ray(startLocation, targetLocation);
+				beam.draw(Particle.CRIT_MAGIC, 2);
+				if (count % 5 == 0 && targetCharacter != null) {
+					targetCharacter.damage(1.5, pc);
+					Location hitLocation = targetCharacter.getLocation();
+					world.spawnParticle(Particle.SNOW_SHOVEL, hitLocation, 6);
+					new Noise(Sound.BLOCK_GLASS_BREAK).play(hitLocation);
 				}
 				count++;
 				if (count == maxCount) {
@@ -288,10 +301,6 @@ public class MageListener implements Listener {
 		}
 	}
 
-	private void useRestore(PlayerCharacter pc) {
-		Debug.log("restore");
-	}
-
 	private void useEarthquake(PlayerCharacter pc) {
 		Location center = pc.getLocation();
 		double size = 15;
@@ -316,6 +325,7 @@ public class MageListener implements Listener {
 					}
 				}
 				if (count % 5 == 0) {
+					EARTHQUAKE_NOISE.play(center);
 					Collider[] colliders = hitbox.getCollidingColliders();
 					for (Collider collider : colliders) {
 						if (collider instanceof CharacterCollider) {
@@ -334,6 +344,49 @@ public class MageListener implements Listener {
 			}
 		};
 		update.schedule();
+	}
+
+	private void useRestore(PlayerCharacter pc) {
+		double size = 4;
+		double healAmount = restore.getUpgradeLevel(pc) * 10;
+		Location start = pc.getLocation().add(0, 1.25, 0);
+		Vector velocity = start.getDirection().multiply(3);
+		Projectile projectile = new Projectile(start, velocity, 15, 1.5) {
+			@Override
+			protected void setLocation(Location location) {
+				super.setLocation(location);
+			}
+
+			@Override
+			protected void onHit(Collider hit) {
+				if (hit instanceof CharacterCollider) {
+					AbstractCharacter hitCharacter = ((CharacterCollider) hit).getCharacter();
+					if (hitCharacter != pc && hitCharacter.isFriendly(pc)) {
+						Collider hitbox = new Collider(hitCharacter.getLocation().add(0, 1, 2), size, size, size) {
+							@Override
+							protected void onCollisionEnter(Collider other) {
+								AbstractCharacter toHeal = ((CharacterCollider) hit).getCharacter();
+								if (toHeal.isFriendly(pc)) {
+									toHeal.heal(healAmount, pc);
+								}
+							}
+						};
+						hitbox.setDrawingEnabled(true);
+						hitbox.setActive(true);
+						hitbox.setActive(false);
+						remove();
+					}
+				}
+			}
+
+			@Override
+			public void remove() {
+				super.remove();
+			}
+		};
+		projectile.setDrawingEnabled(true);
+		projectile.fire();
+
 	}
 
 	private void useShadowVoid(PlayerCharacter pc) {
@@ -367,6 +420,7 @@ public class MageListener implements Listener {
 			@Override
 			protected void run() {
 				if (count == max) {
+					SHADOW_VOID_EXPLODE_NOISE.play(target);
 					Collider hitbox = new Collider(target.clone().add(0, 1, 0), size, 2, size) {
 						@Override
 						protected void onCollisionEnter(Collider other) {
@@ -374,7 +428,6 @@ public class MageListener implements Listener {
 								AbstractCharacter character = ((CharacterCollider) other).getCharacter();
 								if (!character.isFriendly(pc)) {
 									character.damage(damageAmount, pc);
-									SHADOW_VOID_HIT_NOISE.play(character.getLocation());
 								}
 							}
 						}

@@ -200,7 +200,7 @@ public class FighterListener implements Listener {
 			if (player.isOnGround()) {
 				PlayerCharacter pc = PlayerCharacter.forPlayer(player);
 				Location location = player.getLocation();
-				Collider hitbox = new Collider(location.clone().add(0, 1, 0), 4, 2, 4) {
+				Collider hitbox = new Collider(location.clone().add(0, 1, 0), 6, 4, 6) {
 					@Override
 					protected void onCollisionEnter(Collider other) {
 						if (other instanceof CharacterCollider) {

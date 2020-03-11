@@ -5,11 +5,13 @@ import javax.annotation.OverridingMethodsMustInvokeSuper;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 
+import com.mcmmorpg.common.character.PlayerCharacter.PlayerCharacterCollider;
 import com.mcmmorpg.common.event.CharacterDamageEvent;
 import com.mcmmorpg.common.event.CharacterDeathEvent;
 import com.mcmmorpg.common.event.CharacterHealEvent;
 import com.mcmmorpg.common.event.CharacterKillEvent;
 import com.mcmmorpg.common.event.EventManager;
+import com.mcmmorpg.common.physics.Collider;
 import com.mcmmorpg.common.ui.TextPanel;
 import com.mcmmorpg.common.utils.MathUtils;
 
@@ -295,6 +297,24 @@ public abstract class AbstractCharacter implements Source {
 			String formattedDialogue = formatDialogue(dialogue);
 			((PlayerCharacter) recipient).sendMessage(formattedDialogue);
 		}
+	}
+
+	public void say(String dialogue) {
+		say(dialogue, 25);
+	}
+
+	public void say(String dialogue, double radius) {
+		double diameter = radius * 2;
+		Collider area = new Collider(location, diameter, diameter, diameter);
+		area.setActive(true);
+		Collider[] colliders = area.getCollidingColliders();
+		for (Collider collider : colliders) {
+			if (collider instanceof PlayerCharacterCollider) {
+				PlayerCharacter pc = ((PlayerCharacterCollider) collider).getCharacter();
+				say(dialogue, pc);
+			}
+		}
+		area.setActive(false);
 	}
 
 }

@@ -21,6 +21,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityCombustEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerInteractAtEntityEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -803,6 +804,18 @@ public final class PlayerCharacter extends AbstractCharacter {
 					interactingPlayers.remove(pc);
 				}
 			}.schedule();
+		}
+
+		@EventHandler
+		private void onSendMessage(AsyncPlayerChatEvent event) {
+			Player player = event.getPlayer();
+			PlayerCharacter pc = PlayerCharacter.forPlayer(player);
+			if (pc == null) {
+				return;
+			}
+			event.setCancelled(true);
+			String message = event.getMessage();
+			pc.say(message);
 		}
 
 		@EventHandler
