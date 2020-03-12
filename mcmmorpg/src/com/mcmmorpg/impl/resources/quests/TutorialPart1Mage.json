@@ -1,5 +1,5 @@
 {
-	"name": "Tutorial Part 1 (Fighter)",
+	"name": "Tutorial Part 1 (Mage)",
 	"level": 1,
 	"objectives": [
 		{
@@ -7,5 +7,5 @@
 			"description": "Speak with §7[§aCombat Trainer§7]§f at (x, y, z) to begin your training"
 		}
 	],
-	"icon": "WOODEN_SWORD"
+	"icon": "WOODEN_HOE"
 }

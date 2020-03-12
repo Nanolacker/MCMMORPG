@@ -9,6 +9,7 @@ import com.mcmmorpg.impl.npcs.CombatTrainer;
 import com.mcmmorpg.impl.npcs.FoodQuestGiver;
 import com.mcmmorpg.impl.npcs.Thief;
 import com.mcmmorpg.impl.npcs.TrainingDummy;
+import com.mcmmorpg.impl.npcs.WildBoar;
 
 public class MelcherListener implements Listener {
 
@@ -47,6 +48,13 @@ public class MelcherListener implements Listener {
 				new Location(Worlds.ELADRADOR, -441, 67, -117), new Location(Worlds.ELADRADOR, -441, 67, -117) };
 		for (Location location : thiefLocations) {
 			new Thief(3, location).setAlive(true);
+		}
+
+		Location[] wildBoarLocations = { new Location(Worlds.ELADRADOR, -441, 67, -117),
+				new Location(Worlds.ELADRADOR, -441, 67, -117), new Location(Worlds.ELADRADOR, -441, 67, -117),
+				new Location(Worlds.ELADRADOR, -441, 67, -117), new Location(Worlds.ELADRADOR, -441, 67, -117) };
+		for (Location location : wildBoarLocations) {
+			new WildBoar(3, location).setAlive(true);
 		}
 	}
 

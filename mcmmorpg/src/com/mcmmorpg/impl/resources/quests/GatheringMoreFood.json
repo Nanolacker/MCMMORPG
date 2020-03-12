@@ -1,0 +1,11 @@
+{
+	"name": "Gathering More Food",
+	"level": 1,
+	"objectives": [
+		{
+			"goal": 1,
+			"description": "Return 10 [Boar Flank] to [Farmer]"
+		}
+	],
+	"icon": "RAW_PORKCHOP"
+}

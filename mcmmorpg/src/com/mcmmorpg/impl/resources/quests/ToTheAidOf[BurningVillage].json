@@ -1,0 +1,11 @@
+{
+	"name": "To the Aid of [Burning Village]",
+	"level": 5,
+	"objectives": [
+		{
+			"goal": 1,
+			"description": "Speak with [NPC] at (x, y, z)"
+		}
+	],
+	"icon": "CAMPFIRE"
+}

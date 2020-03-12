@@ -21,7 +21,6 @@ import com.mcmmorpg.common.character.PlayerCharacter;
 import com.mcmmorpg.common.event.PlayerCharacterLevelUpEvent;
 import com.mcmmorpg.common.event.PlayerCharacterUseWeaponEvent;
 import com.mcmmorpg.common.event.SkillUseEvent;
-import com.mcmmorpg.common.item.Item;
 import com.mcmmorpg.common.item.Weapon;
 import com.mcmmorpg.common.physics.Collider;
 import com.mcmmorpg.common.physics.Projectile;
@@ -29,9 +28,11 @@ import com.mcmmorpg.common.physics.Ray;
 import com.mcmmorpg.common.physics.Raycast;
 import com.mcmmorpg.common.playerClass.PlayerClass;
 import com.mcmmorpg.common.playerClass.Skill;
+import com.mcmmorpg.common.quest.Quest;
 import com.mcmmorpg.common.sound.Noise;
 import com.mcmmorpg.common.time.DelayedTask;
 import com.mcmmorpg.common.time.RepeatingTask;
+import com.mcmmorpg.common.utils.Debug;
 import com.mcmmorpg.impl.ItemManager;
 
 public class MageListener implements Listener {
@@ -77,7 +78,7 @@ public class MageListener implements Listener {
 			pc.setMaxMana(15);
 			pc.setCurrentMana(15);
 			pc.setManaRegenRate(1);
-			pc.giveItem(Item.forID(10));
+			Quest.forName("Tutorial Part 1 (Mage)").start(pc);
 		}
 	}
 
@@ -171,6 +172,7 @@ public class MageListener implements Listener {
 			}
 		};
 		projectile.fire();
+		Quest.forName("Tutorial Part 3 (Mage)").getObjective(0).addProgress(pc, 1);
 	}
 
 	private void useIceBeam(PlayerCharacter pc) {
@@ -208,11 +210,11 @@ public class MageListener implements Listener {
 				final AbstractCharacter targetCharacter = targetCharacterTemp;
 
 				Ray beam = new Ray(startLocation, targetLocation);
-				beam.draw(Particle.CRIT_MAGIC, 2);
+				beam.draw(Particle.CRIT_MAGIC, 1);
 				if (count % 5 == 0 && targetCharacter != null) {
 					targetCharacter.damage(1.5, pc);
-					Location hitLocation = targetCharacter.getLocation();
-					world.spawnParticle(Particle.SNOW_SHOVEL, hitLocation, 6);
+					Location hitLocation = targetCharacter.getLocation().add(0, 1, 0);
+					world.spawnParticle(Particle.FIREWORKS_SPARK, hitLocation, 10);
 					new Noise(Sound.BLOCK_GLASS_BREAK).play(hitLocation);
 				}
 				count++;
@@ -350,11 +352,22 @@ public class MageListener implements Listener {
 		double size = 4;
 		double healAmount = restore.getUpgradeLevel(pc) * 10;
 		Location start = pc.getLocation().add(0, 1.25, 0);
-		Vector velocity = start.getDirection().multiply(3);
-		Projectile projectile = new Projectile(start, velocity, 15, 1.5) {
+		Vector velocity = start.getDirection().multiply(4);
+		Location end = pc.getTargetLocation(15);
+		double maxDistance = start.distance(end);
+		World world = start.getWorld();
+
+		Projectile projectile = new Projectile(start, velocity, maxDistance, 1.5) {
 			@Override
 			protected void setLocation(Location location) {
 				super.setLocation(location);
+				for (int i = 0; i < 50; i++) {
+					double offsetX = (Math.random() - 0.5) * 1.5;
+					double offsetY = (Math.random() - 0.5) * 1.5;
+					double offsetZ = (Math.random() - 0.5) * 1.5;
+					Location particleLocation = location.clone().add(offsetX, offsetY, offsetZ);
+					world.spawnParticle(Particle.FIREWORKS_SPARK, particleLocation, 0);
+				}
 			}
 
 			@Override
@@ -362,7 +375,10 @@ public class MageListener implements Listener {
 				if (hit instanceof CharacterCollider) {
 					AbstractCharacter hitCharacter = ((CharacterCollider) hit).getCharacter();
 					if (hitCharacter != pc && hitCharacter.isFriendly(pc)) {
-						Collider hitbox = new Collider(hitCharacter.getLocation().add(0, 1, 2), size, size, size) {
+						Location hitLocation = hitCharacter.getLocation().add(0, 1, 0);
+						new Noise(Sound.BLOCK_LAVA_EXTINGUISH).play(hitLocation);
+						remove();
+						Collider hitbox = new Collider(hitCharacter.getLocation().add(0, 1, 0), size, size, size) {
 							@Override
 							protected void onCollisionEnter(Collider other) {
 								AbstractCharacter toHeal = ((CharacterCollider) hit).getCharacter();
@@ -374,7 +390,6 @@ public class MageListener implements Listener {
 						hitbox.setDrawingEnabled(true);
 						hitbox.setActive(true);
 						hitbox.setActive(false);
-						remove();
 					}
 				}
 			}
@@ -382,9 +397,9 @@ public class MageListener implements Listener {
 			@Override
 			public void remove() {
 				super.remove();
+				Debug.log("removed");
 			}
 		};
-		projectile.setDrawingEnabled(true);
 		projectile.fire();
 
 	}
@@ -462,7 +477,7 @@ public class MageListener implements Listener {
 	}
 
 	private void useApprenticeStaff(PlayerCharacter pc) {
-		double damage = 1;
+		double damage = 4;
 		Location start = pc.getLocation().add(0, 1.5, 0);
 		Vector direction = start.getDirection();
 		Ray ray = new Ray(start, direction, 3);
