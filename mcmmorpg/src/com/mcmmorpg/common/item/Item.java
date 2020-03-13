@@ -36,7 +36,8 @@ public class Item {
 	}
 
 	protected ItemStack createItemStack() {
-		String lore = rarity.getColor() + rarity.toString() + " Item\n\n" + ChatColor.RESET + description;
+		String lore = rarity.getColor() + rarity.toString() + " Item\n\n"
+				+ (description == null ? "" : (ChatColor.RESET + description));
 		return ItemFactory.createItemStack(rarity.getColor() + name, lore, icon);
 	}
 

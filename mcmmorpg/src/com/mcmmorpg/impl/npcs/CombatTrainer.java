@@ -148,7 +148,7 @@ public class CombatTrainer extends StaticHuman {
 			@Override
 			protected void onAdvance(PlayerCharacter pc, int messageIndex) {
 				if (messageIndex == 1) {
-					FIGHTER_3.getObjective(2).setProgress(pc, 1);
+					MAGE_3.getObjective(2).setProgress(pc, 1);
 					pc.grantXp(30);
 				} else if (messageIndex == 5) {
 					REPORTING_FOR_DUTY.start(pc);

@@ -50,9 +50,9 @@ public class MelcherListener implements Listener {
 			new Thief(3, location).setAlive(true);
 		}
 
-		Location[] wildBoarLocations = { new Location(Worlds.ELADRADOR, -441, 67, -117),
-				new Location(Worlds.ELADRADOR, -441, 67, -117), new Location(Worlds.ELADRADOR, -441, 67, -117),
-				new Location(Worlds.ELADRADOR, -441, 67, -117), new Location(Worlds.ELADRADOR, -441, 67, -117) };
+		Location[] wildBoarLocations = { new Location(Worlds.ELADRADOR, -396, 69, -160),
+				new Location(Worlds.ELADRADOR, -396, 69, -160), new Location(Worlds.ELADRADOR, -396, 69, -160),
+				new Location(Worlds.ELADRADOR, -396, 69, -160), new Location(Worlds.ELADRADOR, -396, 69, -160) };
 		for (Location location : wildBoarLocations) {
 			new WildBoar(3, location).setAlive(true);
 		}

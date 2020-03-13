@@ -19,7 +19,8 @@ public class FoodQuestGiver extends StaticHuman {
 	private static final Noise SPEAK_NOISE = new Noise(Sound.ENTITY_VILLAGER_AMBIENT);
 
 	private static final Quest SLAYING_THE_THIEVES = Quest.forName("Slaying the Thieves");
-	private static final Quest RECOVERING_THE_FOOD = Quest.forName("Recovering The Food");
+	private static final Quest RECOVERING_THE_FOOD = Quest.forName("Recovering the Food");
+	private static final Quest GATHERING_MORE_FOOD = Quest.forName("Gathering More Food");
 
 	private final MessageSequence sequence1;
 	private final MessageSequence sequence2;
@@ -66,8 +67,19 @@ public class FoodQuestGiver extends StaticHuman {
 				} else {
 					say("Go get those food supplies!", pc);
 				}
-			} else {
-				say("Thanks to you, our children will have full bellies.", pc);
+			} else if (RECOVERING_THE_FOOD.compareStatus(pc, QuestStatus.COMPLETED)) {
+				if (GATHERING_MORE_FOOD.compareStatus(pc, QuestStatus.NOT_STARTED)) {
+					GATHERING_MORE_FOOD.start(pc);
+				} else if (GATHERING_MORE_FOOD.compareStatus(pc, QuestStatus.IN_PROGRESS)) {
+					if (pc.getItemCount(ItemManager.BOAR_FLANK) >= 10) {
+						pc.removeItem(ItemManager.BOAR_FLANK, 10);
+						GATHERING_MORE_FOOD.getObjective(0).setProgress(pc, 1);
+					}else {
+						say("The people need to be fed. I'm counting on you.");
+					}
+				} else {
+					say("Thanks to you, our children will have full bellies.", pc);
+				}
 			}
 		}
 	}

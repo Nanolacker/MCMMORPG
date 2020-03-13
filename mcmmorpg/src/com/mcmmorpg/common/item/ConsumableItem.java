@@ -16,8 +16,10 @@ public class ConsumableItem extends Item {
 	@Override
 	protected ItemStack createItemStack() {
 		ItemRarity rarity = getRarity();
+		String description = getDescription();
 		String lore = ChatColor.GOLD + "Level " + level + "\n" + rarity.getColor() + rarity + " Item\n\n"
-				+ ChatColor.RESET + getDescription() + ChatColor.GRAY + "\n\nShift-click to use";
+				+ description == null ? ""
+						: (ChatColor.RESET + description) + ChatColor.GRAY + "\n\nShift-click to use";
 		return ItemFactory.createItemStack(rarity.getColor() + getName(), lore, getIcon());
 	}
 

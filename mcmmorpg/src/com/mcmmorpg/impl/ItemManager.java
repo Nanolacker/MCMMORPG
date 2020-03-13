@@ -9,5 +9,6 @@ public class ItemManager {
 	public static final Weapon APPRENTICE_STAFF = (Weapon) Item.forID(1);
 
 	public static final Item FOOD_SUPPLIES = Item.forID(25);
+	public static final Item BOAR_FLANK = Item.forID(30);
 
 }

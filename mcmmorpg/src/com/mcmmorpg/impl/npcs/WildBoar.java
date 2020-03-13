@@ -29,10 +29,11 @@ import com.mcmmorpg.common.item.LootChest;
 import com.mcmmorpg.common.physics.Collider;
 import com.mcmmorpg.common.sound.Noise;
 import com.mcmmorpg.common.time.DelayedTask;
+import com.mcmmorpg.impl.ItemManager;
 
 public class WildBoar extends NonPlayerCharacter implements Listener {
 
-	private static final double respawnTime = 5;
+	private static final double RESPAWN_TIME = 5;
 	private static final Noise DAMAGE_NOISE = new Noise(Sound.ENTITY_PIG_HURT, 1, 0.5f);
 	private static final Noise DEATH_NOISE = new Noise(Sound.ENTITY_PIG_DEATH, 1, 0.5f);
 
@@ -114,8 +115,13 @@ public class WildBoar extends NonPlayerCharacter implements Listener {
 		DEATH_NOISE.play(location);
 		location.getWorld().spawnParticle(Particle.CLOUD, location, 10);
 		setLocation(spawnLocation);
-		LootChest.spawnLootChest(location, Item.forID(10));
-		DelayedTask respawn = new DelayedTask(respawnTime) {
+		int dropAmount = (int) (Math.random() * 3);
+		if (dropAmount == 1) {
+			LootChest.spawnLootChest(location, ItemManager.BOAR_FLANK);
+		} else if (dropAmount == 2) {
+			LootChest.spawnLootChest(location, ItemManager.BOAR_FLANK, ItemManager.BOAR_FLANK);
+		}
+		DelayedTask respawn = new DelayedTask(RESPAWN_TIME) {
 			@Override
 			protected void run() {
 				setAlive(true);

@@ -60,6 +60,8 @@ public class PlayerCharacterSelectionListener implements Listener {
 	private static final Noise CHARACTER_TRANSITION_NOISE = new Noise(Sound.ENTITY_ZOMBIE_VILLAGER_CONVERTED);
 	private static final Noise CHARACTER_DELETION_NOISE = new Noise(Sound.ENTITY_ZOMBIE_VILLAGER_CONVERTED);
 	private static final Noise SELECT_CHARACTER_NOISE = new Noise(Sound.BLOCK_PORTAL_TRAVEL, 0.2f, 1);
+	
+	private Map<Player, PlayerCharacterSelectionProfile> profileMap = new HashMap<>();
 
 	static {
 		PLAYER_CHARACTER_DATA_DIRECTORY = new File(IOUtils.getDataFolder(), "playerSaveData");
@@ -120,8 +122,6 @@ public class PlayerCharacterSelectionListener implements Listener {
 		TextPanel title = new TextPanel(titleLocation, ChatColor.GREEN + "Welcome to MCMMORPG!");
 		title.setVisible(true);
 	}
-
-	private Map<Player, PlayerCharacterSelectionProfile> profileMap = new HashMap<>();
 
 	private void sendToCharacterSelection(Player player) {
 		player.addPotionEffect(INVISIBILITY);
