@@ -31,8 +31,9 @@ public class Weapon extends Item {
 		ItemRarity rarity = getRarity();
 		String description = getDescription();
 		String lore = ChatColor.GOLD + playerClass + " Weapon" + ChatColor.GOLD + "\nLevel " + level + "\n"
-				+ rarity.getColor() + rarity + " Item\n\n" + description == null ? ""
-						: (ChatColor.RESET + description) + ChatColor.GRAY + "\n\nShift-click to equip";
+				+ rarity.getColor() + rarity + " Item\n\n"
+				+ (description == null ? "" : (ChatColor.RESET + description)) + ChatColor.GRAY
+				+ "\n\nShift-click to equip";
 		return ItemFactory.createItemStack(rarity.getColor() + getName(), lore, getIcon());
 	}
 

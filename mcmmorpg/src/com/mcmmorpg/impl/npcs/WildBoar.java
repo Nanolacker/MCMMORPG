@@ -24,8 +24,6 @@ import com.mcmmorpg.common.character.PlayerCharacter;
 import com.mcmmorpg.common.character.PlayerCharacter.PlayerCharacterCollider;
 import com.mcmmorpg.common.character.Source;
 import com.mcmmorpg.common.event.EventManager;
-import com.mcmmorpg.common.item.Item;
-import com.mcmmorpg.common.item.LootChest;
 import com.mcmmorpg.common.physics.Collider;
 import com.mcmmorpg.common.sound.Noise;
 import com.mcmmorpg.common.time.DelayedTask;
@@ -46,6 +44,7 @@ public class WildBoar extends NonPlayerCharacter implements Listener {
 	public WildBoar(int level, Location spawnLocation) {
 		super(ChatColor.RED + "Wild Boar", level, spawnLocation);
 		super.setMaxHealth(maxHealth(level));
+		super.setHeight(1);
 		this.spawnLocation = spawnLocation;
 		hitbox = new CharacterCollider(this, spawnLocation.clone().add(0, 0.5, 0), 2, 1, 2);
 		aiSyncer = new MovementSyncer(this, null, MovementSyncMode.CHARACTER_FOLLOWS_ENTITY);
@@ -115,12 +114,7 @@ public class WildBoar extends NonPlayerCharacter implements Listener {
 		DEATH_NOISE.play(location);
 		location.getWorld().spawnParticle(Particle.CLOUD, location, 10);
 		setLocation(spawnLocation);
-		int dropAmount = (int) (Math.random() * 3);
-		if (dropAmount == 1) {
-			LootChest.spawnLootChest(location, ItemManager.BOAR_FLANK);
-		} else if (dropAmount == 2) {
-			LootChest.spawnLootChest(location, ItemManager.BOAR_FLANK, ItemManager.BOAR_FLANK);
-		}
+		ItemManager.BOAR_FLANK.drop(location, 1);
 		DelayedTask respawn = new DelayedTask(RESPAWN_TIME) {
 			@Override
 			protected void run() {
@@ -174,11 +168,6 @@ public class WildBoar extends NonPlayerCharacter implements Listener {
 
 	private double getDamageAmount() {
 		return getLevel() * 2;
-	}
-
-	@Override
-	protected Location getNameplateLocation() {
-		return getLocation().add(0, 1, 0);
 	}
 
 }

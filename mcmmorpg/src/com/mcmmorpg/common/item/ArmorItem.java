@@ -36,8 +36,8 @@ public class ArmorItem extends Item {
 		String description = getDescription();
 		String lore = ChatColor.GOLD + playerClass + " Armor Item" + ChatColor.GOLD + "\nLevel " + level + "\n" + type
 				+ "\n" + (int) protections + " Protections\n" + rarity.getColor() + rarity + " Item\n\n"
-				+ description == null ? ""
-						: (ChatColor.RESET + description) + ChatColor.GRAY + "\n\nShift-click to equip/unequip";
+				+ (description == null ? "" : (ChatColor.RESET + description)) + ChatColor.GRAY
+				+ "\n\nShift-click to equip/unequip";
 		return ItemFactory.createItemStack(rarity.getColor() + getName(), lore, getIcon());
 	}
 

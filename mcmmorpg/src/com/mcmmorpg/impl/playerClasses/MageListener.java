@@ -32,7 +32,6 @@ import com.mcmmorpg.common.quest.Quest;
 import com.mcmmorpg.common.sound.Noise;
 import com.mcmmorpg.common.time.DelayedTask;
 import com.mcmmorpg.common.time.RepeatingTask;
-import com.mcmmorpg.common.utils.Debug;
 import com.mcmmorpg.impl.ItemManager;
 
 public class MageListener implements Listener {
@@ -50,8 +49,8 @@ public class MageListener implements Listener {
 	private final Skill fireball;
 	private final Skill iceBeam;
 	private final Skill whirlwind;
-	private final Skill restore;
 	private final Skill earthquake;
+	private final Skill restore;
 	private final Skill shadowVoid;
 
 	public MageListener() {
@@ -59,8 +58,8 @@ public class MageListener implements Listener {
 		fireball = mage.skillForName("Fireball");
 		iceBeam = mage.skillForName("Ice Beam");
 		whirlwind = mage.skillForName("Whirlwind");
-		restore = mage.skillForName("Restore");
 		earthquake = mage.skillForName("Earthquake");
+		restore = mage.skillForName("Restore");
 		shadowVoid = mage.skillForName("Shadow Void");
 	}
 
@@ -104,10 +103,17 @@ public class MageListener implements Listener {
 		}
 	}
 
+	private Location getWeaponLocation(PlayerCharacter pc) {
+		Location location = pc.getLocation().add(0, 1, 0);
+		Vector direction = location.getDirection();
+		direction.rotateAroundY(-Math.PI / 4);
+		return location.add(direction);
+	}
+
 	private void useFireball(PlayerCharacter pc) {
 		double damageAmount = 10 * fireball.getUpgradeLevel(pc);
 		double range = 15;
-		Location start = pc.getLocation();
+		Location start = getWeaponLocation(pc).subtract(0, 1, 0);
 		Vector lookDirection = start.getDirection();
 		start.add(lookDirection).add(0, 1, 0);
 		FIREBALL_CONJURE.play(start);
@@ -121,18 +127,19 @@ public class MageListener implements Listener {
 		Projectile projectile = new Projectile(start, velocity, maxDistance, hitSize) {
 			// -40 to account for error
 			boolean explode = start.distanceSquared(end) < range * range - 40;
-
-			@Override
-			protected void setLocation(Location location) {
-				super.setLocation(location);
-			}
+			// used to ensure that the fireball only explodes for the first target hit
+			boolean hasHitTarget = false;
 
 			@Override
 			protected void onHit(Collider hit) {
+				if (hasHitTarget) {
+					return;
+				}
 				if (hit instanceof CharacterCollider) {
 					AbstractCharacter character = ((CharacterCollider) hit).getCharacter();
 					if (!character.isFriendly(pc)) {
 						explode = true;
+						hasHitTarget = true;
 						this.remove();
 					}
 				}
@@ -187,7 +194,7 @@ public class MageListener implements Listener {
 			protected void run() {
 				Location targetLocationTemp = pc.getTargetLocation(15);
 				AbstractCharacter targetCharacterTemp = null;
-				Location startLocation = pc.getLocation().add(0, 1.25, 0);
+				Location startLocation = getWeaponLocation(pc);
 				Ray ray = new Ray(startLocation, startLocation.getDirection(), 15);
 				Raycast raycast = new Raycast(ray, CharacterCollider.class);
 				Collider[] hits = raycast.getHits();
@@ -211,7 +218,7 @@ public class MageListener implements Listener {
 
 				Ray beam = new Ray(startLocation, targetLocation);
 				beam.draw(Particle.CRIT_MAGIC, 1);
-				if (count % 5 == 0 && targetCharacter != null) {
+				if (count % 3 == 0 && targetCharacter != null) {
 					targetCharacter.damage(1.5, pc);
 					Location hitLocation = targetCharacter.getLocation().add(0, 1, 0);
 					world.spawnParticle(Particle.FIREWORKS_SPARK, hitLocation, 10);
@@ -350,46 +357,40 @@ public class MageListener implements Listener {
 
 	private void useRestore(PlayerCharacter pc) {
 		double size = 4;
+		int projectileParticleCount = 10;
+		int boxParticleCount = 75;
 		double healAmount = restore.getUpgradeLevel(pc) * 10;
-		Location start = pc.getLocation().add(0, 1.25, 0);
+		Location start = getWeaponLocation(pc);
 		Vector velocity = start.getDirection().multiply(4);
 		Location end = pc.getTargetLocation(15);
 		double maxDistance = start.distance(end);
 		World world = start.getWorld();
 
 		Projectile projectile = new Projectile(start, velocity, maxDistance, 1.5) {
+			boolean hasHitTarget = false;
+
 			@Override
 			protected void setLocation(Location location) {
 				super.setLocation(location);
-				for (int i = 0; i < 50; i++) {
+				for (int i = 0; i < projectileParticleCount; i++) {
 					double offsetX = (Math.random() - 0.5) * 1.5;
 					double offsetY = (Math.random() - 0.5) * 1.5;
 					double offsetZ = (Math.random() - 0.5) * 1.5;
 					Location particleLocation = location.clone().add(offsetX, offsetY, offsetZ);
-					world.spawnParticle(Particle.FIREWORKS_SPARK, particleLocation, 0);
+					world.spawnParticle(Particle.VILLAGER_HAPPY, particleLocation, 0);
 				}
 			}
 
 			@Override
 			protected void onHit(Collider hit) {
+				if (hasHitTarget) {
+					return;
+				}
+				hasHitTarget = true;
 				if (hit instanceof CharacterCollider) {
 					AbstractCharacter hitCharacter = ((CharacterCollider) hit).getCharacter();
 					if (hitCharacter != pc && hitCharacter.isFriendly(pc)) {
-						Location hitLocation = hitCharacter.getLocation().add(0, 1, 0);
-						new Noise(Sound.BLOCK_LAVA_EXTINGUISH).play(hitLocation);
 						remove();
-						Collider hitbox = new Collider(hitCharacter.getLocation().add(0, 1, 0), size, size, size) {
-							@Override
-							protected void onCollisionEnter(Collider other) {
-								AbstractCharacter toHeal = ((CharacterCollider) hit).getCharacter();
-								if (toHeal.isFriendly(pc)) {
-									toHeal.heal(healAmount, pc);
-								}
-							}
-						};
-						hitbox.setDrawingEnabled(true);
-						hitbox.setActive(true);
-						hitbox.setActive(false);
 					}
 				}
 			}
@@ -397,11 +398,31 @@ public class MageListener implements Listener {
 			@Override
 			public void remove() {
 				super.remove();
-				Debug.log("removed");
+				Location location = getLocation();
+				new Noise(Sound.BLOCK_LAVA_EXTINGUISH).play(location);
+				Collider hitbox = new Collider(location.clone().add(0, 1, 0), size, size, size) {
+					@Override
+					protected void onCollisionEnter(Collider other) {
+						if (other instanceof CharacterCollider) {
+							AbstractCharacter toHeal = ((CharacterCollider) other).getCharacter();
+							if (toHeal.isFriendly(pc)) {
+								toHeal.heal(healAmount, pc);
+							}
+						}
+					}
+				};
+				for (int i = 0; i < boxParticleCount; i++) {
+					double offsetX = (Math.random() - 0.5) * size;
+					double offsetY = (Math.random() - 0.5) * size;
+					double offsetZ = (Math.random() - 0.5) * size;
+					Location particleLocation = location.clone().add(offsetX, offsetY, offsetZ);
+					world.spawnParticle(Particle.VILLAGER_HAPPY, particleLocation, 0);
+				}
+				hitbox.setActive(true);
+				hitbox.setActive(false);
 			}
 		};
 		projectile.fire();
-
 	}
 
 	private void useShadowVoid(PlayerCharacter pc) {

@@ -14,7 +14,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.entity.Spider;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 
 import com.mcmmorpg.common.character.CharacterCollider;
@@ -46,6 +45,7 @@ public class RottenDweller extends NonPlayerCharacter {
 	public RottenDweller(Location spawnLocation) {
 		super(ChatColor.RED + "The Rotten Dweller", 17, spawnLocation);
 		super.setMaxHealth(1000);
+		super.setHeight(1.5);
 		this.spawnLocation = spawnLocation;
 		hitbox = new CharacterCollider(this, spawnLocation, 1.5, 1, 1.5);
 		movementSyncer = new MovementSyncer(this, null, MovementSyncMode.CHARACTER_FOLLOWS_ENTITY);
@@ -177,11 +177,6 @@ public class RottenDweller extends NonPlayerCharacter {
 			};
 			cancelKnockback.schedule();
 		}
-	}
-
-	@Override
-	protected Location getNameplateLocation() {
-		return getLocation().add(0, 1.5, 0);
 	}
 
 }

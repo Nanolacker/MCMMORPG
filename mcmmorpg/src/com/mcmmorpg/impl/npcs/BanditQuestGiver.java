@@ -8,7 +8,8 @@ import com.mcmmorpg.common.quest.Quest;
 import com.mcmmorpg.common.quest.QuestStatus;
 import com.mcmmorpg.common.sound.Noise;
 import com.mcmmorpg.common.ui.MessageSequence;
-import com.mcmmorpg.common.ui.QuestNotice;
+import com.mcmmorpg.common.ui.Notice;
+import com.mcmmorpg.common.ui.Notice.NoticeType;
 
 import net.md_5.bungee.api.ChatColor;
 
@@ -26,7 +27,7 @@ public class BanditQuestGiver extends StaticHuman {
 
 	public BanditQuestGiver(Location location) {
 		super(ChatColor.GREEN + "Bandit Quest Giver", 7, location, TEXTURE_DATA, TEXTURE_SIGNATURE);
-		QuestNotice.createQuestNotice(location.clone().add(0, 2.25, 0));
+		Notice.createNotice(NoticeType.QUEST, location.clone().add(0, 2.25, 0));
 
 		sequence1 = new MessageSequence(3, this, "Greetings adventurer.", null, "Go kill some thieves.", null) {
 			@Override

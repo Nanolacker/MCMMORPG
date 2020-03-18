@@ -34,6 +34,11 @@ import com.mcmmorpg.impl.ItemManager;
 
 public class FighterListener implements Listener {
 
+	private static final double[] MAX_HEALTH = { 25 };
+	private static final double[] HEALTH_REGEN_RATE = { 3 };
+	private static final double[] MAX_MANA = { 100 };
+	private static final double[] MANA_REGEN_RATE = { 2 };
+
 	private static final Noise BASH_MISS_NOISE = new Noise(Sound.ENTITY_WITHER_SHOOT, 1, 2);
 	private static final Noise BASH_HIT_NOISE = new Noise(Sound.ENTITY_ZOMBIE_ATTACK_IRON_DOOR);
 	private static final Noise SELF_HEAL_NOISE = new Noise(Sound.BLOCK_LAVA_EXTINGUISH);
@@ -66,13 +71,20 @@ public class FighterListener implements Listener {
 			return;
 		}
 		int level = event.getNewLevel();
+		if (level > 1) {
+			return;
+		}
+		double maxHealth = MAX_HEALTH[level - 1];
+		double healthRegenRate = HEALTH_REGEN_RATE[level - 1];
+		double maxMana = MAX_MANA[level - 1];
+		double manaRegenRate = MANA_REGEN_RATE[level - 1];
+		pc.setMaxHealth(maxHealth);
+		pc.setCurrentHealth(maxHealth);
+		pc.setHealthRegenRate(healthRegenRate);
+		pc.setMaxMana(maxMana);
+		pc.setCurrentMana(maxMana);
+		pc.setManaRegenRate(manaRegenRate);
 		if (level == 1) {
-			pc.setMaxHealth(25);
-			pc.setCurrentHealth(25);
-			pc.setHealthRegenRate(0.2);
-			pc.setMaxMana(100);
-			pc.setCurrentMana(100);
-			pc.setManaRegenRate(10);
 			Quest.forName("Tutorial Part 1 (Fighter)").start(pc);
 		}
 	}

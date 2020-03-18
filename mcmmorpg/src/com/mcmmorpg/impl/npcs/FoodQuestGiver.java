@@ -9,7 +9,8 @@ import com.mcmmorpg.common.quest.Quest;
 import com.mcmmorpg.common.quest.QuestStatus;
 import com.mcmmorpg.common.sound.Noise;
 import com.mcmmorpg.common.ui.MessageSequence;
-import com.mcmmorpg.common.ui.QuestNotice;
+import com.mcmmorpg.common.ui.Notice;
+import com.mcmmorpg.common.ui.Notice.NoticeType;
 import com.mcmmorpg.impl.ItemManager;
 
 public class FoodQuestGiver extends StaticHuman {
@@ -27,7 +28,7 @@ public class FoodQuestGiver extends StaticHuman {
 
 	public FoodQuestGiver(Location location) {
 		super(ChatColor.GREEN + "Farmer", 7, location, TEXTURE_DATA, TEXTURE_SIGNATURE);
-		QuestNotice.createQuestNotice(location.clone().add(0, 2.25, 0));
+		Notice.createNotice(NoticeType.QUEST, location.clone().add(0, 2.25, 0));
 
 		sequence1 = new MessageSequence(3, this, "Hello there.", "Recover some food supplies.", null) {
 			@Override
@@ -74,7 +75,7 @@ public class FoodQuestGiver extends StaticHuman {
 					if (pc.getItemCount(ItemManager.BOAR_FLANK) >= 10) {
 						pc.removeItem(ItemManager.BOAR_FLANK, 10);
 						GATHERING_MORE_FOOD.getObjective(0).setProgress(pc, 1);
-					}else {
+					} else {
 						say("The people need to be fed. I'm counting on you.");
 					}
 				} else {

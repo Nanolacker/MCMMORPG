@@ -487,7 +487,7 @@ public class Collider {
 	private final void checkForCollision() {
 		for (int i = 0; i < occupiedBuckets.size(); i++) {
 			ColliderBucket bucket = occupiedBuckets.get(i);
-			List<Collider> neighboringColliders = bucket.getActiveColliders();
+			List<Collider> neighboringColliders = new ArrayList<>(bucket.getActiveColliders());
 			for (int j = 0; j < neighboringColliders.size(); j++) {
 				Collider neighboringCollider = neighboringColliders.get(j);
 				if (neighboringCollider != this) {
@@ -719,6 +719,18 @@ public class Collider {
 				for (double zCount = zMin; zCount <= zMax; zCount += spaceDistance) {
 					Location point = new Location(world, xCount, yCount, zCount);
 					world.spawnParticle(drawParticle, point, 0);
+				}
+			}
+		}
+	}
+
+	public void drawFill(Particle particle, double particleDensity) {
+		double spaceDistance = 1 / particleDensity;
+		for (double xCount = xMin; xCount <= xMax; xCount += spaceDistance) {
+			for (double yCount = yMin; yCount <= yMax; yCount += spaceDistance) {
+				for (double zCount = zMin; zCount <= zMax; zCount += spaceDistance) {
+					Location point = new Location(world, xCount, yCount, zCount);
+					world.spawnParticle(particle, point, 0);
 				}
 			}
 		}

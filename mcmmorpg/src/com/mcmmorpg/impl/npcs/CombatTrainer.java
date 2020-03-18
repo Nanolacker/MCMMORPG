@@ -10,7 +10,8 @@ import com.mcmmorpg.common.quest.Quest;
 import com.mcmmorpg.common.quest.QuestStatus;
 import com.mcmmorpg.common.sound.Noise;
 import com.mcmmorpg.common.ui.MessageSequence;
-import com.mcmmorpg.common.ui.QuestNotice;
+import com.mcmmorpg.common.ui.Notice;
+import com.mcmmorpg.common.ui.Notice.NoticeType;
 
 public class CombatTrainer extends StaticHuman {
 
@@ -35,7 +36,7 @@ public class CombatTrainer extends StaticHuman {
 
 	public CombatTrainer(Location location) {
 		super(ChatColor.GREEN + "Combat Trainer", 5, location, TEXTURE_DATA, TEXTURE_SIGNATURE);
-		QuestNotice.createQuestNotice(location.clone().add(0, 2.25, 0));
+		Notice.createNotice(NoticeType.QUEST, location.clone().add(0, 2.25, 0));
 
 		fighter1Sequence = new MessageSequence(3, this, new String[] { "Welcome newcomer!", null,
 				"What brings you to Eladrador?", "Fame? Riches? Or perhaps serving the greater good?",

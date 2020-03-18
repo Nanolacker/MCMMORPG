@@ -9,7 +9,7 @@ import com.mcmmorpg.common.character.PlayerCharacter;
 import com.mcmmorpg.common.character.PlayerCharacterInteractionCollider;
 
 /**
- * Not intended to be damaged or killed.
+ * A typical, non-moving NPC. Not intended to be damaged or killed.
  */
 public abstract class StaticHuman extends NonPlayerCharacter {
 

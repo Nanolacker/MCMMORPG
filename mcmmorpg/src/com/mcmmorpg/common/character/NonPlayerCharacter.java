@@ -24,6 +24,9 @@ public class NonPlayerCharacter extends AbstractCharacter {
 
 	private boolean spawned;
 
+	/**
+	 * Invoked when plugin is enabled.
+	 */
 	public static void startNPCSpawner() {
 		RepeatingTask npcSpawner = new RepeatingTask(SPAWN_PERIOD_SECONDS) {
 			@Override

@@ -305,7 +305,9 @@ public final class PlayerCharacter extends AbstractCharacter {
 
 	private void updateHealthDisplay() {
 		double proportion = getCurrentHealth() / getMaxHealth();
-		player.setHealth(proportion * 20);
+		double hearts = proportion * 20;
+		hearts = Math.max(hearts, 1);
+		player.setHealth(hearts);
 	}
 
 	private void updateManaDisplay() {
@@ -622,31 +624,31 @@ public final class PlayerCharacter extends AbstractCharacter {
 	@Override
 	protected void onDeath() {
 		super.onDeath();
-		player.teleport(respawnLocation);
-		disarm(3);
-		silence(3);
-		new DelayedTask(1) {
-			@Override
-			protected void run() {
-				sendMessage(ChatColor.GRAY + "Respawning...");
-			}
-		}.schedule();
+		disarm(4);
+		silence(4);
 		TitleMessage deathMessage = new TitleMessage(ChatColor.RED + "YOU DIED", "");
 		deathMessage.sendTo(player);
 		PotionEffect veilEffect = new PotionEffect(PotionEffectType.BLINDNESS, 80, 1);
+		PotionEffect invisibiltyEffect = new PotionEffect(PotionEffectType.INVISIBILITY, 40, 1);
+		PotionEffect slownessEffect = new PotionEffect(PotionEffectType.SLOW, 80, 5);
 		player.addPotionEffect(veilEffect);
+		player.addPotionEffect(invisibiltyEffect);
+		player.addPotionEffect(slownessEffect);
 		DEATH_NOISE.play(player);
-		player.teleport(respawnLocation);
-		setAlive(true);
+
+		new DelayedTask(2) {
+			@Override
+			protected void run() {
+				sendMessage(ChatColor.GRAY + "Respawning...");
+				player.teleport(respawnLocation);
+				setAlive(true);
+			}
+		}.schedule();
 	}
 
 	@Override
 	public boolean isFriendly(AbstractCharacter other) {
-		if (other instanceof PlayerCharacter) {
-			return true;
-		} else {
-			return false;
-		}
+		return other instanceof PlayerCharacter;
 	}
 
 	public void updateQuestDisplay() {

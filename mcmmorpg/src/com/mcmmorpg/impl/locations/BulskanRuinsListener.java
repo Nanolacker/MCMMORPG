@@ -1,7 +1,5 @@
 package com.mcmmorpg.impl.locations;
 
-import java.io.File;
-
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -12,12 +10,9 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import com.mcmmorpg.common.character.PlayerCharacter;
 import com.mcmmorpg.common.character.PlayerCharacter.PlayerCharacterCollider;
 import com.mcmmorpg.common.physics.Collider;
-import com.mcmmorpg.common.sound.PersistentSoundSequenceDataContainer;
-import com.mcmmorpg.common.sound.SoundSequence;
-import com.mcmmorpg.common.utils.IOUtils;
+import com.mcmmorpg.impl.SoundtrackManager;
 import com.mcmmorpg.impl.Worlds;
 import com.mcmmorpg.impl.npcs.TrainingDummy;
-import com.mcmmorpg.impl.npcs.CombatTrainer;
 import com.mcmmorpg.impl.npcs.WildBoar;
 import com.mcmmorpg.impl.npcs.Witch;
 
@@ -25,18 +20,9 @@ public class BulskanRuinsListener implements Listener {
 
 	private static String ZONE_NAME = ChatColor.GRAY + "Bulskan Ruins";
 
-	private SoundSequence soundtrack;
-
 	public BulskanRuinsListener() {
-		getSoundtrack();
 		setUpBounds();
 		spawnNpcs();
-	}
-
-	private void getSoundtrack() {
-		File file = new File(IOUtils.getDataFolder(), "resources\\soundtracks\\BulskanRuins.json");
-		SoundSequence soundtrack = IOUtils.readJson(file, PersistentSoundSequenceDataContainer.class).toSoundSequence();
-		this.soundtrack = soundtrack;
 	}
 
 	private void setUpBounds() {
@@ -49,8 +35,7 @@ public class BulskanRuinsListener implements Listener {
 						return;
 					}
 					pc.setZone(ZONE_NAME);
-					Player player = pc.getPlayer();
-					pc.getSoundTrackPlayer().setSoundtrack(soundtrack);
+					pc.getSoundTrackPlayer().setSoundtrack(SoundtrackManager.DUNGEON);
 				}
 			}
 		};
@@ -65,7 +50,6 @@ public class BulskanRuinsListener implements Listener {
 					}
 					pc.setZone(ChatColor.GREEN + "Melcher");
 					pc.getSoundTrackPlayer().setSoundtrack(null);
-					Player player = pc.getPlayer();
 				}
 			}
 		};

@@ -3,10 +3,11 @@ package com.mcmmorpg.common.item;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.bukkit.ChatColor;
+import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.World;
 import org.bukkit.inventory.ItemStack;
-
-import net.md_5.bungee.api.ChatColor;
 
 public class Item {
 
@@ -79,6 +80,15 @@ public class Item {
 
 	public final ItemStack getItemStack() {
 		return itemStack.clone();
+	}
+
+	public void drop(Location location, int amount) {
+		World world = location.getWorld();
+		ItemStack itemStack = this.itemStack.clone();
+		itemStack.setAmount(amount);
+		org.bukkit.entity.Item entity = (org.bukkit.entity.Item) world.dropItem(location, itemStack);
+		entity.setCustomName(this.toString());
+		entity.setCustomNameVisible(true);
 	}
 
 	@Override

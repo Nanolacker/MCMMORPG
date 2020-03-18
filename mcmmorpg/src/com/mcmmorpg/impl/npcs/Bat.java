@@ -11,7 +11,6 @@ import org.bukkit.entity.Vex;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
@@ -22,7 +21,6 @@ import com.mcmmorpg.common.character.NonPlayerCharacter;
 import com.mcmmorpg.common.character.PlayerCharacter;
 import com.mcmmorpg.common.character.Source;
 import com.mcmmorpg.common.event.EventManager;
-import com.mcmmorpg.common.item.LootChest;
 import com.mcmmorpg.common.sound.Noise;
 import com.mcmmorpg.common.time.DelayedTask;
 
@@ -41,6 +39,7 @@ public class Bat extends NonPlayerCharacter implements Listener {
 	public Bat(int level, Location spawnLocation, double respawnTime) {
 		super(ChatColor.RED + "Bat", level, spawnLocation);
 		super.setMaxHealth(maxHealth(level));
+		super.setHeight(1);
 		this.spawnLocation = spawnLocation;
 		hitbox = new CharacterCollider(this, spawnLocation.clone(), 2, 2, 2);
 		aiSyncer = new MovementSyncer(this, null, MovementSyncMode.CHARACTER_FOLLOWS_ENTITY);
@@ -105,11 +104,6 @@ public class Bat extends NonPlayerCharacter implements Listener {
 			}
 		};
 		respawn.schedule();
-	}
-
-	@Override
-	protected Location getNameplateLocation() {
-		return getLocation().add(0, 1, 0);
 	}
 
 	@EventHandler

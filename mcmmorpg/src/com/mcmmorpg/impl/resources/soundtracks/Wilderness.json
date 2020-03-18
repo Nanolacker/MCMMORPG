@@ -1,0 +1,297 @@
+{
+	"duration": "12",
+	"sounds":[
+		{
+			"time":"0",
+			"type":"BLOCK_NOTE_BLOCK_HARP",
+			"volume": "1",
+			"pitch": "C_7"
+		},
+		{
+			"time":"0.5",
+			"type":"BLOCK_NOTE_BLOCK_HARP",
+			"volume": "1",
+			"pitch": "D_SHARP_10"
+		},
+		{
+			"time":"1",
+			"type":"BLOCK_NOTE_BLOCK_HARP",
+			"volume": "1",
+			"pitch": "G_14"
+		},
+		{
+			"time":"1.5",
+			"type":"BLOCK_NOTE_BLOCK_HARP",
+			"volume": "1",
+			"pitch": "C_7"
+		},
+		{
+			"time":"2",
+			"type":"BLOCK_NOTE_BLOCK_HARP",
+			"volume": "1",
+			"pitch": "D_SHARP_10"
+		},
+		{
+			"time":"2.5",
+			"type":"BLOCK_NOTE_BLOCK_HARP",
+			"volume": "1",
+			"pitch": "G_14"
+		},
+		{
+			"time":"3",
+			"type":"BLOCK_NOTE_BLOCK_HARP",
+			"volume": "1",
+			"pitch": "C_7"
+		},
+		{
+			"time":"3.5",
+			"type":"BLOCK_NOTE_BLOCK_HARP",
+			"volume": "1",
+			"pitch": "D_SHARP_10"
+		},
+		{
+			"time":"4",
+			"type":"BLOCK_NOTE_BLOCK_HARP",
+			"volume": "1",
+			"pitch": "G_14"
+		},
+		{
+			"time":"4.5",
+			"type":"BLOCK_NOTE_BLOCK_HARP",
+			"volume": "1",
+			"pitch": "C_7"
+		},
+		{
+			"time":"5",
+			"type":"BLOCK_NOTE_BLOCK_HARP",
+			"volume": "1",
+			"pitch": "D_SHARP_10"
+		},
+		{
+			"time":"5.5",
+			"type":"BLOCK_NOTE_BLOCK_HARP",
+			"volume": "1",
+			"pitch": "G_14"
+		},
+		{
+			"time":"6",
+			"type":"BLOCK_NOTE_BLOCK_HARP",
+			"volume": "1",
+			"pitch": "B_6"
+		},
+		{
+			"time":"6.5",
+			"type":"BLOCK_NOTE_BLOCK_HARP",
+			"volume": "1",
+			"pitch": "D_9"
+		},
+		{
+			"time":"7",
+			"type":"BLOCK_NOTE_BLOCK_HARP",
+			"volume": "1",
+			"pitch": "F_12"
+		},
+		{
+			"time":"7.5",
+			"type":"BLOCK_NOTE_BLOCK_HARP",
+			"volume": "1",
+			"pitch": "B_6"
+		},
+		{
+			"time":"8",
+			"type":"BLOCK_NOTE_BLOCK_HARP",
+			"volume": "1",
+			"pitch": "D_9"
+		},
+		{
+			"time":"8.5",
+			"type":"BLOCK_NOTE_BLOCK_HARP",
+			"volume": "1",
+			"pitch": "F_12"
+		},
+		{
+			"time":"9",
+			"type":"BLOCK_NOTE_BLOCK_HARP",
+			"volume": "1",
+			"pitch": "B_6"
+		},
+		{
+			"time":"9.5",
+			"type":"BLOCK_NOTE_BLOCK_HARP",
+			"volume": "1",
+			"pitch": "D_9"
+		},
+		{
+			"time":"10",
+			"type":"BLOCK_NOTE_BLOCK_HARP",
+			"volume": "1",
+			"pitch": "F_12"
+		},
+		{
+			"time":"10.5",
+			"type":"BLOCK_NOTE_BLOCK_HARP",
+			"volume": "1",
+			"pitch": "B_6"
+		},
+		{
+			"time":"11",
+			"type":"BLOCK_NOTE_BLOCK_HARP",
+			"volume": "1",
+			"pitch": "D_9"
+		},
+		{
+			"time":"11.5",
+			"type":"BLOCK_NOTE_BLOCK_HARP",
+			"volume": "1",
+			"pitch": "F_12"
+		},
+		
+		{
+			"time":"0",
+			"type":"BLOCK_NOTE_BLOCK_XYLOPHONE",
+			"volume": "1",
+			"pitch": "C_7"
+		},
+		{
+			"time":"0.5",
+			"type":"BLOCK_NOTE_BLOCK_XYLOPHONE",
+			"volume": "1",
+			"pitch": "C_7"
+		},
+		{
+			"time":"1",
+			"type":"BLOCK_NOTE_BLOCK_XYLOPHONE",
+			"volume": "1",
+			"pitch": "C_7"
+		},
+		{
+			"time":"1.5",
+			"type":"BLOCK_NOTE_BLOCK_XYLOPHONE",
+			"volume": "1",
+			"pitch": "C_7"
+		},
+		{
+			"time":"2",
+			"type":"BLOCK_NOTE_BLOCK_XYLOPHONE",
+			"volume": "1",
+			"pitch": "C_7"
+		},
+		{
+			"time":"2.5",
+			"type":"BLOCK_NOTE_BLOCK_XYLOPHONE",
+			"volume": "1",
+			"pitch": "C_7"
+		},
+		{
+			"time":"3",
+			"type":"BLOCK_NOTE_BLOCK_XYLOPHONE",
+			"volume": "1",
+			"pitch": "C_7"
+		},
+		{
+			"time":"3.5",
+			"type":"BLOCK_NOTE_BLOCK_XYLOPHONE",
+			"volume": "1",
+			"pitch": "C_7"
+		},
+		{
+			"time":"4",
+			"type":"BLOCK_NOTE_BLOCK_XYLOPHONE",
+			"volume": "1",
+			"pitch": "C_7"
+		},
+		{
+			"time":"4.5",
+			"type":"BLOCK_NOTE_BLOCK_XYLOPHONE",
+			"volume": "1",
+			"pitch": "C_7"
+		},
+		{
+			"time":"5",
+			"type":"BLOCK_NOTE_BLOCK_XYLOPHONE",
+			"volume": "1",
+			"pitch": "C_7"
+		},
+		{
+			"time":"5.5",
+			"type":"BLOCK_NOTE_BLOCK_XYLOPHONE",
+			"volume": "1",
+			"pitch": "C_7"
+		},
+		
+		
+		{
+			"time":"6",
+			"type":"BLOCK_NOTE_BLOCK_XYLOPHONE",
+			"volume": "1",
+			"pitch": "B_6"
+		},
+		{
+			"time":"6.5",
+			"type":"BLOCK_NOTE_BLOCK_XYLOPHONE",
+			"volume": "1",
+			"pitch": "B_6"
+		},
+		{
+			"time":"7",
+			"type":"BLOCK_NOTE_BLOCK_XYLOPHONE",
+			"volume": "1",
+			"pitch": "B_6"
+		},
+		{
+			"time":"7.5",
+			"type":"BLOCK_NOTE_BLOCK_XYLOPHONE",
+			"volume": "1",
+			"pitch": "B_6"
+		},
+		{
+			"time":"8",
+			"type":"BLOCK_NOTE_BLOCK_XYLOPHONE",
+			"volume": "1",
+			"pitch": "B_6"
+		},
+		{
+			"time":"8.5",
+			"type":"BLOCK_NOTE_BLOCK_XYLOPHONE",
+			"volume": "1",
+			"pitch": "B_6"
+		},
+		{
+			"time":"9",
+			"type":"BLOCK_NOTE_BLOCK_XYLOPHONE",
+			"volume": "1",
+			"pitch": "B_6"
+		},
+		{
+			"time":"9.5",
+			"type":"BLOCK_NOTE_BLOCK_XYLOPHONE",
+			"volume": "1",
+			"pitch": "B_6"
+		},
+		{
+			"time":"10",
+			"type":"BLOCK_NOTE_BLOCK_XYLOPHONE",
+			"volume": "1",
+			"pitch": "B_6"
+		},
+		{
+			"time":"10.5",
+			"type":"BLOCK_NOTE_BLOCK_XYLOPHONE",
+			"volume": "1",
+			"pitch": "B_6"
+		},
+		{
+			"time":"11",
+			"type":"BLOCK_NOTE_BLOCK_XYLOPHONE",
+			"volume": "1",
+			"pitch": "B_6"
+		},
+		{
+			"time":"11.5",
+			"type":"BLOCK_NOTE_BLOCK_XYLOPHONE",
+			"volume": "1",
+			"pitch": "B_6"
+		}
+		
+	]
+}

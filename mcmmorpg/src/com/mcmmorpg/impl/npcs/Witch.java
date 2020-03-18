@@ -15,6 +15,7 @@ public abstract class Witch extends NonPlayerCharacter {
 
 	protected Witch(String name, int level, Location location) {
 		super(name, level, location);
+		super.setHeight(2.6);
 		interactionBox = new PlayerCharacterInteractionCollider(location.clone().add(0, 1, 0), 1, 2, 1) {
 			@Override
 			protected void onInteract(PlayerCharacter pc) {
@@ -44,11 +45,6 @@ public abstract class Witch extends NonPlayerCharacter {
 	@Override
 	public boolean isFriendly(AbstractCharacter other) {
 		return true;
-	}
-
-	@Override
-	protected Location getNameplateLocation() {
-		return getLocation().add(0, 2.6, 0);
 	}
 
 	protected abstract void onInteract(PlayerCharacter pc);

@@ -30,6 +30,7 @@ public abstract class AbstractCharacter implements Source {
 	private boolean alive;
 	private double currentHealth;
 	private double maxHealth;
+	private double height;
 	private final TextPanel nameplate;
 
 	/**
@@ -40,12 +41,14 @@ public abstract class AbstractCharacter implements Source {
 		this.name = name;
 		this.level = level;
 		this.location = location;
-		alive = false;
-		currentHealth = 0;
-		maxHealth = 1;
+		this.alive = false;
+		this.currentHealth = 0;
+		this.maxHealth = 1;
+		// Assume humanoid height.
+		this.height = 2;
 		Location nameplateLocation = getNameplateLocation();
-		nameplate = new TextPanel(nameplateLocation);
-		nameplate.setCharactersPerLine(25);
+		this.nameplate = new TextPanel(nameplateLocation);
+		this.nameplate.setCharactersPerLine(25);
 		updateNameplateText();
 	}
 
@@ -103,8 +106,7 @@ public abstract class AbstractCharacter implements Source {
 	public void setLocation(Location location) {
 		// clone for safety
 		this.location = location.clone();
-		Location nameplateLocation = getNameplateLocation();
-		nameplate.setLocation(nameplateLocation);
+		updateNameplateLocation();
 	}
 
 	/**
@@ -220,6 +222,15 @@ public abstract class AbstractCharacter implements Source {
 		setNameplateVisible(false);
 	}
 
+	public final double getHeight() {
+		return height;
+	}
+
+	public void setHeight(double height) {
+		this.height = height;
+		updateNameplateLocation();
+	}
+
 	private final String nameplateText() {
 		int numBars = 20;
 		StringBuilder text = new StringBuilder();
@@ -240,6 +251,15 @@ public abstract class AbstractCharacter implements Source {
 		return text.toString();
 	}
 
+	private final Location getNameplateLocation() {
+		return getLocation().add(0, height, 0);
+	}
+
+	private final void updateNameplateLocation() {
+		Location nameplateLocation = getNameplateLocation();
+		nameplate.setLocation(nameplateLocation);
+	}
+
 	private final void updateNameplateText() {
 		String nameplateText = nameplateText();
 		nameplate.setText(nameplateText);
@@ -253,17 +273,6 @@ public abstract class AbstractCharacter implements Source {
 	}
 
 	/**
-	 * This is used to ensure this character's nameplate is always positioned
-	 * correctly. Specify in subclasses where this character's nameplate should be
-	 * located at any time. The location should usually be relative to this
-	 * character's location.
-	 */
-	protected Location getNameplateLocation() {
-		// assume humanoid
-		return getLocation().add(0, 2, 0);
-	}
-
-	/**
 	 * Returns whether this character is friendly toward the other specified
 	 * character. Override in subclasses to provide specific behavior. Returns false
 	 * by default.
@@ -272,11 +281,11 @@ public abstract class AbstractCharacter implements Source {
 		return false;
 	}
 
-	public String formatName() {
+	public final String formatName() {
 		return ChatColor.GRAY + "[" + ChatColor.RESET + name + ChatColor.GRAY + "]" + ChatColor.RESET;
 	}
 
-	public String formatDialogue(String dialogue) {
+	public final String formatDialogue(String dialogue) {
 		if (dialogue == null) {
 			return null;
 		} else {
@@ -284,7 +293,7 @@ public abstract class AbstractCharacter implements Source {
 		}
 	}
 
-	public String[] formatDialogue(String[] dialogue) {
+	public final String[] formatDialogue(String[] dialogue) {
 		String[] formattedDialogue = new String[dialogue.length];
 		for (int i = 0; i < dialogue.length; i++) {
 			formattedDialogue[i] = formatDialogue(dialogue[i]);
@@ -292,18 +301,18 @@ public abstract class AbstractCharacter implements Source {
 		return formattedDialogue;
 	}
 
-	public void say(String dialogue, AbstractCharacter recipient) {
+	public final void say(String dialogue, AbstractCharacter recipient) {
 		if (recipient instanceof PlayerCharacter) {
 			String formattedDialogue = formatDialogue(dialogue);
 			((PlayerCharacter) recipient).sendMessage(formattedDialogue);
 		}
 	}
 
-	public void say(String dialogue) {
+	public final void say(String dialogue) {
 		say(dialogue, 25);
 	}
 
-	public void say(String dialogue, double radius) {
+	public final void say(String dialogue, double radius) {
 		double diameter = radius * 2;
 		Collider area = new Collider(location, diameter, diameter, diameter);
 		area.setActive(true);

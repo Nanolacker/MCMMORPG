@@ -8,7 +8,6 @@ import com.mcmmorpg.common.character.PlayerCharacter;
 import com.mcmmorpg.common.quest.Quest;
 import com.mcmmorpg.common.quest.QuestStatus;
 import com.mcmmorpg.common.sound.Noise;
-import com.mcmmorpg.common.ui.MessageSequence;
 
 public class FlintonQuestGiver extends StaticHuman {
 
@@ -27,6 +26,7 @@ public class FlintonQuestGiver extends StaticHuman {
 	@Override
 	protected void onInteract(PlayerCharacter pc) {
 		if (TO_THE_AID_OF_FLINTON.compareStatus(pc, QuestStatus.IN_PROGRESS)) {
+			SPEAK_NOISE.play(pc);
 			REMOVING_THE_BANDITS.start(pc);
 			RESCUING_THE_RESIDENTS.start(pc);
 		}
