@@ -130,16 +130,27 @@ public class Quest {
 		for (QuestObjective objective : objectives) {
 			int progress = objective.getProgress(pc);
 			int goal = objective.getGoal();
-			String progressText = "";
+			String progressText;
 			if (progress < goal) {
 				progressText = ChatColor.YELLOW + "";
 			} else {
 				progressText = ChatColor.GREEN + "";
 			}
-			progressText += progress + "/" + goal;
+			progressText += "-" + progress + "/" + goal;
 			objectiveLines += progressText + " " + ChatColor.WHITE + objective.getDescription() + "\n\n";
 		}
 		return objectiveLines;
+	}
+
+	public static List<Quest> getInProgressQuests(PlayerCharacter pc) {
+		List<Quest> inProgressQuests = new ArrayList<>();
+		List<Quest> allQuests = Quest.getAll();
+		for (Quest quest : allQuests) {
+			if (quest.getStatus(pc) == QuestStatus.IN_PROGRESS) {
+				inProgressQuests.add(quest);
+			}
+		}
+		return inProgressQuests;
 	}
 
 }

@@ -125,8 +125,7 @@ public class NonPlayerCharacter extends AbstractCharacter {
 	 */
 	protected boolean canSpawn() {
 		Location location = getLocation();
-		boolean playerIsNearby = PlayerCharacter.playerIsNearby(location, DEFAULT_SPAWN_RADIUS, DEFAULT_SPAWN_RADIUS,
-				DEFAULT_SPAWN_RADIUS);
+		boolean playerIsNearby = PlayerCharacter.playerCharacterIsNearby(location, DEFAULT_SPAWN_RADIUS);
 		return playerIsNearby;
 	}
 

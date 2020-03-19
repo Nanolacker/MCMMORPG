@@ -40,12 +40,6 @@ public class TextPanel {
 	private static final double ALLOWED_ENTITY_LOC_OFFSET = 0.1;
 
 	/**
-	 * Stores all {@code TextPanels} that are instantiated so that the entities
-	 * associated with them can be removed when the server is stopped.
-	 */
-	private static List<TextPanel> activeTextPanels = new ArrayList<>();
-
-	/**
 	 * Whether this {@code TextPanel} is visible and rendering text.
 	 */
 	private boolean visible;
@@ -84,8 +78,10 @@ public class TextPanel {
 	 * Constructs a new {@code TextPanel}. Be sure to invoke {@code setVisible} to
 	 * make it visible. If this is not done, the text will be invisible.
 	 * 
-	 * @param text     the text rendered by this {@code TextPanel}
-	 * @param location this {@code TextPanel}'s {@code Location}
+	 * @param text
+	 *            the text rendered by this {@code TextPanel}
+	 * @param location
+	 *            this {@code TextPanel}'s {@code Location}
 	 */
 	public TextPanel(Location location, String text) {
 		visible = false;
@@ -102,7 +98,8 @@ public class TextPanel {
 	 * Be sure to invoke {@code setVisible} to make it visible. If this is not done,
 	 * the text will be invisible.
 	 * 
-	 * @param location this {@code TextPanel}'s {@code Location}
+	 * @param location
+	 *            this {@code TextPanel}'s {@code Location}
 	 */
 	public TextPanel(Location location) {
 		this(location, "");
@@ -116,8 +113,8 @@ public class TextPanel {
 		entitySpawnManageTask = new RepeatingTask(SPAWN_MANAGE_TASK_PERIOD) {
 			@Override
 			protected void run() {
-				boolean playerNearby = PlayerCharacter.playerIsNearby(location, MAX_SPAWN_DISTANCE_FROM_PLAYER,
-						MAX_SPAWN_DISTANCE_FROM_PLAYER, MAX_SPAWN_DISTANCE_FROM_PLAYER);
+				boolean playerNearby = PlayerCharacter.playerCharacterIsNearby(location,
+						MAX_SPAWN_DISTANCE_FROM_PLAYER);
 				if (playerNearby) {
 					if (spawned) {
 						Location idealEntityLoc = getLocation().clone();
@@ -146,7 +143,7 @@ public class TextPanel {
 	/**
 	 * Returns whether this {@code TextPanel} is visible and rendering text.
 	 */
-	public boolean getVisible() {
+	public boolean isVisible() {
 		return visible;
 	}
 
@@ -160,10 +157,8 @@ public class TextPanel {
 		}
 		this.visible = visible;
 		if (visible) {
-			activeTextPanels.add(this);
 			entitySpawnManageTask.schedule();
 		} else {
-			activeTextPanels.remove(this);
 			removeEntities();
 			entitySpawnManageTask.cancel();
 		}
@@ -238,7 +233,8 @@ public class TextPanel {
 	/**
 	 * Spawns a single entity to represent a single line of this {@code TextPanel}.
 	 * 
-	 * @param lineCount the number of line that the entity will represent
+	 * @param lineCount
+	 *            the number of line that the entity will represent
 	 */
 	private void spawnSingleEntity(int lineCount) {
 		World world = ((CraftWorld) location.getWorld()).getHandle();
@@ -265,14 +261,14 @@ public class TextPanel {
 			// always take 0 because the entity list is being modified
 			removeSingleEntity(0);
 		}
-		entities.clear();
 		spawned = false;
 	}
 
 	/**
 	 * Removes a single entity.
 	 * 
-	 * @param lineCount the number of line that the entity to be removed represents.
+	 * @param lineCount
+	 *            the number of line that the entity to be removed represents.
 	 */
 	private void removeSingleEntity(int lineCount) {
 		EntityArmorStand entity = entities.get(lineCount);

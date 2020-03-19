@@ -236,12 +236,14 @@ public final class PlayerCharacter extends AbstractCharacter {
 	 * Returns true if there is a player within the specified x, y, and z distances
 	 * from the specified location. False otherwise.
 	 */
-	public static boolean playerIsNearby(Location location, double distanceX, double distanceY, double distanceZ) {
+	public static boolean playerCharacterIsNearby(Location location, double radius) {
 		World world = location.getWorld();
-		Collection<Entity> nearbyEntities = world.getNearbyEntities(location, distanceX, distanceY, distanceZ);
+		Collection<Entity> nearbyEntities = world.getNearbyEntities(location, radius, radius, radius);
 		for (Entity nearbyEntity : nearbyEntities) {
 			if (nearbyEntity.getType().equals(EntityType.PLAYER)) {
-				return true;
+				if (playerMap.containsKey(nearbyEntity)) {
+					return true;
+				}
 			}
 		}
 		return false;
@@ -277,6 +279,7 @@ public final class PlayerCharacter extends AbstractCharacter {
 
 	public void setRespawnLocation(Location respawnLocation) {
 		this.respawnLocation = respawnLocation;
+		sendMessage(ChatColor.GRAY + "Respawn point updated");
 	}
 
 	/**
@@ -652,14 +655,13 @@ public final class PlayerCharacter extends AbstractCharacter {
 	}
 
 	public void updateQuestDisplay() {
-		if (targetQuest == null) {
-			SidebarText.clear(player);
-		} else {
-			String questTitle = ChatColor.YELLOW + targetQuest.getName();
-			String lines = "\n" + targetQuest.getQuestLogLines(this);
-			SidebarText questDisplay = new SidebarText(questTitle, lines);
-			questDisplay.apply(player);
+		String lines = "";
+		List<Quest> inProgressQuests = Quest.getInProgressQuests(this);
+		for (Quest quest : inProgressQuests) {
+			lines += ChatColor.YELLOW + quest.getName() + "\n" + quest.getQuestLogLines(this);
 		}
+		SidebarText questDisplay = new SidebarText(ChatColor.YELLOW + "Quests", lines);
+		questDisplay.apply(player);
 	}
 
 	private Location getColliderCenter() {

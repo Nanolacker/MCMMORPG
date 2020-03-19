@@ -31,24 +31,13 @@ public class QuestLog {
 	private Inventory createInventory() {
 		int size = 9 * 1;
 		Inventory inventory = Bukkit.createInventory(null, size, "Quest Log");
-		List<Quest> inProgressQuests = getInProgressQuests();
+		List<Quest> inProgressQuests = Quest.getInProgressQuests(pc);
 		for (int i = 0; i < size && i < inProgressQuests.size(); i++) {
 			Quest quest = inProgressQuests.get(i);
 			ItemStack itemStack = quest.getQuestLogItemStack(pc);
 			inventory.setItem(i, itemStack);
 		}
 		return inventory;
-	}
-
-	private List<Quest> getInProgressQuests() {
-		List<Quest> inProgressQuests = new ArrayList<>();
-		List<Quest> allQuests = Quest.getAll();
-		for (Quest quest : allQuests) {
-			if (quest.getStatus(pc) == QuestStatus.IN_PROGRESS) {
-				inProgressQuests.add(quest);
-			}
-		}
-		return inProgressQuests;
 	}
 
 	public void open() {
