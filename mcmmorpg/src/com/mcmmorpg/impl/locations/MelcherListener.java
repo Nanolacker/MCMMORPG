@@ -7,7 +7,6 @@ import com.mcmmorpg.impl.Worlds;
 import com.mcmmorpg.impl.npcs.BanditQuestGiver;
 import com.mcmmorpg.impl.npcs.CombatTrainer;
 import com.mcmmorpg.impl.npcs.FoodQuestGiver;
-import com.mcmmorpg.impl.npcs.GelatinousCube;
 import com.mcmmorpg.impl.npcs.Thief;
 import com.mcmmorpg.impl.npcs.TrainingDummy;
 import com.mcmmorpg.impl.npcs.WildBoar;
@@ -57,8 +56,6 @@ public class MelcherListener implements Listener {
 		for (Location location : wildBoarLocations) {
 			new WildBoar(3, location).setAlive(true);
 		}
-
-		new GelatinousCube(trainingDummyLocations[0]).setAlive(true);
 	}
 
 }

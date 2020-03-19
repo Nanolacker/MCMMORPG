@@ -105,7 +105,7 @@ public class LootChest {
 		}
 	}
 
-	private Location getNearestEmptyBlock(Location location) {
+	private static Location getNearestEmptyBlock(Location location) {
 		World world = location.getWorld();
 		int baseX = location.getBlockX();
 		int baseY = location.getBlockY();
@@ -125,6 +125,18 @@ public class LootChest {
 		return null;
 	}
 
+	public Location getLocation() {
+		return location;
+	}
+
+	public PlayerCharacter getOwner() {
+		return owner;
+	}
+
+	public Item[] getContents() {
+		return contents;
+	}
+
 	void open(PlayerCharacter pc) {
 		Inventory inventory = Bukkit.createInventory(null, size, "Loot");
 		ArrayList<ItemStack> itemStacks = new ArrayList<>(size);
@@ -139,10 +151,6 @@ public class LootChest {
 		inventory.setContents(itemStacks.toArray(new ItemStack[itemStacks.size()]));
 		pc.getPlayer().openInventory(inventory);
 		inventories.add(inventory);
-	}
-
-	public PlayerCharacter getOwner() {
-		return owner;
 	}
 
 	public void remove() {

@@ -469,7 +469,7 @@ public final class PlayerCharacter extends AbstractCharacter {
 		amount = getMitigatedDamage(amount, getProtections());
 		super.damage(amount, source);
 		// for effect
-		player.damage(0);
+		player.damage(0.01);
 	}
 
 	private static double getMitigatedDamage(double damage, double protections) {
@@ -630,7 +630,7 @@ public final class PlayerCharacter extends AbstractCharacter {
 		deathMessage.sendTo(player);
 		PotionEffect veilEffect = new PotionEffect(PotionEffectType.BLINDNESS, 80, 1);
 		PotionEffect invisibiltyEffect = new PotionEffect(PotionEffectType.INVISIBILITY, 40, 1);
-		PotionEffect slownessEffect = new PotionEffect(PotionEffectType.SLOW, 80, 5);
+		PotionEffect slownessEffect = new PotionEffect(PotionEffectType.SLOW, 40, 5);
 		player.addPotionEffect(veilEffect);
 		player.addPotionEffect(invisibiltyEffect);
 		player.addPotionEffect(slownessEffect);

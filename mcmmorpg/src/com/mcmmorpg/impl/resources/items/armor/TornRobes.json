@@ -3,7 +3,7 @@
 	"name": "Torn Robes",
 	"rarity": "COMMON",
 	"icon": "LEATHER_CHESTPLATE",
-	"description": "FILL",
+	"description": null,
 	"playerClass": "Mage",
 	"level": 3,
 	"type": "CHEST",

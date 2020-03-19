@@ -295,15 +295,13 @@ public class FighterListener implements Listener {
 		if (weapon == ItemManager.APPRENTICE_SWORD) {
 			useApprenticeSword(pc);
 		}
-
 	}
 
-	private void useApprenticeSword(PlayerCharacter pc) {
-		double damage = 5;
+	private void useWeapon(PlayerCharacter pc, double damage) {
 		Location start = pc.getLocation().add(0, 1.5, 0);
 		Vector direction = start.getDirection();
 		Location particleLocation = start.clone().add(direction.clone().multiply(2));
-		start.getWorld().spawnParticle(Particle.SWEEP_ATTACK, particleLocation, 0);
+		particleLocation.getWorld().spawnParticle(Particle.SWEEP_ATTACK, particleLocation, 0);
 		Ray ray = new Ray(start, direction, 3);
 		Raycast raycast = new Raycast(ray, CharacterCollider.class);
 		Collider[] hits = raycast.getHits();
@@ -315,6 +313,10 @@ public class FighterListener implements Listener {
 			}
 		}
 		pc.disarm(0.5);
+	}
+
+	private void useApprenticeSword(PlayerCharacter pc) {
+		useWeapon(pc, 5);
 	}
 
 }

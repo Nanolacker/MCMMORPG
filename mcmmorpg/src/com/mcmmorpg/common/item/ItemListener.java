@@ -27,6 +27,7 @@ import org.bukkit.inventory.ItemStack;
 
 import com.mcmmorpg.common.character.PlayerCharacter;
 import com.mcmmorpg.common.event.EventManager;
+import com.mcmmorpg.common.event.LootChestOpenEvent;
 import com.mcmmorpg.common.event.PlayerCharacterUseConsumableItemEvent;
 import com.mcmmorpg.common.event.PlayerCharacterUseWeaponEvent;
 import com.mcmmorpg.common.event.StaticInteractableEvent;
@@ -172,7 +173,9 @@ class ItemListener implements Listener {
 				ConsumableItem consumable = (ConsumableItem) clickedItem;
 				handlePlayerCharacterUseConsumable(pc, consumable, clickedItemStack);
 			} else if (clickedItem instanceof Weapon) {
-				if (rawSlot != 36) {
+				if (rawSlot == 36 || clickedItem == pc.getWeapon()) {
+					pc.sendMessage(clickedItem.toString() + ChatColor.GRAY + " is already equipped");
+				} else {
 					Weapon weapon = (Weapon) clickedItem;
 					PlayerClass weaponPlayerClass = weapon.getPlayerClass();
 					int weaponLevel = weapon.getLevel();
@@ -187,14 +190,13 @@ class ItemListener implements Listener {
 						Inventory inventory = player.getInventory();
 						// must go back to non-raw slots here
 						int slot = event.getSlot();
-						inventory.setItem(slot, null);
 						ItemStack currentWeaponItemStack = inventory.getItem(0);
 						inventory.setItem(0, clickedItemStack);
 						inventory.setItem(slot, currentWeaponItemStack);
 						pc.sendMessage(ChatColor.GRAY + "Equipped " + weapon);
 					}
-					CLICK_NOISE.play(player);
 				}
+				CLICK_NOISE.play(player);
 			} else if (clickedItem instanceof ArmorItem) {
 				ArmorItem armorItem = (ArmorItem) clickedItem;
 				Inventory inventory = player.getInventory();
@@ -314,6 +316,7 @@ class ItemListener implements Listener {
 		if (owner == null || chest.getOwner() == pc) {
 			chest.open(pc);
 			chest.remove();
+			EventManager.callEvent(new LootChestOpenEvent(chest));
 		} else {
 			pc.sendMessage(ChatColor.GRAY + "This chest belongs to " + owner.getName());
 		}

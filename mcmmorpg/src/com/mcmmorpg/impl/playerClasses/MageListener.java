@@ -44,6 +44,7 @@ public class MageListener implements Listener {
 	private static final Noise EARTHQUAKE_NOISE = new Noise(Sound.BLOCK_GRAVEL_FALL, 1, 0.5f);
 	private static final Noise SHADOW_VOID_USE_NOISE = new Noise(Sound.BLOCK_PORTAL_TRIGGER);
 	private static final Noise SHADOW_VOID_EXPLODE_NOISE = new Noise(Sound.ENTITY_WITHER_HURT);
+	private static final Noise STAFF_HIT_NOISE = new Noise(Sound.BLOCK_WOODEN_TRAPDOOR_OPEN);
 
 	private final PlayerClass mage;
 	private final Skill fireball;
@@ -497,10 +498,11 @@ public class MageListener implements Listener {
 		}
 	}
 
-	private void useApprenticeStaff(PlayerCharacter pc) {
-		double damage = 4;
+	private void useStaff(PlayerCharacter pc, double damage) {
 		Location start = pc.getLocation().add(0, 1.5, 0);
 		Vector direction = start.getDirection();
+		Location particleLocation = start.clone().add(direction.clone().multiply(2));
+		particleLocation.getWorld().spawnParticle(Particle.SWEEP_ATTACK, particleLocation, 0);
 		Ray ray = new Ray(start, direction, 3);
 		Raycast raycast = new Raycast(ray, CharacterCollider.class);
 		Collider[] hits = raycast.getHits();
@@ -508,8 +510,14 @@ public class MageListener implements Listener {
 			AbstractCharacter character = ((CharacterCollider) hit).getCharacter();
 			if (!character.isFriendly(pc)) {
 				character.damage(damage, pc);
+				STAFF_HIT_NOISE.play(character.getLocation());
 			}
 		}
 		pc.disarm(1.25);
 	}
+
+	private void useApprenticeStaff(PlayerCharacter pc) {
+		useStaff(pc, 4);
+	}
+
 }
