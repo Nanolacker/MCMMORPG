@@ -41,11 +41,11 @@ public class StringUtils {
 		}
 		List<String> lines = new ArrayList<>();
 		String[] preLines = text.split("\n");
-		String prevColor = "";
+		String chatColor = "";
 		for (String preLine : preLines) {
 			int currentLineLength = 0;
 			Scanner lineParser = new Scanner(preLine);
-			String line = prevColor;
+			String line = chatColor;
 			while (lineParser.hasNext()) {
 				String token = lineParser.next();
 				int tokenLength = length(token);
@@ -60,8 +60,8 @@ public class StringUtils {
 					// start new line
 					line = line.trim();
 					lines.add(line);
-					prevColor = ChatColor.getLastColors(line);
-					line = prevColor + token + " ";
+					chatColor += ChatColor.getLastColors(line);
+					line = chatColor + token + " ";
 					currentLineLength = length(line);
 				} else {
 					// add token to current line
@@ -73,7 +73,7 @@ public class StringUtils {
 			// add the last remaining line
 			line = line.trim();
 			lines.add(line);
-			prevColor = ChatColor.getLastColors(line);
+			chatColor = ChatColor.getLastColors(line);
 			lineParser.close();
 		}
 		return lines;

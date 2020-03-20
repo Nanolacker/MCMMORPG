@@ -14,6 +14,4 @@ public class Ghost extends NonPlayerCharacter {
 		super(ChatColor.RED + "Ghost", level, location);
 	}
 	
-	
-	
 }

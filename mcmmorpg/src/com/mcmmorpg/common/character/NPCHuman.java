@@ -12,8 +12,11 @@ import org.bukkit.World;
 import org.bukkit.craftbukkit.v1_15_R1.CraftServer;
 import org.bukkit.craftbukkit.v1_15_R1.CraftWorld;
 import org.bukkit.craftbukkit.v1_15_R1.entity.CraftPlayer;
+import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.EntityEquipment;
 import org.bukkit.inventory.ItemStack;
 
 import com.mcmmorpg.common.time.RepeatingTask;
@@ -38,16 +41,19 @@ public class NPCHuman {
 
 	private final String name;
 	private Location location;
-	private EntityPlayer entityPlayer;
+	private final EntityPlayer entityPlayer;
 	private boolean visible;
 	private final List<Player> viewers;
 	private RepeatingTask renderer;
+	private ArmorStand equipment;
+	private ItemStack mainHand, offHand, helmet, chestplate, leggings, boots;
 
 	public NPCHuman(String name, Location location, String textureData, String textureSignature) {
 		this.name = name;
 		this.location = location;
+		World world = location.getWorld();
 		MinecraftServer minecraftServer = ((CraftServer) Bukkit.getServer()).getServer();
-		WorldServer worldServer = ((CraftWorld) location.getWorld()).getHandle();
+		WorldServer worldServer = ((CraftWorld) world).getHandle();
 		GameProfile gameProfile = new GameProfile(UUID.randomUUID(),
 				ChatColor.translateAlternateColorCodes('&', this.name));
 		gameProfile.getProperties().put("textures", new Property("textures", textureData, textureSignature));
@@ -103,6 +109,7 @@ public class NPCHuman {
 		this.location = location;
 		if (visible) {
 			setLocation0(location);
+			equipment.teleport(location);
 		}
 	}
 
@@ -129,28 +136,48 @@ public class NPCHuman {
 		this.visible = visible;
 		if (visible) {
 			setLocation0(location);
+			equipment = (ArmorStand) location.getWorld().spawnEntity(location, EntityType.ARMOR_STAND);
+			equipment.setVisible(false);
+			equipment.setRemoveWhenFarAway(false);
+			EntityEquipment equipmentItems = equipment.getEquipment();
+			equipmentItems.setItemInMainHand(mainHand);
+			equipmentItems.setItemInOffHand(offHand);
+			equipmentItems.setHelmet(helmet);
+			equipmentItems.setChestplate(chestplate);
+			equipmentItems.setLeggings(leggings);
+			equipmentItems.setBoots(boots);
+			equipment.teleport(location);
 		} else {
 			Location dump = new Location(location.getWorld(), 0, 512, 0);
 			setLocation0(dump);
+			if (equipment != null) {
+				equipment.remove();
+			}
 		}
 	}
 
 	public void setMainHand(ItemStack itemStack) {
+		this.mainHand = itemStack;
 	}
 
 	public void setOffHand(ItemStack itemStack) {
+		this.offHand = itemStack;
 	}
 
 	public void setHelmet(ItemStack itemStack) {
+		this.helmet = itemStack;
 	}
 
 	public void setChestplate(ItemStack itemStack) {
+		this.chestplate = itemStack;
 	}
 
 	public void setLeggings(ItemStack itemStack) {
+		this.leggings = itemStack;
 	}
 
 	public void setBoots(ItemStack itemStack) {
+		this.boots = itemStack;
 	}
 
 	public void swingHand() {

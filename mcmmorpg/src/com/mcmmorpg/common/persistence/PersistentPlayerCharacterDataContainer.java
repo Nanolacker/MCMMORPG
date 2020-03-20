@@ -28,7 +28,6 @@ public class PersistentPlayerCharacterDataContainer {
 	private final double healthRegenRate;
 	private final double maxMana, currentMana;
 	private final double manaRegenRate;
-	private final String targetQuestName;
 	private final String[] completedQuestNames;
 	private final PlayerQuestData[] questData;
 	private final PlayerSkillData[] skillData;
@@ -38,7 +37,7 @@ public class PersistentPlayerCharacterDataContainer {
 	private PersistentPlayerCharacterDataContainer(boolean fresh, PlayerClass playerClass, String zone,
 			Location location, Location respawnLocation, int xp, int skillUpgradePoints, int currency, double maxHealth,
 			double currentHealth, double healthRegenRate, double maxMana, double currentMana, double manaRegenRate,
-			Quest targetQuest, List<Quest> completedQuests, PlayerQuestData[] questData, PlayerSkillData[] skillData,
+			List<Quest> completedQuests, PlayerQuestData[] questData, PlayerSkillData[] skillData,
 			ItemStack[] inventoryContents, String[] tags) {
 		this.fresh = fresh;
 		this.playerClassName = playerClass.getName();
@@ -54,7 +53,6 @@ public class PersistentPlayerCharacterDataContainer {
 		this.maxMana = maxMana;
 		this.currentMana = currentMana;
 		this.manaRegenRate = manaRegenRate;
-		this.targetQuestName = targetQuest == null ? null : targetQuest.getName();
 		this.completedQuestNames = new String[completedQuests.size()];
 		for (int i = 0; i < completedQuests.size(); i++) {
 			completedQuestNames[i] = completedQuests.get(i).getName();
@@ -79,7 +77,6 @@ public class PersistentPlayerCharacterDataContainer {
 		double maxMana = pc.getMaxMana();
 		double currentMana = pc.getCurrentMana();
 		double manaRegenRate = pc.getManaRegenRate();
-		Quest targetQuest = pc.getTargetQuest();
 		PlayerQuestManager questManager = pc.getQuestManager();
 		List<Quest> completedQuests = questManager.getCompletedQuests();
 		PlayerQuestData[] allQuestData = pc.getQuestManager().getQuestData();
@@ -88,7 +85,7 @@ public class PersistentPlayerCharacterDataContainer {
 		String[] tags = pc.getTags();
 		return new PersistentPlayerCharacterDataContainer(false, playerClass, zone, location, respawnLocation, xp,
 				skillUpgradePoints, currency, maxHealth, currentHealth, healthRegenRate, maxMana, currentMana,
-				manaRegenRate, targetQuest, completedQuests, allQuestData, skillData, inventoryContents, tags);
+				manaRegenRate, completedQuests, allQuestData, skillData, inventoryContents, tags);
 	}
 
 	public static PersistentPlayerCharacterDataContainer createFreshSaveData(Player player, PlayerClass playerClass,
@@ -109,7 +106,7 @@ public class PersistentPlayerCharacterDataContainer {
 		String[] tags = {};
 		return new PersistentPlayerCharacterDataContainer(true, playerClass, startZone, startLocation, respawnLocation,
 				xp, skillUpgradePoints, currency, maxHealth, currentHealth, healthRegenRate, maxMana, currentMana,
-				manaRegenRate, null, new ArrayList<>(), questData, skillData, inventoryContents, tags);
+				manaRegenRate, new ArrayList<>(), questData, skillData, inventoryContents, tags);
 	}
 
 	/**
@@ -169,10 +166,6 @@ public class PersistentPlayerCharacterDataContainer {
 
 	public double getManaRegenRate() {
 		return manaRegenRate;
-	}
-
-	public Quest getTargetQuest() {
-		return Quest.forName(targetQuestName);
 	}
 
 	public Quest[] getCompletedQuests() {

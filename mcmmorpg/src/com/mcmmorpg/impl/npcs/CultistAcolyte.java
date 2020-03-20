@@ -19,15 +19,14 @@ import org.bukkit.util.Vector;
 import com.mcmmorpg.common.character.CharacterCollider;
 import com.mcmmorpg.common.character.MovementSyncer;
 import com.mcmmorpg.common.character.MovementSyncer.MovementSyncMode;
-import com.mcmmorpg.common.character.PlayerCharacter.PlayerCharacterCollider;
-import com.mcmmorpg.common.item.LootChest;
-import com.mcmmorpg.common.physics.Collider;
-import com.mcmmorpg.common.sound.Noise;
-import com.mcmmorpg.common.time.DelayedTask;
 import com.mcmmorpg.common.character.NPCHuman;
 import com.mcmmorpg.common.character.NonPlayerCharacter;
 import com.mcmmorpg.common.character.PlayerCharacter;
+import com.mcmmorpg.common.character.PlayerCharacter.PlayerCharacterCollider;
 import com.mcmmorpg.common.character.Source;
+import com.mcmmorpg.common.physics.Collider;
+import com.mcmmorpg.common.sound.Noise;
+import com.mcmmorpg.common.time.DelayedTask;
 
 public class CultistAcolyte extends NonPlayerCharacter {
 
@@ -108,7 +107,6 @@ public class CultistAcolyte extends NonPlayerCharacter {
 		DEATH_NOISE.play(location);
 		location.getWorld().spawnParticle(Particle.CLOUD, location, 10);
 		setLocation(spawnLocation);
-		LootChest.spawnLootChest(location);
 		DelayedTask respawn = new DelayedTask(RESPAWN_TIME) {
 			@Override
 			protected void run() {

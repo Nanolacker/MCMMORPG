@@ -312,14 +312,9 @@ class ItemListener implements Listener {
 		if (chest == null) {
 			return;
 		}
-		PlayerCharacter owner = chest.getOwner();
-		if (owner == null || chest.getOwner() == pc) {
-			chest.open(pc);
-			chest.remove();
-			EventManager.callEvent(new LootChestOpenEvent(chest));
-		} else {
-			pc.sendMessage(ChatColor.GRAY + "This chest belongs to " + owner.getName());
-		}
+		chest.open(pc);
+		chest.remove();
+		EventManager.callEvent(new LootChestOpenEvent(chest));
 	}
 
 	@EventHandler

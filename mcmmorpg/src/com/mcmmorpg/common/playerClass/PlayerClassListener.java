@@ -193,7 +193,7 @@ class PlayerClassListener implements Listener {
 		ClickType click = event.getClick();
 
 		if (!skill.prerequisitesAreMet(pc)) {
-			pc.sendMessage(ChatColor.GREEN + skill.getName() + ChatColor.GRAY + " is not available");
+			pc.sendMessage(ChatColor.GREEN + skill.getName() + ChatColor.GRAY + " is not available yet");
 			CLICK_NOISE.play(player);
 			return;
 		}

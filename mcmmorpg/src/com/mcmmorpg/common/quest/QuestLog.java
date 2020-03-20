@@ -2,6 +2,7 @@ package com.mcmmorpg.common.quest;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -57,18 +58,6 @@ public class QuestLog {
 			Inventory topInventory = event.getInventory();
 			if (questLogInventories.contains(topInventory)) {
 				event.setCancelled(true);
-				Inventory clickedInventory = event.getClickedInventory();
-				if (clickedInventory == topInventory) {
-					// Clicking an empty slot resets the quest tracking.
-					ItemStack itemStack = event.getCurrentItem();
-					if (itemStack == null) {
-						pc.setTargetQuest(null);
-					} else {
-						String questName = itemStack.getItemMeta().getDisplayName().substring(2);
-						Quest quest = Quest.forName(questName);
-						pc.setTargetQuest(quest);
-					}
-				}
 			}
 		}
 

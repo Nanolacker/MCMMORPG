@@ -26,7 +26,6 @@ import com.mcmmorpg.common.character.PlayerCharacter;
 import com.mcmmorpg.common.character.PlayerCharacter.PlayerCharacterCollider;
 import com.mcmmorpg.common.character.Source;
 import com.mcmmorpg.common.event.EventManager;
-import com.mcmmorpg.common.item.LootChest;
 import com.mcmmorpg.common.physics.Collider;
 import com.mcmmorpg.common.quest.Quest;
 import com.mcmmorpg.common.sound.Noise;
@@ -117,8 +116,8 @@ public class Thief extends NonPlayerCharacter implements Listener {
 		Location location = getLocation();
 		DEATH_NOISE.play(location);
 		location.getWorld().spawnParticle(Particle.CLOUD, location, 10);
+		ItemManager.FOOD_SUPPLIES.drop(location, 1);
 		setLocation(spawnLocation);
-		LootChest.spawnLootChest(location, ItemManager.FOOD_SUPPLIES);
 		DelayedTask respawn = new DelayedTask(RESPAWN_TIME) {
 			@Override
 			protected void run() {

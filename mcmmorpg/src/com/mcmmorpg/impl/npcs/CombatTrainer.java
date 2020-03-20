@@ -2,8 +2,11 @@ package com.mcmmorpg.impl.npcs;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.Sound;
+import org.bukkit.inventory.ItemStack;
 
+import com.mcmmorpg.common.character.NPCHuman;
 import com.mcmmorpg.common.character.PlayerCharacter;
 import com.mcmmorpg.common.playerClass.PlayerClass;
 import com.mcmmorpg.common.quest.Quest;
@@ -37,6 +40,9 @@ public class CombatTrainer extends StaticHuman {
 	public CombatTrainer(Location location) {
 		super(ChatColor.GREEN + "Combat Trainer", 5, location, TEXTURE_DATA, TEXTURE_SIGNATURE);
 		Notice.createNotice(NoticeType.QUEST, location.clone().add(0, 2.25, 0));
+
+		NPCHuman human = getHuman();
+		human.setChestplate(new ItemStack(Material.LEATHER_CHESTPLATE));
 
 		fighter1Sequence = new MessageSequence(3, this, new String[] { "Welcome newcomer!", null,
 				"What brings you to Eladrador?", "Fame? Riches? Or perhaps serving the greater good?",

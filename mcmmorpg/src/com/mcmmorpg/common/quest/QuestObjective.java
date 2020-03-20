@@ -84,9 +84,7 @@ public class QuestObjective {
 		QuestObjectiveChangeProgressEvent event = new QuestObjectiveChangeProgressEvent(pc, this, previousProgress,
 				progress);
 		EventManager.callEvent(event);
-		if (pc.getTargetQuest() == this.quest) {
-			pc.updateQuestDisplay();
-		}
+		pc.updateQuestDisplay();
 		quest.checkForCompletion(pc);
 	}
 

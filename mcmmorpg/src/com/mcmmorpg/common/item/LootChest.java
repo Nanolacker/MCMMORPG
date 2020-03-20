@@ -19,9 +19,8 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 
 import com.mcmmorpg.common.character.PlayerCharacter;
-import com.mcmmorpg.common.time.DelayedTask;
 import com.mcmmorpg.common.time.RepeatingTask;
-import com.mcmmorpg.common.ui.ProgressBar;
+import com.mcmmorpg.common.ui.TextPanel;
 
 public class LootChest {
 
@@ -31,6 +30,26 @@ public class LootChest {
 
 	private static final Map<Location, LootChest> chestMap = new HashMap<>();
 	static List<Inventory> inventories = new ArrayList<>();
+
+	private final Location location;
+	private final Item[] contents;
+	private final TextPanel text;
+	private boolean removed;
+
+	private LootChest(Location location, Item[] contents) {
+		this.location = getNearestEmptyBlock(location);
+		this.contents = contents;
+		this.removed = false;
+		this.text = new TextPanel(this.location.clone().add(0, 1, 0), ChatColor.GOLD + "Loot Chest");
+		text.setVisible(true);
+		Block block = this.location.getBlock();
+		block.setType(Material.CHEST);
+		chestMap.put(this.location, this);
+	}
+
+	public static LootChest spawnLootChest(Location location, Item... contents) {
+		return new LootChest(location, contents);
+	}
 
 	/**
 	 * Called when the plugin is enabled.
@@ -48,53 +67,6 @@ public class LootChest {
 		particleTask.schedule();
 	}
 
-	private final Location location;
-	private final int size;
-	private final Particle aura;
-	private final PlayerCharacter owner;
-	private final Item[] contents;
-	private boolean removed;
-	private final ProgressBar lifetimeBar;
-
-	private LootChest(Location location, String title, int size, Material material, Particle aura,
-			double lifetimeSeconds, PlayerCharacter owner, Item[] contents) {
-		this.location = getNearestEmptyBlock(location);
-		this.size = size;
-		this.aura = aura;
-		// starting owner state
-		this.owner = owner;
-		this.contents = contents;
-		this.removed = false;
-
-		Block block = this.location.getBlock();
-		block.setType(material);
-
-		Location lifetimeBarLocation = this.location.clone().add(0.5, 1.1, 0.5);
-		lifetimeBar = new ProgressBar(lifetimeBarLocation, title, 16, ChatColor.WHITE);
-		lifetimeBar.setRate(1 / lifetimeSeconds);
-
-		chestMap.put(this.location, this);
-		new DelayedTask(lifetimeSeconds) {
-			@Override
-			protected void run() {
-				LootChest.this.remove();
-			}
-		}.schedule();
-	}
-
-	/**
-	 * The default loot chest.
-	 */
-	public static LootChest spawnLootChest(Location location, Item... contents) {
-		return spawnLootChest(location, ChatColor.GOLD + "Loot Chest", 27, Material.CHEST, Particle.VILLAGER_HAPPY, 30,
-				null, contents);
-	}
-
-	public static LootChest spawnLootChest(Location location, String title, int size, Material material, Particle aura,
-			double lifetimeSeconds, PlayerCharacter owner, Item... contents) {
-		return new LootChest(location, title, size, material, aura, lifetimeSeconds, owner, contents);
-	}
-
 	/**
 	 * Called when the plugin is disabled.
 	 */
@@ -103,6 +75,10 @@ public class LootChest {
 		for (LootChest chest : chests) {
 			chest.remove();
 		}
+	}
+
+	static LootChest forLocation(Location location) {
+		return chestMap.get(location);
 	}
 
 	private static Location getNearestEmptyBlock(Location location) {
@@ -129,22 +105,18 @@ public class LootChest {
 		return location;
 	}
 
-	public PlayerCharacter getOwner() {
-		return owner;
-	}
-
 	public Item[] getContents() {
 		return contents;
 	}
 
 	void open(PlayerCharacter pc) {
-		Inventory inventory = Bukkit.createInventory(null, size, "Loot");
-		ArrayList<ItemStack> itemStacks = new ArrayList<>(size);
+		Inventory inventory = Bukkit.createInventory(null, 27, "Loot");
+		ArrayList<ItemStack> itemStacks = new ArrayList<>(27);
 		for (int i = 0; i < contents.length; i++) {
 			ItemStack itemStack = contents[i].getItemStack();
 			itemStacks.add(itemStack);
 		}
-		for (int i = contents.length; i < size; i++) {
+		for (int i = contents.length; i < 27; i++) {
 			itemStacks.add(null);
 		}
 		Collections.shuffle(itemStacks);
@@ -159,7 +131,7 @@ public class LootChest {
 		}
 		chestMap.remove(location);
 		location.getBlock().setType(Material.AIR);
-		lifetimeBar.dispose();
+		text.setVisible(false);
 		removed = true;
 	}
 
@@ -171,12 +143,8 @@ public class LootChest {
 			double offsetZ = Math.random();
 			Vector offset = new Vector(offsetX, offsetY, offsetZ);
 			Location particleLocation = location.clone().add(offset);
-			world.spawnParticle(aura, particleLocation, PARTICLE_COUNT);
+			world.spawnParticle(Particle.VILLAGER_HAPPY, particleLocation, PARTICLE_COUNT);
 		}
-	}
-
-	static LootChest forLocation(Location location) {
-		return chestMap.get(location);
 	}
 
 }

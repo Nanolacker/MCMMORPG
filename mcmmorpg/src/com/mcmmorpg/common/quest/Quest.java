@@ -93,9 +93,7 @@ public class Quest {
 		PlayerQuestManager questManager = pc.getQuestManager();
 		questManager.startQuest(this);
 		pc.sendMessage(ChatColor.GRAY + "Quest started: " + ChatColor.YELLOW + name);
-		if (pc.getTargetQuest() == null) {
-			pc.setTargetQuest(this);
-		}
+		pc.updateQuestDisplay();
 	}
 
 	void checkForCompletion(PlayerCharacter pc) {
@@ -110,13 +108,11 @@ public class Quest {
 	private void complete(PlayerCharacter pc) {
 		pc.sendMessage(ChatColor.YELLOW + name + ChatColor.GRAY + " complete!");
 		COMPLETE_NOISE.play(pc);
-		if (pc.getTargetQuest() == this) {
-			pc.setTargetQuest(null);
-		}
 		PlayerQuestManager questManager = pc.getQuestManager();
 		questManager.completeQuest(this);
 		QuestCompletionEvent event = new QuestCompletionEvent(pc, this);
 		EventManager.callEvent(event);
+		pc.updateQuestDisplay();
 	}
 
 	ItemStack getQuestLogItemStack(PlayerCharacter pc) {
@@ -137,7 +133,7 @@ public class Quest {
 				progressText = ChatColor.GREEN + "";
 			}
 			progressText += "-" + progress + "/" + goal;
-			objectiveLines += progressText + " " + ChatColor.WHITE + objective.getDescription() + "\n\n";
+			objectiveLines += progressText + " " + ChatColor.WHITE + objective.getDescription() + "\n";
 		}
 		return objectiveLines;
 	}

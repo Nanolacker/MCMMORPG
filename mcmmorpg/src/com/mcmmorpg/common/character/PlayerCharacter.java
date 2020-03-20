@@ -49,7 +49,6 @@ import com.mcmmorpg.common.quest.PlayerQuestData;
 import com.mcmmorpg.common.quest.PlayerQuestManager;
 import com.mcmmorpg.common.quest.Quest;
 import com.mcmmorpg.common.quest.QuestLog;
-import com.mcmmorpg.common.quest.QuestStatus;
 import com.mcmmorpg.common.sound.Noise;
 import com.mcmmorpg.common.sound.PlayerSoundtrackPlayer;
 import com.mcmmorpg.common.time.DelayedTask;
@@ -88,7 +87,6 @@ public final class PlayerCharacter extends AbstractCharacter {
 	private double maxMana;
 	private double currentMana;
 	private double manaRegenRate;
-	private Quest targetQuest;
 	private final PlayerQuestManager questStatusManager;
 	private final PlayerSkillManager skillStatusManager;
 	private final List<String> tags;
@@ -108,7 +106,7 @@ public final class PlayerCharacter extends AbstractCharacter {
 	private PlayerCharacter(Player player, boolean fresh, PlayerClass playerClass, String zone, Location location,
 			Location respawnLocation, int xp, int skillUpgradePoints, int currency, double maxHealth,
 			double currentHealth, double healthRegenRate, double maxMana, double currentMana, double manaRegenRate,
-			Quest targetQuest, Quest[] completedQuests, PlayerQuestData[] questData, PlayerSkillData[] skillData,
+			Quest[] completedQuests, PlayerQuestData[] questData, PlayerSkillData[] skillData,
 			ItemStack[] inventoryContents, String[] tags) {
 		super(ChatColor.GREEN + player.getName(), xpToLevel(xp), location);
 		this.player = player;
@@ -123,7 +121,6 @@ public final class PlayerCharacter extends AbstractCharacter {
 		this.currentMana = currentMana;
 		this.maxMana = maxMana;
 		this.manaRegenRate = manaRegenRate;
-		this.targetQuest = targetQuest;
 		this.questStatusManager = new PlayerQuestManager(completedQuests, questData);
 		this.skillStatusManager = new PlayerSkillManager(this, skillData);
 		this.skillStatusManager.init();
@@ -213,7 +210,6 @@ public final class PlayerCharacter extends AbstractCharacter {
 		double maxMana = saveData.getMaxMana();
 		double currentMana = saveData.getCurrentMana();
 		double manaRegenRate = saveData.getManaRegenRate();
-		Quest targetQuest = saveData.getTargetQuest();
 		PlayerQuestData[] questStatuses = saveData.getQuestData();
 		PlayerSkillData[] skillStatuses = saveData.getSkillData();
 		ItemStack[] inventoryContents = saveData.getInventoryContents();
@@ -221,8 +217,7 @@ public final class PlayerCharacter extends AbstractCharacter {
 
 		PlayerCharacter pc = new PlayerCharacter(player, fresh, playerClass, zone, location, respawnLocation, xp,
 				skillUpgradePoints, currency, maxHealth, currentHealth, healthRegenRate, maxMana, currentMana,
-				manaRegenRate, targetQuest, saveData.getCompletedQuests(), questStatuses, skillStatuses,
-				inventoryContents, tags);
+				manaRegenRate, saveData.getCompletedQuests(), questStatuses, skillStatuses, inventoryContents, tags);
 		PlayerCharacterRegisterEvent event = new PlayerCharacterRegisterEvent(pc);
 		EventManager.callEvent(event);
 		return pc;
@@ -387,7 +382,7 @@ public final class PlayerCharacter extends AbstractCharacter {
 		Noise levelUpNoise = new Noise(Sound.ENTITY_PLAYER_LEVELUP);
 		levelUpNoise.play(player);
 		sendMessage(ChatColor.GRAY + "Level increased to " + ChatColor.GOLD + newLevel + ChatColor.GRAY + "!");
-		sendMessage(ChatColor.GRAY + "+1 skill point!");
+		sendMessage(ChatColor.GRAY + "+1 skill point! Open your skill tree to unlock or upgrade a skill!");
 	}
 
 	public int getSkillUpgradePoints() {
@@ -548,18 +543,6 @@ public final class PlayerCharacter extends AbstractCharacter {
 		return null;
 	}
 
-	public Quest getTargetQuest() {
-		return targetQuest;
-	}
-
-	public void setTargetQuest(Quest targetQuest) {
-		if (targetQuest != null && targetQuest.getStatus(this) != QuestStatus.IN_PROGRESS) {
-			throw new IllegalArgumentException("Cannot track a quest that is not in progress");
-		}
-		this.targetQuest = targetQuest;
-		updateQuestDisplay();
-	}
-
 	public PlayerQuestManager getQuestManager() {
 		return questStatusManager;
 	}
@@ -657,8 +640,13 @@ public final class PlayerCharacter extends AbstractCharacter {
 	public void updateQuestDisplay() {
 		String lines = "";
 		List<Quest> inProgressQuests = Quest.getInProgressQuests(this);
-		for (Quest quest : inProgressQuests) {
-			lines += ChatColor.YELLOW + quest.getName() + "\n" + quest.getQuestLogLines(this);
+		if (inProgressQuests.size() == 0) {
+			lines = ChatColor.WHITE + "No quests in progress";
+		} else {
+			for (Quest quest : inProgressQuests) {
+				lines += ChatColor.YELLOW + "" + ChatColor.BOLD + quest.getName() + ChatColor.RESET + "\n"
+						+ quest.getQuestLogLines(this) + "\n";
+			}
 		}
 		SidebarText questDisplay = new SidebarText(ChatColor.YELLOW + "Quests", lines);
 		questDisplay.apply(player);
