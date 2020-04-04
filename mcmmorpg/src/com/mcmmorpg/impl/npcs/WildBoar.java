@@ -27,7 +27,7 @@ import com.mcmmorpg.common.event.EventManager;
 import com.mcmmorpg.common.physics.Collider;
 import com.mcmmorpg.common.sound.Noise;
 import com.mcmmorpg.common.time.DelayedTask;
-import com.mcmmorpg.impl.ItemManager;
+import com.mcmmorpg.impl.Items;
 
 public class WildBoar extends NonPlayerCharacter implements Listener {
 
@@ -114,7 +114,7 @@ public class WildBoar extends NonPlayerCharacter implements Listener {
 		DEATH_NOISE.play(location);
 		location.getWorld().spawnParticle(Particle.CLOUD, location, 10);
 		setLocation(spawnLocation);
-		ItemManager.BOAR_FLANK.drop(location, 1);
+		Items.BOAR_FLANK.drop(location, 1);
 		DelayedTask respawn = new DelayedTask(RESPAWN_TIME) {
 			@Override
 			protected void run() {

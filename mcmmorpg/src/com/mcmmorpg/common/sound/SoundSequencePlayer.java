@@ -7,6 +7,7 @@ import java.util.function.Consumer;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
+import com.mcmmorpg.common.character.PlayerCharacter;
 import com.mcmmorpg.common.sound.SoundSequence.SoundSequenceNode;
 import com.mcmmorpg.common.time.DelayedTask;
 import com.mcmmorpg.common.time.GameClock;
@@ -31,8 +32,16 @@ public class SoundSequencePlayer {
 		this(sequence, noise -> noise.play(player));
 	}
 
+	public SoundSequencePlayer(SoundSequence sequence, PlayerCharacter pc) {
+		this(sequence, pc.getPlayer());
+	}
+
 	public SoundSequencePlayer(SoundSequence sequence, Player player, Location source) {
 		this(sequence, noise -> noise.play(player, source));
+	}
+
+	public SoundSequencePlayer(SoundSequence sequence, PlayerCharacter pc, Location source) {
+		this(sequence, pc.getPlayer(), source);
 	}
 
 	public SoundSequencePlayer(SoundSequence sequence, Location source) {
@@ -44,6 +53,10 @@ public class SoundSequencePlayer {
 		this.noisePlayer = noisePlayer;
 		playTasks = new ArrayList<>();
 		this.timeStamp = 0;
+	}
+
+	public SoundSequence getSequence() {
+		return sequence;
 	}
 
 	public boolean isLooping() {

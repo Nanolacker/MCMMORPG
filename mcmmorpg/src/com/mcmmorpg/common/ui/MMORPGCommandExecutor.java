@@ -86,7 +86,7 @@ public class MMORPGCommandExecutor implements CommandExecutor {
 				if (pc == null) {
 					player.sendMessage(ChatColor.RED + "Cannot use this command right now");
 				} else {
-					Item item = Item.forID(Integer.parseInt(args[0]));
+					Item item = Item.forName(args[0]);
 					pc.giveItem(item);
 				}
 				return true;

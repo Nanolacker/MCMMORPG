@@ -9,26 +9,18 @@ import org.bukkit.inventory.ItemStack;
 import com.mcmmorpg.common.character.NPCHuman;
 import com.mcmmorpg.common.character.PlayerCharacter;
 import com.mcmmorpg.common.playerClass.PlayerClass;
-import com.mcmmorpg.common.quest.Quest;
 import com.mcmmorpg.common.quest.QuestStatus;
 import com.mcmmorpg.common.sound.Noise;
 import com.mcmmorpg.common.ui.MessageSequence;
 import com.mcmmorpg.common.ui.Notice;
 import com.mcmmorpg.common.ui.Notice.NoticeType;
+import com.mcmmorpg.impl.Quests;
 
 public class CombatTrainer extends StaticHuman {
 
 	private static final String TEXTURE_DATA = "";
 	private static final String TEXTURE_SIGNATURE = "";
 	private static final Noise SPEAK_NOISE = new Noise(Sound.ENTITY_VILLAGER_AMBIENT);
-
-	private static final Quest FIGHTER_1 = Quest.forName("Tutorial Part 1 (Fighter)");
-	private static final Quest FIGHTER_2 = Quest.forName("Tutorial Part 2 (Fighter)");
-	private static final Quest FIGHTER_3 = Quest.forName("Tutorial Part 3 (Fighter)");
-	private static final Quest MAGE_1 = Quest.forName("Tutorial Part 1 (Mage)");
-	private static final Quest MAGE_2 = Quest.forName("Tutorial Part 2 (Mage)");
-	private static final Quest MAGE_3 = Quest.forName("Tutorial Part 3 (Mage)");
-	private static final Quest REPORTING_FOR_DUTY = Quest.forName("Reporting for Duty");
 
 	private final MessageSequence fighter1Sequence;
 	private final MessageSequence fighter2Sequence;
@@ -55,10 +47,10 @@ public class CombatTrainer extends StaticHuman {
 			protected void onAdvance(PlayerCharacter pc, int messageIndex) {
 				SPEAK_NOISE.play(pc);
 				if (messageIndex == 1) {
-					FIGHTER_1.getObjective(0).setProgress(pc, 1);
+					Quests.TUTORIAL_PART_1_FIGHTER.getObjective(0).setProgress(pc, 1);
 					pc.grantXp(10);
 				} else if (messageIndex == 12) {
-					FIGHTER_2.start(pc);
+					Quests.TUTORIAL_PART_2_FIGHTER.start(pc);
 				} else {
 					SPEAK_NOISE.play(pc);
 				}
@@ -77,10 +69,10 @@ public class CombatTrainer extends StaticHuman {
 						"Go on now, try using it on some dummies.", null }) {
 			protected void onAdvance(PlayerCharacter pc, int messageIndex) {
 				if (messageIndex == 1) {
-					FIGHTER_2.getObjective(1).setProgress(pc, 1);
+					Quests.TUTORIAL_PART_3_FIGHTER.getObjective(1).setProgress(pc, 1);
 					pc.grantXp(30);
 				} else if (messageIndex == 10) {
-					FIGHTER_3.start(pc);
+					Quests.TUTORIAL_PART_3_FIGHTER.start(pc);
 				} else {
 					SPEAK_NOISE.play(pc);
 				}
@@ -94,10 +86,10 @@ public class CombatTrainer extends StaticHuman {
 			@Override
 			protected void onAdvance(PlayerCharacter pc, int messageIndex) {
 				if (messageIndex == 1) {
-					FIGHTER_3.getObjective(2).setProgress(pc, 1);
+					Quests.TUTORIAL_PART_3_FIGHTER.getObjective(2).setProgress(pc, 1);
 					pc.grantXp(30);
 				} else if (messageIndex == 5) {
-					REPORTING_FOR_DUTY.start(pc);
+					Quests.REPORTING_FOR_DUTY.start(pc);
 				} else {
 					SPEAK_NOISE.play(pc);
 				}
@@ -115,10 +107,10 @@ public class CombatTrainer extends StaticHuman {
 			protected void onAdvance(PlayerCharacter pc, int messageIndex) {
 				SPEAK_NOISE.play(pc);
 				if (messageIndex == 1) {
-					MAGE_1.getObjective(0).setProgress(pc, 1);
+					Quests.TUTORIAL_PART_1_MAGE.getObjective(0).setProgress(pc, 1);
 					pc.grantXp(10);
 				} else if (messageIndex == 12) {
-					MAGE_2.start(pc);
+					Quests.TUTORIAL_PART_2_MAGE.start(pc);
 				} else {
 					SPEAK_NOISE.play(pc);
 				}
@@ -138,10 +130,10 @@ public class CombatTrainer extends StaticHuman {
 						"Go on now, try using it on some dummies.", null }) {
 			protected void onAdvance(PlayerCharacter pc, int messageIndex) {
 				if (messageIndex == 1) {
-					MAGE_2.getObjective(1).setProgress(pc, 1);
+					Quests.TUTORIAL_PART_3_MAGE.getObjective(1).setProgress(pc, 1);
 					pc.grantXp(30);
 				} else if (messageIndex == 10) {
-					MAGE_3.start(pc);
+					Quests.TUTORIAL_PART_3_MAGE.start(pc);
 				} else {
 					SPEAK_NOISE.play(pc);
 				}
@@ -155,10 +147,10 @@ public class CombatTrainer extends StaticHuman {
 			@Override
 			protected void onAdvance(PlayerCharacter pc, int messageIndex) {
 				if (messageIndex == 1) {
-					MAGE_3.getObjective(2).setProgress(pc, 1);
+					Quests.TUTORIAL_PART_3_MAGE.getObjective(2).setProgress(pc, 1);
 					pc.grantXp(30);
 				} else if (messageIndex == 5) {
-					REPORTING_FOR_DUTY.start(pc);
+					Quests.REPORTING_FOR_DUTY.start(pc);
 				} else {
 					SPEAK_NOISE.play(pc);
 				}
@@ -170,16 +162,18 @@ public class CombatTrainer extends StaticHuman {
 	protected void onInteract(PlayerCharacter pc) {
 		PlayerClass playerClass = pc.getPlayerClass();
 		if (playerClass.getName().equals("Fighter")) {
-			if (FIGHTER_2.getStatus(pc) == QuestStatus.NOT_STARTED) {
+			if (Quests.TUTORIAL_PART_2_FIGHTER.getStatus(pc) == QuestStatus.NOT_STARTED) {
 				fighter1Sequence.advance(pc);
-			} else if (FIGHTER_3.getStatus(pc) == QuestStatus.NOT_STARTED) {
-				if (FIGHTER_2.getObjective(0).isComplete(pc) || FIGHTER_2.getStatus(pc) == QuestStatus.COMPLETED) {
+			} else if (Quests.TUTORIAL_PART_3_FIGHTER.getStatus(pc) == QuestStatus.NOT_STARTED) {
+				if (Quests.TUTORIAL_PART_2_FIGHTER.getObjective(0).isComplete(pc)
+						|| Quests.TUTORIAL_PART_2_FIGHTER.getStatus(pc) == QuestStatus.COMPLETED) {
 					fighter2Sequence.advance(pc);
 				} else {
 					say("Go on champ. Show those dummies who's boss.", pc);
 				}
-			} else if (REPORTING_FOR_DUTY.getStatus(pc) == QuestStatus.NOT_STARTED) {
-				if (FIGHTER_3.getObjective(0).isComplete(pc) && FIGHTER_3.getObjective(1).isComplete(pc)) {
+			} else if (Quests.REPORTING_FOR_DUTY.getStatus(pc) == QuestStatus.NOT_STARTED) {
+				if (Quests.TUTORIAL_PART_3_FIGHTER.getObjective(0).isComplete(pc)
+						&& Quests.TUTORIAL_PART_3_FIGHTER.getObjective(1).isComplete(pc)) {
 					fighter3Sequence.advance(pc);
 				} else {
 					say("Go on sport. Show those dummies who's boss.", pc);
@@ -188,16 +182,18 @@ public class CombatTrainer extends StaticHuman {
 				say("Good luck out there champ.", pc);
 			}
 		} else if (playerClass.getName().equals("Mage")) {
-			if (MAGE_2.getStatus(pc) == QuestStatus.NOT_STARTED) {
+			if (Quests.TUTORIAL_PART_2_MAGE.getStatus(pc) == QuestStatus.NOT_STARTED) {
 				mage1Sequence.advance(pc);
-			} else if (MAGE_3.getStatus(pc) == QuestStatus.NOT_STARTED) {
-				if (MAGE_2.getObjective(0).isComplete(pc) || MAGE_2.getStatus(pc) == QuestStatus.COMPLETED) {
+			} else if (Quests.TUTORIAL_PART_3_MAGE.getStatus(pc) == QuestStatus.NOT_STARTED) {
+				if (Quests.TUTORIAL_PART_2_MAGE.getObjective(0).isComplete(pc)
+						|| Quests.TUTORIAL_PART_2_MAGE.getStatus(pc) == QuestStatus.COMPLETED) {
 					mage2Sequence.advance(pc);
 				} else {
 					say("Go on champ. Show those dummies who's boss.", pc);
 				}
-			} else if (REPORTING_FOR_DUTY.getStatus(pc) == QuestStatus.NOT_STARTED) {
-				if (MAGE_3.getObjective(0).isComplete(pc) && MAGE_3.getObjective(1).isComplete(pc)) {
+			} else if (Quests.REPORTING_FOR_DUTY.getStatus(pc) == QuestStatus.NOT_STARTED) {
+				if (Quests.TUTORIAL_PART_3_MAGE.getObjective(0).isComplete(pc)
+						&& Quests.TUTORIAL_PART_3_MAGE.getObjective(1).isComplete(pc)) {
 					mage3Sequence.advance(pc);
 				} else {
 					say("Go on sport. Show those dummies who's boss.", pc);

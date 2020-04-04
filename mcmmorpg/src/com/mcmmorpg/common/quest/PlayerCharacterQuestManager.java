@@ -6,15 +6,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class PlayerQuestManager {
+public class PlayerCharacterQuestManager {
 
 	private final List<Quest> completedQuests;
-	private final Map<Quest, PlayerQuestData> questDataMap;
+	private final Map<Quest, PlayerCharacterQuestData> questDataMap;
 
-	public PlayerQuestManager(Quest[] completedQuests, PlayerQuestData[] questDatas) {
+	public PlayerCharacterQuestManager(Quest[] completedQuests, PlayerCharacterQuestData[] questDatas) {
 		this.completedQuests = new ArrayList<>(Arrays.asList(completedQuests));
 		questDataMap = new HashMap<>();
-		for (PlayerQuestData questData : questDatas) {
+		for (PlayerCharacterQuestData questData : questDatas) {
 			Quest quest = Quest.forName(questData.getQuestName());
 			questDataMap.put(quest, questData);
 		}
@@ -30,8 +30,8 @@ public class PlayerQuestManager {
 	/**
 	 * Used for saving player data.
 	 */
-	public PlayerQuestData[] getQuestData() {
-		return questDataMap.values().toArray(new PlayerQuestData[questDataMap.size()]);
+	public PlayerCharacterQuestData[] getQuestData() {
+		return questDataMap.values().toArray(new PlayerCharacterQuestData[questDataMap.size()]);
 	}
 
 	QuestStatus getStatus(Quest quest) {
@@ -47,12 +47,12 @@ public class PlayerQuestManager {
 	/**
 	 * Returns null if the specified quest is not available to the player.
 	 */
-	PlayerQuestData getQuestData(Quest quest) {
+	PlayerCharacterQuestData getQuestData(Quest quest) {
 		return questDataMap.get(quest);
 	}
 
 	void startQuest(Quest quest) {
-		PlayerQuestData data = new PlayerQuestData(quest);
+		PlayerCharacterQuestData data = new PlayerCharacterQuestData(quest);
 		questDataMap.put(quest, data);
 	}
 

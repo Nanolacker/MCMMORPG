@@ -1,18 +1,17 @@
 package com.mcmmorpg.common.sound;
 
-import org.bukkit.entity.Player;
+import com.mcmmorpg.common.character.PlayerCharacter;
 
-public class PlayerSoundtrackPlayer {
+public class PlayerCharacterSoundtrackPlayer {
 
-	private final Player player;
+	private final PlayerCharacter pc;
 	private SoundSequencePlayer noisePlayer;
 
-	public PlayerSoundtrackPlayer(Player player) {
-		this.player = player;
+	public PlayerCharacterSoundtrackPlayer(PlayerCharacter pc) {
+		this.pc = pc;
 	}
 
 	/**
-	 * 
 	 * @param soundtrack null to stop playing
 	 */
 	public void setSoundtrack(SoundSequence soundtrack) {
@@ -21,8 +20,10 @@ public class PlayerSoundtrackPlayer {
 		}
 		if (soundtrack == null) {
 			noisePlayer = null;
+		} else if (soundtrack == noisePlayer.getSequence()) {
+			return;
 		} else {
-			noisePlayer = new SoundSequencePlayer(soundtrack, player);
+			noisePlayer = new SoundSequencePlayer(soundtrack, pc);
 			noisePlayer.setLooping(true);
 			noisePlayer.play();
 		}

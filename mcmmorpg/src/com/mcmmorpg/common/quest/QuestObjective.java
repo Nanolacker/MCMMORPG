@@ -55,8 +55,8 @@ public class QuestObjective {
 	 * Returns the progress of the player character on this objective.
 	 */
 	public int getProgress(PlayerCharacter pc) {
-		PlayerQuestManager statusManager = pc.getQuestManager();
-		PlayerQuestData data = statusManager.getQuestData(quest);
+		PlayerCharacterQuestManager statusManager = pc.getQuestManager();
+		PlayerCharacterQuestData data = statusManager.getQuestData(quest);
 		if (data == null) {
 			QuestStatus status = quest.getStatus(pc);
 			if (status == QuestStatus.COMPLETED) {
@@ -72,8 +72,8 @@ public class QuestObjective {
 	 * Sets the progress of the player character on this objective.
 	 */
 	public void setProgress(PlayerCharacter pc, int progress) {
-		PlayerQuestManager questManager = pc.getQuestManager();
-		PlayerQuestData data = questManager.getQuestData(quest);
+		PlayerCharacterQuestManager questManager = pc.getQuestManager();
+		PlayerCharacterQuestData data = questManager.getQuestData(quest);
 		if (data == null) {
 			// don't do anything
 			return;

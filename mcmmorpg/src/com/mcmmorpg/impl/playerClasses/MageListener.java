@@ -21,20 +21,29 @@ import com.mcmmorpg.common.character.PlayerCharacter;
 import com.mcmmorpg.common.event.PlayerCharacterLevelUpEvent;
 import com.mcmmorpg.common.event.PlayerCharacterUseWeaponEvent;
 import com.mcmmorpg.common.event.SkillUseEvent;
+import com.mcmmorpg.common.item.Item;
 import com.mcmmorpg.common.item.Weapon;
 import com.mcmmorpg.common.physics.Collider;
 import com.mcmmorpg.common.physics.Projectile;
 import com.mcmmorpg.common.physics.Ray;
 import com.mcmmorpg.common.physics.Raycast;
-import com.mcmmorpg.common.playerClass.PlayerClass;
 import com.mcmmorpg.common.playerClass.Skill;
-import com.mcmmorpg.common.quest.Quest;
 import com.mcmmorpg.common.sound.Noise;
 import com.mcmmorpg.common.time.DelayedTask;
 import com.mcmmorpg.common.time.RepeatingTask;
-import com.mcmmorpg.impl.ItemManager;
+import com.mcmmorpg.impl.PlayerClasses;
+import com.mcmmorpg.impl.Quests;
 
 public class MageListener implements Listener {
+
+	private static final double[] MAX_HEALTH = { 20.0, 25.0, 31.0, 38.0, 46.0, 55.0, 65.0, 76.0, 88.0, 101.0, 115.0,
+			130.0, 146.0, 163.0, 181.0, 200.0, 220.0, 241.0, 263.0, 286.0 };
+	private static final double[] HEALTH_REGEN_RATE = { 2.0, 2.2, 2.4, 2.6, 2.8, 3.0, 3.2, 3.4, 3.6, 3.8, 4.0, 4.2, 4.4,
+			4.6, 4.8, 5.0, 5.2, 5.4, 5.6, 5.8 };
+	private static final double[] MAX_MANA = { 15.0, 19.0, 23.0, 27.0, 31.0, 35.0, 39.0, 43.0, 47.0, 51.0, 55.0, 59.0,
+			63.0, 67.0, 71.0, 75.0, 79.0, 83.0, 87.0, 91.0 };
+	private static final double[] MANA_REGEN_RATE = { 2.0, 2.5, 3.0, 3.5, 4.0, 4.5, 5.0, 5.5, 6.0, 6.5, 7.0, 7.5, 8.0,
+			8.5, 9.0, 9.5, 10.0, 10.5, 11.0, 11.5 };
 
 	private static final Noise FIREBALL_CONJURE = new Noise(Sound.ENTITY_ZOMBIE_VILLAGER_CURE);
 	private static final Noise FIREBALL_EXPLODE_1_NOISE = new Noise(Sound.ENTITY_GENERIC_EXPLODE);
@@ -46,7 +55,6 @@ public class MageListener implements Listener {
 	private static final Noise SHADOW_VOID_EXPLODE_NOISE = new Noise(Sound.ENTITY_WITHER_HURT);
 	private static final Noise STAFF_HIT_NOISE = new Noise(Sound.BLOCK_WOODEN_TRAPDOOR_OPEN);
 
-	private final PlayerClass mage;
 	private final Skill fireball;
 	private final Skill iceBeam;
 	private final Skill whirlwind;
@@ -55,22 +63,31 @@ public class MageListener implements Listener {
 	private final Skill shadowVoid;
 
 	public MageListener() {
-		mage = PlayerClass.forName("Mage");
-		fireball = mage.skillForName("Fireball");
-		iceBeam = mage.skillForName("Ice Beam");
-		whirlwind = mage.skillForName("Whirlwind");
-		earthquake = mage.skillForName("Earthquake");
-		restore = mage.skillForName("Restore");
-		shadowVoid = mage.skillForName("Shadow Void");
+		fireball = PlayerClasses.MAGE.skillForName("Fireball");
+		iceBeam = PlayerClasses.MAGE.skillForName("Ice Beam");
+		whirlwind = PlayerClasses.MAGE.skillForName("Whirlwind");
+		earthquake = PlayerClasses.MAGE.skillForName("Earthquake");
+		restore = PlayerClasses.MAGE.skillForName("Restore");
+		shadowVoid = PlayerClasses.MAGE.skillForName("Shadow Void");
 	}
 
 	@EventHandler
 	private void onLevelUp(PlayerCharacterLevelUpEvent event) {
 		PlayerCharacter pc = event.getPlayerCharacter();
-		if (pc.getPlayerClass() != mage) {
+		if (pc.getPlayerClass() != PlayerClasses.MAGE) {
 			return;
 		}
 		int level = event.getNewLevel();
+		double maxHealth = MAX_HEALTH[level - 1];
+		double healthRegenRate = HEALTH_REGEN_RATE[level - 1];
+		double maxMana = MAX_MANA[level - 1];
+		double manaRegenRate = MANA_REGEN_RATE[level - 1];
+		pc.setMaxHealth(maxHealth);
+		pc.setCurrentHealth(maxHealth);
+		pc.setHealthRegenRate(healthRegenRate);
+		pc.setMaxMana(maxMana);
+		pc.setCurrentMana(maxMana);
+		pc.setManaRegenRate(manaRegenRate);
 		if (level == 1) {
 			pc.setMaxHealth(25);
 			pc.setCurrentHealth(25);
@@ -78,14 +95,14 @@ public class MageListener implements Listener {
 			pc.setMaxMana(15);
 			pc.setCurrentMana(15);
 			pc.setManaRegenRate(1);
-			Quest.forName("Tutorial Part 1 (Mage)").start(pc);
+			Quests.TUTORIAL_PART_1_MAGE.start(pc);
 		}
 	}
 
 	@EventHandler
 	private void onUseSkill(SkillUseEvent event) {
 		PlayerCharacter pc = event.getPlayerCharacter();
-		if (pc.getPlayerClass() != mage) {
+		if (pc.getPlayerClass() != PlayerClasses.MAGE) {
 			return;
 		}
 		Skill skill = event.getSkill();
@@ -180,7 +197,7 @@ public class MageListener implements Listener {
 			}
 		};
 		projectile.fire();
-		Quest.forName("Tutorial Part 3 (Mage)").getObjective(0).addProgress(pc, 1);
+		Quests.TUTORIAL_PART_3_MAGE.getObjective(0).addProgress(pc, 1);
 	}
 
 	private void useIceBeam(PlayerCharacter pc) {
@@ -489,11 +506,11 @@ public class MageListener implements Listener {
 	@EventHandler
 	private void onWeaponUse(PlayerCharacterUseWeaponEvent event) {
 		PlayerCharacter pc = event.getPlayerCharacter();
-		if (pc.getPlayerClass() != mage) {
+		if (pc.getPlayerClass() != PlayerClasses.MAGE) {
 			return;
 		}
 		Weapon weapon = event.getWeapon();
-		if (weapon == ItemManager.APPRENTICE_STAFF) {
+		if (weapon == Item.forName("Apprentice Staff")) {
 			useApprenticeStaff(pc);
 		}
 	}

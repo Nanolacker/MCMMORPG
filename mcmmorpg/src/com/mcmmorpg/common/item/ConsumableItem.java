@@ -8,8 +8,8 @@ public class ConsumableItem extends Item {
 
 	private final int level;
 
-	public ConsumableItem(int id, String name, ItemRarity rarity, Material icon, String description, int level) {
-		super(id, name, rarity, icon, description);
+	public ConsumableItem(String name, ItemRarity rarity, Material icon, String description, int level) {
+		super(name, rarity, icon, description);
 		this.level = level;
 	}
 

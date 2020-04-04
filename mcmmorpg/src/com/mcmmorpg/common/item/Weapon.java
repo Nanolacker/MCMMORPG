@@ -13,9 +13,8 @@ public class Weapon extends Item {
 
 	private transient PlayerClass playerClass0;
 
-	public Weapon(int id, String name, ItemRarity rarity, Material icon, String description, String playerClass,
-			int level) {
-		super(id, name, rarity, icon, description);
+	public Weapon(String name, ItemRarity rarity, Material icon, String description, String playerClass, int level) {
+		super(name, rarity, icon, description);
 		this.playerClass = playerClass;
 		this.level = level;
 	}

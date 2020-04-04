@@ -5,23 +5,19 @@ import org.bukkit.Location;
 import org.bukkit.Sound;
 
 import com.mcmmorpg.common.character.PlayerCharacter;
-import com.mcmmorpg.common.quest.Quest;
 import com.mcmmorpg.common.quest.QuestStatus;
 import com.mcmmorpg.common.sound.Noise;
 import com.mcmmorpg.common.ui.MessageSequence;
 import com.mcmmorpg.common.ui.Notice;
 import com.mcmmorpg.common.ui.Notice.NoticeType;
-import com.mcmmorpg.impl.ItemManager;
+import com.mcmmorpg.impl.Items;
+import com.mcmmorpg.impl.Quests;
 
 public class FoodQuestGiver extends StaticHuman {
 
 	private static final String TEXTURE_DATA = "";
 	private static final String TEXTURE_SIGNATURE = "";
 	private static final Noise SPEAK_NOISE = new Noise(Sound.ENTITY_VILLAGER_AMBIENT);
-
-	private static final Quest SLAYING_THE_THIEVES = Quest.forName("Slaying the Thieves");
-	private static final Quest RECOVERING_THE_FOOD = Quest.forName("Recovering the Food");
-	private static final Quest GATHERING_MORE_FOOD = Quest.forName("Gathering More Food");
 
 	private final MessageSequence sequence1;
 	private final MessageSequence sequence2;
@@ -34,7 +30,7 @@ public class FoodQuestGiver extends StaticHuman {
 			@Override
 			protected void onAdvance(PlayerCharacter pc, int messageIndex) {
 				if (messageIndex == 2) {
-					RECOVERING_THE_FOOD.start(pc);
+					Quests.RECOVERING_THE_FOOD.start(pc);
 				} else {
 					SPEAK_NOISE.play(pc);
 				}
@@ -45,8 +41,8 @@ public class FoodQuestGiver extends StaticHuman {
 			@Override
 			protected void onAdvance(PlayerCharacter pc, int messageIndex) {
 				if (messageIndex == 1) {
-					RECOVERING_THE_FOOD.getObjective(0).complete(pc);
-					pc.removeItem(ItemManager.FOOD_SUPPLIES, 15);
+					Quests.RECOVERING_THE_FOOD.getObjective(0).complete(pc);
+					pc.removeItem(Items.FOOD_SUPPLIES, 15);
 				} else {
 					SPEAK_NOISE.play(pc);
 				}
@@ -56,25 +52,25 @@ public class FoodQuestGiver extends StaticHuman {
 
 	@Override
 	protected void onInteract(PlayerCharacter pc) {
-		if (SLAYING_THE_THIEVES.compareStatus(pc, QuestStatus.NOT_STARTED)) {
+		if (Quests.SLAYING_THE_THIEVES.compareStatus(pc, QuestStatus.NOT_STARTED)) {
 			say("Please speak with " + ChatColor.GRAY + "[" + ChatColor.GREEN + "Combat Trainer" + ChatColor.GRAY + "]"
 					+ ChatColor.WHITE + " before speaking with me.", pc);
 		} else {
-			if (RECOVERING_THE_FOOD.compareStatus(pc, QuestStatus.NOT_STARTED)) {
+			if (Quests.RECOVERING_THE_FOOD.compareStatus(pc, QuestStatus.NOT_STARTED)) {
 				sequence1.advance(pc);
-			} else if (RECOVERING_THE_FOOD.compareStatus(pc, QuestStatus.IN_PROGRESS)) {
-				if (pc.getItemCount(ItemManager.FOOD_SUPPLIES) >= 15) {
+			} else if (Quests.RECOVERING_THE_FOOD.compareStatus(pc, QuestStatus.IN_PROGRESS)) {
+				if (pc.getItemCount(Items.FOOD_SUPPLIES) >= 15) {
 					sequence2.advance(pc);
 				} else {
 					say("Go get those food supplies!", pc);
 				}
-			} else if (RECOVERING_THE_FOOD.compareStatus(pc, QuestStatus.COMPLETED)) {
-				if (GATHERING_MORE_FOOD.compareStatus(pc, QuestStatus.NOT_STARTED)) {
-					GATHERING_MORE_FOOD.start(pc);
-				} else if (GATHERING_MORE_FOOD.compareStatus(pc, QuestStatus.IN_PROGRESS)) {
-					if (pc.getItemCount(ItemManager.BOAR_FLANK) >= 10) {
-						pc.removeItem(ItemManager.BOAR_FLANK, 10);
-						GATHERING_MORE_FOOD.getObjective(0).setProgress(pc, 1);
+			} else if (Quests.RECOVERING_THE_FOOD.compareStatus(pc, QuestStatus.COMPLETED)) {
+				if (Quests.GATHERING_MORE_FOOD.compareStatus(pc, QuestStatus.NOT_STARTED)) {
+					Quests.GATHERING_MORE_FOOD.start(pc);
+				} else if (Quests.GATHERING_MORE_FOOD.compareStatus(pc, QuestStatus.IN_PROGRESS)) {
+					if (pc.getItemCount(Items.BOAR_FLANK) >= 10) {
+						pc.removeItem(Items.BOAR_FLANK, 10);
+						Quests.GATHERING_MORE_FOOD.getObjective(0).setProgress(pc, 1);
 					} else {
 						say("The people need to be fed. I'm counting on you.");
 					}

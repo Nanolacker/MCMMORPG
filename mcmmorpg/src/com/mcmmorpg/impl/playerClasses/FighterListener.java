@@ -19,25 +19,29 @@ import com.mcmmorpg.common.character.PlayerCharacter;
 import com.mcmmorpg.common.event.PlayerCharacterLevelUpEvent;
 import com.mcmmorpg.common.event.PlayerCharacterUseWeaponEvent;
 import com.mcmmorpg.common.event.SkillUseEvent;
+import com.mcmmorpg.common.item.Item;
 import com.mcmmorpg.common.item.Weapon;
 import com.mcmmorpg.common.physics.Collider;
 import com.mcmmorpg.common.physics.Projectile;
 import com.mcmmorpg.common.physics.Ray;
 import com.mcmmorpg.common.physics.Raycast;
-import com.mcmmorpg.common.playerClass.PlayerClass;
 import com.mcmmorpg.common.playerClass.Skill;
-import com.mcmmorpg.common.quest.Quest;
 import com.mcmmorpg.common.sound.Noise;
 import com.mcmmorpg.common.time.DelayedTask;
 import com.mcmmorpg.common.time.RepeatingTask;
-import com.mcmmorpg.impl.ItemManager;
+import com.mcmmorpg.impl.PlayerClasses;
+import com.mcmmorpg.impl.Quests;
 
 public class FighterListener implements Listener {
 
-	private static final double[] MAX_HEALTH = { 25 };
-	private static final double[] HEALTH_REGEN_RATE = { 3 };
-	private static final double[] MAX_MANA = { 100 };
-	private static final double[] MANA_REGEN_RATE = { 2 };
+	private static final double[] MAX_HEALTH = { 25.0, 33.0, 43.0, 55.0, 69.0, 85.0, 103.0, 123.0, 145.0, 169.0, 195.0,
+			223.0, 253.0, 285.0, 319.0, 355.0, 393.0, 433.0, 475.0, 519.0 };
+	private static final double[] HEALTH_REGEN_RATE = { 2.0, 2.5, 3.0, 3.5, 4.0, 4.5, 5.0, 5.5, 6.0, 6.5, 7.0, 7.5, 8.0,
+			8.5, 9.0, 9.5, 10.0, 10.5, 11.0, 11.5 };
+	private static final double[] MAX_MANA = { 10.0, 12.0, 14.0, 16.0, 18.0, 20.0, 22.0, 24.0, 26.0, 28.0, 30.0, 32.0,
+			34.0, 36.0, 38.0, 40.0, 42.0, 44.0, 46.0, 48.0 };
+	private static final double[] MANA_REGEN_RATE = { 2, 2.25, 2.5, 2.75, 3, 3.25, 3.5, 3.75, 4, 4.25, 4.5, 4.75, 5,
+			5.25, 5.5, 5.75, 6, 6.25, 6.5, 6.75 };
 
 	private static final Noise BASH_MISS_NOISE = new Noise(Sound.ENTITY_WITHER_SHOOT, 1, 2);
 	private static final Noise BASH_HIT_NOISE = new Noise(Sound.ENTITY_ZOMBIE_ATTACK_IRON_DOOR);
@@ -46,7 +50,6 @@ public class FighterListener implements Listener {
 	private static final Noise CHARGE_HIT_NOISE = new Noise(Sound.ENTITY_ZOMBIE_ATTACK_IRON_DOOR);
 	private static final Noise INSPIRE_NOISE = new Noise(Sound.BLOCK_LAVA_EXTINGUISH);
 
-	private final PlayerClass fighter;
 	private final Skill bash;
 	private final Skill selfHeal;
 	private final Skill charge;
@@ -55,25 +58,21 @@ public class FighterListener implements Listener {
 	private final Skill inspire;
 
 	public FighterListener() {
-		fighter = PlayerClass.forName("Fighter");
-		bash = fighter.skillForName("Bash");
-		selfHeal = fighter.skillForName("Self Heal");
-		charge = fighter.skillForName("Charge");
-		cyclone = fighter.skillForName("Cyclone");
-		overheadStrike = fighter.skillForName("Overhead Strike");
-		inspire = fighter.skillForName("Inspire");
+		bash = PlayerClasses.FIGHER.skillForName("Bash");
+		selfHeal = PlayerClasses.FIGHER.skillForName("Self Heal");
+		charge = PlayerClasses.FIGHER.skillForName("Charge");
+		cyclone = PlayerClasses.FIGHER.skillForName("Cyclone");
+		overheadStrike = PlayerClasses.FIGHER.skillForName("Overhead Strike");
+		inspire = PlayerClasses.FIGHER.skillForName("Inspire");
 	}
 
 	@EventHandler
 	private void onLevelUp(PlayerCharacterLevelUpEvent event) {
 		PlayerCharacter pc = event.getPlayerCharacter();
-		if (pc.getPlayerClass() != fighter) {
+		if (pc.getPlayerClass() != PlayerClasses.FIGHER) {
 			return;
 		}
 		int level = event.getNewLevel();
-		if (level > 1) {
-			return;
-		}
 		double maxHealth = MAX_HEALTH[level - 1];
 		double healthRegenRate = HEALTH_REGEN_RATE[level - 1];
 		double maxMana = MAX_MANA[level - 1];
@@ -85,14 +84,14 @@ public class FighterListener implements Listener {
 		pc.setCurrentMana(maxMana);
 		pc.setManaRegenRate(manaRegenRate);
 		if (level == 1) {
-			Quest.forName("Tutorial Part 1 (Fighter)").start(pc);
+			Quests.TUTORIAL_PART_1_FIGHTER.start(pc);
 		}
 	}
 
 	@EventHandler
 	private void onUseSkill(SkillUseEvent event) {
 		PlayerCharacter pc = event.getPlayerCharacter();
-		if (pc.getPlayerClass() != fighter) {
+		if (pc.getPlayerClass() != PlayerClasses.FIGHER) {
 			return;
 		}
 		Skill skill = event.getSkill();
@@ -136,7 +135,7 @@ public class FighterListener implements Listener {
 		if (!hit[0]) {
 			BASH_MISS_NOISE.play(location);
 		}
-		Quest.forName("Tutorial Part 3 (Fighter)").getObjective(0).addProgress(pc, 1);
+		Quests.TUTORIAL_PART_3_FIGHTER.getObjective(0).addProgress(pc, 1);
 	}
 
 	private void useSelfHeal(PlayerCharacter pc) {
@@ -289,10 +288,10 @@ public class FighterListener implements Listener {
 	private void onUseWeapon(PlayerCharacterUseWeaponEvent event) {
 		Weapon weapon = event.getWeapon();
 		PlayerCharacter pc = event.getPlayerCharacter();
-		if (pc.getPlayerClass() != fighter) {
+		if (pc.getPlayerClass() != PlayerClasses.FIGHER) {
 			return;
 		}
-		if (weapon == ItemManager.APPRENTICE_SWORD) {
+		if (weapon == Item.forName("Apprentice Sword")) {
 			useApprenticeSword(pc);
 		}
 	}

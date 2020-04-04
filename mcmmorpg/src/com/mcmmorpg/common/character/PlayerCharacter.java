@@ -45,12 +45,12 @@ import com.mcmmorpg.common.physics.Raycast;
 import com.mcmmorpg.common.playerClass.PlayerClass;
 import com.mcmmorpg.common.playerClass.PlayerSkillData;
 import com.mcmmorpg.common.playerClass.PlayerSkillManager;
-import com.mcmmorpg.common.quest.PlayerQuestData;
-import com.mcmmorpg.common.quest.PlayerQuestManager;
+import com.mcmmorpg.common.quest.PlayerCharacterQuestData;
+import com.mcmmorpg.common.quest.PlayerCharacterQuestManager;
 import com.mcmmorpg.common.quest.Quest;
 import com.mcmmorpg.common.quest.QuestLog;
 import com.mcmmorpg.common.sound.Noise;
-import com.mcmmorpg.common.sound.PlayerSoundtrackPlayer;
+import com.mcmmorpg.common.sound.PlayerCharacterSoundtrackPlayer;
 import com.mcmmorpg.common.time.DelayedTask;
 import com.mcmmorpg.common.time.RepeatingTask;
 import com.mcmmorpg.common.ui.ActionBarText;
@@ -87,10 +87,10 @@ public final class PlayerCharacter extends AbstractCharacter {
 	private double maxMana;
 	private double currentMana;
 	private double manaRegenRate;
-	private final PlayerQuestManager questStatusManager;
+	private final PlayerCharacterQuestManager questStatusManager;
 	private final PlayerSkillManager skillStatusManager;
 	private final List<String> tags;
-	private final PlayerSoundtrackPlayer soundtrackPlayer;
+	private final PlayerCharacterSoundtrackPlayer soundtrackPlayer;
 	private CharacterCollider collider;
 	private final MovementSyncer movementSyncer;
 	private boolean isDisarmed;
@@ -106,7 +106,7 @@ public final class PlayerCharacter extends AbstractCharacter {
 	private PlayerCharacter(Player player, boolean fresh, PlayerClass playerClass, String zone, Location location,
 			Location respawnLocation, int xp, int skillUpgradePoints, int currency, double maxHealth,
 			double currentHealth, double healthRegenRate, double maxMana, double currentMana, double manaRegenRate,
-			Quest[] completedQuests, PlayerQuestData[] questData, PlayerSkillData[] skillData,
+			Quest[] completedQuests, PlayerCharacterQuestData[] questData, PlayerSkillData[] skillData,
 			ItemStack[] inventoryContents, String[] tags) {
 		super(ChatColor.GREEN + player.getName(), xpToLevel(xp), location);
 		this.player = player;
@@ -121,12 +121,12 @@ public final class PlayerCharacter extends AbstractCharacter {
 		this.currentMana = currentMana;
 		this.maxMana = maxMana;
 		this.manaRegenRate = manaRegenRate;
-		this.questStatusManager = new PlayerQuestManager(completedQuests, questData);
+		this.questStatusManager = new PlayerCharacterQuestManager(completedQuests, questData);
 		this.skillStatusManager = new PlayerSkillManager(this, skillData);
 		this.skillStatusManager.init();
 		player.getInventory().setContents(inventoryContents);
 		this.tags = new ArrayList<>(Arrays.asList(tags));
-		soundtrackPlayer = new PlayerSoundtrackPlayer(player);
+		soundtrackPlayer = new PlayerCharacterSoundtrackPlayer(this);
 		this.collider = new PlayerCharacterCollider(this);
 		player.teleport(getLocation());
 
@@ -210,7 +210,7 @@ public final class PlayerCharacter extends AbstractCharacter {
 		double maxMana = saveData.getMaxMana();
 		double currentMana = saveData.getCurrentMana();
 		double manaRegenRate = saveData.getManaRegenRate();
-		PlayerQuestData[] questStatuses = saveData.getQuestData();
+		PlayerCharacterQuestData[] questStatuses = saveData.getQuestData();
 		PlayerSkillData[] skillStatuses = saveData.getSkillData();
 		ItemStack[] inventoryContents = saveData.getInventoryContents();
 		String[] tags = saveData.getTags();
@@ -543,7 +543,7 @@ public final class PlayerCharacter extends AbstractCharacter {
 		return null;
 	}
 
-	public PlayerQuestManager getQuestManager() {
+	public PlayerCharacterQuestManager getQuestManager() {
 		return questStatusManager;
 	}
 
@@ -721,7 +721,7 @@ public final class PlayerCharacter extends AbstractCharacter {
 	/**
 	 * Use this to set the song playing to the player.
 	 */
-	public PlayerSoundtrackPlayer getSoundTrackPlayer() {
+	public PlayerCharacterSoundtrackPlayer getSoundTrackPlayer() {
 		return soundtrackPlayer;
 	}
 

@@ -1,26 +1,22 @@
 package com.mcmmorpg.impl.npcs;
 
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Sound;
 
 import com.mcmmorpg.common.character.PlayerCharacter;
-import com.mcmmorpg.common.quest.Quest;
 import com.mcmmorpg.common.quest.QuestStatus;
 import com.mcmmorpg.common.sound.Noise;
 import com.mcmmorpg.common.ui.MessageSequence;
 import com.mcmmorpg.common.ui.Notice;
 import com.mcmmorpg.common.ui.Notice.NoticeType;
-
-import net.md_5.bungee.api.ChatColor;
+import com.mcmmorpg.impl.Quests;
 
 public class BanditQuestGiver extends StaticHuman {
 
 	private static final String TEXTURE_DATA = "";
 	private static final String TEXTURE_SIGNATURE = "";
 	private static final Noise SPEAK_NOISE = new Noise(Sound.ENTITY_VILLAGER_AMBIENT);
-
-	private static final Quest REPORTING_FOR_DUTY = Quest.forName("Reporting for Duty");
-	private static final Quest SLAYING_THE_THIEVES = Quest.forName("Slaying the Thieves");
 
 	private final MessageSequence sequence1;
 	private final MessageSequence sequence2;
@@ -33,9 +29,9 @@ public class BanditQuestGiver extends StaticHuman {
 			@Override
 			protected void onAdvance(PlayerCharacter pc, int messageIndex) {
 				if (messageIndex == 1) {
-					REPORTING_FOR_DUTY.getObjective(0).setProgress(pc, 1);
+					Quests.REPORTING_FOR_DUTY.getObjective(0).setProgress(pc, 1);
 				} else if (messageIndex == 3) {
-					SLAYING_THE_THIEVES.start(pc);
+					Quests.SLAYING_THE_THIEVES.start(pc);
 				} else {
 					SPEAK_NOISE.play(pc);
 				}
@@ -46,7 +42,7 @@ public class BanditQuestGiver extends StaticHuman {
 			@Override
 			protected void onAdvance(PlayerCharacter pc, int messageIndex) {
 				if (messageIndex == 1) {
-					SLAYING_THE_THIEVES.getObjective(1).complete(pc);
+					Quests.SLAYING_THE_THIEVES.getObjective(1).complete(pc);
 				} else {
 					SPEAK_NOISE.play(pc);
 				}
@@ -56,14 +52,14 @@ public class BanditQuestGiver extends StaticHuman {
 
 	@Override
 	protected void onInteract(PlayerCharacter pc) {
-		if (REPORTING_FOR_DUTY.compareStatus(pc, QuestStatus.NOT_STARTED)) {
+		if (Quests.REPORTING_FOR_DUTY.compareStatus(pc, QuestStatus.NOT_STARTED)) {
 			say("You should complete your training, adventurer.", pc);
-		} else if (SLAYING_THE_THIEVES.compareStatus(pc, QuestStatus.NOT_STARTED)
-				&& (REPORTING_FOR_DUTY.compareStatus(pc, QuestStatus.IN_PROGRESS)
-						|| REPORTING_FOR_DUTY.compareStatus(pc, QuestStatus.COMPLETED))) {
+		} else if (Quests.SLAYING_THE_THIEVES.compareStatus(pc, QuestStatus.NOT_STARTED)
+				&& (Quests.REPORTING_FOR_DUTY.compareStatus(pc, QuestStatus.IN_PROGRESS)
+						|| Quests.REPORTING_FOR_DUTY.compareStatus(pc, QuestStatus.COMPLETED))) {
 			sequence1.advance(pc);
-		} else if (SLAYING_THE_THIEVES.compareStatus(pc, QuestStatus.IN_PROGRESS)) {
-			if (SLAYING_THE_THIEVES.getObjective(0).isComplete(pc)) {
+		} else if (Quests.SLAYING_THE_THIEVES.compareStatus(pc, QuestStatus.IN_PROGRESS)) {
+			if (Quests.SLAYING_THE_THIEVES.getObjective(0).isComplete(pc)) {
 				sequence2.advance(pc);
 			} else {
 				say("Go get those bandits.", pc);

@@ -12,9 +12,8 @@ import org.bukkit.inventory.ItemStack;
 public class Item {
 
 	private static final Map<ItemStack, Item> itemStackMap = new HashMap<>();
-	private static final Map<Integer, Item> idMap = new HashMap<>();
+	private static final Map<String, Item> itemMap = new HashMap<>();
 
-	private final int id;
 	private final String name;
 	private final ItemRarity rarity;
 	private final Material icon;
@@ -22,8 +21,7 @@ public class Item {
 
 	private transient ItemStack itemStack;
 
-	public Item(int id, String name, ItemRarity rarity, Material icon, String description) {
-		this.id = id;
+	public Item(String name, ItemRarity rarity, Material icon, String description) {
 		this.name = name;
 		this.rarity = rarity;
 		this.icon = icon;
@@ -33,7 +31,7 @@ public class Item {
 	public void initialize() {
 		this.itemStack = createItemStack();
 		itemStackMap.put(itemStack, this);
-		idMap.put(id, this);
+		itemMap.put(name, this);
 	}
 
 	protected ItemStack createItemStack() {
@@ -42,8 +40,8 @@ public class Item {
 		return ItemFactory.createItemStack(rarity.getColor() + name, lore, icon);
 	}
 
-	public static Item forID(int id) {
-		return idMap.get(id);
+	public static Item forName(String name) {
+		return itemMap.get(name);
 	}
 
 	/**
@@ -56,10 +54,6 @@ public class Item {
 		ItemStack unitItemStack = itemStack.clone();
 		unitItemStack.setAmount(1);
 		return itemStackMap.get(unitItemStack);
-	}
-
-	public final int getID() {
-		return id;
 	}
 
 	public final String getName() {

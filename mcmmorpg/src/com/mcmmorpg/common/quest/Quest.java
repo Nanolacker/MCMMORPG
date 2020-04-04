@@ -90,7 +90,7 @@ public class Quest {
 		if (getStatus(pc) != QuestStatus.NOT_STARTED) {
 			return;
 		}
-		PlayerQuestManager questManager = pc.getQuestManager();
+		PlayerCharacterQuestManager questManager = pc.getQuestManager();
 		questManager.startQuest(this);
 		pc.sendMessage(ChatColor.GRAY + "Quest started: " + ChatColor.YELLOW + name);
 		pc.updateQuestDisplay();
@@ -108,7 +108,7 @@ public class Quest {
 	private void complete(PlayerCharacter pc) {
 		pc.sendMessage(ChatColor.YELLOW + name + ChatColor.GRAY + " complete!");
 		COMPLETE_NOISE.play(pc);
-		PlayerQuestManager questManager = pc.getQuestManager();
+		PlayerCharacterQuestManager questManager = pc.getQuestManager();
 		questManager.completeQuest(this);
 		QuestCompletionEvent event = new QuestCompletionEvent(pc, this);
 		EventManager.callEvent(event);

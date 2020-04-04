@@ -30,7 +30,8 @@ import com.mcmmorpg.common.playerClass.PlayerClass;
 import com.mcmmorpg.common.sound.Noise;
 import com.mcmmorpg.common.ui.TextPanel;
 import com.mcmmorpg.common.utils.IOUtils;
-import com.mcmmorpg.impl.ItemManager;
+import com.mcmmorpg.impl.Items;
+import com.mcmmorpg.impl.PlayerClasses;
 import com.mcmmorpg.impl.Worlds;
 import com.mcmmorpg.impl.playerCharacterSelection.PlayerCharacterSelectionProfile.Menu;
 
@@ -60,7 +61,7 @@ public class PlayerCharacterSelectionListener implements Listener {
 	private static final Noise CHARACTER_TRANSITION_NOISE = new Noise(Sound.ENTITY_ZOMBIE_VILLAGER_CONVERTED);
 	private static final Noise CHARACTER_DELETION_NOISE = new Noise(Sound.ENTITY_ZOMBIE_VILLAGER_CONVERTED);
 	private static final Noise SELECT_CHARACTER_NOISE = new Noise(Sound.BLOCK_PORTAL_TRAVEL, 0.2f, 1);
-	
+
 	private Map<Player, PlayerCharacterSelectionProfile> profileMap = new HashMap<>();
 
 	static {
@@ -332,11 +333,11 @@ public class PlayerCharacterSelectionListener implements Listener {
 				}
 			}
 		} else if (openMenu == Menu.SELECT_PLAYER_CLASS) {
-			String playerClassName;
+			PlayerClass playerClass;
 			if (clickedSlot == 2) {
-				playerClassName = "Fighter";
+				playerClass = PlayerClasses.FIGHER;
 			} else if (clickedSlot == 6) {
-				playerClassName = "Mage";
+				playerClass = PlayerClasses.MAGE;
 			} else if (clickedSlot == 8) {
 				// go back
 				openCharacterSelectInventory(player);
@@ -344,7 +345,6 @@ public class PlayerCharacterSelectionListener implements Listener {
 			} else {
 				return;
 			}
-			PlayerClass playerClass = PlayerClass.forName(playerClassName);
 			int characterSlot = profile.getCurrentCharacterSlot();
 			createNewCharacter(player, playerClass, characterSlot);
 			player.sendMessage(ChatColor.GRAY + "Created " + ChatColor.GREEN + "Character " + characterSlot
@@ -360,9 +360,9 @@ public class PlayerCharacterSelectionListener implements Listener {
 		Weapon startWeapon;
 		String playerClassName = playerClass.getName();
 		if (playerClassName.equals("Fighter")) {
-			startWeapon = ItemManager.APPRENTICE_SWORD;
+			startWeapon = Items.APPRENTICE_SWORD;
 		} else if (playerClassName.equals("Mage")) {
-			startWeapon = ItemManager.APPRENTICE_STAFF;
+			startWeapon = Items.APPRENTICE_STAFF;
 		} else {
 			startWeapon = null;
 		}

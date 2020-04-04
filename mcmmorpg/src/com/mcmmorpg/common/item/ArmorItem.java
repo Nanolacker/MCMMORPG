@@ -15,9 +15,9 @@ public class ArmorItem extends Item {
 
 	private transient PlayerClass playerClass0;
 
-	public ArmorItem(int id, String name, ItemRarity rarity, Material icon, String description, String playerClass,
-			int level, ArmorType type, int protections) {
-		super(id, name, rarity, icon, description);
+	public ArmorItem(String name, ItemRarity rarity, Material icon, String description, String playerClass, int level,
+			ArmorType type, int protections) {
+		super(name, rarity, icon, description);
 		this.playerClass = playerClass;
 		this.level = level;
 		this.type = type;

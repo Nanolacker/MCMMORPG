@@ -17,9 +17,9 @@ import com.mcmmorpg.common.character.Source;
 import com.mcmmorpg.common.event.CharacterKillEvent;
 import com.mcmmorpg.common.event.EventManager;
 import com.mcmmorpg.common.physics.Collider;
-import com.mcmmorpg.common.quest.Quest;
 import com.mcmmorpg.common.sound.Noise;
 import com.mcmmorpg.common.time.DelayedTask;
+import com.mcmmorpg.impl.Quests;
 
 public class TrainingDummy extends NonPlayerCharacter {
 
@@ -38,10 +38,10 @@ public class TrainingDummy extends NonPlayerCharacter {
 					Source source = event.getKiller();
 					if (source instanceof PlayerCharacter) {
 						PlayerCharacter pc = (PlayerCharacter) source;
-						Quest.forName("Tutorial Part 2 (Fighter)").getObjective(0).addProgress(pc, 1);
-						Quest.forName("Tutorial Part 3 (Fighter)").getObjective(1).addProgress(pc, 1);
-						Quest.forName("Tutorial Part 2 (Mage)").getObjective(0).addProgress(pc, 1);
-						Quest.forName("Tutorial Part 3 (Mage)").getObjective(1).addProgress(pc, 1);
+						Quests.TUTORIAL_PART_2_FIGHTER.getObjective(0).addProgress(pc, 1);
+						Quests.TUTORIAL_PART_3_FIGHTER.getObjective(1).addProgress(pc, 1);
+						Quests.TUTORIAL_PART_2_MAGE.getObjective(0).addProgress(pc, 1);
+						Quests.TUTORIAL_PART_2_MAGE.getObjective(1).addProgress(pc, 1);
 					}
 				}
 			}
