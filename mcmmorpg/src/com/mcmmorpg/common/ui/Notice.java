@@ -1,6 +1,6 @@
 package com.mcmmorpg.common.ui;
 
-  import org.bukkit.ChatColor;
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 
 /**
@@ -33,7 +33,7 @@ public class Notice {
 	}
 
 	public static enum NoticeType {
-		QUEST(ChatColor.YELLOW + "!"), TRADE(ChatColor.GOLD + "$");
+		QUEST(ChatColor.YELLOW + "" + ChatColor.BOLD + "!"), TRADE(ChatColor.GOLD + "" + ChatColor.BOLD + "$");
 
 		private final String text;
 

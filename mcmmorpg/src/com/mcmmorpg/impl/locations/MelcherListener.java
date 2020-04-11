@@ -11,6 +11,7 @@ import com.mcmmorpg.impl.Worlds;
 import com.mcmmorpg.impl.npcs.BanditQuestGiver;
 import com.mcmmorpg.impl.npcs.Chicken;
 import com.mcmmorpg.impl.npcs.FoodQuestGiver;
+import com.mcmmorpg.impl.npcs.James;
 import com.mcmmorpg.impl.npcs.MelcherResident;
 import com.mcmmorpg.impl.npcs.TrainingDummy;
 import com.mcmmorpg.impl.npcs.WildBoar;
@@ -45,7 +46,11 @@ public class MelcherListener implements Listener {
 				new Location(Worlds.ELADRADOR, -488, 66, -129), new Location(Worlds.ELADRADOR, -471, 66, -131),
 				new Location(Worlds.ELADRADOR, -486, 65, -144), new Location(Worlds.ELADRADOR, -495, 65, -137) };
 		for (Location location : trainingDummyLocations) {
-			new TrainingDummy(location).setAlive(true);
+			if (location.equals(trainingDummyLocations[0])) {
+				new James(location).setAlive(true);
+			} else {
+				new TrainingDummy(location).setAlive(true);
+			}
 		}
 
 		Location[] thiefLocations = { new Location(Worlds.ELADRADOR, -441, 67, -117),
