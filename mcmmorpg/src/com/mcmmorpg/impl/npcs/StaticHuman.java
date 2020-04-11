@@ -3,7 +3,7 @@ package com.mcmmorpg.impl.npcs;
 import org.bukkit.Location;
 
 import com.mcmmorpg.common.character.AbstractCharacter;
-import com.mcmmorpg.common.character.NPCHuman;
+import com.mcmmorpg.common.character.HumanEntity;
 import com.mcmmorpg.common.character.NonPlayerCharacter;
 import com.mcmmorpg.common.character.PlayerCharacter;
 import com.mcmmorpg.common.character.PlayerCharacterInteractionCollider;
@@ -13,12 +13,12 @@ import com.mcmmorpg.common.character.PlayerCharacterInteractionCollider;
  */
 public abstract class StaticHuman extends NonPlayerCharacter {
 
-	private final NPCHuman human;
+	private final HumanEntity human;
 	private final PlayerCharacterInteractionCollider interactionBox;
 
 	protected StaticHuman(String name, int level, Location location, String textureData, String textureSignature) {
 		super(name, level, location);
-		human = new NPCHuman("", location, textureData, textureSignature);
+		human = new HumanEntity(location, textureData, textureSignature);
 		interactionBox = new PlayerCharacterInteractionCollider(location.clone().add(0, 1, 0), 1, 2, 1) {
 			@Override
 			protected void onInteract(PlayerCharacter pc) {
@@ -27,7 +27,7 @@ public abstract class StaticHuman extends NonPlayerCharacter {
 		};
 	}
 
-	protected NPCHuman getHuman() {
+	protected HumanEntity getHuman() {
 		return human;
 	}
 

@@ -14,18 +14,18 @@ public class MathUtils {
 		return num;
 	}
 
-	public static boolean isBetween(double n, double min, boolean includeMin, double max, boolean includeMax) {
+	public static boolean isBetween(double num, double min, boolean includeMin, double max, boolean includeMax) {
 		if (includeMin) {
 			if (includeMax) {
-				return n >= min && n <= max;
+				return num >= min && num <= max;
 			} else {
-				return n >= min && n < max;
+				return num >= min && num < max;
 			}
 		} else {
 			if (includeMax) {
-				return n > min && n <= max;
+				return num > min && num <= max;
 			} else {
-				return n > min && n < max;
+				return num > min && num < max;
 			}
 		}
 	}
@@ -34,7 +34,7 @@ public class MathUtils {
 	 * Converts from seconds to ticks, rounding up to the nearest tick.
 	 */
 	public static int secondsToTicks(double seconds) {
-		return (int) Math.floor(seconds * 20.0);
+		return (int) (seconds * 20.0);
 	}
 
 	public static double ticksToSeconds(int ticks) {

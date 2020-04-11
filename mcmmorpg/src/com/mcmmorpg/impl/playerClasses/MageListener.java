@@ -19,10 +19,7 @@ import com.mcmmorpg.common.character.AbstractCharacter;
 import com.mcmmorpg.common.character.CharacterCollider;
 import com.mcmmorpg.common.character.PlayerCharacter;
 import com.mcmmorpg.common.event.PlayerCharacterLevelUpEvent;
-import com.mcmmorpg.common.event.PlayerCharacterUseWeaponEvent;
 import com.mcmmorpg.common.event.SkillUseEvent;
-import com.mcmmorpg.common.item.Item;
-import com.mcmmorpg.common.item.Weapon;
 import com.mcmmorpg.common.physics.Collider;
 import com.mcmmorpg.common.physics.Projectile;
 import com.mcmmorpg.common.physics.Ray;
@@ -32,7 +29,6 @@ import com.mcmmorpg.common.sound.Noise;
 import com.mcmmorpg.common.time.DelayedTask;
 import com.mcmmorpg.common.time.RepeatingTask;
 import com.mcmmorpg.impl.PlayerClasses;
-import com.mcmmorpg.impl.Quests;
 
 public class MageListener implements Listener {
 
@@ -53,7 +49,6 @@ public class MageListener implements Listener {
 	private static final Noise EARTHQUAKE_NOISE = new Noise(Sound.BLOCK_GRAVEL_FALL, 1, 0.5f);
 	private static final Noise SHADOW_VOID_USE_NOISE = new Noise(Sound.BLOCK_PORTAL_TRIGGER);
 	private static final Noise SHADOW_VOID_EXPLODE_NOISE = new Noise(Sound.ENTITY_WITHER_HURT);
-	private static final Noise STAFF_HIT_NOISE = new Noise(Sound.BLOCK_WOODEN_TRAPDOOR_OPEN);
 
 	private final Skill fireball;
 	private final Skill iceBeam;
@@ -95,7 +90,6 @@ public class MageListener implements Listener {
 			pc.setMaxMana(15);
 			pc.setCurrentMana(15);
 			pc.setManaRegenRate(1);
-			Quests.TUTORIAL_PART_1_MAGE.start(pc);
 		}
 	}
 
@@ -197,7 +191,6 @@ public class MageListener implements Listener {
 			}
 		};
 		projectile.fire();
-		Quests.TUTORIAL_PART_3_MAGE.getObjective(0).addProgress(pc, 1);
 	}
 
 	private void useIceBeam(PlayerCharacter pc) {
@@ -501,40 +494,6 @@ public class MageListener implements Listener {
 				count++;
 			}
 		}.schedule();
-	}
-
-	@EventHandler
-	private void onWeaponUse(PlayerCharacterUseWeaponEvent event) {
-		PlayerCharacter pc = event.getPlayerCharacter();
-		if (pc.getPlayerClass() != PlayerClasses.MAGE) {
-			return;
-		}
-		Weapon weapon = event.getWeapon();
-		if (weapon == Item.forName("Apprentice Staff")) {
-			useApprenticeStaff(pc);
-		}
-	}
-
-	private void useStaff(PlayerCharacter pc, double damage) {
-		Location start = pc.getLocation().add(0, 1.5, 0);
-		Vector direction = start.getDirection();
-		Location particleLocation = start.clone().add(direction.clone().multiply(2));
-		particleLocation.getWorld().spawnParticle(Particle.SWEEP_ATTACK, particleLocation, 0);
-		Ray ray = new Ray(start, direction, 3);
-		Raycast raycast = new Raycast(ray, CharacterCollider.class);
-		Collider[] hits = raycast.getHits();
-		for (Collider hit : hits) {
-			AbstractCharacter character = ((CharacterCollider) hit).getCharacter();
-			if (!character.isFriendly(pc)) {
-				character.damage(damage, pc);
-				STAFF_HIT_NOISE.play(character.getLocation());
-			}
-		}
-		pc.disarm(1.25);
-	}
-
-	private void useApprenticeStaff(PlayerCharacter pc) {
-		useStaff(pc, 4);
 	}
 
 }

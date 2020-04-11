@@ -4,7 +4,7 @@
 		{
 			"name": "Bash",
 			"description": "Damage enemies in an area in front of you",
-			"manaCost": 5,
+			"manaCost": 10,
 			"cooldown": 5,
 			"minimumLevel": 1,
 			"prerequisiteSkill": null,
@@ -64,7 +64,7 @@
 		{
 			"name": "Overhead Strike",
 			"description": "Leap into the air and strike down enemies from above",
-			"manaCost": 30,
+			"manaCost": 15,
 			"cooldown": 15,
 			"minimumLevel": 16,
 			"prerequisiteSkill": "Charge",

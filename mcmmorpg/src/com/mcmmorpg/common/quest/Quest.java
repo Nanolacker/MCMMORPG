@@ -29,13 +29,11 @@ public class Quest {
 	private final String name;
 	private final int level;
 	private final QuestObjective[] objectives;
-	private final Material icon;
 
-	public Quest(String name, int level, QuestObjective[] objectives, Material icon) {
+	public Quest(String name, int level, QuestObjective[] objectives) {
 		this.name = name;
 		this.level = level;
 		this.objectives = objectives;
-		this.icon = icon;
 	}
 
 	public void initialize() {
@@ -68,10 +66,6 @@ public class Quest {
 
 	public QuestObjective getObjective(int index) {
 		return objectives[index];
-	}
-
-	public Material getIcon() {
-		return icon;
 	}
 
 	public QuestStatus getStatus(PlayerCharacter pc) {
@@ -118,7 +112,7 @@ public class Quest {
 	ItemStack getQuestLogItemStack(PlayerCharacter pc) {
 		String lore = ChatColor.GOLD + "Level " + level + " Quest\n\n" + getQuestLogLines(pc);
 		lore += ChatColor.GRAY + "Click to track this quest";
-		return ItemFactory.createItemStack(ChatColor.YELLOW + name, lore, icon);
+		return ItemFactory.createItemStack(ChatColor.YELLOW + name, lore, Material.BOOK);
 	}
 
 	public String getQuestLogLines(PlayerCharacter pc) {

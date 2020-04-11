@@ -13,7 +13,8 @@ public class SoundSequence {
 
 	/**
 	 * 
-	 * @param duration in seconds
+	 * @param duration
+	 *            in seconds
 	 */
 	public SoundSequence(double duration) {
 		nodes = new ArrayList<>();
@@ -21,7 +22,8 @@ public class SoundSequence {
 	}
 
 	/**
-	 * @param time the second at which the noise should play in the sequence
+	 * @param time
+	 *            the second at which the noise should play in the sequence
 	 */
 	public void add(Noise sound, double time) {
 		if (time > duration) {

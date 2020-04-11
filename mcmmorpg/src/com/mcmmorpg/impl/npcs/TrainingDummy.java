@@ -5,49 +5,20 @@ import org.bukkit.Location;
 import org.bukkit.Sound;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.EntityType;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
-
-import com.mcmmorpg.common.character.AbstractCharacter;
 import com.mcmmorpg.common.character.CharacterCollider;
 import com.mcmmorpg.common.character.NonPlayerCharacter;
-import com.mcmmorpg.common.character.PlayerCharacter;
-import com.mcmmorpg.common.character.PlayerCharacter.PlayerCharacterCollider;
 import com.mcmmorpg.common.character.Source;
-import com.mcmmorpg.common.event.CharacterKillEvent;
-import com.mcmmorpg.common.event.EventManager;
-import com.mcmmorpg.common.physics.Collider;
+import com.mcmmorpg.common.character.XP;
 import com.mcmmorpg.common.sound.Noise;
 import com.mcmmorpg.common.time.DelayedTask;
-import com.mcmmorpg.impl.Quests;
 
 public class TrainingDummy extends NonPlayerCharacter {
 
 	private static final Noise DAMAGE_NOISE = new Noise(Sound.BLOCK_IRON_TRAPDOOR_CLOSE);
 	private static final Noise DESTROY_NOISE = new Noise(Sound.BLOCK_FENCE_GATE_CLOSE);
 
+	private final CharacterCollider hitbox;
 	private ArmorStand entity;
-	private CharacterCollider hitbox;
-
-	static {
-		Listener listener = new Listener() {
-			@EventHandler
-			private void onDummyKill(CharacterKillEvent event) {
-				AbstractCharacter killed = event.getKilled();
-				if (killed instanceof TrainingDummy) {
-					Source source = event.getKiller();
-					if (source instanceof PlayerCharacter) {
-						PlayerCharacter pc = (PlayerCharacter) source;
-						Quests.TUTORIAL_PART_2_FIGHTER.getObjective(0).addProgress(pc, 1);
-						Quests.TUTORIAL_PART_3_FIGHTER.getObjective(1).addProgress(pc, 1);
-						Quests.TUTORIAL_PART_2_MAGE.getObjective(0).addProgress(pc, 1);
-						Quests.TUTORIAL_PART_2_MAGE.getObjective(1).addProgress(pc, 1);
-					}
-				}
-			}
-		};
-		EventManager.registerEvents(listener);
-	}
 
 	public TrainingDummy(Location location) {
 		super(ChatColor.RED + "Training Dummy", 1, location);
@@ -82,17 +53,7 @@ public class TrainingDummy extends NonPlayerCharacter {
 		DESTROY_NOISE.play(getLocation());
 		entity.remove();
 		hitbox.setActive(false);
-		Collider xpBounds = new Collider(getLocation(), 25, 25, 25) {
-			@Override
-			protected void onCollisionEnter(Collider other) {
-				if (other instanceof PlayerCharacterCollider) {
-					PlayerCharacter pc = ((PlayerCharacterCollider) other).getCharacter();
-					pc.grantXp(3);
-				}
-			}
-		};
-		xpBounds.setActive(true);
-		xpBounds.setActive(false);
+		XP.distributeXP(getLocation(), 10, 3);
 		DelayedTask respawnTask = new DelayedTask(10) {
 			@Override
 			protected void run() {

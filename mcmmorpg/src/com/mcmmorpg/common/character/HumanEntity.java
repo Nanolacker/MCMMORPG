@@ -34,12 +34,11 @@ import net.minecraft.server.v1_15_R1.PlayerConnection;
 import net.minecraft.server.v1_15_R1.PlayerInteractManager;
 import net.minecraft.server.v1_15_R1.WorldServer;
 
-public class NPCHuman {
+public class HumanEntity {
 
 	private static final double RENDER_RADIUS = 25;
 	private static final double RENDER_PERIOD = 0.5;
 
-	private final String name;
 	private Location location;
 	private final EntityPlayer entityPlayer;
 	private boolean visible;
@@ -48,14 +47,12 @@ public class NPCHuman {
 	private ArmorStand equipment;
 	private ItemStack mainHand, offHand, helmet, chestplate, leggings, boots;
 
-	public NPCHuman(String name, Location location, String textureData, String textureSignature) {
-		this.name = name;
+	public HumanEntity(Location location, String textureData, String textureSignature) {
 		this.location = location;
 		World world = location.getWorld();
 		MinecraftServer minecraftServer = ((CraftServer) Bukkit.getServer()).getServer();
 		WorldServer worldServer = ((CraftWorld) world).getHandle();
-		GameProfile gameProfile = new GameProfile(UUID.randomUUID(),
-				ChatColor.translateAlternateColorCodes('&', this.name));
+		GameProfile gameProfile = new GameProfile(UUID.randomUUID(), ChatColor.translateAlternateColorCodes('&', ""));
 		gameProfile.getProperties().put("textures", new Property("textures", textureData, textureSignature));
 		PlayerInteractManager playerInteractManager = new PlayerInteractManager(worldServer);
 		this.entityPlayer = new EntityPlayer(minecraftServer, worldServer, gameProfile, playerInteractManager);

@@ -39,7 +39,7 @@ public class RottenDweller extends NonPlayerCharacter {
 	private final MovementSyncer movementSyncer;
 	private final BossBar bossBar;
 	private final Collider bossBarArea;
-	private Spider spider;
+	private Spider entity;
 
 	public RottenDweller(Location spawnLocation) {
 		super(ChatColor.RED + "The Rotten Dweller", 17, spawnLocation);
@@ -69,24 +69,24 @@ public class RottenDweller extends NonPlayerCharacter {
 	}
 
 	@Override
-	public void spawn() {
+	protected void spawn() {
 		super.spawn();
 		hitbox.setActive(true);
-		spider = (Spider) spawnLocation.getWorld().spawnEntity(spawnLocation, EntityType.SPIDER);
-		spider.setSilent(true);
-		spider.setRemoveWhenFarAway(false);
-		movementSyncer.setEntity(spider);
+		entity = (Spider) spawnLocation.getWorld().spawnEntity(spawnLocation, EntityType.SPIDER);
+		entity.setSilent(true);
+		entity.setRemoveWhenFarAway(false);
+		movementSyncer.setEntity(entity);
 		bossBarArea.setActive(true);
 		movementSyncer.setEnabled(true);
 	}
 
 	@Override
-	public void despawn() {
+	protected void despawn() {
 		super.despawn();
 		hitbox.setActive(false);
 		movementSyncer.setEnabled(false);
 		bossBarArea.setActive(false);
-		spider.remove();
+		entity.remove();
 	}
 
 	@Override
@@ -94,7 +94,7 @@ public class RottenDweller extends NonPlayerCharacter {
 		super.setLocation(location);
 		hitbox.setCenter(location.clone().add(0, 0.5, 0));
 		bossBarArea.setCenter(location.clone().add(0, 2, 0));
-		spider.teleport(location);
+		entity.teleport(location);
 	}
 
 	@Override
@@ -108,7 +108,7 @@ public class RottenDweller extends NonPlayerCharacter {
 	public void damage(double amount, Source source) {
 		super.damage(amount, source);
 		// for light up red effect
-		spider.damage(0);
+		entity.damage(0);
 		HURT_NOISE.play(getLocation());
 	}
 
@@ -125,7 +125,7 @@ public class RottenDweller extends NonPlayerCharacter {
 		hitbox.setActive(false);
 		movementSyncer.setEnabled(false);
 		bossBarArea.setActive(false);
-		spider.remove();
+		entity.remove();
 		Location location = getLocation();
 		DEATH_NOISE.play(location);
 		location.getWorld().spawnParticle(Particle.CLOUD, location, 10);
@@ -157,7 +157,7 @@ public class RottenDweller extends NonPlayerCharacter {
 	private void onHit(EntityDamageByEntityEvent event) {
 		Entity damager = event.getDamager();
 		Entity damaged = event.getEntity();
-		if (damager == this.spider) {
+		if (damager == this.entity) {
 			if (damaged instanceof Player) {
 				Player player = (Player) damaged;
 				PlayerCharacter pc = PlayerCharacter.forPlayer(player);
@@ -166,11 +166,11 @@ public class RottenDweller extends NonPlayerCharacter {
 				}
 				pc.damage(50, this);
 			}
-		} else if (damaged == this.spider) {
+		} else if (damaged == this.entity) {
 			DelayedTask cancelKnockback = new DelayedTask(0.1) {
 				@Override
 				protected void run() {
-					spider.setVelocity(new Vector());
+					entity.setVelocity(new Vector());
 				}
 			};
 			cancelKnockback.schedule();

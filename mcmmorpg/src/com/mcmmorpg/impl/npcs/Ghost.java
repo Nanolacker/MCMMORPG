@@ -2,16 +2,33 @@ package com.mcmmorpg.impl.npcs;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
-import org.bukkit.entity.Drowned;
+import org.bukkit.entity.EntityType;
 
-import com.mcmmorpg.common.character.NonPlayerCharacter;
+public class Ghost extends AbstractUndead {
 
-public class Ghost extends NonPlayerCharacter {
+	private static final int LEVEL = 12;
+	private static final double RESPAWN_TIME = 30;
 
-	public Drowned entity;
-	
-	protected Ghost(int level, Location location) {
-		super(ChatColor.RED + "Ghost", level, location);
+	public Ghost(Location spawnLocation) {
+		super(ChatColor.RED + "Ghost", LEVEL, spawnLocation, RESPAWN_TIME, EntityType.DROWNED);
 	}
-	
+
+	@Override
+	protected double maxHealth() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	protected double damageAmount() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	protected int xpToGrantOnDeath() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
 }

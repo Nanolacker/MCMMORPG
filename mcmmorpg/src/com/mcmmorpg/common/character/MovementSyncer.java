@@ -32,8 +32,8 @@ public class MovementSyncer {
 						character.setLocation(entityLocation);
 						break;
 					case ENTITY_FOLLOWS_CHARACTER:
-						Location charLocation = character.getLocation();
-						character.setLocation(charLocation);
+						Location characterLocation = character.getLocation();
+						entity.teleport(characterLocation);
 						break;
 					default:
 						break;

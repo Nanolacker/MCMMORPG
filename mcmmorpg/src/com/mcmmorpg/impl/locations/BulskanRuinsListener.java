@@ -10,7 +10,7 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import com.mcmmorpg.common.character.PlayerCharacter;
 import com.mcmmorpg.common.character.PlayerCharacter.PlayerCharacterCollider;
 import com.mcmmorpg.common.physics.Collider;
-import com.mcmmorpg.impl.SoundtrackManager;
+import com.mcmmorpg.impl.Soundtracks;
 import com.mcmmorpg.impl.Worlds;
 import com.mcmmorpg.impl.npcs.TrainingDummy;
 import com.mcmmorpg.impl.npcs.WildBoar;
@@ -35,7 +35,7 @@ public class BulskanRuinsListener implements Listener {
 						return;
 					}
 					pc.setZone(ZONE_NAME);
-					pc.getSoundTrackPlayer().setSoundtrack(SoundtrackManager.DUNGEON);
+					pc.getSoundTrackPlayer().setSoundtrack(Soundtracks.DUNGEON);
 				}
 			}
 		};

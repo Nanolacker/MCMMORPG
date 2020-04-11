@@ -1,6 +1,6 @@
 package com.mcmmorpg.common.ui;
 
-import org.bukkit.ChatColor;
+  import org.bukkit.ChatColor;
 import org.bukkit.Location;
 
 /**
@@ -18,6 +18,10 @@ public class Notice {
 
 	public static Notice createNotice(NoticeType type, Location location) {
 		return new Notice(type, location);
+	}
+
+	public Location getLocation() {
+		return textPanel.getLocation();
 	}
 
 	public void setLocation(Location location) {

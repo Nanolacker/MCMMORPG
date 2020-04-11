@@ -1,5 +1,8 @@
 package com.mcmmorpg.impl.npcs;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Particle;
@@ -31,26 +34,59 @@ import com.mcmmorpg.common.time.DelayedTask;
 import com.mcmmorpg.common.time.RepeatingTask;
 import com.mcmmorpg.common.ui.ProgressBar;
 
-public class GelatinousCube extends NonPlayerCharacter implements Listener {
+public class GelatinousCube extends NonPlayerCharacter {
 
 	private static final int LEVEL = 12;
+	private static final int MAX_HEALTH = 150;
+	private static final int XP = 20;
+	private static final double BASIC_ATTACK_DAMAGE = 20;
+	private static final double ACID_SPRAY_DAMAGE = 40;
 	private static final double ACID_SPRAY_COOLDOWN = 15;
 	private static final double RESPAWN_TIME = 30;
 	private static final Noise HURT_NOISE = new Noise(Sound.ENTITY_SLIME_DEATH);
 	private static final Noise DEATH_NOISE = new Noise(Sound.ENTITY_SLIME_DEATH);
 	private static final Noise ACID_SPRAY_NOISE = new Noise(Sound.BLOCK_LAVA_EXTINGUISH);
 
+	private static final Map<Slime, GelatinousCube> entityMap = new HashMap<>();
+
 	private final Location spawnLocation;
-	private CharacterCollider hitbox;
-	private Slime slime;
+	private final CharacterCollider hitbox;
 	private final MovementSyncer movementSyncer;
 	private final RepeatingTask useAcidSprayTask;
+	private Slime entity;
 	private ProgressBar acidSprayProgressBar;
 	private boolean canUseAcidSpray;
 
+	static {
+		Listener listener = new Listener() {
+			@EventHandler
+			private void onHit(EntityDamageByEntityEvent event) {
+				Entity damager = event.getDamager();
+				Entity damaged = event.getEntity();
+				if (entityMap.containsKey(damager)) {
+					if (damaged instanceof Player) {
+						GelatinousCube gelatinousCube = entityMap.get(damager);
+						Player player = (Player) damaged;
+						PlayerCharacter pc = PlayerCharacter.forPlayer(player);
+						pc.damage(BASIC_ATTACK_DAMAGE, gelatinousCube);
+					}
+				} else if (entityMap.containsKey(damaged)) {
+					DelayedTask cancelKnockback = new DelayedTask(0.1) {
+						@Override
+						protected void run() {
+							damaged.setVelocity(new Vector());
+						}
+					};
+					cancelKnockback.schedule();
+				}
+			}
+		};
+		EventManager.registerEvents(listener);
+	}
+
 	public GelatinousCube(Location spawnLocation) {
 		super(ChatColor.RED + "Gelatinous Cube", LEVEL, spawnLocation);
-		super.setMaxHealth(50);
+		super.setMaxHealth(MAX_HEALTH);
 		super.setHeight(4);
 		this.spawnLocation = spawnLocation;
 		hitbox = new CharacterCollider(this, spawnLocation, 3.5, 3.5, 3.5);
@@ -59,11 +95,11 @@ public class GelatinousCube extends NonPlayerCharacter implements Listener {
 			@Override
 			protected void run() {
 				if (isSpawned()) {
-					if (slime.isOnGround()) {
-						Entity target = slime.getTarget();
+					if (entity.isOnGround()) {
+						Entity target = entity.getTarget();
 						if (target != null) {
 							if (canUseAcidSpray && target.getLocation().distanceSquared(getLocation()) < 36) {
-								acidSpray();
+								chargeAcidSpray();
 							}
 						}
 					}
@@ -72,18 +108,17 @@ public class GelatinousCube extends NonPlayerCharacter implements Listener {
 		};
 		useAcidSprayTask.schedule();
 		canUseAcidSpray = true;
-		EventManager.registerEvents(this);
 	}
 
 	@Override
 	public void spawn() {
 		super.spawn();
 		hitbox.setActive(true);
-		slime = (Slime) spawnLocation.getWorld().spawnEntity(spawnLocation, EntityType.SLIME);
-		slime.setSize(6);
-		slime.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, Integer.MAX_VALUE, 2));
-		slime.setRemoveWhenFarAway(false);
-		movementSyncer.setEntity(slime);
+		entity = (Slime) spawnLocation.getWorld().spawnEntity(spawnLocation, EntityType.SLIME);
+		entity.setSize(6);
+		entity.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, Integer.MAX_VALUE, 2));
+		entity.setRemoveWhenFarAway(false);
+		movementSyncer.setEntity(entity);
 		movementSyncer.setEnabled(true);
 	}
 
@@ -92,7 +127,8 @@ public class GelatinousCube extends NonPlayerCharacter implements Listener {
 		super.despawn();
 		hitbox.setActive(false);
 		movementSyncer.setEnabled(false);
-		slime.remove();
+		entity.remove();
+		setLocation(spawnLocation);
 	}
 
 	@Override
@@ -105,60 +141,19 @@ public class GelatinousCube extends NonPlayerCharacter implements Listener {
 	public void damage(double amount, Source source) {
 		super.damage(amount, source);
 		// for light up red effect
-		slime.damage(0);
+		entity.damage(0);
 		HURT_NOISE.play(getLocation());
 	}
 
-	@EventHandler
-	private void onHit(EntityDamageByEntityEvent event) {
-		Entity damager = event.getDamager();
-		Entity damaged = event.getEntity();
-		if (damager == this.slime) {
-			if (damaged instanceof Player) {
-				Player player = (Player) damaged;
-				PlayerCharacter pc = PlayerCharacter.forPlayer(player);
-				if (pc == null) {
-					return;
-				}
-				pc.damage(4, this);
-			}
-		} else if (damaged == this.slime) {
-			DelayedTask cancelKnockback = new DelayedTask(0.1) {
-				@Override
-				protected void run() {
-					slime.setVelocity(new Vector());
-				}
-			};
-			cancelKnockback.schedule();
-		}
-	}
-
-	private void acidSpray() {
-		int damageAmount = 20;
+	private void chargeAcidSpray() {
 		canUseAcidSpray = false;
-		slime.setAI(false);
+		entity.setAI(false);
 		acidSprayProgressBar = new ProgressBar(getLocation().add(0, 5, 0), ChatColor.WHITE + "Acid Spray", 16,
 				ChatColor.AQUA) {
 			@Override
 			protected void onComplete() {
-				if (slime != null) {
-					Location location = getLocation();
-					ACID_SPRAY_NOISE.play(location);
-					slime.setAI(true);
-					Collider acidSprayHitbox = new Collider(location.subtract(0, 3, 0), 12, 2, 12) {
-						@Override
-						protected void onCollisionEnter(Collider other) {
-							if (other instanceof CharacterCollider) {
-								AbstractCharacter character = ((CharacterCollider) other).getCharacter();
-								if (!GelatinousCube.this.isFriendly(character)) {
-									character.damage(damageAmount, GelatinousCube.this);
-								}
-							}
-						}
-					};
-					acidSprayHitbox.drawFill(Particle.SNEEZE, 0.5);
-					acidSprayHitbox.setActive(true);
-					acidSprayHitbox.setActive(false);
+				if (entity != null) {
+					useAcidSpray();
 				}
 			}
 		};
@@ -172,12 +167,32 @@ public class GelatinousCube extends NonPlayerCharacter implements Listener {
 		acidSprayCooldownTask.schedule();
 	}
 
+	private void useAcidSpray() {
+		Location location = getLocation();
+		ACID_SPRAY_NOISE.play(location);
+		entity.setAI(true);
+		Collider acidSprayHitbox = new Collider(location.subtract(0, 3, 0), 12, 2, 12) {
+			@Override
+			protected void onCollisionEnter(Collider other) {
+				if (other instanceof CharacterCollider) {
+					AbstractCharacter character = ((CharacterCollider) other).getCharacter();
+					if (!GelatinousCube.this.isFriendly(character)) {
+						character.damage(ACID_SPRAY_DAMAGE, GelatinousCube.this);
+					}
+				}
+			}
+		};
+		acidSprayHitbox.drawFill(Particle.SNEEZE, 0.5);
+		acidSprayHitbox.setActive(true);
+		acidSprayHitbox.setActive(false);
+	}
+
 	@Override
 	protected void onDeath() {
 		super.onDeath();
 		grantXpToNearbyPlayers();
 		hitbox.setActive(false);
-		slime.remove();
+		entity.remove();
 		if (acidSprayProgressBar != null) {
 			acidSprayProgressBar.dispose();
 		}
@@ -201,16 +216,12 @@ public class GelatinousCube extends NonPlayerCharacter implements Listener {
 			protected void onCollisionEnter(Collider other) {
 				if (other instanceof PlayerCharacterCollider) {
 					PlayerCharacter pc = ((PlayerCharacterCollider) other).getCharacter();
-					pc.grantXp(getXpToGrant());
+					pc.grantXp(XP);
 				}
 			}
 		};
 		xpBounds.setActive(true);
 		xpBounds.setActive(false);
-	}
-
-	private int getXpToGrant() {
-		return 5 + getLevel() * 2;
 	}
 
 	public boolean isFriendly(AbstractCharacter other) {

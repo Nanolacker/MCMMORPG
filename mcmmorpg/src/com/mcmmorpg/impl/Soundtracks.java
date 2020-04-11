@@ -9,7 +9,7 @@ import com.mcmmorpg.common.utils.IOUtils;
 /**
  * Provides easy access to the soundtracks of the game.
  */
-public class SoundtrackManager {
+public class Soundtracks {
 
 	public static final SoundSequence VILLAGE;
 	public static final SoundSequence WILDNERNESS;

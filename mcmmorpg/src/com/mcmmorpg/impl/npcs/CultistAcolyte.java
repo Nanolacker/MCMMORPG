@@ -19,7 +19,7 @@ import org.bukkit.util.Vector;
 import com.mcmmorpg.common.character.CharacterCollider;
 import com.mcmmorpg.common.character.MovementSyncer;
 import com.mcmmorpg.common.character.MovementSyncer.MovementSyncMode;
-import com.mcmmorpg.common.character.NPCHuman;
+import com.mcmmorpg.common.character.HumanEntity;
 import com.mcmmorpg.common.character.NonPlayerCharacter;
 import com.mcmmorpg.common.character.PlayerCharacter;
 import com.mcmmorpg.common.character.PlayerCharacter.PlayerCharacterCollider;
@@ -38,7 +38,7 @@ public class CultistAcolyte extends NonPlayerCharacter {
 
 	private final Location spawnLocation;
 	private final CharacterCollider hitbox;
-	private final NPCHuman human;
+	private final HumanEntity human;
 	private Zombie ai;
 	private final MovementSyncer aiSyncer;
 
@@ -48,7 +48,7 @@ public class CultistAcolyte extends NonPlayerCharacter {
 		this.spawnLocation = spawnLocation;
 		this.hitbox = new CharacterCollider(this, spawnLocation, 1, 2, 1);
 		aiSyncer = new MovementSyncer(this, null, MovementSyncMode.CHARACTER_FOLLOWS_ENTITY);
-		human = new NPCHuman("", spawnLocation, TEXTURE_DATA, TEXTURE_SIGNATURE);
+		human = new HumanEntity(spawnLocation, TEXTURE_DATA, TEXTURE_SIGNATURE);
 	}
 
 	@Override

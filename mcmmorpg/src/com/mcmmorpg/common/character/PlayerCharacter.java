@@ -69,7 +69,7 @@ public final class PlayerCharacter extends AbstractCharacter {
 			3075, 3475, 3900, 4350, 4825 };
 	private static final int MAX_XP = getMaxXp();
 	private static final Noise DEATH_NOISE = new Noise(Sound.ENTITY_WITHER_SPAWN);
-	private static final double MAX_DISTANCE_WITHOUT_PLAYER_TELEPORT = 5.0;
+	private static final double MAX_DISPLACEMENT_WITHOUT_TELEPORT = 5.0;
 	private static final double INTERACT_RANGE = 4;
 
 	private static final List<PlayerCharacter> pcs;
@@ -101,6 +101,7 @@ public final class PlayerCharacter extends AbstractCharacter {
 		playerMap = new HashMap<>();
 		EventManager.registerEvents(new PlayerCharacterListener());
 		startRegenTask();
+		startSkillUpgradeReminderTask();
 	}
 
 	private PlayerCharacter(Player player, boolean fresh, PlayerClass playerClass, String zone, Location location,
@@ -179,7 +180,7 @@ public final class PlayerCharacter extends AbstractCharacter {
 	private static void startRegenTask() {
 		RepeatingTask regenTask = new RepeatingTask(1) {
 			@Override
-			public void run() {
+			protected void run() {
 				for (int i = 0; i < pcs.size(); i++) {
 					PlayerCharacter pc = pcs.get(i);
 					pc.heal(pc.healthRegenRate, pc);
@@ -188,6 +189,24 @@ public final class PlayerCharacter extends AbstractCharacter {
 			}
 		};
 		regenTask.schedule();
+	}
+
+	private static void startSkillUpgradeReminderTask() {
+		RepeatingTask skillUpgradeReminderTask = new RepeatingTask(15) {
+			@Override
+			protected void run() {
+				for (int i = 0; i < pcs.size(); i++) {
+					PlayerCharacter pc = pcs.get(i);
+					int skillUpgradePoints = pc.getSkillUpgradePoints();
+					if (skillUpgradePoints > 0) {
+						pc.sendMessage(ChatColor.GRAY + "You have " + skillUpgradePoints + " skill "
+								+ (skillUpgradePoints == 1 ? "point" : "points")
+								+ " available! Open your skill tree to unlock or upgrade a skill!");
+					}
+				}
+			}
+		};
+		skillUpgradeReminderTask.schedule();
 	}
 
 	public static List<PlayerCharacter> getAll() {
@@ -253,8 +272,12 @@ public final class PlayerCharacter extends AbstractCharacter {
 	}
 
 	public void setZone(String zone) {
-		this.zone = zone;
-		sendMessage(ChatColor.GRAY + "Entering " + zone);
+		if (zone.equals(this.zone)) {
+			return;
+		} else {
+			this.zone = zone;
+			sendMessage(ChatColor.GRAY + "Entering " + zone);
+		}
 	}
 
 	@Override
@@ -263,7 +286,7 @@ public final class PlayerCharacter extends AbstractCharacter {
 		double distance = location.distance(oldLocation);
 		super.setLocation(location);
 		collider.setCenter(getColliderCenter());
-		if (distance > MAX_DISTANCE_WITHOUT_PLAYER_TELEPORT) {
+		if (distance > MAX_DISPLACEMENT_WITHOUT_TELEPORT) {
 			player.teleport(location);
 		}
 	}
@@ -382,7 +405,6 @@ public final class PlayerCharacter extends AbstractCharacter {
 		Noise levelUpNoise = new Noise(Sound.ENTITY_PLAYER_LEVELUP);
 		levelUpNoise.play(player);
 		sendMessage(ChatColor.GRAY + "Level increased to " + ChatColor.GOLD + newLevel + ChatColor.GRAY + "!");
-		sendMessage(ChatColor.GRAY + "+1 skill point! Open your skill tree to unlock or upgrade a skill!");
 	}
 
 	public int getSkillUpgradePoints() {
@@ -640,13 +662,9 @@ public final class PlayerCharacter extends AbstractCharacter {
 	public void updateQuestDisplay() {
 		String lines = "";
 		List<Quest> inProgressQuests = Quest.getInProgressQuests(this);
-		if (inProgressQuests.size() == 0) {
-			lines = ChatColor.WHITE + "No quests in progress";
-		} else {
-			for (Quest quest : inProgressQuests) {
-				lines += ChatColor.YELLOW + "" + ChatColor.BOLD + quest.getName() + ChatColor.RESET + "\n"
-						+ quest.getQuestLogLines(this) + "\n";
-			}
+		for (Quest quest : inProgressQuests) {
+			lines += ChatColor.YELLOW + "" + ChatColor.BOLD + quest.getName() + ChatColor.RESET + "\n"
+					+ quest.getQuestLogLines(this) + "\n";
 		}
 		SidebarText questDisplay = new SidebarText(ChatColor.YELLOW + "Quests", lines);
 		questDisplay.apply(player);

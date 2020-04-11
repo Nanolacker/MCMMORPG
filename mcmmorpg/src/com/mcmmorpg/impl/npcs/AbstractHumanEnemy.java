@@ -3,48 +3,47 @@ package com.mcmmorpg.impl.npcs;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.bukkit.ChatColor;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
-import org.bukkit.entity.Pig;
 import org.bukkit.entity.Player;
-import org.bukkit.entity.PolarBear;
+import org.bukkit.entity.Zombie;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
 
 import com.mcmmorpg.common.character.CharacterCollider;
+import com.mcmmorpg.common.character.HumanEntity;
 import com.mcmmorpg.common.character.MovementSyncer;
+import com.mcmmorpg.common.character.PlayerCharacter;
+import com.mcmmorpg.common.character.Source;
+import com.mcmmorpg.common.character.XP;
 import com.mcmmorpg.common.character.MovementSyncer.MovementSyncMode;
 import com.mcmmorpg.common.character.NonPlayerCharacter;
-import com.mcmmorpg.common.character.PlayerCharacter;
-import com.mcmmorpg.common.character.PlayerCharacter.PlayerCharacterCollider;
-import com.mcmmorpg.common.character.Source;
 import com.mcmmorpg.common.event.EventManager;
-import com.mcmmorpg.common.physics.Collider;
 import com.mcmmorpg.common.sound.Noise;
 import com.mcmmorpg.common.time.DelayedTask;
-import com.mcmmorpg.impl.Items;
 
-public class WildBoar extends NonPlayerCharacter {
+public abstract class AbstractHumanEnemy extends NonPlayerCharacter {
 
-	private static final double RESPAWN_TIME = 5;
-	private static final Noise DAMAGE_NOISE = new Noise(Sound.ENTITY_PIG_HURT, 1, 0.5f);
-	private static final Noise DEATH_NOISE = new Noise(Sound.ENTITY_PIG_DEATH, 1, 0.5f);
+	private static final Noise HURT_NOISE = new Noise(Sound.ENTITY_PILLAGER_HURT);
+	private static final Noise DEATH_NOISE = new Noise(Sound.ENTITY_PILLAGER_DEATH);
 
-	private static final Map<PolarBear, WildBoar> aiMap = new HashMap<>();
+	private static final Map<Zombie, AbstractHumanEnemy> aiMap = new HashMap<>();
 
+	private final HumanEntity entity;
 	private final Location spawnLocation;
+	private final double respawnTime;
 	private final CharacterCollider hitbox;
 	private final MovementSyncer aiSyncer;
-	private Pig entity;
-	private PolarBear ai;
+	private Zombie ai;
 
 	static {
 		Listener listener = new Listener() {
@@ -53,14 +52,12 @@ public class WildBoar extends NonPlayerCharacter {
 				Entity damager = event.getDamager();
 				Entity damaged = event.getEntity();
 				if (aiMap.containsKey(damager)) {
-					WildBoar boar = aiMap.get(damager);
 					if (damaged instanceof Player) {
+						AbstractHumanEnemy cultist = aiMap.get(damager);
 						Player player = (Player) damaged;
 						PlayerCharacter pc = PlayerCharacter.forPlayer(player);
-						if (pc == null) {
-							return;
-						}
-						pc.damage(boar.damageAmount(), boar);
+						pc.damage(cultist.damageAmount(), cultist);
+						cultist.entity.swingHand();
 					}
 				} else if (aiMap.containsKey(damaged)) {
 					DelayedTask cancelKnockback = new DelayedTask(0.1) {
@@ -76,108 +73,97 @@ public class WildBoar extends NonPlayerCharacter {
 		EventManager.registerEvents(listener);
 	}
 
-	public WildBoar(int level, Location spawnLocation) {
-		super(ChatColor.YELLOW + "Wild Boar", level, spawnLocation);
-		super.setMaxHealth(maxHealth());
-		super.setHeight(1);
+	protected AbstractHumanEnemy(String name, int level, Location spawnLocation, double respawnTime, String textureData,
+			String textureSignature) {
+		super(name, level, spawnLocation);
+		entity = new HumanEntity(spawnLocation, textureData, textureSignature);
 		this.spawnLocation = spawnLocation;
-		hitbox = new CharacterCollider(this, spawnLocation.clone().add(0, 0.5, 0), 2, 1, 2);
+		this.respawnTime = respawnTime;
+		this.hitbox = new CharacterCollider(this, spawnLocation.clone().add(0, 1, 0), 1, 2, 1);
 		aiSyncer = new MovementSyncer(this, null, MovementSyncMode.CHARACTER_FOLLOWS_ENTITY);
+		super.setMaxHealth(maxHealth());
 	}
 
-	private double maxHealth() {
-		return 10 + 2 * getLevel();
+	protected abstract double maxHealth();
+
+	protected abstract double damageAmount();
+
+	protected abstract int xpToGrantOnDeath();
+
+	protected HumanEntity getEntity() {
+		return entity;
 	}
 
-	private double damageAmount() {
-		return getLevel() * 2;
+	protected Zombie getAI() {
+		return ai;
 	}
 
 	@Override
-	public void spawn() {
+	protected void spawn() {
 		super.spawn();
 		hitbox.setActive(true);
-		entity = (Pig) spawnLocation.getWorld().spawnEntity(spawnLocation, EntityType.PIG);
-		entity.setAdult();
-		entity.setInvulnerable(true);
-		entity.setSilent(true);
-		entity.setRemoveWhenFarAway(false);
-		ai = (PolarBear) spawnLocation.getWorld().spawnEntity(spawnLocation, EntityType.POLAR_BEAR);
-		ai.setAdult();
-		ai.setCollidable(false);
-		ai.setInvulnerable(true);
+		entity.setVisible(true);
+		ai = (Zombie) spawnLocation.getWorld().spawnEntity(spawnLocation, EntityType.ZOMBIE);
+		ai.setBaby(true);
 		ai.setSilent(true);
 		ai.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, Integer.MAX_VALUE, 1));
-		ai.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, Integer.MAX_VALUE, 1));
+		ai.eject();
+		Entity vehicle = ai.getVehicle();
+		if (vehicle != null) {
+			vehicle.remove();
+		}
 		ai.setRemoveWhenFarAway(false);
+		ai.getEquipment().setItemInMainHand(new ItemStack(Material.IRON_SWORD));
+		ai.getEquipment().setItemInMainHandDropChance(0f);
 		aiSyncer.setEntity(ai);
 		aiSyncer.setEnabled(true);
+		aiMap.put(ai, this);
 	}
 
 	@Override
-	public void despawn() {
+	protected void despawn() {
 		super.despawn();
 		hitbox.setActive(false);
 		aiSyncer.setEnabled(false);
-		entity.remove();
+		entity.setVisible(false);
 		ai.remove();
+		aiMap.remove(ai);
 	}
 
 	@Override
 	public void setLocation(Location location) {
 		super.setLocation(location);
-		hitbox.setCenter(location.clone().add(0, 0.5, 0));
-		entity.teleport(location);
+		hitbox.setCenter(location.clone().add(0, 1, 0));
+		entity.setLocation(location);
 	}
 
 	@Override
 	public void damage(double amount, Source source) {
 		super.damage(amount, source);
-		entity.damage(0);
-		DAMAGE_NOISE.play(getLocation());
-		if (source instanceof PlayerCharacter) {
-			Player player = ((PlayerCharacter) source).getPlayer();
-			ai.setTarget(player);
-		}
+		// for light up red effect
+		entity.hurt();
+		HURT_NOISE.play(getLocation());
 	}
 
 	@Override
 	protected void onDeath() {
 		super.onDeath();
-		grantXpToNearbyPlayers();
+		XP.distributeXP(getLocation(), 10, xpToGrantOnDeath());
 		hitbox.setActive(false);
-		entity.remove();
+		entity.setVisible(false);
 		ai.remove();
+		aiMap.remove(ai);
 		Location location = getLocation();
 		DEATH_NOISE.play(location);
 		location.getWorld().spawnParticle(Particle.CLOUD, location, 10);
 		setLocation(spawnLocation);
-		Items.BOAR_FLANK.drop(location, 1);
-		DelayedTask respawn = new DelayedTask(RESPAWN_TIME) {
+		DelayedTask respawn = new DelayedTask(respawnTime) {
 			@Override
 			protected void run() {
 				setAlive(true);
 			}
 		};
 		respawn.schedule();
-	}
-
-	private void grantXpToNearbyPlayers() {
-		Collider xpBounds = new Collider(getLocation(), 25, 25, 25) {
-			@Override
-			protected void onCollisionEnter(Collider other) {
-				if (other instanceof PlayerCharacterCollider) {
-					PlayerCharacter pc = ((PlayerCharacterCollider) other).getCharacter();
-					pc.grantXp(getXpToGrant());
-				}
-			}
-		};
-		xpBounds.setActive(true);
-		xpBounds.setActive(false);
-	}
-
-	private int getXpToGrant() {
-		return 5 + getLevel() * 2;
 	}
 
 }
