@@ -36,14 +36,14 @@ public abstract class AbstractHumanEnemy extends NonPlayerCharacter {
 	private static final Noise HURT_NOISE = new Noise(Sound.ENTITY_PILLAGER_HURT);
 	private static final Noise DEATH_NOISE = new Noise(Sound.ENTITY_PILLAGER_DEATH);
 
-	private static final Map<Zombie, AbstractHumanEnemy> aiMap = new HashMap<>();
+	protected static final Map<Zombie, AbstractHumanEnemy> aiMap = new HashMap<>();
 
-	private final HumanEntity entity;
-	private final Location spawnLocation;
-	private final double respawnTime;
-	private final CharacterCollider hitbox;
-	private final MovementSyncer aiSyncer;
-	private Zombie ai;
+	protected final HumanEntity entity;
+	protected final Location spawnLocation;
+	protected final double respawnTime;
+	protected final CharacterCollider hitbox;
+	protected final MovementSyncer aiSyncer;
+	protected Zombie ai;
 
 	static {
 		Listener listener = new Listener() {
@@ -89,14 +89,6 @@ public abstract class AbstractHumanEnemy extends NonPlayerCharacter {
 	protected abstract double damageAmount();
 
 	protected abstract int xpToGrantOnDeath();
-
-	protected HumanEntity getEntity() {
-		return entity;
-	}
-
-	protected Zombie getAI() {
-		return ai;
-	}
 
 	@Override
 	protected void spawn() {

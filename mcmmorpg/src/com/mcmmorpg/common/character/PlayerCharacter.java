@@ -246,21 +246,29 @@ public final class PlayerCharacter extends AbstractCharacter {
 		return playerMap.get(player);
 	}
 
+	public static PlayerCharacter[] getNearbyPlayerCharacters(Location location, double radius) {
+		List<PlayerCharacter> pcs = new ArrayList<>();
+		double diameter = radius * 2;
+		Collider bounds = new Collider(location, diameter, diameter, diameter);
+		bounds.setActive(true);
+		Collider[] collidingColliders = bounds.getCollidingColliders();
+		bounds.setActive(false);
+		for (Collider collider : collidingColliders) {
+			if (collider instanceof PlayerCharacterCollider) {
+				PlayerCharacter pc = ((PlayerCharacterCollider) collider).getCharacter();
+				pcs.add(pc);
+			}
+		}
+		return pcs.toArray(new PlayerCharacter[pcs.size()]);
+	}
+
 	/**
 	 * Returns true if there is a player within the specified x, y, and z distances
 	 * from the specified location. False otherwise.
 	 */
 	public static boolean playerCharacterIsNearby(Location location, double radius) {
-		World world = location.getWorld();
-		Collection<Entity> nearbyEntities = world.getNearbyEntities(location, radius, radius, radius);
-		for (Entity nearbyEntity : nearbyEntities) {
-			if (nearbyEntity.getType().equals(EntityType.PLAYER)) {
-				if (playerMap.containsKey(nearbyEntity)) {
-					return true;
-				}
-			}
-		}
-		return false;
+		PlayerCharacter[] nearby = getNearbyPlayerCharacters(location, radius);
+		return nearby.length > 0;
 	}
 
 	public PlayerClass getPlayerClass() {
