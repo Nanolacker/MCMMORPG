@@ -5,16 +5,20 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
 import com.mcmmorpg.common.character.PlayerCharacter;
+import com.mcmmorpg.common.character.PlayerCharacter.PlayerCharacterCollider;
 import com.mcmmorpg.common.event.PlayerCharacterLevelUpEvent;
+import com.mcmmorpg.common.physics.Collider;
 import com.mcmmorpg.impl.Quests;
 import com.mcmmorpg.impl.Worlds;
 import com.mcmmorpg.impl.npcs.BanditQuestGiver;
 import com.mcmmorpg.impl.npcs.Chicken;
+import com.mcmmorpg.impl.npcs.CultistSummoner;
 import com.mcmmorpg.impl.npcs.FoodQuestGiver;
-import com.mcmmorpg.impl.npcs.James;
 import com.mcmmorpg.impl.npcs.MelcherResident;
 import com.mcmmorpg.impl.npcs.TrainingDummy;
 import com.mcmmorpg.impl.npcs.WildBoar;
+
+import net.md_5.bungee.api.ChatColor;
 
 public class MelcherListener implements Listener {
 
@@ -24,7 +28,16 @@ public class MelcherListener implements Listener {
 	}
 
 	private void setUpBounds() {
-		// do this later
+		Collider entranceBounds = new Collider(Worlds.ELADRADOR, -1186, 68, 110, -930, 126, 300) {
+			@Override
+			protected void onCollisionEnter(Collider other) {
+				if (other instanceof PlayerCharacterCollider) {
+					PlayerCharacter pc = ((PlayerCharacterCollider) other).getCharacter();
+					pc.setZone(ChatColor.GREEN + "Melcher");
+				}
+			}
+		};
+		entranceBounds.setActive(true);
 	}
 
 	private void setUpNpcs() {
@@ -41,16 +54,14 @@ public class MelcherListener implements Listener {
 			new MelcherResident(location).setAlive(true);
 		}
 
-		Location[] trainingDummyLocations = { new Location(Worlds.ELADRADOR, -482, 66, -135),
-				new Location(Worlds.ELADRADOR, 479, 66, -131, 5, 13), new Location(Worlds.ELADRADOR, -488, 66, -133),
-				new Location(Worlds.ELADRADOR, -488, 66, -129), new Location(Worlds.ELADRADOR, -471, 66, -131),
-				new Location(Worlds.ELADRADOR, -486, 65, -144), new Location(Worlds.ELADRADOR, -495, 65, -137) };
+		Location[] trainingDummyLocations = { new Location(Worlds.ELADRADOR, -1115, 73, 249, 90, 0),
+				new Location(Worlds.ELADRADOR, -1117, 73, 251, 90, 0),
+				new Location(Worlds.ELADRADOR, -1116, 73, 255, -45, 0),
+				new Location(Worlds.ELADRADOR, -1114, 73, 252, 90, 0),
+				new Location(Worlds.ELADRADOR, -1118, 73, 248, 90, 0),
+				new Location(Worlds.ELADRADOR, -1119, 73, 256, 180, 0) };
 		for (Location location : trainingDummyLocations) {
-			if (location.equals(trainingDummyLocations[0])) {
-				new James(location).setAlive(true);
-			} else {
-				new TrainingDummy(location).setAlive(true);
-			}
+			new TrainingDummy(location).setAlive(true);
 		}
 
 		Location[] thiefLocations = { new Location(Worlds.ELADRADOR, -441, 67, -117),

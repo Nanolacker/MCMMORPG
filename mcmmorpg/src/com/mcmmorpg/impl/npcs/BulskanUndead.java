@@ -9,26 +9,23 @@ public class BulskanUndead extends AbstractUndead {
 	private static final int LEVEL = 16;
 	private static final double RESPAWN_TIME = 30;
 
-	public BulskanUndead(Location spawnLocation) {
-		super(ChatColor.RED + "Undead", LEVEL, spawnLocation, RESPAWN_TIME, EntityType.HUSK);
+	public BulskanUndead(Location spawnLocation, boolean respawn) {
+		super(ChatColor.RED + "Undead", LEVEL, spawnLocation, respawn ? RESPAWN_TIME : -1, EntityType.HUSK);
 	}
 
 	@Override
 	protected double maxHealth() {
-		// TODO Auto-generated method stub
-		return 0;
+		return 20;
 	}
 
 	@Override
 	protected double damageAmount() {
-		// TODO Auto-generated method stub
-		return 0;
+		return 5;
 	}
 
 	@Override
 	protected int xpToGrantOnDeath() {
-		// TODO Auto-generated method stub
-		return 0;
+		return 5;
 	}
 
 }

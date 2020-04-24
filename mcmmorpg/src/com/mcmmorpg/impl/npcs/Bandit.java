@@ -2,6 +2,8 @@ package com.mcmmorpg.impl.npcs;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.inventory.ItemStack;
 
 public class Bandit extends AbstractHumanEnemy {
 
@@ -30,6 +32,13 @@ public class Bandit extends AbstractHumanEnemy {
 	@Override
 	protected int xpToGrantOnDeath() {
 		return XP;
+	}
+
+	@Override
+	protected void spawn() {
+		super.spawn();
+		ai.getEquipment().setItemInMainHand(new ItemStack(Material.IRON_SWORD));
+		ai.getEquipment().setItemInMainHandDropChance(0f);
 	}
 
 }

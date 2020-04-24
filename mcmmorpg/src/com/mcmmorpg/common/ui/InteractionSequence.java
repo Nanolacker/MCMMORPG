@@ -8,34 +8,30 @@ import java.util.Map;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
-import com.mcmmorpg.common.character.AbstractCharacter;
 import com.mcmmorpg.common.character.PlayerCharacter;
 import com.mcmmorpg.common.event.EventManager;
 import com.mcmmorpg.common.event.PlayerCharacterRemoveEvent;
 import com.mcmmorpg.common.time.DelayedTask;
 
 /**
- * A sequence of messages with pauses that can be sent to a player. Good for
+ * A sequence of interactions with pauses that can be sent to a player. Good for
  * dialogue.
  */
-public class MessageSequence {
+public abstract class InteractionSequence {
 
-	private static final HashMap<PlayerCharacter, List<MessageSequence>> playingSequencesMap = new HashMap<>();
+	private static final HashMap<PlayerCharacter, List<InteractionSequence>> playingSequencesMap = new HashMap<>();
 
-	private final String[] messages;
+	private final int interactionCount;
 	private final double period;
 	private final Map<PlayerCharacter, MessageSequencePlayer> sequencePlayerMap = new HashMap<>();
 
 	/**
-	 * @param period the delay between messages in seconds
+	 * @param period
+	 *            the delay between messages in seconds
 	 */
-	public MessageSequence(double period, String... messages) {
-		this.messages = messages;
+	public InteractionSequence(int interactionCount, double period) {
+		this.interactionCount = interactionCount;
 		this.period = period;
-	}
-
-	public MessageSequence(double period, AbstractCharacter speaker, String... messages) {
-		this(period, speaker.formatDialogue(messages));
 	}
 
 	static {
@@ -43,9 +39,9 @@ public class MessageSequence {
 			@EventHandler
 			private void onRemovePC(PlayerCharacterRemoveEvent event) {
 				PlayerCharacter pc = event.getPlayerCharacter();
-				List<MessageSequence> sequences = playingSequencesMap.get(pc);
+				List<InteractionSequence> sequences = playingSequencesMap.get(pc);
 				if (sequences != null) {
-					for (MessageSequence sequence : sequences) {
+					for (InteractionSequence sequence : sequences) {
 						sequence.cancel(pc);
 					}
 				}
@@ -59,7 +55,7 @@ public class MessageSequence {
 			if (!playingSequencesMap.containsKey(pc)) {
 				playingSequencesMap.put(pc, new ArrayList<>());
 			}
-			List<MessageSequence> sequences = playingSequencesMap.get(pc);
+			List<InteractionSequence> sequences = playingSequencesMap.get(pc);
 			sequences.add(this);
 			MessageSequencePlayer sequencePlayer = new MessageSequencePlayer(this, pc);
 			sequencePlayerMap.put(pc, sequencePlayer);
@@ -73,40 +69,32 @@ public class MessageSequence {
 		sequencePlayer.cancel();
 	}
 
-	/**
-	 * Override in subclasses to provide additional functionality.
-	 */
-	protected void onAdvance(PlayerCharacter pc, int messageIndex) {
-	}
+	protected abstract void onAdvance(PlayerCharacter pc, int interactionIndex);
 
 	private static class MessageSequencePlayer {
-		private final MessageSequence sequence;
+		private final InteractionSequence sequence;
 		private final PlayerCharacter pc;
-		private int messageIndex;
+		private int interactionIndex;
 		private DelayedTask advanceTask;
 
-		private MessageSequencePlayer(MessageSequence sequence, PlayerCharacter pc) {
+		private MessageSequencePlayer(InteractionSequence sequence, PlayerCharacter pc) {
 			this.sequence = sequence;
 			this.pc = pc;
-			messageIndex = 0;
+			this.interactionIndex = 0;
 		}
 
 		private void advance() {
-			String message = sequence.messages[messageIndex];
-			if (message != null) {
-				pc.sendMessage(message);
-			}
-			sequence.onAdvance(pc, messageIndex);
-			messageIndex++;
-			final int nextMessageIndex = messageIndex;
-			if (messageIndex == sequence.messages.length) {
+			sequence.onAdvance(pc, interactionIndex);
+			interactionIndex++;
+			final int nextInteractionIndex = interactionIndex;
+			if (interactionIndex == sequence.interactionCount) {
 				playingSequencesMap.get(pc).remove(sequence);
 				sequence.sequencePlayerMap.remove(pc);
 			} else {
 				advanceTask = new DelayedTask(sequence.period) {
 					@Override
 					protected void run() {
-						if (messageIndex == nextMessageIndex) {
+						if (interactionIndex == nextInteractionIndex) {
 							// check if the sequence was advanced elsewhere
 							advance();
 						}

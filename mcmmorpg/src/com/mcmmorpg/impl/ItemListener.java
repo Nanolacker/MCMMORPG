@@ -25,9 +25,6 @@ public class ItemListener implements Listener {
 	private void onUseWeapon(PlayerCharacterUseWeaponEvent event) {
 		Weapon weapon = event.getWeapon();
 		PlayerCharacter pc = event.getPlayerCharacter();
-		if (pc.getPlayerClass() != PlayerClasses.FIGHER) {
-			return;
-		}
 		if (weapon == Items.APPRENTICE_SWORD) {
 			useApprenticeSword(pc);
 		} else if (weapon == Items.APPRENTICE_STAFF) {

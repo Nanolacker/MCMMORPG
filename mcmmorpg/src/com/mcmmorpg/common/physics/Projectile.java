@@ -97,8 +97,8 @@ public class Projectile {
 		return fired;
 	}
 
-	public final void setDrawingEnabled(boolean enabled) {
-		collider.setDrawingEnabled(enabled);
+	public final void setVisible(boolean visible) {
+		collider.setVisible(visible);
 	}
 
 	protected void onHit(Collider hit) {

@@ -3,10 +3,12 @@ package com.mcmmorpg.impl.npcs;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.boss.BarColor;
 import org.bukkit.boss.BarStyle;
 import org.bukkit.boss.BossBar;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 
 import com.mcmmorpg.common.character.PlayerCharacter.PlayerCharacterCollider;
 import com.mcmmorpg.common.physics.Collider;
@@ -62,6 +64,8 @@ public class BanditLeader extends AbstractHumanEnemy {
 	@Override
 	protected void spawn() {
 		super.spawn();
+		ai.getEquipment().setItemInMainHand(new ItemStack(Material.IRON_SWORD));
+		ai.getEquipment().setItemInMainHandDropChance(0f);
 		bossBarArea.setActive(true);
 	}
 

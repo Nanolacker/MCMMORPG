@@ -587,12 +587,12 @@ public class Collider {
 	 * be rendered in game using particles. As creating so many particles is very
 	 * costly, this should only be invoked for debugging purposes.
 	 */
-	public final void setDrawingEnabled(boolean enabled) {
-		boolean redundant = this.drawingEnabled == enabled;
+	public final void setVisible(boolean visible) {
+		boolean redundant = this.drawingEnabled == visible;
 		if (redundant) {
 			return;
 		}
-		this.drawingEnabled = enabled;
+		this.drawingEnabled = visible;
 		if (drawingEnabled) {
 			if (drawTask == null) {
 				assignDrawTask();

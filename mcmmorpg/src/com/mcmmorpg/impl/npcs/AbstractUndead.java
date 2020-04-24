@@ -29,7 +29,7 @@ import com.mcmmorpg.common.time.DelayedTask;
 public abstract class AbstractUndead extends NonPlayerCharacter {
 
 	private static final Noise HURT_NOISE = new Noise(Sound.ENTITY_PLAYER_HURT);
-	private static final Noise DEATH_NOISE = new Noise(Sound.ENTITY_ZOMBIE_DEATH);
+	private static final Noise DEATH_NOISE = new Noise(Sound.ENTITY_ZOMBIE_DEATH, 1, 0.7f);
 
 	private static final Map<Entity, AbstractUndead> entityMap = new HashMap<>();
 

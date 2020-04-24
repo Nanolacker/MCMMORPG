@@ -7,7 +7,7 @@ import org.bukkit.Sound;
 import com.mcmmorpg.common.character.PlayerCharacter;
 import com.mcmmorpg.common.quest.QuestStatus;
 import com.mcmmorpg.common.sound.Noise;
-import com.mcmmorpg.common.ui.MessageSequence;
+import com.mcmmorpg.common.ui.InteractionSequence;
 import com.mcmmorpg.common.ui.Notice;
 import com.mcmmorpg.common.ui.Notice.NoticeType;
 import com.mcmmorpg.impl.Items;
@@ -19,14 +19,14 @@ public class FoodQuestGiver extends StaticHuman {
 	private static final String TEXTURE_SIGNATURE = "";
 	private static final Noise SPEAK_NOISE = new Noise(Sound.ENTITY_VILLAGER_AMBIENT);
 
-	private final MessageSequence sequence1;
-	private final MessageSequence sequence2;
+	private final InteractionSequence sequence1;
+	private final InteractionSequence sequence2;
 
 	public FoodQuestGiver(Location location) {
 		super(ChatColor.GREEN + "Farmer", 7, location, TEXTURE_DATA, TEXTURE_SIGNATURE);
 		Notice.createNotice(NoticeType.QUEST, location.clone().add(0, 2.25, 0));
 
-		sequence1 = new MessageSequence(3, this, "Hello there.", "Recover some food supplies.", null) {
+		sequence1 = new InteractionSequence(3, 3) {
 			@Override
 			protected void onAdvance(PlayerCharacter pc, int messageIndex) {
 				if (messageIndex == 2) {
@@ -37,7 +37,7 @@ public class FoodQuestGiver extends StaticHuman {
 			}
 		};
 
-		sequence2 = new MessageSequence(3, this, "You recovered the food!.", null) {
+		sequence2 = new InteractionSequence(3, 3) {
 			@Override
 			protected void onAdvance(PlayerCharacter pc, int messageIndex) {
 				if (messageIndex == 1) {

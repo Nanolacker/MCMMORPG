@@ -7,7 +7,7 @@ import org.bukkit.Sound;
 import com.mcmmorpg.common.character.PlayerCharacter;
 import com.mcmmorpg.common.quest.QuestStatus;
 import com.mcmmorpg.common.sound.Noise;
-import com.mcmmorpg.common.ui.MessageSequence;
+import com.mcmmorpg.common.ui.InteractionSequence;
 import com.mcmmorpg.common.ui.Notice;
 import com.mcmmorpg.common.ui.Notice.NoticeType;
 import com.mcmmorpg.impl.Quests;
@@ -21,13 +21,13 @@ public class James extends StaticHuman {
 	private static final String TEXTURE_SIGNATURE = "";
 	private static final Noise SPEAK_NOISE = new Noise(Sound.ENTITY_VILLAGER_AMBIENT, 1, 0.75f);
 
-	private final MessageSequence turnInSequence;
-	private final MessageSequence completeSequence;
+	private final InteractionSequence turnInSequence;
+	private final InteractionSequence completeSequence;
 
 	public James(Location location) {
 		super(ChatColor.GREEN + "James", 15, location, TEXTURE_DATA, TEXTURE_SIGNATURE);
 
-		turnInSequence = new MessageSequence(1, this, "My job is to guide newcomers like you.", null) {
+		turnInSequence = new InteractionSequence(1, 3) {
 			@Override
 			protected void onAdvance(PlayerCharacter pc, int messageIndex) {
 				if (messageIndex == 1) {
@@ -37,7 +37,7 @@ public class James extends StaticHuman {
 				}
 			}
 		};
-		completeSequence = new MessageSequence(1, this, "Go on soldier.") {
+		completeSequence = new InteractionSequence(1, 3) {
 			@Override
 			protected void onAdvance(PlayerCharacter pc, int messageIndex) {
 				SPEAK_NOISE.play(getLocation());

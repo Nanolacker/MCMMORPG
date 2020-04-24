@@ -4,7 +4,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
 import org.bukkit.entity.Entity;
@@ -14,7 +13,6 @@ import org.bukkit.entity.Zombie;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
@@ -105,8 +103,7 @@ public abstract class AbstractHumanEnemy extends NonPlayerCharacter {
 			vehicle.remove();
 		}
 		ai.setRemoveWhenFarAway(false);
-		ai.getEquipment().setItemInMainHand(new ItemStack(Material.IRON_SWORD));
-		ai.getEquipment().setItemInMainHandDropChance(0f);
+		ai.getEquipment().clear();
 		aiSyncer.setEntity(ai);
 		aiSyncer.setEnabled(true);
 		aiMap.put(ai, this);

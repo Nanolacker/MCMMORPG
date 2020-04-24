@@ -41,7 +41,7 @@ public class MageListener implements Listener {
 	private static final double[] MANA_REGEN_RATE = { 2.0, 2.5, 3.0, 3.5, 4.0, 4.5, 5.0, 5.5, 6.0, 6.5, 7.0, 7.5, 8.0,
 			8.5, 9.0, 9.5, 10.0, 10.5, 11.0, 11.5 };
 
-	private static final Noise FIREBALL_CONJURE = new Noise(Sound.ENTITY_ZOMBIE_VILLAGER_CURE);
+	private static final Noise FIREBALL_CONJURE_NOISE = new Noise(Sound.ENTITY_ZOMBIE_VILLAGER_CURE);
 	private static final Noise FIREBALL_EXPLODE_1_NOISE = new Noise(Sound.ENTITY_GENERIC_EXPLODE);
 	private static final Noise FIREBALL_EXPLODE_2_NOISE = new Noise(Sound.BLOCK_FIRE_AMBIENT);
 	private static final Noise WHIRLWIND_AMBIENT_NOISE = new Noise(Sound.ENTITY_WITHER_DEATH);
@@ -128,7 +128,7 @@ public class MageListener implements Listener {
 		Location start = getWeaponLocation(pc).subtract(0, 1, 0);
 		Vector lookDirection = start.getDirection();
 		start.add(lookDirection).add(0, 1, 0);
-		FIREBALL_CONJURE.play(start);
+		FIREBALL_CONJURE_NOISE.play(start);
 		Vector velocity = lookDirection.multiply(8);
 		// ensure we don't shoot through walls
 		Location end = pc.getTargetLocation(range);
