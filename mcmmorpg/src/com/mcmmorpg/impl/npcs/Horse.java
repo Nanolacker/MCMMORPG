@@ -2,10 +2,14 @@ package com.mcmmorpg.impl.npcs;
 
 import org.bukkit.Location;
 import org.bukkit.entity.EntityType;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 
 import com.mcmmorpg.common.character.NonPlayerCharacter;
 
 public class Horse extends NonPlayerCharacter {
+
+	private static final PotionEffect SLOWNESS = new PotionEffect(PotionEffectType.SLOW, Integer.MAX_VALUE, 128);
 
 	private org.bukkit.entity.Horse entity;
 
@@ -18,7 +22,7 @@ public class Horse extends NonPlayerCharacter {
 		super.spawn();
 		Location location = getLocation();
 		entity = (org.bukkit.entity.Horse) location.getWorld().spawnEntity(location, EntityType.HORSE);
-		entity.setAI(false);
+		entity.addPotionEffect(SLOWNESS);
 		entity.setInvulnerable(true);
 		entity.setAdult();
 		entity.setRemoveWhenFarAway(false);

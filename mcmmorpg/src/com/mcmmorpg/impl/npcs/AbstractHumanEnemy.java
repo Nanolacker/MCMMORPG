@@ -74,11 +74,11 @@ public abstract class AbstractHumanEnemy extends NonPlayerCharacter {
 	protected AbstractHumanEnemy(String name, int level, Location spawnLocation, double respawnTime, String textureData,
 			String textureSignature) {
 		super(name, level, spawnLocation);
-		entity = new HumanEntity(spawnLocation, textureData, textureSignature);
+		this.entity = new HumanEntity(spawnLocation, textureData, textureSignature);
 		this.spawnLocation = spawnLocation;
 		this.respawnTime = respawnTime;
 		this.hitbox = new CharacterCollider(this, spawnLocation.clone().add(0, 1, 0), 1, 2, 1);
-		aiSyncer = new MovementSyncer(this, null, MovementSyncMode.CHARACTER_FOLLOWS_ENTITY);
+		this.aiSyncer = new MovementSyncer(this, null, MovementSyncMode.CHARACTER_FOLLOWS_ENTITY);
 		super.setMaxHealth(maxHealth());
 	}
 

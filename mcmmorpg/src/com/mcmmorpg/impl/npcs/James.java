@@ -44,7 +44,7 @@ public class James extends StaticHuman {
 			}
 		};
 
-		Notice.createNotice(NoticeType.QUEST, location.clone().add(0, 2.25, 0));
+		Notice.createNotice(NoticeType.QUEST, location.clone().add(0, 5, 0));
 	}
 
 	@Override

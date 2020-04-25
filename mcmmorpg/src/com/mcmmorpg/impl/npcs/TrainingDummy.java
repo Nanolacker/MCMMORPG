@@ -23,7 +23,7 @@ public class TrainingDummy extends NonPlayerCharacter {
 	public TrainingDummy(Location location) {
 		super(ChatColor.RED + "Training Dummy", 1, location);
 		setMaxHealth(20);
-		hitbox = new CharacterCollider(this, location.clone().add(0, 1, 0), 1, 2, 1);
+		hitbox = new CharacterCollider(this, location.clone().add(0, 0.75, 0), 1, 2.5, 1);
 	}
 
 	@Override

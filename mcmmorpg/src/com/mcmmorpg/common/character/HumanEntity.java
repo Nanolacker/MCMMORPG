@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.craftbukkit.v1_15_R1.CraftServer;
@@ -36,7 +35,7 @@ import net.minecraft.server.v1_15_R1.WorldServer;
 
 public class HumanEntity {
 
-	private static final double RENDER_RADIUS = 25;
+	private static final double RENDER_RADIUS = 50.0;
 	private static final double RENDER_PERIOD = 0.5;
 
 	private Location location;
@@ -52,7 +51,7 @@ public class HumanEntity {
 		World world = location.getWorld();
 		MinecraftServer minecraftServer = ((CraftServer) Bukkit.getServer()).getServer();
 		WorldServer worldServer = ((CraftWorld) world).getHandle();
-		GameProfile gameProfile = new GameProfile(UUID.randomUUID(), ChatColor.translateAlternateColorCodes('&', ""));
+		GameProfile gameProfile = new GameProfile(UUID.randomUUID(), "");
 		gameProfile.getProperties().put("textures", new Property("textures", textureData, textureSignature));
 		PlayerInteractManager playerInteractManager = new PlayerInteractManager(worldServer);
 		this.entityPlayer = new EntityPlayer(minecraftServer, worldServer, gameProfile, playerInteractManager);
@@ -117,7 +116,7 @@ public class HumanEntity {
 			Player player = viewers.get(i);
 			PlayerConnection playerConnection = ((CraftPlayer) player).getHandle().playerConnection;
 			PacketPlayOutEntityTeleport teleportPacket = new PacketPlayOutEntityTeleport(entityPlayer);
-			// Convert from Bukkit to approximately NMS yaw.
+			// Convert from Bukkit to approximate NMS yaw.
 			PacketPlayOutEntityHeadRotation headRotatePacket = new PacketPlayOutEntityHeadRotation(entityPlayer,
 					(byte) (0.7 * location.getYaw()));
 			playerConnection.sendPacket(teleportPacket);
@@ -143,7 +142,6 @@ public class HumanEntity {
 			equipmentItems.setChestplate(chestplate);
 			equipmentItems.setLeggings(leggings);
 			equipmentItems.setBoots(boots);
-			equipment.teleport(location);
 		} else {
 			Location dump = new Location(location.getWorld(), 0, 512, 0);
 			setLocation0(dump);
@@ -155,26 +153,44 @@ public class HumanEntity {
 
 	public void setMainHand(ItemStack itemStack) {
 		this.mainHand = itemStack;
+		if (visible) {
+			equipment.getEquipment().setItemInMainHand(itemStack);
+		}
 	}
 
 	public void setOffHand(ItemStack itemStack) {
 		this.offHand = itemStack;
+		if (visible) {
+			equipment.getEquipment().setItemInOffHand(itemStack);
+		}
 	}
 
 	public void setHelmet(ItemStack itemStack) {
 		this.helmet = itemStack;
+		if (visible) {
+			equipment.getEquipment().setHelmet(itemStack);
+		}
 	}
 
 	public void setChestplate(ItemStack itemStack) {
 		this.chestplate = itemStack;
+		if (visible) {
+			equipment.getEquipment().setChestplate(itemStack);
+		}
 	}
 
 	public void setLeggings(ItemStack itemStack) {
 		this.leggings = itemStack;
+		if (visible) {
+			equipment.getEquipment().setLeggings(itemStack);
+		}
 	}
 
 	public void setBoots(ItemStack itemStack) {
 		this.boots = itemStack;
+		if (visible) {
+			equipment.getEquipment().setBoots(itemStack);
+		}
 	}
 
 	public void swingHand() {
