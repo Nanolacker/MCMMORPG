@@ -68,6 +68,7 @@ public abstract class AbstractFriendlyHuman extends NonPlayerCharacter {
 		entity.setVisible(false);
 		aiSyncer.setEnabled(false);
 		ai.remove();
+		setLocation(spawnLocation);
 	}
 
 	@Override

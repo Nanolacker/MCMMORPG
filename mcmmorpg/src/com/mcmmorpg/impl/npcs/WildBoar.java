@@ -24,10 +24,9 @@ import com.mcmmorpg.common.character.MovementSyncer;
 import com.mcmmorpg.common.character.MovementSyncer.MovementSyncMode;
 import com.mcmmorpg.common.character.NonPlayerCharacter;
 import com.mcmmorpg.common.character.PlayerCharacter;
-import com.mcmmorpg.common.character.PlayerCharacter.PlayerCharacterCollider;
 import com.mcmmorpg.common.character.Source;
+import com.mcmmorpg.common.character.XP;
 import com.mcmmorpg.common.event.EventManager;
-import com.mcmmorpg.common.physics.Collider;
 import com.mcmmorpg.common.sound.Noise;
 import com.mcmmorpg.common.time.DelayedTask;
 import com.mcmmorpg.impl.Items;
@@ -121,6 +120,7 @@ public class WildBoar extends NonPlayerCharacter {
 		aiSyncer.setEnabled(false);
 		entity.remove();
 		ai.remove();
+		setLocation(spawnLocation);
 	}
 
 	@Override
@@ -144,15 +144,15 @@ public class WildBoar extends NonPlayerCharacter {
 	@Override
 	protected void onDeath() {
 		super.onDeath();
-		grantXpToNearbyPlayers();
 		hitbox.setActive(false);
 		entity.remove();
 		ai.remove();
 		Location location = getLocation();
 		DEATH_NOISE.play(location);
 		location.getWorld().spawnParticle(Particle.CLOUD, location, 10);
-		setLocation(spawnLocation);
+		XP.distributeXP(location, 25, getXpToGrant());
 		Items.BOAR_FLANK.drop(location, 1);
+		setLocation(spawnLocation);
 		DelayedTask respawn = new DelayedTask(RESPAWN_TIME) {
 			@Override
 			protected void run() {
@@ -160,20 +160,6 @@ public class WildBoar extends NonPlayerCharacter {
 			}
 		};
 		respawn.schedule();
-	}
-
-	private void grantXpToNearbyPlayers() {
-		Collider xpBounds = new Collider(getLocation(), 25, 25, 25) {
-			@Override
-			protected void onCollisionEnter(Collider other) {
-				if (other instanceof PlayerCharacterCollider) {
-					PlayerCharacter pc = ((PlayerCharacterCollider) other).getCharacter();
-					pc.grantXp(getXpToGrant());
-				}
-			}
-		};
-		xpBounds.setActive(true);
-		xpBounds.setActive(false);
 	}
 
 	private int getXpToGrant() {

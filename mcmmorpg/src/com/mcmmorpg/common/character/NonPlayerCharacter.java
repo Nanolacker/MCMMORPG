@@ -17,7 +17,7 @@ import com.mcmmorpg.common.time.RepeatingTask;
  */
 public class NonPlayerCharacter extends AbstractCharacter {
 
-	private static final double SPAWN_PERIOD_SECONDS = 0.1;
+	private static final double SPAWN_PERIOD_SECONDS = 1.0;
 	private static final double DEFAULT_SPAWN_RADIUS = 50.0;
 
 	private static List<NonPlayerCharacter> aliveNpcs = new ArrayList<>();

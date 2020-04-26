@@ -19,17 +19,11 @@ public class SidebarText {
 
 	private String title;
 	private String text;
-	private int lineLength;
 	private Scoreboard scoreboard;
 
 	public SidebarText(String title, String text) {
-		this(title, text, StringUtils.STANDARD_LINE_LENGTH);
-	}
-
-	public SidebarText(String title, String text, int lineLength) {
 		this.title = title;
 		this.text = text;
-		this.lineLength = lineLength;
 		updateScoreboard();
 	}
 
@@ -40,7 +34,7 @@ public class SidebarText {
 		Objective objective = scoreboard.registerNewObjective("objective", "dummy", title);
 		objective.setDisplaySlot(DisplaySlot.SIDEBAR);
 
-		List<String> lines = StringUtils.lineSplit(text, lineLength);
+		List<String> lines = StringUtils.lineSplit(text);
 		for (int i = 0; i < lines.size(); i++) {
 			String line = lines.get(i);
 			Score score = objective.getScore(line);

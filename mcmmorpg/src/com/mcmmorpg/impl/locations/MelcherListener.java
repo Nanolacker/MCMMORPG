@@ -12,6 +12,7 @@ import com.mcmmorpg.common.physics.Collider;
 import com.mcmmorpg.impl.Quests;
 import com.mcmmorpg.impl.Worlds;
 import com.mcmmorpg.impl.npcs.Chicken;
+import com.mcmmorpg.impl.npcs.Highwayman;
 import com.mcmmorpg.impl.npcs.Horse;
 import com.mcmmorpg.impl.npcs.MelcherFarmer;
 import com.mcmmorpg.impl.npcs.MelcherLumberjack;
@@ -49,6 +50,7 @@ public class MelcherListener implements Listener {
 		spawnHorses();
 		spawnThieves();
 		spawnWildBoars();
+		spawnHighwaymen();
 	}
 
 	private void spawnVillagers() {
@@ -123,6 +125,16 @@ public class MelcherListener implements Listener {
 				new Location(Worlds.ELADRADOR, -396, 69, -160), new Location(Worlds.ELADRADOR, -396, 69, -160) };
 		for (Location location : wildBoarLocations) {
 			new WildBoar(3, location).setAlive(true);
+		}
+	}
+
+	private void spawnHighwaymen() {
+		Location[] highwaymenLocations = { new Location(Worlds.ELADRADOR, -813, 72, 151),
+				new Location(Worlds.ELADRADOR, -785, 72, 158), new Location(Worlds.ELADRADOR, -756, 72, 147),
+				new Location(Worlds.ELADRADOR, -751, 72, 128), new Location(Worlds.ELADRADOR, -744, 72, 96),
+				new Location(Worlds.ELADRADOR, -727, 71, 88), new Location(Worlds.ELADRADOR, -684, 65, 81) };
+		for (Location location : highwaymenLocations) {
+			new Highwayman(location).setAlive(true);
 		}
 	}
 

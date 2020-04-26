@@ -48,7 +48,7 @@ public abstract class AbstractCharacter implements Source {
 		this.height = 2;
 		Location nameplateLocation = getNameplateLocation();
 		this.nameplate = new TextPanel(nameplateLocation);
-		this.nameplate.setCharactersPerLine(25);
+		this.nameplate.setLineLength(25);
 		updateNameplateText();
 	}
 

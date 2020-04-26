@@ -3,14 +3,12 @@ package com.mcmmorpg.common.physics;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Particle;
 import org.bukkit.World;
 import org.bukkit.util.BoundingBox;
 
 import com.mcmmorpg.common.time.RepeatingTask;
-import com.mcmmorpg.common.utils.Debug;
 import com.mcmmorpg.common.utils.MathUtils;
 
 /**
@@ -93,20 +91,13 @@ public class Collider {
 	 * must be greater than that axis's min value. Be sure to invoke
 	 * {@code setActive} to activate this collider after construction.
 	 * 
-	 * @param world
-	 *            the world this collider will exist in
-	 * @param xMin
-	 *            the minimum x value that exists within this collider
-	 * @param xMax
-	 *            the maximum x value that exists within this collider
-	 * @param yMin
-	 *            the minimum y value that exists within this collider
-	 * @param yMax
-	 *            the maximum y value that exists within this collider
-	 * @param zMin
-	 *            the minimum z value that exists within this collider
-	 * @param zMax
-	 *            the maximum z value that exists within this collider
+	 * @param world the world this collider will exist in
+	 * @param xMin  the minimum x value that exists within this collider
+	 * @param xMax  the maximum x value that exists within this collider
+	 * @param yMin  the minimum y value that exists within this collider
+	 * @param yMax  the maximum y value that exists within this collider
+	 * @param zMin  the minimum z value that exists within this collider
+	 * @param zMax  the maximum z value that exists within this collider
 	 */
 	public Collider(World world, double xMin, double yMin, double zMin, double xMax, double yMax, double zMax) {
 		this.world = world;
@@ -129,10 +120,8 @@ public class Collider {
 	/**
 	 * Constructs a new {@code Collider} from the specified {@link BoundingBox}.
 	 * 
-	 * @param world
-	 *            the world this collider will exist in
-	 * @param boundingBox
-	 *            the collider used to construct this {@code Collider}
+	 * @param world       the world this collider will exist in
+	 * @param boundingBox the collider used to construct this {@code Collider}
 	 */
 	public Collider(World world, BoundingBox boundingBox) {
 		this(world, boundingBox.getMinX(), boundingBox.getMinY(), boundingBox.getMinZ(), boundingBox.getMaxX(),
@@ -144,17 +133,13 @@ public class Collider {
 	 * not be negative. Be sure to invoke {@code setActive} to activate collider
 	 * after construction.
 	 * 
-	 * @param center
-	 *            the location, including the world, at the center of this collider
-	 * @param lengthX
-	 *            the length of this collider on the x-axis
-	 * @param lengthY
-	 *            the length of this collider on the y-axis
-	 * @param lengthZ
-	 *            the length of this collider on the z-axis
+	 * @param center  the location, including the world, at the center of this
+	 *                collider
+	 * @param lengthX the length of this collider on the x-axis
+	 * @param lengthY the length of this collider on the y-axis
+	 * @param lengthZ the length of this collider on the z-axis
 	 * 
-	 * @throws IllegalArgumentException
-	 *             if any of the lengths are negative
+	 * @throws IllegalArgumentException if any of the lengths are negative
 	 */
 	public Collider(Location center, double lengthX, double lengthY, double lengthZ) {
 		this(center.getWorld(), center.getX() - lengthX / 2, center.getY() - lengthX / 2, center.getZ() - lengthZ / 2,
@@ -199,8 +184,7 @@ public class Collider {
 	/**
 	 * Sets the world that this collider will exist in.
 	 * 
-	 * @param world
-	 *            the world this collider will exist in
+	 * @param world the world this collider will exist in
 	 */
 	public final void setWorld(World world) {
 		this.world = world;
@@ -315,8 +299,7 @@ public class Collider {
 	/**
 	 * Sets the center of this collider and updates all bounds accordingly.
 	 * 
-	 * @param center
-	 *            the new center of this collider
+	 * @param center the new center of this collider
 	 */
 	public final void setCenter(Location center) {
 		world = center.getWorld();
@@ -386,8 +369,7 @@ public class Collider {
 	/**
 	 * Sets the dimensions of the collider.
 	 * 
-	 * @param dimensions
-	 *            the new dimensions of this collider
+	 * @param dimensions the new dimensions of this collider
 	 */
 	public final void setDimensions(double lengthX, double lengthY, double lengthZ) {
 		updateBounds(lengthX, lengthY, lengthZ);
@@ -467,8 +449,7 @@ public class Collider {
 	 * Returns whether this collider encompasses a point (in other words, whether
 	 * this point exists within the volume of this collider).
 	 * 
-	 * @param point
-	 *            location of the point to be checked
+	 * @param point location of the point to be checked
 	 * @return whether this collider encompasses the point
 	 */
 	public final boolean encompasses(Location point) {
@@ -521,8 +502,7 @@ public class Collider {
 	 * Called when two colliders that were colliding no longer overlap each other.
 	 * {@code onCollisionEnter} is called from each of the bounding boxes.
 	 * 
-	 * @param other
-	 *            the other collider in the collision
+	 * @param other the other collider in the collision
 	 */
 	private final void handleCollisionEnter(Collider other) {
 		this.collidingColliders.add(other);
@@ -536,8 +516,7 @@ public class Collider {
 	 * Called when two colliders that were colliding no longer overlap each other.
 	 * {@code onCollisionExit} is called from each of the colliders.
 	 * 
-	 * @param other
-	 *            the other collider in the collision
+	 * @param other the other collider in the collision
 	 */
 	private final void handleCollisionExit(Collider other) {
 		collidingColliders.remove(other);
@@ -550,8 +529,7 @@ public class Collider {
 	 * Returns whether this {@code Collider} is colliding with the specified
 	 * {@code Collider}.
 	 * 
-	 * @param other
-	 *            the other {@code Collider}
+	 * @param other the other {@code Collider}
 	 * @return whether the two {@code Collider}s are colliding
 	 */
 	public final boolean isCollidingWith(Collider other) {
@@ -567,8 +545,7 @@ public class Collider {
 	/**
 	 * Called when this collider enters a collision with another collider.
 	 * 
-	 * @param other
-	 *            the other collider in the collision
+	 * @param other the other collider in the collision
 	 */
 	protected void onCollisionEnter(Collider other) {
 	}
@@ -576,8 +553,7 @@ public class Collider {
 	/**
 	 * Called when this collider exits a collision with another collider.
 	 * 
-	 * @param other
-	 *            the other collider in the collision
+	 * @param other the other collider in the collision
 	 */
 	protected void onCollisionExit(Collider other) {
 	}
@@ -598,10 +574,6 @@ public class Collider {
 				assignDrawTask();
 			}
 			drawTask.schedule();
-			Location center = getCenter();
-			String centerDesc = String.format(ChatColor.YELLOW + "center = (%.1f, %.1f, %.1f)", center.getX(),
-					center.getY(), center.getZ());
-			Debug.log(ChatColor.WHITE + "Drawing of collider has been enabled. (" + centerDesc + ChatColor.WHITE + ")");
 		} else {
 			drawTask.cancel();
 		}
@@ -610,8 +582,7 @@ public class Collider {
 	/**
 	 * Changes the mode, or pattern, used to draw this collider.
 	 * 
-	 * @param mode
-	 *            the mode with which this collider will be drawn
+	 * @param mode the mode with which this collider will be drawn
 	 */
 	public final void setDrawMode(ColliderDrawMode mode) {
 		drawMode = mode;
@@ -631,8 +602,7 @@ public class Collider {
 	/**
 	 * Changes the particle used to draw this collider when drawing is enabled.
 	 * 
-	 * @param particle
-	 *            the particle to be used in drawing this collider
+	 * @param particle the particle to be used in drawing this collider
 	 */
 	public final void setDrawParticle(Particle particle) {
 		drawParticle = particle;

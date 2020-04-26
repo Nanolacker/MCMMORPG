@@ -5,275 +5,210 @@ import java.util.List;
 
 import org.bukkit.Location;
 import org.bukkit.craftbukkit.v1_15_R1.CraftWorld;
-import org.bukkit.util.Vector;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
 
-import com.mcmmorpg.common.character.PlayerCharacter;
 import com.mcmmorpg.common.time.RepeatingTask;
 import com.mcmmorpg.common.utils.StringUtils;
 
 import net.minecraft.server.v1_15_R1.EntityArmorStand;
-import net.minecraft.server.v1_15_R1.Vec3D;
 import net.minecraft.server.v1_15_R1.World;
 
-public class TextPanel {
+public final class TextPanel {
 
-	/**
-	 * The maximum distance from a {@code Player} that a {@code TextPanel} can be
-	 * before its associated entities despawn.
-	 */
-	private static final double MAX_SPAWN_DISTANCE_FROM_PLAYER = 50.0;
-	/**
-	 * The distance between two consecutive lines in a multi-lined
-	 * {@code TextPanel}.
-	 */
 	private static final double LINE_SEPEARATION_DISTANCE = 0.25;
-	/**
-	 * The period of each {@code TextPanel}'s {@code spawnManageTask}.
-	 */
-	private static final double SPAWN_MANAGE_TASK_PERIOD = 1.0;
-	/**
-	 * The maximum allowed offset between a {@code TextPanel}'s location and the
-	 * locations of its entities. Sometimes the entities become caught on blocks and
-	 * must be freed once they are detected as being more than this distance from
-	 * where they should be.
-	 */
-	private static final double ALLOWED_ENTITY_LOC_OFFSET = 0.1;
+	private static final double SPAWNER_PERIOD = 1.0;
+	private static final double SPAWN_RADIUS = 50.0;
 
-	/**
-	 * Whether this {@code TextPanel} is visible and rendering text.
-	 */
+	private static final List<TextPanel> textPanels = new ArrayList<>();
+
 	private boolean visible;
-	/**
-	 * The maximum number of characters that will be rendered on this
-	 * {@code TextPanel} per line before a new line is started.
-	 */
-	private int charsPerLine;
-	/**
-	 * The text rendered by this {@code TextPanel}.
-	 */
-	private String text;
-	/**
-	 * The text that has been formatted to be rendered across multiple lines.
-	 */
-	private List<String> lines;
-	/**
-	 * this {@code TextPanel}'s {@code Location}
-	 */
-	private Location location;
-	/**
-	 * the Minecraft entities used to display this {@code TextPanel}
-	 */
-	private List<EntityArmorStand> entities;
-	/**
-	 * A {@code RepeatingTask} which manages spawning and despawning the entities
-	 * associated with this {@code TextPanel}.
-	 */
-	private RepeatingTask entitySpawnManageTask;
-	/**
-	 * Whether the entities associate with this {@code TextPanel} are spawned.
-	 */
 	private boolean spawned;
+	private Location location;
+	private int lineLength;
+	private String text;
+	private List<String> lines;
+	private List<EntityArmorStand> entities;
 
-	/**
-	 * Constructs a new {@code TextPanel}. Be sure to invoke {@code setVisible} to
-	 * make it visible. If this is not done, the text will be invisible.
-	 * 
-	 * @param text
-	 *            the text rendered by this {@code TextPanel}
-	 * @param location
-	 *            this {@code TextPanel}'s {@code Location}
-	 */
-	public TextPanel(Location location, String text) {
-		visible = false;
-		this.charsPerLine = StringUtils.STANDARD_LINE_LENGTH;
-		setText(text);
-		this.location = location;
-		entities = new ArrayList<>();
-		spawned = false;
-		initSpawnManageTask();
+	static {
+		RepeatingTask spawner = new RepeatingTask(SPAWNER_PERIOD) {
+			@Override
+			protected void run() {
+				for (int i = 0; i < textPanels.size(); i++) {
+					TextPanel textPanel = textPanels.get(i);
+					textPanel.spawnUpdate();
+				}
+			}
+		};
+		spawner.schedule();
 	}
 
-	/**
-	 * Constructs a new {@code TextPanel} whose text value defaults to {@code ""}.
-	 * Be sure to invoke {@code setVisible} to make it visible. If this is not done,
-	 * the text will be invisible.
-	 * 
-	 * @param location
-	 *            this {@code TextPanel}'s {@code Location}
-	 */
+	public TextPanel(Location location, String text) {
+		this.visible = false;
+		spawned = false;
+		this.location = location;
+		lineLength = StringUtils.STANDARD_LINE_LENGTH;
+		setText(text);
+		textPanels.add(this);
+		entities = new ArrayList<>();
+	}
+
 	public TextPanel(Location location) {
 		this(location, "");
 	}
 
-	/**
-	 * Initializes the {@code RepeatingTask} used to manage spawning entities
-	 * associated with this {@code TextPanel}.
-	 */
-	private void initSpawnManageTask() {
-		entitySpawnManageTask = new RepeatingTask(SPAWN_MANAGE_TASK_PERIOD) {
-			@Override
-			protected void run() {
-				boolean playerNearby = PlayerCharacter.playerCharacterIsNearby(location,
-						MAX_SPAWN_DISTANCE_FROM_PLAYER);
-				if (playerNearby) {
-					if (spawned) {
-						Location idealEntityLoc = getLocation().clone();
-						for (int i = 0; i < entities.size(); i++) {
-							EntityArmorStand entity = entities.get(i);
-							double offsetX = idealEntityLoc.getX() - entity.locX();
-							double offsetY = idealEntityLoc.getY() - entity.locY();
-							double offsetZ = idealEntityLoc.getZ() - entity.locZ();
-							if (offsetX > ALLOWED_ENTITY_LOC_OFFSET || offsetY > ALLOWED_ENTITY_LOC_OFFSET
-									|| offsetZ > ALLOWED_ENTITY_LOC_OFFSET) {
-								removeSingleEntity(i);
-								spawnSingleEntity(i);
-							}
-							idealEntityLoc.subtract(0, LINE_SEPEARATION_DISTANCE, 0);
-						}
-					} else if (!text.isEmpty()) {
-						spawnEntities();
-					}
-				} else if (!playerNearby && spawned) {
-					removeEntities();
-				}
-			}
-		};
-	}
-
-	/**
-	 * Returns whether this {@code TextPanel} is visible and rendering text.
-	 */
 	public boolean isVisible() {
 		return visible;
 	}
 
-	/**
-	 * Sets whether this {@code TextPanel} is visible and rendering text.
-	 */
 	public void setVisible(boolean visible) {
-		boolean redundant = this.visible == visible;
-		if (redundant) {
+		if (this.visible == visible) {
 			return;
 		}
 		this.visible = visible;
-		if (visible) {
-			entitySpawnManageTask.schedule();
+	}
+
+	private void spawnUpdate() {
+		boolean playerIsNearby = playerIsNearby();
+		if (playerIsNearby && visible) {
+			if (!spawned) {
+				spawn();
+			}
 		} else {
-			removeEntities();
-			entitySpawnManageTask.cancel();
-		}
-	}
-
-	/**
-	 * Returns the text rendered by this {@code TextPanel}.
-	 */
-	public String getText() {
-		return text;
-	}
-
-	/**
-	 * Sets the text rendered by this {@code TextPanel}.
-	 */
-	public void setText(String text) {
-		this.text = text;
-		lines = StringUtils.lineSplit(text, charsPerLine);
-		if (visible) {
-			removeEntities();
-			spawnEntities();
-		}
-	}
-
-	public int getCharactersPerLine() {
-		return charsPerLine;
-	}
-
-	public void setCharactersPerLine(int charactersPerLine) {
-		charsPerLine = charactersPerLine;
-		lines = StringUtils.lineSplit(text, charsPerLine);
-		if (visible) {
-			removeEntities();
-			spawnEntities();
-		}
-	}
-
-	/**
-	 * Returns this {@code TextPanel}'s {@code Location}.
-	 */
-	public Location getLocation() {
-		return location;
-	}
-
-	/**
-	 * Sets this {@code TextPanel}'s {@code Location}.
-	 */
-	public void setLocation(Location location) {
-		Location temp = this.location;
-		this.location = location;
-		if (visible) {
-			Vector movement = location.toVector().subtract(temp.toVector());
-			Vec3D vec3d = new Vec3D(movement.getX(), movement.getY(), movement.getZ());
-			for (int i = 0; i < entities.size(); i++) {
-				EntityArmorStand entity = entities.get(i);
-				entity.move(null, vec3d);
+			if (spawned) {
+				despawn();
 			}
 		}
 	}
 
-	/**
-	 * Spawns all of the entities entities necessary to display text.
-	 */
-	private void spawnEntities() {
-		int numLines = lines.size();
-		for (int lineCount = 0; lineCount < numLines; lineCount++) {
-			spawnSingleEntity(lineCount);
+	private boolean playerIsNearby() {
+		ArrayList<Entity> nearbyEntites = (ArrayList<Entity>) location.getWorld().getNearbyEntities(location,
+				SPAWN_RADIUS, SPAWN_RADIUS, SPAWN_RADIUS);
+		for (int i = 0; i < nearbyEntites.size(); i++) {
+			Entity nearbyEntity = nearbyEntites.get(i);
+			if (nearbyEntity.getType() == EntityType.PLAYER) {
+				return true;
+			}
 		}
-		spawned = true;
+		return false;
 	}
 
-	/**
-	 * Spawns a single entity to represent a single line of this {@code TextPanel}.
-	 * 
-	 * @param lineCount
-	 *            the number of line that the entity will represent
-	 */
-	private void spawnSingleEntity(int lineCount) {
+	private void spawn() {
+		spawned = true;
+		addAllEntities();
+	}
+
+	private void despawn() {
+		spawned = false;
+		removeAllEntities();
+	}
+
+	public Location getLocation() {
+		return location;
+	}
+
+	public void setLocation(Location location) {
+		this.location = location;
+		Location targetEntityLocation = location.clone();
+		if (visible && spawned) {
+			int lineCount = lines.size();
+			for (int i = 0; i < lineCount; i++) {
+				EntityArmorStand entity = entities.get(i);
+				entity.setPosition(targetEntityLocation.getX(), targetEntityLocation.getY(),
+						targetEntityLocation.getZ());
+				targetEntityLocation.setY(targetEntityLocation.getY() - LINE_SEPEARATION_DISTANCE);
+			}
+		}
+	}
+
+	public int getLineLength() {
+		return lineLength;
+	}
+
+	public void setLineLength(int lineLength) {
+		this.lineLength = lineLength;
+		setText0();
+	}
+
+	public String getText() {
+		return text;
+	}
+
+	public void setText(String text) {
+		this.text = text;
+		setText0();
+	}
+
+	private void setText0() {
+		lines = StringUtils.lineSplit(text, lineLength);
+		int lineCount = lines.size();
+		if (visible) {
+			resize(lineCount);
+			updateEntityDisplayNames();
+		}
+	}
+
+	private void addAllEntities() {
 		World world = ((CraftWorld) location.getWorld()).getHandle();
+		int lineCount = lines.size();
+		for (int i = 0; i < lineCount; i++) {
+			addEntity(i, world);
+		}
+		updateEntityDisplayNames();
+	}
+
+	private void removeAllEntities() {
+		while (!entities.isEmpty()) {
+			removeEntity(0);
+		}
+	}
+
+	private void updateEntityDisplayNames() {
+		int lineCount = lines.size();
+		for (int i = 0; i < lineCount; i++) {
+			updateEntityDisplayName(i);
+		}
+	}
+
+	private void updateEntityDisplayName(int index) {
+		EntityArmorStand entity = entities.get(index);
+		String line = lines.get(index);
+		entity.getBukkitEntity().setCustomName(line);
+	}
+
+	private void resize(int lineCount) {
+		int entityCount = entities.size();
+		if (entityCount < lineCount) {
+			// add entities
+			World world = ((CraftWorld) location.getWorld()).getHandle();
+			for (int i = entityCount; i < lineCount; i++) {
+				addEntity(i, world);
+			}
+		} else if (entityCount > lineCount) {
+			// remove entities
+			for (int i = entityCount; i > lineCount; i--) {
+				removeEntity(i);
+			}
+		}
+	}
+
+	private void addEntity(int index, World world) {
 		EntityArmorStand entity = new EntityArmorStand(world, location.getX(),
-				location.getY() - lineCount * LINE_SEPEARATION_DISTANCE, location.getZ());
+				location.getY() - index * LINE_SEPEARATION_DISTANCE, location.getZ());
 		entity.setNoGravity(true);
+		entity.collides = false;
 		entity.setInvisible(true);
 		entity.setSmall(true);
 		entity.setArms(false);
 		entity.setMarker(true);
-		String line = lines.get(lineCount);
-		entity.getBukkitEntity().setCustomName(line);
 		entity.setCustomNameVisible(true);
 		world.addEntity(entity);
-		entities.add(lineCount, entity);
+		entities.add(index, entity);
 	}
 
-	/**
-	 * Removes old entities so that this {@code TextPanel} no longer displays text.
-	 */
-	private void removeEntities() {
-		int numEntities = entities.size();
-		for (int i = 0; i < numEntities; i++) {
-			// always take 0 because the entity list is being modified
-			removeSingleEntity(0);
-		}
-		spawned = false;
-	}
-
-	/**
-	 * Removes a single entity.
-	 * 
-	 * @param lineCount
-	 *            the number of line that the entity to be removed represents.
-	 */
-	private void removeSingleEntity(int lineCount) {
-		EntityArmorStand entity = entities.get(lineCount);
+	private void removeEntity(int index) {
+		EntityArmorStand entity = entities.remove(index);
 		entity.killEntity();
-		entities.remove(entity);
 	}
 
 }

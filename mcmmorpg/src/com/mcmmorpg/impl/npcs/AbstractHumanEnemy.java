@@ -117,6 +117,7 @@ public abstract class AbstractHumanEnemy extends NonPlayerCharacter {
 		entity.setVisible(false);
 		ai.remove();
 		aiMap.remove(ai);
+		setLocation(spawnLocation);
 	}
 
 	@Override

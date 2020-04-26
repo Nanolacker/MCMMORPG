@@ -2,8 +2,6 @@ package com.mcmmorpg.common.utils;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Scanner;
-
 import org.bukkit.ChatColor;
 
 public class StringUtils {
@@ -17,37 +15,35 @@ public class StringUtils {
 	}
 
 	public static String repeat(String s, int n) {
-		String result = "";
+		StringBuilder result = new StringBuilder();
 		for (int i = 0; i < n; i++) {
-			result += s;
+			result.append(s);
 		}
-		return result;
+		return result.toString();
 	}
 
-	/**
-	 * Splits the text into lines. Chat color is preserved throughout lines.
-	 */
 	public static List<String> lineSplit(String text) {
 		return lineSplit(text, STANDARD_LINE_LENGTH);
 	}
 
 	/**
-	 * Splits the text into lines that do not exceed the specified line length. Chat
-	 * color is preserved throughout lines.
+	 * Splits the text into lines while preserving chat color.
 	 */
 	public static List<String> lineSplit(String text, int lineLength) {
 		if (text == null) {
 			return null;
+		}
+		if (lineLength == 0) {
+			throw new IllegalArgumentException("Line length of 0");
 		}
 		List<String> lines = new ArrayList<>();
 		String[] preLines = text.split("\n");
 		String chatColor = "";
 		for (String preLine : preLines) {
 			int currentLineLength = 0;
-			Scanner lineParser = new Scanner(preLine);
+			String[] tokens = preLine.split(" ");
 			String line = chatColor;
-			while (lineParser.hasNext()) {
-				String token = lineParser.next();
+			for (String token : tokens) {
 				int tokenLength = length(token);
 				if (tokenLength > lineLength) {
 					// if the token is too long, it will get cut off (stupid user)
@@ -74,7 +70,6 @@ public class StringUtils {
 			line = line.trim();
 			lines.add(line);
 			chatColor = ChatColor.getLastColors(line);
-			lineParser.close();
 		}
 		return lines;
 	}
@@ -99,8 +94,7 @@ public class StringUtils {
 	}
 
 	/**
-	 * Assumes the token's length is greater than the specified length. Used for
-	 * line splitting.
+	 * Cuts the token so that its length does not exceed the line length.
 	 */
 	private static String cut(String token, int length) {
 		int validCharCount = 0;

@@ -102,6 +102,7 @@ public class Bat extends NonPlayerCharacter {
 		entity.remove();
 		ai.remove();
 		aiMap.remove(ai);
+		setLocation(spawnLocation);
 	}
 
 	@Override

@@ -15,7 +15,7 @@ public class MelcherLumberjack extends StaticHuman {
 	private static final String TEXTURE_SIGNATURE = "ppSx5C2jbkpZb55b74AJSxoPTFqBeBzJHoDrwVV78X4QTrU08udEnh/T4xjt/OIirfKGlz+v7j1vqwC80+Y0wt+xO1wyMsFywgYnR2liqgw42jrGbnxJV9lJ1zUd68d7HbePbdPxp8ZylXA5Sv1wA3qFyOHzrzvIQLTEc+CodNZhpH3roIFgzU3D747XblmfB0CU1eJFqjK4unAO9FxRYErnRmHcLQYBhHLMb3vZ2ilzWALizACyn/ZyjkIuJl7cyk/qck8mh4sv7sVDSGl1Ioo9DYpIvCumFeniLz8GyT+HNgCPB8QTL1uofW5wqsxb3NkkY5BVcxhvM69YL1z3KPswH5V3Y5QkGo3DI6qXLw8vsGrs2FvsRbp98sSUMLoFCyn/XkglV7cSD3k8+8TuOgyCvsHs2xjx2fvnX7EBMYR30awCEhZdRfKpZvuAUOm8lzdrzA5HyRsV8uQcwvEkXjAlRLunwT+mQyJuBCN/w3GkVAYeHHBn32jIXx4tLxLikiegJ2+D8VHvZZYrrILCZ0EXUxhe+nwlzbEgSLepwllLuMs+GOLuvJE8uGvEX0cZg9h0Z99ozgu3XPvmjAod4YXgnjgKyhWO5Yhl5uC4IcHrPPFEGUBjqm79QfjfaO4sbTZP6aFox+4kB7/YTxZ/393Cb3GqYzQsghFM2VUMhIU=";
 	private static final String[] DIALOGUE_OPTIONS = { "What?", "You wish you had muscles like me.",
 			"I've been chopping wood all day." };
-	private static final Noise SPEAK_NOISE = new Noise(Sound.ENTITY_VILLAGER_AMBIENT);
+	private static final Noise SPEAK_NOISE = new Noise(Sound.ENTITY_VILLAGER_AMBIENT, 1f, 0.6f);
 	private static final ItemStack AXE = new ItemStack(Material.IRON_AXE);
 
 	public MelcherLumberjack(Location spawnLocation) {

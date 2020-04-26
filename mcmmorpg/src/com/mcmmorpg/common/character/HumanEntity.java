@@ -1,7 +1,6 @@
 package com.mcmmorpg.common.character;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
 
@@ -35,16 +34,30 @@ import net.minecraft.server.v1_15_R1.WorldServer;
 
 public class HumanEntity {
 
+	private static final double RENDER_PERIOD = 1.0;
 	private static final double RENDER_RADIUS = 50.0;
-	private static final double RENDER_PERIOD = 0.5;
+
+	private static final List<HumanEntity> humanEntities = new ArrayList<>();
 
 	private Location location;
 	private final EntityPlayer entityPlayer;
 	private boolean visible;
 	private final List<Player> viewers;
-	private RepeatingTask renderer;
 	private ArmorStand equipment;
 	private ItemStack mainHand, offHand, helmet, chestplate, leggings, boots;
+
+	static {
+		RepeatingTask renderer = new RepeatingTask(RENDER_PERIOD) {
+			@Override
+			protected void run() {
+				for (int i = 0; i < humanEntities.size(); i++) {
+					HumanEntity humanEntity = humanEntities.get(i);
+					humanEntity.render();
+				}
+			}
+		};
+		renderer.schedule();
+	}
 
 	public HumanEntity(Location location, String textureData, String textureSignature) {
 		this.location = location;
@@ -57,13 +70,7 @@ public class HumanEntity {
 		this.entityPlayer = new EntityPlayer(minecraftServer, worldServer, gameProfile, playerInteractManager);
 		viewers = new ArrayList<>();
 		setVisible(false);
-		renderer = new RepeatingTask(RENDER_PERIOD) {
-			@Override
-			protected void run() {
-				render();
-			}
-		};
-		renderer.schedule();
+		humanEntities.add(this);
 	}
 
 	private void render() {
@@ -75,9 +82,9 @@ public class HumanEntity {
 				viewers.remove(player);
 			}
 		}
-		Collection<Entity> nearby = world.getNearbyEntities(location, RENDER_RADIUS, RENDER_RADIUS, RENDER_RADIUS);
-		Entity[] nearby0 = nearby.toArray(new Entity[nearby.size()]);
-		for (Entity entity : nearby0) {
+		ArrayList<Entity> nearbyEntities = (ArrayList<Entity>) world.getNearbyEntities(location, RENDER_RADIUS,
+				RENDER_RADIUS, RENDER_RADIUS);
+		for (Entity entity : nearbyEntities) {
 			if (entity instanceof Player) {
 				show((Player) entity);
 			}
@@ -143,7 +150,7 @@ public class HumanEntity {
 			equipmentItems.setLeggings(leggings);
 			equipmentItems.setBoots(boots);
 		} else {
-			Location dump = new Location(location.getWorld(), 0, 512, 0);
+			Location dump = new Location(location.getWorld(), 0, 0, 0);
 			setLocation0(dump);
 			if (equipment != null) {
 				equipment.remove();
@@ -211,7 +218,7 @@ public class HumanEntity {
 	 * Call if you don't want to use this anymore!
 	 */
 	public void dispose() {
-		renderer.cancel();
+		humanEntities.remove(this);
 	}
 
 }

@@ -109,6 +109,7 @@ public abstract class AbstractUndead extends NonPlayerCharacter {
 		movementSyncer.setEnabled(false);
 		entity.remove();
 		entityMap.remove(entity);
+		setLocation(spawnLocation);
 	}
 
 	@Override

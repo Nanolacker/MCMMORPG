@@ -199,8 +199,8 @@ public class GelatinousCube extends NonPlayerCharacter {
 		Location location = getLocation();
 		DEATH_NOISE.play(location);
 		location.getWorld().spawnParticle(Particle.CLOUD, location, 10);
-		setLocation(spawnLocation);
 		LootChest.spawnLootChest(location);
+		setLocation(spawnLocation);
 		DelayedTask respawnTask = new DelayedTask(RESPAWN_TIME) {
 			@Override
 			protected void run() {
