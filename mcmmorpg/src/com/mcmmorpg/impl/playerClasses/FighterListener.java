@@ -35,8 +35,9 @@ public class FighterListener implements Listener {
 	private static final double[] MAX_MANA = { 10.0, 12.0, 14.0, 16.0, 18.0, 20.0, 22.0, 24.0, 26.0, 28.0, 30.0, 32.0,
 			34.0, 36.0, 38.0, 40.0, 42.0, 44.0, 46.0, 48.0 };
 	private static final double[] MANA_REGEN_RATE = { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 };
+	private static final double STANDARD_SILENCE_DURATION = 1;
 
-	private static final Noise BASH_MISS_NOISE = new Noise(Sound.ENTITY_WITHER_SHOOT, 1, 2);
+	private static final Noise WOOSH_NOISE = new Noise(Sound.ENTITY_WITHER_SHOOT, 0.7f, 2);
 	private static final Noise BASH_HIT_NOISE = new Noise(Sound.ENTITY_ZOMBIE_ATTACK_IRON_DOOR);
 	private static final Noise SELF_HEAL_NOISE = new Noise(Sound.BLOCK_LAVA_EXTINGUISH);
 	private static final Noise CYCLONE_HIT_NOISE = new Noise(Sound.ENTITY_ZOMBIE_ATTACK_IRON_DOOR);
@@ -101,6 +102,7 @@ public class FighterListener implements Listener {
 	}
 
 	private void useBash(PlayerCharacter pc) {
+		double damageAmount = 6 * bash.getUpgradeLevel(pc) + 1.5 * pc.getLevel();
 		Location location = pc.getLocation();
 		Vector lookDirection = location.getDirection();
 		World world = location.getWorld();
@@ -113,7 +115,7 @@ public class FighterListener implements Listener {
 				if (other instanceof CharacterCollider) {
 					AbstractCharacter target = ((CharacterCollider) other).getCharacter();
 					if (!target.isFriendly(pc)) {
-						target.damage(10 + bash.getUpgradeLevel(pc) * 10, pc);
+						target.damage(damageAmount, pc);
 						BASH_HIT_NOISE.play(location);
 						hit[0] = true;
 					}
@@ -123,35 +125,37 @@ public class FighterListener implements Listener {
 		hitbox.setActive(true);
 		hitbox.setActive(false);
 		if (!hit[0]) {
-			BASH_MISS_NOISE.play(location);
+			WOOSH_NOISE.play(location);
 		}
+		pc.silence(STANDARD_SILENCE_DURATION);
 	}
 
 	private void useSelfHeal(PlayerCharacter pc) {
-		double healAmount = selfHeal.getUpgradeLevel(pc) * 8;
+		double healAmount = 10 * selfHeal.getUpgradeLevel(pc) + 2 * pc.getLevel();
 		pc.heal(healAmount, pc);
 		SELF_HEAL_NOISE.play(pc.getLocation());
+		pc.silence(STANDARD_SILENCE_DURATION);
 	}
 
 	private void useCyclone(PlayerCharacter pc) {
-		Location location = pc.getLocation();
+		double damagePerHit = 2 * cyclone.getUpgradeLevel(pc) + 0.5 * pc.getLevel();
 		new RepeatingTask(0.1) {
 			int count = 0;
 
 			@Override
 			protected void run() {
-				Location loc = pc.getLocation();
-				loc.setYaw(loc.getYaw() + 90);
-				pc.getPlayer().teleport(loc);
+				Location location = pc.getLocation();
+				location.setYaw(location.getYaw() + 90);
+				pc.getPlayer().teleport(location);
 				count++;
-				// BASH_MISS_NOISE.play(loc);
+				WOOSH_NOISE.play(location);
 				Collider hitbox = new Collider(location, 10, 10, 10) {
 					@Override
 					protected void onCollisionEnter(Collider other) {
 						if (other instanceof CharacterCollider) {
 							AbstractCharacter target = ((CharacterCollider) other).getCharacter();
 							if (!target.isFriendly(pc)) {
-								target.damage(2, pc);
+								target.damage(damagePerHit, pc);
 								CYCLONE_HIT_NOISE.play(target.getLocation());
 							}
 						}
@@ -162,9 +166,12 @@ public class FighterListener implements Listener {
 				createCycloneEffect(location);
 				if (count == 4) {
 					cancel();
+				} else if (count % 2 == 1) {
+					WOOSH_NOISE.play(location);
 				}
 			}
 		}.schedule();
+		pc.silence(STANDARD_SILENCE_DURATION);
 	}
 
 	private void createCycloneEffect(Location location) {
@@ -191,6 +198,7 @@ public class FighterListener implements Listener {
 				airbornePlayers.add(player);
 			}
 		}.schedule();
+		pc.silence(STANDARD_SILENCE_DURATION);
 	}
 
 	@EventHandler
@@ -199,6 +207,7 @@ public class FighterListener implements Listener {
 		if (airbornePlayers.contains(player)) {
 			if (player.isOnGround()) {
 				PlayerCharacter pc = PlayerCharacter.forPlayer(player);
+				double overheadStrikeDamage = 10 * pc.getLevel() + 2 * pc.getLevel();
 				Location location = player.getLocation();
 				Collider hitbox = new Collider(location.clone().add(0, 1, 0), 6, 4, 6) {
 					@Override
@@ -206,7 +215,7 @@ public class FighterListener implements Listener {
 						if (other instanceof CharacterCollider) {
 							AbstractCharacter character = ((CharacterCollider) other).getCharacter();
 							if (!character.isFriendly(pc)) {
-								character.damage(20, pc);
+								character.damage(overheadStrikeDamage, pc);
 							}
 						}
 					}
@@ -221,7 +230,7 @@ public class FighterListener implements Listener {
 	}
 
 	private void useCharge(PlayerCharacter pc) {
-		double damageAmount = 5 * charge.getUpgradeLevel(pc);
+		double damageAmount = 5 * charge.getUpgradeLevel(pc) + 2 * pc.getLevel();
 		Player player = pc.getPlayer();
 		Location location = player.getLocation();
 		Vector direction = location.getDirection();
@@ -242,10 +251,11 @@ public class FighterListener implements Listener {
 			}
 		};
 		projectile.fire();
+		pc.silence(STANDARD_SILENCE_DURATION);
 	}
 
 	private void useInspire(PlayerCharacter pc) {
-		double healAmount = inspire.getUpgradeLevel(pc) * 5;
+		double healAmount = 8 * inspire.getUpgradeLevel(pc) + 2 * pc.getLevel();
 		double size = 8;
 		Location location = pc.getLocation().add(0, 1, 0);
 		Collider hitbox = new Collider(location, size, 2, size) {
@@ -271,6 +281,7 @@ public class FighterListener implements Listener {
 		INSPIRE_NOISE.play(location);
 		hitbox.setActive(true);
 		hitbox.setActive(false);
+		pc.silence(STANDARD_SILENCE_DURATION);
 	}
 
 }

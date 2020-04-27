@@ -41,6 +41,7 @@ public abstract class AbstractFriendlyHuman extends NonPlayerCharacter {
 
 	@Override
 	protected void spawn() {
+		setLocation(spawnLocation);
 		super.spawn();
 		interactionCollider.setActive(true);
 		entity.setVisible(true);
@@ -68,7 +69,6 @@ public abstract class AbstractFriendlyHuman extends NonPlayerCharacter {
 		entity.setVisible(false);
 		aiSyncer.setEnabled(false);
 		ai.remove();
-		setLocation(spawnLocation);
 	}
 
 	@Override

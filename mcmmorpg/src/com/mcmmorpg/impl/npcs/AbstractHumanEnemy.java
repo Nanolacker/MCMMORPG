@@ -90,6 +90,7 @@ public abstract class AbstractHumanEnemy extends NonPlayerCharacter {
 
 	@Override
 	protected void spawn() {
+		setLocation(spawnLocation);
 		super.spawn();
 		hitbox.setActive(true);
 		entity.setVisible(true);

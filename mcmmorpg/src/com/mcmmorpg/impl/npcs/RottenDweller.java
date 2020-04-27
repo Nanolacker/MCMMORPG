@@ -13,6 +13,7 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Spider;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.util.Vector;
 
@@ -22,7 +23,9 @@ import com.mcmmorpg.common.character.MovementSyncer.MovementSyncMode;
 import com.mcmmorpg.common.character.NonPlayerCharacter;
 import com.mcmmorpg.common.character.PlayerCharacter;
 import com.mcmmorpg.common.character.PlayerCharacter.PlayerCharacterCollider;
+import com.mcmmorpg.common.event.EventManager;
 import com.mcmmorpg.common.character.Source;
+import com.mcmmorpg.common.character.XP;
 import com.mcmmorpg.common.physics.Collider;
 import com.mcmmorpg.common.sound.Noise;
 import com.mcmmorpg.common.time.DelayedTask;
@@ -66,10 +69,37 @@ public class RottenDweller extends NonPlayerCharacter {
 				}
 			}
 		};
+		Listener listener = new Listener() {
+			@EventHandler
+			private void onHit(EntityDamageByEntityEvent event) {
+				Entity damager = event.getDamager();
+				Entity damaged = event.getEntity();
+				if (damager == RottenDweller.this.entity) {
+					if (damaged instanceof Player) {
+						Player player = (Player) damaged;
+						PlayerCharacter pc = PlayerCharacter.forPlayer(player);
+						if (pc == null) {
+							return;
+						}
+						pc.damage(50, RottenDweller.this);
+					}
+				} else if (damaged == RottenDweller.this.entity) {
+					DelayedTask cancelKnockback = new DelayedTask(0.1) {
+						@Override
+						protected void run() {
+							entity.setVelocity(new Vector());
+						}
+					};
+					cancelKnockback.schedule();
+				}
+			}
+		};
+		EventManager.registerEvents(listener);
 	}
 
 	@Override
 	protected void spawn() {
+		setLocation(spawnLocation);
 		super.spawn();
 		hitbox.setActive(true);
 		entity = (Spider) spawnLocation.getWorld().spawnEntity(spawnLocation, EntityType.SPIDER);
@@ -94,7 +124,9 @@ public class RottenDweller extends NonPlayerCharacter {
 		super.setLocation(location);
 		hitbox.setCenter(location.clone().add(0, 0.5, 0));
 		bossBarArea.setCenter(location.clone().add(0, 2, 0));
-		entity.teleport(location);
+		if (isSpawned()) {
+			entity.teleport(location);
+		}
 	}
 
 	@Override
@@ -121,7 +153,6 @@ public class RottenDweller extends NonPlayerCharacter {
 	@Override
 	protected void onDeath() {
 		super.onDeath();
-		grantXpToNearbyPlayers();
 		hitbox.setActive(false);
 		movementSyncer.setEnabled(false);
 		bossBarArea.setActive(false);
@@ -129,7 +160,7 @@ public class RottenDweller extends NonPlayerCharacter {
 		Location location = getLocation();
 		DEATH_NOISE.play(location);
 		location.getWorld().spawnParticle(Particle.CLOUD, location, 10);
-		setLocation(spawnLocation);
+		XP.distributeXP(location, 35, 400);
 		DelayedTask respawn = new DelayedTask(RESPAWN_TIME) {
 			@Override
 			protected void run() {
@@ -137,44 +168,6 @@ public class RottenDweller extends NonPlayerCharacter {
 			}
 		};
 		respawn.schedule();
-	}
-
-	private void grantXpToNearbyPlayers() {
-		Collider xpBounds = new Collider(getLocation(), 25, 25, 25) {
-			@Override
-			protected void onCollisionEnter(Collider other) {
-				if (other instanceof PlayerCharacterCollider) {
-					PlayerCharacter pc = ((PlayerCharacterCollider) other).getCharacter();
-					pc.grantXp(400);
-				}
-			}
-		};
-		xpBounds.setActive(true);
-		xpBounds.setActive(false);
-	}
-
-	@EventHandler
-	private void onHit(EntityDamageByEntityEvent event) {
-		Entity damager = event.getDamager();
-		Entity damaged = event.getEntity();
-		if (damager == this.entity) {
-			if (damaged instanceof Player) {
-				Player player = (Player) damaged;
-				PlayerCharacter pc = PlayerCharacter.forPlayer(player);
-				if (pc == null) {
-					return;
-				}
-				pc.damage(50, this);
-			}
-		} else if (damaged == this.entity) {
-			DelayedTask cancelKnockback = new DelayedTask(0.1) {
-				@Override
-				protected void run() {
-					entity.setVelocity(new Vector());
-				}
-			};
-			cancelKnockback.schedule();
-		}
 	}
 
 }

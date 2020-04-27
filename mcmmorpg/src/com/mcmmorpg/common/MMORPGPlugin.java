@@ -13,6 +13,7 @@ import com.mcmmorpg.common.character.NonPlayerCharacter;
 import com.mcmmorpg.common.item.LootChest;
 import com.mcmmorpg.common.time.GameClock;
 import com.mcmmorpg.common.ui.MMORPGCommandExecutor;
+import com.mcmmorpg.common.utils.Debug;
 
 public abstract class MMORPGPlugin extends JavaPlugin {
 
@@ -21,8 +22,8 @@ public abstract class MMORPGPlugin extends JavaPlugin {
 	@Override
 	public final void onEnable() {
 		isInitialized = false;
-		MMORPGCommandExecutor.registerCommands();
 		removeAllEntities();
+		MMORPGCommandExecutor.registerCommands();
 		GameClock.start();
 		NonPlayerCharacter.startNPCSpawner();
 		LootChest.init();

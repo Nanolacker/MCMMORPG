@@ -94,6 +94,7 @@ public class WildBoar extends NonPlayerCharacter {
 
 	@Override
 	public void spawn() {
+		setLocation(spawnLocation);
 		super.spawn();
 		hitbox.setActive(true);
 		entity = (Pig) spawnLocation.getWorld().spawnEntity(spawnLocation, EntityType.PIG);
@@ -120,7 +121,6 @@ public class WildBoar extends NonPlayerCharacter {
 		aiSyncer.setEnabled(false);
 		entity.remove();
 		ai.remove();
-		setLocation(spawnLocation);
 	}
 
 	@Override
@@ -152,7 +152,6 @@ public class WildBoar extends NonPlayerCharacter {
 		location.getWorld().spawnParticle(Particle.CLOUD, location, 10);
 		XP.distributeXP(location, 25, getXpToGrant());
 		Items.BOAR_FLANK.drop(location, 1);
-		setLocation(spawnLocation);
 		DelayedTask respawn = new DelayedTask(RESPAWN_TIME) {
 			@Override
 			protected void run() {

@@ -69,11 +69,13 @@ public class ItemListener implements Listener {
 	}
 
 	private void useApprenticeSword(PlayerCharacter pc) {
-		useFighterWeapon(pc, 5);
+		double damage = 4 + 2 * pc.getLevel();
+		useFighterWeapon(pc, damage);
 	}
 
 	private void useApprenticeStaff(PlayerCharacter pc) {
-		useMageStaff(pc, 4);
+		double damage = 2 + pc.getLevel();
+		useMageStaff(pc, damage);
 	}
 
 }

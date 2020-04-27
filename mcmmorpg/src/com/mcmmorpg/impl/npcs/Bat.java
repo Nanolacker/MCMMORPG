@@ -81,6 +81,7 @@ public class Bat extends NonPlayerCharacter {
 
 	@Override
 	public void spawn() {
+		setLocation(spawnLocation);
 		super.spawn();
 		hitbox.setActive(true);
 		entity = (org.bukkit.entity.Bat) spawnLocation.getWorld().spawnEntity(spawnLocation, EntityType.BAT);
@@ -102,7 +103,6 @@ public class Bat extends NonPlayerCharacter {
 		entity.remove();
 		ai.remove();
 		aiMap.remove(ai);
-		setLocation(spawnLocation);
 	}
 
 	@Override
@@ -128,7 +128,6 @@ public class Bat extends NonPlayerCharacter {
 		Location location = getLocation();
 		DEATH_NOISE.play(location);
 		location.getWorld().spawnParticle(Particle.CLOUD, location, 10);
-		setLocation(spawnLocation);
 		DelayedTask respawn = new DelayedTask(RESPAWN_TIME) {
 			@Override
 			protected void run() {

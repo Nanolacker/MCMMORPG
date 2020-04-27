@@ -5,9 +5,8 @@ import org.bukkit.Location;
 import org.bukkit.Sound;
 
 import com.mcmmorpg.common.character.PlayerCharacter;
+import com.mcmmorpg.common.quest.QuestMarker;
 import com.mcmmorpg.common.sound.Noise;
-import com.mcmmorpg.common.ui.Notice;
-import com.mcmmorpg.common.ui.Notice.NoticeType;
 
 public class MelcherFarmer extends StaticHuman {
 
@@ -17,7 +16,7 @@ public class MelcherFarmer extends StaticHuman {
 
 	public MelcherFarmer(Location location) {
 		super(ChatColor.GREEN + "Melcher Farmer", 1, location, TEXTURE_DATA, TEXTURE_SIGNATURE);
-		Notice.createNotice(NoticeType.QUEST, location.clone().add(0, 2.25, 0));
+		QuestMarker.createMarker(location.clone().add(0, 2.25, 0));
 	}
 
 	@Override

@@ -32,6 +32,11 @@ public class Debug {
 		}
 	}
 
+	public static void logf(String format, Object... args) {
+		String message = String.format(format, args);
+		log(message);
+	}
+
 	private static void log0(Object message, StackTraceElement source) {
 		Server server = Bukkit.getServer();
 		String formattedMessage = ChatColor.AQUA + "[DEBUG]: " + ChatColor.RESET + message + "\n" + ChatColor.AQUA

@@ -17,6 +17,7 @@ import com.mcmmorpg.impl.npcs.Horse;
 import com.mcmmorpg.impl.npcs.MelcherFarmer;
 import com.mcmmorpg.impl.npcs.MelcherLumberjack;
 import com.mcmmorpg.impl.npcs.MelcherVillager;
+import com.mcmmorpg.impl.npcs.RottenDweller;
 import com.mcmmorpg.impl.npcs.Thief;
 import com.mcmmorpg.impl.npcs.TrainingDummy;
 import com.mcmmorpg.impl.npcs.WildBoar;
@@ -75,6 +76,7 @@ public class MelcherListener implements Listener {
 	private void spawnLumberjacks() {
 		Location[] lumberjackLocations = { new Location(Worlds.ELADRADOR, -1049, 70, 232, 225, 0) };
 		for (Location location : lumberjackLocations) {
+			new RottenDweller(location).setAlive(true);
 			new MelcherLumberjack(location).setAlive(true);
 		}
 	}
@@ -113,7 +115,9 @@ public class MelcherListener implements Listener {
 	}
 
 	private void spawnThieves() {
-		Location[] thiefLocations = {};
+		Location[] thiefLocations = { new Location(Worlds.ELADRADOR, -1157, 74, 173),
+				new Location(Worlds.ELADRADOR, -1150, 79, 147), new Location(Worlds.ELADRADOR, -1043, 74, 115),
+				new Location(Worlds.ELADRADOR, 981, 75, 111), new Location(Worlds.ELADRADOR, -919, 74, 123) };
 		for (Location location : thiefLocations) {
 			new Thief(location).setAlive(true);
 		}

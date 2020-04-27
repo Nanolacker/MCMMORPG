@@ -112,6 +112,7 @@ public class GelatinousCube extends NonPlayerCharacter {
 
 	@Override
 	public void spawn() {
+		setLocation(spawnLocation);
 		super.spawn();
 		hitbox.setActive(true);
 		entity = (Slime) spawnLocation.getWorld().spawnEntity(spawnLocation, EntityType.SLIME);
@@ -128,7 +129,6 @@ public class GelatinousCube extends NonPlayerCharacter {
 		hitbox.setActive(false);
 		movementSyncer.setEnabled(false);
 		entity.remove();
-		setLocation(spawnLocation);
 	}
 
 	@Override
@@ -200,7 +200,6 @@ public class GelatinousCube extends NonPlayerCharacter {
 		DEATH_NOISE.play(location);
 		location.getWorld().spawnParticle(Particle.CLOUD, location, 10);
 		LootChest.spawnLootChest(location);
-		setLocation(spawnLocation);
 		DelayedTask respawnTask = new DelayedTask(RESPAWN_TIME) {
 			@Override
 			protected void run() {

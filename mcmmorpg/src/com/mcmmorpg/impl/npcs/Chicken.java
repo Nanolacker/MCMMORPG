@@ -23,9 +23,9 @@ public class Chicken extends NonPlayerCharacter {
 
 	@Override
 	protected void spawn() {
+		setLocation(spawnLocation);
 		super.spawn();
-		Location location = getLocation();
-		entity = (org.bukkit.entity.Chicken) location.getWorld().spawnEntity(location, EntityType.CHICKEN);
+		entity = (org.bukkit.entity.Chicken) spawnLocation.getWorld().spawnEntity(spawnLocation, EntityType.CHICKEN);
 		entity.setInvulnerable(true);
 		entity.setAdult();
 		entity.setRemoveWhenFarAway(false);
@@ -38,7 +38,6 @@ public class Chicken extends NonPlayerCharacter {
 		super.despawn();
 		movementSyncer.setEnabled(false);
 		entity.remove();
-		setLocation(spawnLocation);
 	}
 
 }

@@ -20,7 +20,7 @@ public final class TextPanel {
 	private static final double SPAWNER_PERIOD = 1.0;
 	private static final double SPAWN_RADIUS = 50.0;
 
-	private static final List<TextPanel> textPanels = new ArrayList<>();
+	private static final List<TextPanel> visibleTextPanels = new ArrayList<>();
 
 	private boolean visible;
 	private boolean spawned;
@@ -34,8 +34,8 @@ public final class TextPanel {
 		RepeatingTask spawner = new RepeatingTask(SPAWNER_PERIOD) {
 			@Override
 			protected void run() {
-				for (int i = 0; i < textPanels.size(); i++) {
-					TextPanel textPanel = textPanels.get(i);
+				for (int i = 0; i < visibleTextPanels.size(); i++) {
+					TextPanel textPanel = visibleTextPanels.get(i);
 					textPanel.spawnUpdate();
 				}
 			}
@@ -49,7 +49,6 @@ public final class TextPanel {
 		this.location = location;
 		lineLength = StringUtils.STANDARD_LINE_LENGTH;
 		setText(text);
-		textPanels.add(this);
 		entities = new ArrayList<>();
 	}
 
@@ -66,11 +65,18 @@ public final class TextPanel {
 			return;
 		}
 		this.visible = visible;
+		if (visible) {
+			spawn();
+			visibleTextPanels.add(this);
+		} else {
+			despawn();
+			visibleTextPanels.remove(this);
+		}
 	}
 
 	private void spawnUpdate() {
 		boolean playerIsNearby = playerIsNearby();
-		if (playerIsNearby && visible) {
+		if (playerIsNearby) {
 			if (!spawned) {
 				spawn();
 			}
@@ -174,6 +180,7 @@ public final class TextPanel {
 		EntityArmorStand entity = entities.get(index);
 		String line = lines.get(index);
 		entity.getBukkitEntity().setCustomName(line);
+		entity.setCustomNameVisible(!line.isEmpty());
 	}
 
 	private void resize(int lineCount) {
@@ -201,7 +208,6 @@ public final class TextPanel {
 		entity.setSmall(true);
 		entity.setArms(false);
 		entity.setMarker(true);
-		entity.setCustomNameVisible(true);
 		world.addEntity(entity);
 		entities.add(index, entity);
 	}

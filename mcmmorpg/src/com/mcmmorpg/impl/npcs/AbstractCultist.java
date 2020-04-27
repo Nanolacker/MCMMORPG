@@ -73,7 +73,7 @@ public abstract class AbstractCultist extends AbstractHumanEnemy {
 
 	private void chargeSpell() {
 		ai.addPotionEffect(SLOW_EFFECT);
-		spellProgressBar = new ProgressBar(getLocation().add(0, 2.75, 0), ChatColor.AQUA + spellName, 18,
+		spellProgressBar = new ProgressBar(getLocation().add(0, 2.75, 0), ChatColor.WHITE + spellName, 18,
 				ChatColor.AQUA) {
 			@Override
 			protected void onComplete() {

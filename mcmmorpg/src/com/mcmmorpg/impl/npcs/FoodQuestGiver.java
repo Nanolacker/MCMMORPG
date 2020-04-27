@@ -5,11 +5,10 @@ import org.bukkit.Location;
 import org.bukkit.Sound;
 
 import com.mcmmorpg.common.character.PlayerCharacter;
+import com.mcmmorpg.common.quest.QuestMarker;
 import com.mcmmorpg.common.quest.QuestStatus;
 import com.mcmmorpg.common.sound.Noise;
 import com.mcmmorpg.common.ui.InteractionSequence;
-import com.mcmmorpg.common.ui.Notice;
-import com.mcmmorpg.common.ui.Notice.NoticeType;
 import com.mcmmorpg.impl.Items;
 import com.mcmmorpg.impl.Quests;
 
@@ -24,7 +23,7 @@ public class FoodQuestGiver extends StaticHuman {
 
 	public FoodQuestGiver(Location location) {
 		super(ChatColor.GREEN + "Farmer", 7, location, TEXTURE_DATA, TEXTURE_SIGNATURE);
-		Notice.createNotice(NoticeType.QUEST, location.clone().add(0, 2.25, 0));
+		QuestMarker.createMarker(location.clone().add(0, 2.25, 0));
 
 		sequence1 = new InteractionSequence(3, 3) {
 			@Override

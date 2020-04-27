@@ -85,6 +85,7 @@ public abstract class AbstractUndead extends NonPlayerCharacter {
 
 	@Override
 	public void spawn() {
+		setLocation(spawnLocation);
 		super.spawn();
 		hitbox.setActive(true);
 		entity = (Zombie) spawnLocation.getWorld().spawnEntity(spawnLocation, entityType);
@@ -109,7 +110,6 @@ public abstract class AbstractUndead extends NonPlayerCharacter {
 		movementSyncer.setEnabled(false);
 		entity.remove();
 		entityMap.remove(entity);
-		setLocation(spawnLocation);
 	}
 
 	@Override
@@ -135,7 +135,6 @@ public abstract class AbstractUndead extends NonPlayerCharacter {
 		Location location = getLocation();
 		DEATH_NOISE.play(location);
 		location.getWorld().spawnParticle(Particle.CLOUD, location, 10);
-		setLocation(spawnLocation);
 		if (respawnTime > 0) {
 			DelayedTask respawn = new DelayedTask(respawnTime) {
 				@Override

@@ -40,6 +40,7 @@ public class MageListener implements Listener {
 			63.0, 67.0, 71.0, 75.0, 79.0, 83.0, 87.0, 91.0 };
 	private static final double[] MANA_REGEN_RATE = { 2.0, 2.5, 3.0, 3.5, 4.0, 4.5, 5.0, 5.5, 6.0, 6.5, 7.0, 7.5, 8.0,
 			8.5, 9.0, 9.5, 10.0, 10.5, 11.0, 11.5 };
+	public static final double STANDARD_SILENCE_DURATION = 2;
 
 	private static final Noise FIREBALL_CONJURE_NOISE = new Noise(Sound.ENTITY_ZOMBIE_VILLAGER_CURE);
 	private static final Noise FIREBALL_EXPLODE_1_NOISE = new Noise(Sound.ENTITY_GENERIC_EXPLODE);
@@ -123,7 +124,7 @@ public class MageListener implements Listener {
 	}
 
 	private void useFireball(PlayerCharacter pc) {
-		double damageAmount = 10 * fireball.getUpgradeLevel(pc);
+		double damageAmount = 10 * fireball.getUpgradeLevel(pc) + 5 * pc.getLevel();
 		double range = 15;
 		Location start = getWeaponLocation(pc).subtract(0, 1, 0);
 		Vector lookDirection = start.getDirection();
@@ -191,9 +192,11 @@ public class MageListener implements Listener {
 			}
 		};
 		projectile.fire();
+		pc.silence(STANDARD_SILENCE_DURATION);
 	}
 
 	private void useIceBeam(PlayerCharacter pc) {
+		double damagePerTick = 2 * iceBeam.getUpgradeLevel(pc) + 0.5 * pc.getLevel();
 		double duration = 4;
 		double period = 0.1;
 		double maxCount = duration / period;
@@ -205,9 +208,9 @@ public class MageListener implements Listener {
 			protected void run() {
 				Location targetLocationTemp = pc.getTargetLocation(15);
 				AbstractCharacter targetCharacterTemp = null;
-				Location startLocation = getWeaponLocation(pc);
-				Ray ray = new Ray(startLocation, startLocation.getDirection(), 15);
-				Raycast raycast = new Raycast(ray, CharacterCollider.class);
+				Location crosshair = pc.getLocation().add(0, 1.5, 0);
+				Ray hitDetection = new Ray(crosshair, crosshair.getDirection(), 15);
+				Raycast raycast = new Raycast(hitDetection, CharacterCollider.class);
 				Collider[] hits = raycast.getHits();
 				for (Collider hit : hits) {
 					if (hit instanceof CharacterCollider) {
@@ -216,8 +219,8 @@ public class MageListener implements Listener {
 							Location hitLocation = hit.getCenter();
 							if (targetLocationTemp == null) {
 								targetLocationTemp = hitLocation;
-							} else if (hitLocation.distanceSquared(startLocation) < targetLocationTemp
-									.distanceSquared(startLocation)) {
+							} else if (hitLocation.distanceSquared(crosshair) < targetLocationTemp
+									.distanceSquared(crosshair)) {
 								targetLocationTemp = hitLocation;
 								targetCharacterTemp = character;
 							}
@@ -227,10 +230,11 @@ public class MageListener implements Listener {
 				final Location targetLocation = targetLocationTemp;
 				final AbstractCharacter targetCharacter = targetCharacterTemp;
 
+				Location startLocation = getWeaponLocation(pc);
 				Ray beam = new Ray(startLocation, targetLocation);
 				beam.draw(Particle.CRIT_MAGIC, 1);
 				if (count % 3 == 0 && targetCharacter != null) {
-					targetCharacter.damage(1.5, pc);
+					targetCharacter.damage(damagePerTick, pc);
 					Location hitLocation = targetCharacter.getLocation().add(0, 1, 0);
 					world.spawnParticle(Particle.FIREWORKS_SPARK, hitLocation, 10);
 					new Noise(Sound.BLOCK_GLASS_BREAK).play(hitLocation);
@@ -242,10 +246,11 @@ public class MageListener implements Listener {
 			}
 		};
 		channel.schedule();
-		pc.silence(duration);
+		pc.silence(duration + STANDARD_SILENCE_DURATION);
 	}
 
 	private void useWhirlwind(PlayerCharacter pc) {
+		double damagePerTick = 1.5 * whirlwind.getUpgradeLevel(pc) + 0.5 * pc.getLevel();
 		Location targetTemp = pc.getTargetLocation(15);
 		Location location = pc.getLocation().add(0, 1.5, 0);
 		Ray ray = new Ray(location, location.getDirection(), 15);
@@ -294,7 +299,7 @@ public class MageListener implements Listener {
 					if (collider instanceof CharacterCollider) {
 						AbstractCharacter character = ((CharacterCollider) collider).getCharacter();
 						if (!character.isFriendly(pc)) {
-							character.damage(5, pc);
+							character.damage(damagePerTick, pc);
 						}
 					}
 				}
@@ -306,6 +311,7 @@ public class MageListener implements Listener {
 			}
 		};
 		update.schedule();
+		pc.silence(STANDARD_SILENCE_DURATION);
 	}
 
 	private void drawWhirlwind(Location location) {
@@ -322,11 +328,12 @@ public class MageListener implements Listener {
 	}
 
 	private void useEarthquake(PlayerCharacter pc) {
-		Location center = pc.getLocation();
+		double damagePerTick = 2 * earthquake.getUpgradeLevel(pc) + 1 * pc.getLevel();
 		double size = 15;
+		int particleCount = 100;
+		Location center = pc.getLocation();
 		Collider hitbox = new Collider(center, size, 1, size);
 		hitbox.setActive(true);
-		int particleCount = 100;
 		World world = center.getWorld();
 		BlockData particleData = Material.DIRT.createBlockData();
 		RepeatingTask update = new RepeatingTask(0.1) {
@@ -351,7 +358,7 @@ public class MageListener implements Listener {
 						if (collider instanceof CharacterCollider) {
 							AbstractCharacter character = ((CharacterCollider) collider).getCharacter();
 							if (!character.isFriendly(pc)) {
-								character.damage(2, pc);
+								character.damage(damagePerTick, pc);
 							}
 						}
 					}
@@ -364,13 +371,14 @@ public class MageListener implements Listener {
 			}
 		};
 		update.schedule();
+		pc.silence(STANDARD_SILENCE_DURATION);
 	}
 
 	private void useRestore(PlayerCharacter pc) {
+		double healAmount = restore.getUpgradeLevel(pc) * 10 + 4 * pc.getLevel();
 		double size = 4;
 		int projectileParticleCount = 10;
 		int boxParticleCount = 75;
-		double healAmount = restore.getUpgradeLevel(pc) * 10;
 		Location start = getWeaponLocation(pc);
 		Vector velocity = start.getDirection().multiply(4);
 		Location end = pc.getTargetLocation(15);
@@ -434,11 +442,12 @@ public class MageListener implements Listener {
 			}
 		};
 		projectile.fire();
+		pc.silence(STANDARD_SILENCE_DURATION);
 	}
 
 	private void useShadowVoid(PlayerCharacter pc) {
+		double damageAmount = 15 * shadowVoid.getUpgradeLevel(pc) + 8 * pc.getLevel();
 		double size = 10;
-		double damageAmount = 10 * shadowVoid.getUpgradeLevel(pc);
 		SHADOW_VOID_USE_NOISE.play(pc.getLocation());
 		Location targetTemp = pc.getTargetLocation(15);
 		Location location = pc.getLocation().add(0, 1.5, 0);
@@ -494,6 +503,7 @@ public class MageListener implements Listener {
 				count++;
 			}
 		}.schedule();
+		pc.silence(STANDARD_SILENCE_DURATION);
 	}
 
 }
