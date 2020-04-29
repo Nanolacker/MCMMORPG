@@ -10,6 +10,7 @@ import com.mcmmorpg.common.character.PlayerCharacter.PlayerCharacterCollider;
 import com.mcmmorpg.common.event.PlayerCharacterLevelUpEvent;
 import com.mcmmorpg.common.physics.Collider;
 import com.mcmmorpg.impl.Quests;
+import com.mcmmorpg.impl.Soundtracks;
 import com.mcmmorpg.impl.Worlds;
 import com.mcmmorpg.impl.npcs.Chicken;
 import com.mcmmorpg.impl.npcs.Highwayman;
@@ -36,10 +37,22 @@ public class MelcherListener implements Listener {
 				if (other instanceof PlayerCharacterCollider) {
 					PlayerCharacter pc = ((PlayerCharacterCollider) other).getCharacter();
 					pc.setZone(ChatColor.GREEN + "Melcher");
+					pc.getSoundTrackPlayer().setSoundtrack(Soundtracks.VILLAGE);
 				}
 			}
 		};
 		entranceBounds.setActive(true);
+		Collider exitBounds = new Collider(Worlds.ELADRADOR, -1191, 63, 105, -925, 131, 305) {
+			@Override
+			protected void onCollisionEnter(Collider other) {
+				if (other instanceof PlayerCharacterCollider) {
+					PlayerCharacter pc = ((PlayerCharacterCollider) other).getCharacter();
+					pc.setZone(ChatColor.GREEN + "Eladrador");
+					pc.getSoundTrackPlayer().setSoundtrack(Soundtracks.WILDNERNESS);
+				}
+			}
+		};
+		exitBounds.setActive(true);
 	}
 
 	private void setUpNpcs() {

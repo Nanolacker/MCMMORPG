@@ -329,7 +329,7 @@ public class PlayerCharacterSelectionListener implements Listener {
 					player.openInventory(PLAYER_CLASS_SELECT_INVENTORY);
 				} else {
 					selectCharacter(player, data);
-					SELECT_CHARACTER_NOISE.play(player);
+					// SELECT_CHARACTER_NOISE.play(player);
 				}
 			}
 		} else if (openMenu == Menu.SELECT_PLAYER_CLASS) {
