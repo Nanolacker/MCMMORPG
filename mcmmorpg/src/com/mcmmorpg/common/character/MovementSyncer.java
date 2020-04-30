@@ -1,7 +1,7 @@
 package com.mcmmorpg.common.character;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
@@ -15,14 +15,14 @@ public class MovementSyncer {
 
 	private static final double SYNC_PERIOD = 0.1;
 
-	private static final Set<MovementSyncer> activeSyncers;
+	private static final List<MovementSyncer> activeSyncers = new ArrayList<>();
 
 	static {
-		activeSyncers = new HashSet<>();
 		RepeatingTask syncTask = new RepeatingTask(SYNC_PERIOD) {
 			@Override
 			protected void run() {
-				for (MovementSyncer syncer : activeSyncers) {
+				for (int i = 0; i < activeSyncers.size(); i++) {
+					MovementSyncer syncer = activeSyncers.get(i);
 					AbstractCharacter character = syncer.getCharacter();
 					Entity entity = syncer.getEntity();
 					MovementSyncMode syncMode = syncer.getSyncMode();
@@ -48,9 +48,9 @@ public class MovementSyncer {
 	private Entity entity;
 	private MovementSyncMode syncMode;
 
-	public MovementSyncer(AbstractCharacter character, Entity entity, MovementSyncMode syncMode) {
+	public MovementSyncer(AbstractCharacter character, MovementSyncMode syncMode) {
 		this.character = character;
-		this.entity = entity;
+		this.entity = null;
 		this.syncMode = syncMode;
 	}
 

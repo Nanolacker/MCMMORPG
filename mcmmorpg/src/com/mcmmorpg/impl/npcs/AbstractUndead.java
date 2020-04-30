@@ -72,7 +72,7 @@ public abstract class AbstractUndead extends NonPlayerCharacter {
 		super.setMaxHealth(maxHealth());
 		this.spawnLocation = spawnLocation;
 		this.hitbox = new CharacterCollider(this, spawnLocation.clone().add(0, 1.25, 0), 1, 2.5, 1);
-		this.movementSyncer = new MovementSyncer(this, null, MovementSyncMode.CHARACTER_FOLLOWS_ENTITY);
+		this.movementSyncer = new MovementSyncer(this, MovementSyncMode.CHARACTER_FOLLOWS_ENTITY);
 		this.respawnTime = respawnTime;
 		this.entityType = entityType;
 	}

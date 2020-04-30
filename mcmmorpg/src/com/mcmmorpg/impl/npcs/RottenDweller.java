@@ -50,7 +50,7 @@ public class RottenDweller extends NonPlayerCharacter {
 		super.setHeight(1.5);
 		this.spawnLocation = spawnLocation;
 		hitbox = new CharacterCollider(this, spawnLocation, 1.5, 1, 1.5);
-		movementSyncer = new MovementSyncer(this, null, MovementSyncMode.CHARACTER_FOLLOWS_ENTITY);
+		movementSyncer = new MovementSyncer(this, MovementSyncMode.CHARACTER_FOLLOWS_ENTITY);
 		bossBar = Bukkit.createBossBar(getName(), BarColor.RED, BarStyle.SEGMENTED_10);
 		bossBarArea = new Collider(spawnLocation, 30, 6, 30) {
 			@Override

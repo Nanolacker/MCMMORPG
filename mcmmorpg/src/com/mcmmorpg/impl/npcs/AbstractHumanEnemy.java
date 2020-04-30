@@ -78,7 +78,7 @@ public abstract class AbstractHumanEnemy extends NonPlayerCharacter {
 		this.spawnLocation = spawnLocation;
 		this.respawnTime = respawnTime;
 		this.hitbox = new CharacterCollider(this, spawnLocation.clone().add(0, 1, 0), 1, 2, 1);
-		this.aiSyncer = new MovementSyncer(this, null, MovementSyncMode.CHARACTER_FOLLOWS_ENTITY);
+		this.aiSyncer = new MovementSyncer(this, MovementSyncMode.CHARACTER_FOLLOWS_ENTITY);
 		super.setMaxHealth(maxHealth());
 	}
 

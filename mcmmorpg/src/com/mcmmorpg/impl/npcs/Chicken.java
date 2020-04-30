@@ -17,7 +17,7 @@ public class Chicken extends NonPlayerCharacter {
 	public Chicken(Location spawnLocation) {
 		super(ChatColor.GREEN + "Chicken", 1, spawnLocation);
 		this.spawnLocation = spawnLocation;
-		this.movementSyncer = new MovementSyncer(this, null, MovementSyncMode.CHARACTER_FOLLOWS_ENTITY);
+		this.movementSyncer = new MovementSyncer(this, MovementSyncMode.CHARACTER_FOLLOWS_ENTITY);
 		super.setHeight(1);
 	}
 

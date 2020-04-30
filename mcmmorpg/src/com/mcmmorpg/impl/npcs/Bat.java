@@ -68,7 +68,7 @@ public class Bat extends NonPlayerCharacter {
 		super.setHeight(1);
 		this.spawnLocation = spawnLocation;
 		hitbox = new CharacterCollider(this, spawnLocation.clone(), 2, 2, 2);
-		aiSyncer = new MovementSyncer(this, null, MovementSyncMode.CHARACTER_FOLLOWS_ENTITY);
+		aiSyncer = new MovementSyncer(this, MovementSyncMode.CHARACTER_FOLLOWS_ENTITY);
 	}
 
 	private double maxHealth() {

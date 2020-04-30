@@ -23,7 +23,7 @@ public class BanditLeader extends AbstractHumanEnemy {
 	private final BossBar bossBar;
 	private final Collider bossBarArea;
 
-	protected BanditLeader(Location spawnLocation) {
+	public BanditLeader(Location spawnLocation) {
 		super(ChatColor.RED + "Bandit Leader", LEVEL, spawnLocation, RESPAWN_TIME, TEXTURE_DATA, TEXTURE_SIGNATURE);
 		bossBar = Bukkit.createBossBar(getName(), BarColor.RED, BarStyle.SEGMENTED_10);
 		bossBarArea = new Collider(spawnLocation, 30, 6, 30) {

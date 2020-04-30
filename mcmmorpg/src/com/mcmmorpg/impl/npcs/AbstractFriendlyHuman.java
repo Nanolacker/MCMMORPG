@@ -36,7 +36,7 @@ public abstract class AbstractFriendlyHuman extends NonPlayerCharacter {
 				AbstractFriendlyHuman.this.onInteract(pc);
 			}
 		};
-		this.aiSyncer = new MovementSyncer(this, null, MovementSyncMode.CHARACTER_FOLLOWS_ENTITY);
+		this.aiSyncer = new MovementSyncer(this, MovementSyncMode.CHARACTER_FOLLOWS_ENTITY);
 	}
 
 	@Override

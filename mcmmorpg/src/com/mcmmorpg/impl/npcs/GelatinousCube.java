@@ -90,7 +90,7 @@ public class GelatinousCube extends NonPlayerCharacter {
 		super.setHeight(4);
 		this.spawnLocation = spawnLocation;
 		hitbox = new CharacterCollider(this, spawnLocation, 3.5, 3.5, 3.5);
-		movementSyncer = new MovementSyncer(this, null, MovementSyncMode.CHARACTER_FOLLOWS_ENTITY);
+		movementSyncer = new MovementSyncer(this, MovementSyncMode.CHARACTER_FOLLOWS_ENTITY);
 		useAcidSprayTask = new RepeatingTask(0.5) {
 			@Override
 			protected void run() {
