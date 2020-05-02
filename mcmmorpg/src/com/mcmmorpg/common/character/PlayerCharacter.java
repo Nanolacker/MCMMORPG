@@ -127,7 +127,8 @@ public final class PlayerCharacter extends AbstractCharacter {
 		this.collider = new PlayerCharacterCollider(this);
 		player.teleport(getLocation());
 
-		this.movementSyncer = new MovementSyncer(this, player, MovementSyncMode.CHARACTER_FOLLOWS_ENTITY);
+		this.movementSyncer = new MovementSyncer(this, MovementSyncMode.CHARACTER_FOLLOWS_ENTITY);
+		movementSyncer.setEntity(player);
 		movementSyncer.setEnabled(true);
 		collider.setActive(true);
 
@@ -760,6 +761,7 @@ public final class PlayerCharacter extends AbstractCharacter {
 	public void remove() {
 		active = false;
 		collider.setActive(false);
+		soundtrackPlayer.setSoundtrack(null);
 		movementSyncer.setEnabled(false);
 		pcs.remove(this);
 		playerMap.remove(player);

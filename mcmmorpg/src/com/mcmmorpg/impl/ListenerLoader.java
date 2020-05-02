@@ -4,7 +4,7 @@ import com.mcmmorpg.common.event.EventManager;
 import com.mcmmorpg.impl.locations.BulskanRuinsListener;
 import com.mcmmorpg.impl.locations.CrestfordGraveyardListener;
 import com.mcmmorpg.impl.locations.CrestfordListener;
-import com.mcmmorpg.impl.locations.CrestfordSewersListener;
+import com.mcmmorpg.impl.locations.FlintonSewersListener;
 import com.mcmmorpg.impl.locations.OakshireListener;
 import com.mcmmorpg.impl.locations.MelcherListener;
 import com.mcmmorpg.impl.locations.FlintonListener;
@@ -24,7 +24,7 @@ public class ListenerLoader {
 		EventManager.registerEvents(new MelcherListener());
 		EventManager.registerEvents(new OakshireListener());
 		EventManager.registerEvents(new CrestfordListener());
-		EventManager.registerEvents(new CrestfordSewersListener());
+		EventManager.registerEvents(new FlintonSewersListener());
 		EventManager.registerEvents(new CrestfordGraveyardListener());
 		EventManager.registerEvents(new BulskanRuinsListener());
 		EventManager.registerEvents(new FlintonListener());

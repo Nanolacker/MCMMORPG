@@ -67,7 +67,7 @@ public abstract class AbstractUndead extends NonPlayerCharacter {
 		EventManager.registerEvents(listener);
 	}
 
-	public AbstractUndead(String name, int level, Location spawnLocation, double respawnTime, EntityType entityType) {
+	protected AbstractUndead(String name, int level, Location spawnLocation, double respawnTime, EntityType entityType) {
 		super(name, level, spawnLocation);
 		super.setMaxHealth(maxHealth());
 		this.spawnLocation = spawnLocation;

@@ -18,7 +18,7 @@ import com.mcmmorpg.impl.npcs.Horse;
 import com.mcmmorpg.impl.npcs.MelcherFarmer;
 import com.mcmmorpg.impl.npcs.MelcherLumberjack;
 import com.mcmmorpg.impl.npcs.MelcherVillager;
-import com.mcmmorpg.impl.npcs.RottenDweller;
+import com.mcmmorpg.impl.npcs.Broodmother;
 import com.mcmmorpg.impl.npcs.Thief;
 import com.mcmmorpg.impl.npcs.TrainingDummy;
 import com.mcmmorpg.impl.npcs.WildBoar;
@@ -65,6 +65,7 @@ public class MelcherListener implements Listener {
 		spawnThieves();
 		spawnWildBoars();
 		spawnHighwaymen();
+		new Broodmother(new Location(Worlds.ELADRADOR, -1138, 73, 260)).setAlive(true);
 	}
 
 	private void spawnVillagers() {
@@ -89,7 +90,6 @@ public class MelcherListener implements Listener {
 	private void spawnLumberjacks() {
 		Location[] lumberjackLocations = { new Location(Worlds.ELADRADOR, -1049, 70, 232, 225, 0) };
 		for (Location location : lumberjackLocations) {
-			new RottenDweller(location).setAlive(true);
 			new MelcherLumberjack(location).setAlive(true);
 		}
 	}
