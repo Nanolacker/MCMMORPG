@@ -14,6 +14,7 @@ import com.mcmmorpg.common.character.Source;
 import com.mcmmorpg.common.physics.Collider;
 import com.mcmmorpg.common.sound.Noise;
 import com.mcmmorpg.common.time.RepeatingTask;
+import com.mcmmorpg.impl.Soundtracks;
 import com.mcmmorpg.impl.Worlds;
 
 public class FlintonSewersListener implements Listener {
@@ -30,9 +31,27 @@ public class FlintonSewersListener implements Listener {
 	}
 
 	private void setUpBounds() {
-		innerBounds = new Collider(Worlds.ELADRADOR, 0, 0, 0, 0, 0, 0);
+		innerBounds = new Collider(Worlds.ELADRADOR, 0, 0, 0, 0, 0, 0) {
+			@Override
+			protected void onCollisionEnter(Collider other) {
+				if (other instanceof PlayerCharacterCollider) {
+					PlayerCharacter pc = ((PlayerCharacterCollider) other).getCharacter();
+					pc.setZone(ChatColor.GRAY + "Flinton Sewers");
+					pc.getSoundTrackPlayer().setSoundtrack(Soundtracks.DUNGEON);
+				}
+			}
+		};
 		innerBounds.setActive(true);
-		Collider outerBounds = new Collider(Worlds.ELADRADOR, 0, 0, 0, 0, 0, 0);
+		Collider outerBounds = new Collider(Worlds.ELADRADOR, 0, 0, 0, 0, 0, 0) {
+			@Override
+			protected void onCollisionEnter(Collider other) {
+				if (other instanceof PlayerCharacterCollider) {
+					PlayerCharacter pc = ((PlayerCharacterCollider) other).getCharacter();
+					pc.setZone(ChatColor.GREEN + "Flinton");
+					pc.getSoundTrackPlayer().setSoundtrack(Soundtracks.VILLAGE);
+				}
+			}
+		};
 		outerBounds.setActive(true);
 	}
 

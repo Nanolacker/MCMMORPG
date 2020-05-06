@@ -12,13 +12,15 @@ import com.mcmmorpg.common.physics.Collider;
 import com.mcmmorpg.impl.Quests;
 import com.mcmmorpg.impl.Soundtracks;
 import com.mcmmorpg.impl.Worlds;
+import com.mcmmorpg.impl.npcs.Broodmother;
 import com.mcmmorpg.impl.npcs.Chicken;
+import com.mcmmorpg.impl.npcs.MelcherDrunkard;
+import com.mcmmorpg.impl.npcs.ForestSpider;
 import com.mcmmorpg.impl.npcs.Highwayman;
 import com.mcmmorpg.impl.npcs.Horse;
 import com.mcmmorpg.impl.npcs.MelcherFarmer;
 import com.mcmmorpg.impl.npcs.MelcherLumberjack;
 import com.mcmmorpg.impl.npcs.MelcherVillager;
-import com.mcmmorpg.impl.npcs.Broodmother;
 import com.mcmmorpg.impl.npcs.Thief;
 import com.mcmmorpg.impl.npcs.TrainingDummy;
 import com.mcmmorpg.impl.npcs.WildBoar;
@@ -44,7 +46,7 @@ public class MelcherListener implements Listener {
 		entranceBounds.setActive(true);
 		Collider exitBounds = new Collider(Worlds.ELADRADOR, -1191, 63, 105, -925, 131, 305) {
 			@Override
-			protected void onCollisionEnter(Collider other) {
+			protected void onCollisionExit(Collider other) {
 				if (other instanceof PlayerCharacterCollider) {
 					PlayerCharacter pc = ((PlayerCharacterCollider) other).getCharacter();
 					pc.setZone(ChatColor.GREEN + "Eladrador");
@@ -59,13 +61,15 @@ public class MelcherListener implements Listener {
 		spawnVillagers();
 		spawnLumberjacks();
 		spawnFarmer();
+		spawnDrunkard();
 		spawnTrainingDummies();
 		spawnChickens();
 		spawnHorses();
 		spawnThieves();
 		spawnWildBoars();
 		spawnHighwaymen();
-		new Broodmother(new Location(Worlds.ELADRADOR, -1138, 73, 260)).setAlive(true);
+		spawnForestSpiders();
+		spawnBroodmother();
 	}
 
 	private void spawnVillagers() {
@@ -97,6 +101,11 @@ public class MelcherListener implements Listener {
 	private void spawnFarmer() {
 		Location farmerLocation = new Location(Worlds.ELADRADOR, -1166, 73, 246);
 		new MelcherFarmer(farmerLocation).setAlive(true);
+	}
+
+	private void spawnDrunkard() {
+		Location drunkardLocation = new Location(Worlds.ELADRADOR, -1163, 73, 246);
+		new MelcherDrunkard(drunkardLocation).setAlive(true);
 	}
 
 	private void spawnTrainingDummies() {
@@ -153,6 +162,18 @@ public class MelcherListener implements Listener {
 		for (Location location : highwaymenLocations) {
 			new Highwayman(location).setAlive(true);
 		}
+	}
+
+	private void spawnForestSpiders() {
+		Location[] forestSpiderLocations = {};
+		for (Location location : forestSpiderLocations) {
+			new ForestSpider(location).setAlive(true);
+		}
+	}
+
+	private void spawnBroodmother() {
+		Location broodmotherLocation = new Location(Worlds.ELADRADOR, -1138, 73, 260);
+		new Broodmother(broodmotherLocation).setAlive(true);
 	}
 
 	@EventHandler

@@ -12,5 +12,6 @@ public class Quests {
 	public static final Quest TO_THE_AID_OF_OAKSHIRE = Quest.forName("To the Aid of Oakshire");
 	public static final Quest REMOVING_THE_BANDITS = Quest.forName("Removing the Bandits");
 	public static final Quest RESCUING_THE_RESIDENTS = Quest.forName("Rescuing the Residents");
+	public static final Quest CALMING_THE_TAVERN = Quest.forName("Calming the Tavern");
 
 }

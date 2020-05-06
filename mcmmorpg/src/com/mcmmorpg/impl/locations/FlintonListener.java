@@ -33,7 +33,7 @@ public class FlintonListener implements Listener {
 		entranceBounds.setActive(true);
 		Collider exitBounds = new Collider(Worlds.ELADRADOR, 0, 0, 0, 0, 0, 0) {
 			@Override
-			protected void onCollisionEnter(Collider other) {
+			protected void onCollisionExit(Collider other) {
 				if (other instanceof PlayerCharacterCollider) {
 					PlayerCharacter pc = ((PlayerCharacterCollider) other).getCharacter();
 					pc.setZone(ChatColor.GREEN + "Eladrador");

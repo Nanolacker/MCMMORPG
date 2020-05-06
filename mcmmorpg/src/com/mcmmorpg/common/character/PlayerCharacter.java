@@ -347,6 +347,9 @@ public final class PlayerCharacter extends AbstractCharacter {
 	}
 
 	public void grantXp(int xp) {
+		if (xp == 0) {
+			return;
+		}
 		this.xp += xp;
 		this.xp = (int) MathUtils.clamp(this.xp, 0, MAX_XP);
 		sendMessage(ChatColor.GREEN + "+" + xp + " XP!");
