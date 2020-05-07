@@ -38,8 +38,7 @@ public class Highwayman extends AbstractHumanEnemy {
 	@Override
 	protected void spawn() {
 		super.spawn();
-		ai.getEquipment().setItemInMainHand(new ItemStack(Material.IRON_SWORD));
-		ai.getEquipment().setItemInMainHandDropChance(0f);
+		entity.setMainHand(new ItemStack(Material.IRON_SWORD));
 	}
 
 }
