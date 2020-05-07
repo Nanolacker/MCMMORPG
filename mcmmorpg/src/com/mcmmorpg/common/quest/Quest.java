@@ -111,7 +111,6 @@ public class Quest {
 
 	ItemStack getQuestLogItemStack(PlayerCharacter pc) {
 		String lore = ChatColor.GOLD + "Level " + level + " Quest\n\n" + getQuestLogLines(pc);
-		lore += ChatColor.GRAY + "Click to track this quest";
 		return ItemFactory.createItemStack(ChatColor.YELLOW + name, lore, Material.BOOK);
 	}
 

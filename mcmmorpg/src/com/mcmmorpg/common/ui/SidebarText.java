@@ -1,6 +1,8 @@
 package com.mcmmorpg.common.ui;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -11,6 +13,8 @@ import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.ScoreboardManager;
 
 import com.mcmmorpg.common.utils.StringUtils;
+
+import net.md_5.bungee.api.ChatColor;
 
 /**
  * Uses scoreboards to display text on a player's sidebar.
@@ -35,8 +39,13 @@ public class SidebarText {
 		objective.setDisplaySlot(DisplaySlot.SIDEBAR);
 
 		List<String> lines = StringUtils.lineSplit(text);
+		Set<String> usedLines = new HashSet<>();
 		for (int i = 0; i < lines.size(); i++) {
 			String line = lines.get(i);
+			while (usedLines.contains(line)) {
+				line = ChatColor.RESET + line;
+			}
+			usedLines.add(line);
 			Score score = objective.getScore(line);
 			score.setScore(lines.size() - i - 1);
 		}

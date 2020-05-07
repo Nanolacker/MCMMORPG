@@ -5,6 +5,7 @@ import org.bukkit.Location;
 import org.bukkit.Sound;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.EntityType;
+
 import com.mcmmorpg.common.character.CharacterCollider;
 import com.mcmmorpg.common.character.NonPlayerCharacter;
 import com.mcmmorpg.common.character.Source;

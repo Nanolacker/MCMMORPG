@@ -13,7 +13,7 @@ import com.mcmmorpg.common.time.RepeatingTask;
  */
 public class MovementSyncer {
 
-	private static final double SYNC_PERIOD = 0.2;
+	private static final double SYNC_PERIOD = 0.1;
 
 	private static final List<MovementSyncer> activeSyncers = new ArrayList<>();
 

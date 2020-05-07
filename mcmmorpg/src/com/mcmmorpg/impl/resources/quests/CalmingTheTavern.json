@@ -1,0 +1,14 @@
+{
+	"name": "Calming the Tavern",
+	"level": 1,
+	"objectives": [
+		{
+			"goal": 1,
+			"description": "Calm down the §7[§eDrunkard§7]"
+		},
+		{
+			"goal": 1,
+			"description": "Return to the §7[§aBartender§7]§f"
+		}
+	]
+}

@@ -2,6 +2,7 @@ package com.mcmmorpg.common.utils;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import org.bukkit.ChatColor;
 
 public class StringUtils {

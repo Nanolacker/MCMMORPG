@@ -77,6 +77,9 @@ public class Item {
 	}
 
 	public void drop(Location location, int amount) {
+		if (amount == 0) {
+			return;
+		}
 		World world = location.getWorld();
 		ItemStack itemStack = this.itemStack.clone();
 		itemStack.setAmount(amount);
@@ -88,6 +91,10 @@ public class Item {
 	@Override
 	public String toString() {
 		return rarity.getColor() + name;
+	}
+
+	public String formatName() {
+		return ChatColor.WHITE + "[" + toString() + ChatColor.WHITE + "]";
 	}
 
 }

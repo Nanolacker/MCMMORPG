@@ -110,7 +110,7 @@ public class PlayerCharacterSelectionListener implements Listener {
 		DELETE_CONFIRM_INVENTORY.setItem(2, confirmItemStack);
 		DELETE_CONFIRM_INVENTORY.setItem(6, cancelItemStack);
 		STARTING_ZONE = ChatColor.GREEN + "Melcher";
-		STARTING_LOCATION = new Location(Worlds.ELADRADOR, -1236, 64, 276);
+		STARTING_LOCATION = new Location(Worlds.ELADRADOR, -1179, 72, 260, -90, 0);
 		INVISIBILITY = new PotionEffect(PotionEffectType.INVISIBILITY, Integer.MAX_VALUE, 1);
 	}
 

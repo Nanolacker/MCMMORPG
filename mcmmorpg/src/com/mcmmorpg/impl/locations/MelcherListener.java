@@ -14,10 +14,12 @@ import com.mcmmorpg.impl.Soundtracks;
 import com.mcmmorpg.impl.Worlds;
 import com.mcmmorpg.impl.npcs.Broodmother;
 import com.mcmmorpg.impl.npcs.Chicken;
-import com.mcmmorpg.impl.npcs.MelcherDrunkard;
 import com.mcmmorpg.impl.npcs.ForestSpider;
 import com.mcmmorpg.impl.npcs.Highwayman;
 import com.mcmmorpg.impl.npcs.Horse;
+import com.mcmmorpg.impl.npcs.GuardJames;
+import com.mcmmorpg.impl.npcs.MelcherBartender;
+import com.mcmmorpg.impl.npcs.MelcherDrunkard;
 import com.mcmmorpg.impl.npcs.MelcherFarmer;
 import com.mcmmorpg.impl.npcs.MelcherLumberjack;
 import com.mcmmorpg.impl.npcs.MelcherVillager;
@@ -60,7 +62,9 @@ public class MelcherListener implements Listener {
 	private void setUpNpcs() {
 		spawnVillagers();
 		spawnLumberjacks();
+		spawnGuardJames();
 		spawnFarmer();
+		spawnBartender();
 		spawnDrunkard();
 		spawnTrainingDummies();
 		spawnChickens();
@@ -98,13 +102,23 @@ public class MelcherListener implements Listener {
 		}
 	}
 
+	private void spawnGuardJames() {
+		Location guardJamesLocation = new Location(Worlds.ELADRADOR, -1120, 73, 245);
+		new GuardJames(guardJamesLocation).setAlive(true);
+	}
+
 	private void spawnFarmer() {
 		Location farmerLocation = new Location(Worlds.ELADRADOR, -1166, 73, 246);
 		new MelcherFarmer(farmerLocation).setAlive(true);
 	}
 
+	private void spawnBartender() {
+		Location bartenderLocation = new Location(Worlds.ELADRADOR, -1082, 70, 225);
+		new MelcherBartender(bartenderLocation).setAlive(true);
+	}
+
 	private void spawnDrunkard() {
-		Location drunkardLocation = new Location(Worlds.ELADRADOR, -1163, 73, 246);
+		Location drunkardLocation = new Location(Worlds.ELADRADOR, -1080, 70, 225);
 		new MelcherDrunkard(drunkardLocation).setAlive(true);
 	}
 

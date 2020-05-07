@@ -7,6 +7,8 @@ import org.bukkit.Sound;
 import com.mcmmorpg.common.character.PlayerCharacter;
 import com.mcmmorpg.common.quest.QuestMarker;
 import com.mcmmorpg.common.sound.Noise;
+import com.mcmmorpg.impl.Items;
+import com.mcmmorpg.impl.Quests;
 
 public class MelcherFarmer extends StaticHuman {
 
@@ -21,6 +23,8 @@ public class MelcherFarmer extends StaticHuman {
 
 	@Override
 	protected void onInteract(PlayerCharacter pc) {
+		say("Help me recover some " + Items.FOOD_SUPPLIES.formatName() + " from the bandits.", pc);
+		Quests.RECOVERING_THE_FOOD.start(pc);
 		SPEAK_NOISE.play(pc);
 	}
 

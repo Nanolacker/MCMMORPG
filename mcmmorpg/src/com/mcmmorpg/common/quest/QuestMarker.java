@@ -25,9 +25,11 @@ public class QuestMarker {
 			protected void onCollisionEnter(Collider other) {
 				if (other instanceof PlayerCharacterCollider) {
 					PlayerCharacter pc = ((PlayerCharacterCollider) other).getCharacter();
-					pc.sendMessage(String.format(
-							ChatColor.YELLOW + "Quest marker " + ChatColor.GRAY + "located at (%.0f, %.0f, %.0f)",
-							location.getX(), location.getY(), location.getZ()));
+					pc.sendMessage(
+							String.format(
+									ChatColor.YELLOW + "Quest marker " + ChatColor.GRAY + "located at "
+											+ ChatColor.GREEN + "(%.0f, %.0f, %.0f)",
+									location.getX(), location.getY(), location.getZ()));
 				}
 			}
 		};

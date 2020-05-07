@@ -20,11 +20,11 @@ import org.bukkit.util.Vector;
 import com.mcmmorpg.common.character.CharacterCollider;
 import com.mcmmorpg.common.character.HumanEntity;
 import com.mcmmorpg.common.character.MovementSyncer;
+import com.mcmmorpg.common.character.MovementSyncer.MovementSyncMode;
+import com.mcmmorpg.common.character.NonPlayerCharacter;
 import com.mcmmorpg.common.character.PlayerCharacter;
 import com.mcmmorpg.common.character.Source;
 import com.mcmmorpg.common.character.XP;
-import com.mcmmorpg.common.character.MovementSyncer.MovementSyncMode;
-import com.mcmmorpg.common.character.NonPlayerCharacter;
 import com.mcmmorpg.common.event.EventManager;
 import com.mcmmorpg.common.sound.Noise;
 import com.mcmmorpg.common.time.DelayedTask;
@@ -33,12 +33,15 @@ public abstract class AbstractHumanEnemy extends NonPlayerCharacter {
 
 	private static final Noise HURT_NOISE = new Noise(Sound.ENTITY_PILLAGER_HURT);
 	private static final Noise DEATH_NOISE = new Noise(Sound.ENTITY_PILLAGER_DEATH);
+	private static final PotionEffect INVISIBILITY = new PotionEffect(PotionEffectType.INVISIBILITY, Integer.MAX_VALUE,
+			1);
 
 	protected static final Map<Zombie, AbstractHumanEnemy> aiMap = new HashMap<>();
 
 	protected final HumanEntity entity;
 	protected final Location spawnLocation;
 	protected final double respawnTime;
+	private int speed;
 	protected final CharacterCollider hitbox;
 	protected final MovementSyncer aiSyncer;
 	protected Zombie ai;
@@ -71,12 +74,13 @@ public abstract class AbstractHumanEnemy extends NonPlayerCharacter {
 		EventManager.registerEvents(listener);
 	}
 
-	protected AbstractHumanEnemy(String name, int level, Location spawnLocation, double respawnTime, String textureData,
-			String textureSignature) {
+	protected AbstractHumanEnemy(String name, int level, Location spawnLocation, double respawnTime, int speed,
+			String textureData, String textureSignature) {
 		super(name, level, spawnLocation);
 		this.entity = new HumanEntity(spawnLocation, textureData, textureSignature);
 		this.spawnLocation = spawnLocation;
 		this.respawnTime = respawnTime;
+		this.speed = speed;
 		this.hitbox = new CharacterCollider(this, spawnLocation.clone().add(0, 1, 0), 1, 2, 1);
 		this.aiSyncer = new MovementSyncer(this, MovementSyncMode.CHARACTER_FOLLOWS_ENTITY);
 		super.setMaxHealth(maxHealth());
@@ -95,9 +99,11 @@ public abstract class AbstractHumanEnemy extends NonPlayerCharacter {
 		hitbox.setActive(true);
 		entity.setVisible(true);
 		ai = (Zombie) spawnLocation.getWorld().spawnEntity(spawnLocation, EntityType.ZOMBIE);
-		ai.setBaby(true);
+		ai.setBaby(false);
 		ai.setSilent(true);
-		ai.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, Integer.MAX_VALUE, 1));
+		ai.addPotionEffect(INVISIBILITY);
+		PotionEffect speedEffect = new PotionEffect(PotionEffectType.SPEED, Integer.MAX_VALUE, speed);
+		ai.addPotionEffect(speedEffect);
 		ai.eject();
 		Entity vehicle = ai.getVehicle();
 		if (vehicle != null) {

@@ -13,8 +13,9 @@ public class MelcherBartender extends StaticHuman {
 	private static final int LEVEL = 2;
 	private static final String TEXTURE_DATA = "";
 	private static final String TEXTURE_SIGNATURE = "";
+	private static final int CALMING_THE_TAVERN_XP = 75;
 
-	protected MelcherBartender(Location location) {
+	public MelcherBartender(Location location) {
 		super(ChatColor.GREEN + "Bartender", LEVEL, location, TEXTURE_DATA, TEXTURE_SIGNATURE);
 		QuestMarker.createMarker(location.clone().add(0, 2.25, 0));
 	}
@@ -28,6 +29,7 @@ public class MelcherBartender extends StaticHuman {
 		case IN_PROGRESS:
 			if (Quests.CALMING_THE_TAVERN.getObjective(0).isComplete(pc)) {
 				Quests.CALMING_THE_TAVERN.getObjective(1).complete(pc);
+				pc.grantXp(CALMING_THE_TAVERN_XP);
 			}
 			break;
 		case NOT_STARTED:

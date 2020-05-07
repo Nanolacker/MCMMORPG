@@ -670,7 +670,8 @@ public final class PlayerCharacter extends AbstractCharacter {
 	public void updateQuestDisplay() {
 		String lines = "";
 		List<Quest> inProgressQuests = Quest.getInProgressQuests(this);
-		for (Quest quest : inProgressQuests) {
+		for (int i = 0; i < inProgressQuests.size(); i++) {
+			Quest quest = inProgressQuests.get(i);
 			lines += ChatColor.YELLOW + "" + ChatColor.BOLD + quest.getName() + ChatColor.RESET + "\n"
 					+ quest.getQuestLogLines(this) + "\n";
 		}

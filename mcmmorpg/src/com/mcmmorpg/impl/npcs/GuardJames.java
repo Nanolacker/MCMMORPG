@@ -14,19 +14,19 @@ import com.mcmmorpg.impl.Quests;
 /**
  * Quest-giver in Melcher.
  */
-public class James extends StaticHuman {
+public class GuardJames extends StaticHuman {
 
 	private static final String TEXTURE_DATA = "";
 	private static final String TEXTURE_SIGNATURE = "";
 	private static final Noise SPEAK_NOISE = new Noise(Sound.ENTITY_VILLAGER_AMBIENT, 1, 0.75f);
 
-	private final InteractionSequence turnInSequence;
-	private final InteractionSequence completeSequence;
+	private final InteractionSequence turnInInteraction;
+	private final InteractionSequence completeInteraction;
 
-	public James(Location location) {
-		super(ChatColor.GREEN + "James", 15, location, TEXTURE_DATA, TEXTURE_SIGNATURE);
+	public GuardJames(Location location) {
+		super(ChatColor.GREEN + "Guard James", 15, location, TEXTURE_DATA, TEXTURE_SIGNATURE);
 
-		turnInSequence = new InteractionSequence(1, 3) {
+		turnInInteraction = new InteractionSequence(1, 3) {
 			@Override
 			protected void onAdvance(PlayerCharacter pc, int messageIndex) {
 				if (messageIndex == 1) {
@@ -36,22 +36,22 @@ public class James extends StaticHuman {
 				}
 			}
 		};
-		completeSequence = new InteractionSequence(1, 3) {
+		completeInteraction = new InteractionSequence(1, 3) {
 			@Override
 			protected void onAdvance(PlayerCharacter pc, int messageIndex) {
 				SPEAK_NOISE.play(getLocation());
 			}
 		};
 
-		QuestMarker.createMarker(location.clone().add(0, 5, 0));
+		QuestMarker.createMarker(location.clone().add(0, 2.25, 0));
 	}
 
 	@Override
 	protected void onInteract(PlayerCharacter pc) {
-		if (Quests.REPORTING_FOR_DUTY.compareStatus(pc, QuestStatus.COMPLETED)) {
-			completeSequence.advance(pc);
+		if (!Quests.REPORTING_FOR_DUTY.compareStatus(pc, QuestStatus.COMPLETED)) {
+			completeInteraction.advance(pc);
 		} else {
-			turnInSequence.advance(pc);
+			turnInInteraction.advance(pc);
 		}
 	}
 

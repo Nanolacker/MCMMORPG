@@ -83,7 +83,10 @@ public abstract class AbstractSpider extends NonPlayerCharacter {
 		entity = (Spider) spawnLocation.getWorld().spawnEntity(spawnLocation, EntityType.SPIDER);
 		entity.setSilent(true);
 		entity.setRemoveWhenFarAway(false);
-		entity.eject();
+		Entity passenger = entity.getPassenger();
+		if (passenger != null) {
+			passenger.remove();
+		}
 		Entity vehicle = entity.getVehicle();
 		if (vehicle != null) {
 			vehicle.remove();

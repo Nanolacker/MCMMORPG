@@ -3,6 +3,7 @@ package com.mcmmorpg.impl.npcs;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Sound;
+
 import com.mcmmorpg.common.character.PlayerCharacter;
 import com.mcmmorpg.common.sound.Noise;
 
