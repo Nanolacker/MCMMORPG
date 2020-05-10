@@ -12,6 +12,7 @@ import com.mcmmorpg.common.physics.Collider;
 import com.mcmmorpg.impl.Quests;
 import com.mcmmorpg.impl.Soundtracks;
 import com.mcmmorpg.impl.Worlds;
+import com.mcmmorpg.impl.Zones;
 import com.mcmmorpg.impl.npcs.Broodmother;
 import com.mcmmorpg.impl.npcs.Chicken;
 import com.mcmmorpg.impl.npcs.ForestSpider;
@@ -22,6 +23,8 @@ import com.mcmmorpg.impl.npcs.MelcherBartender;
 import com.mcmmorpg.impl.npcs.MelcherAngeredDrunkard;
 import com.mcmmorpg.impl.npcs.MelcherFarmer;
 import com.mcmmorpg.impl.npcs.MelcherLumberjack;
+import com.mcmmorpg.impl.npcs.MelcherTavernKingRat;
+import com.mcmmorpg.impl.npcs.MelcherTavernRat;
 import com.mcmmorpg.impl.npcs.MelcherVillager;
 import com.mcmmorpg.impl.npcs.Thief;
 import com.mcmmorpg.impl.npcs.TrainingDummy;
@@ -54,6 +57,8 @@ public class MelcherListener implements Listener {
 			new Location(Worlds.ELADRADOR, -1167, 73, 242), new Location(Worlds.ELADRADOR, -1167, 73, 241) };
 	private static final Location[] HORSE_LOCATIONS = { new Location(Worlds.ELADRADOR, -1158, 73, 239),
 			new Location(Worlds.ELADRADOR, -1158, 73, 244), new Location(Worlds.ELADRADOR, -1158, 73, 249) };
+	private static final Location[] TAVERN_RAT_LOCATIONS = {};
+	private static final Location TAVERN_KING_RAT_LOCATION = new Location(Worlds.ELADRADOR, -1079, 70, 241);
 	private static final Location[] THIEF_LOCATIONS = { new Location(Worlds.ELADRADOR, -1157, 74, 173),
 			new Location(Worlds.ELADRADOR, -1150, 79, 147), new Location(Worlds.ELADRADOR, -1043, 74, 115),
 			new Location(Worlds.ELADRADOR, 981, 75, 111), new Location(Worlds.ELADRADOR, -919, 74, 123) };
@@ -61,8 +66,18 @@ public class MelcherListener implements Listener {
 			new Location(Worlds.ELADRADOR, -785, 72, 158), new Location(Worlds.ELADRADOR, -756, 72, 147),
 			new Location(Worlds.ELADRADOR, -751, 72, 128), new Location(Worlds.ELADRADOR, -744, 72, 96),
 			new Location(Worlds.ELADRADOR, -727, 71, 88), new Location(Worlds.ELADRADOR, -684, 65, 81) };
-	private static final Location[] FOREST_SPIDER_LOCATIONS = {};
-	private static final Location BROODMOTHER_LOCATION = new Location(Worlds.ELADRADOR, -1138, 73, 260);
+	private static final Location[] FOREST_SPIDER_LOCATIONS = {
+			new Location(Worlds.ELADRADOR, -815.000000, 71.000000, 159.000000),
+			new Location(Worlds.ELADRADOR, -792.000000, 73.000000, 147.000000),
+			new Location(Worlds.ELADRADOR, -763.000000, 72.000000, 155.000000),
+			new Location(Worlds.ELADRADOR, -750.000000, 72.000000, 100.000000),
+			new Location(Worlds.ELADRADOR, -715.000000, 70.000000, 90.000000),
+			new Location(Worlds.ELADRADOR, -630.000000, 66.000000, 74.000000),
+			new Location(Worlds.ELADRADOR, -626.000000, 68.000000, 41.000000),
+			new Location(Worlds.ELADRADOR, -656.000000, 68.000000, 13.000000),
+			new Location(Worlds.ELADRADOR, -646.000000, 70.000000, -22.000000),
+			new Location(Worlds.ELADRADOR, -622.000000, 73.000000, -45.000000) };
+	private static final Location BROODMOTHER_LOCATION = new Location(Worlds.ELADRADOR, -806, 71, 159);
 
 	public MelcherListener() {
 		setUpBounds();
@@ -75,7 +90,7 @@ public class MelcherListener implements Listener {
 			protected void onCollisionEnter(Collider other) {
 				if (other instanceof PlayerCharacterCollider) {
 					PlayerCharacter pc = ((PlayerCharacterCollider) other).getCharacter();
-					pc.setZone(ChatColor.GREEN + "Melcher");
+					pc.setZone(Zones.MELCHER);
 					pc.getSoundTrackPlayer().setSoundtrack(Soundtracks.VILLAGE);
 				}
 			}
@@ -86,7 +101,7 @@ public class MelcherListener implements Listener {
 			protected void onCollisionExit(Collider other) {
 				if (other instanceof PlayerCharacterCollider) {
 					PlayerCharacter pc = ((PlayerCharacterCollider) other).getCharacter();
-					pc.setZone(ChatColor.GREEN + "Eladrador");
+					pc.setZone(Zones.ELADRADOR);
 					pc.getSoundTrackPlayer().setSoundtrack(Soundtracks.WILDNERNESS);
 				}
 			}
@@ -116,6 +131,10 @@ public class MelcherListener implements Listener {
 		for (Location location : HORSE_LOCATIONS) {
 			new Horse(ChatColor.GREEN + "Horse", 3, location).setAlive(true);
 		}
+		for (Location location : TAVERN_RAT_LOCATIONS) {
+			new MelcherTavernRat(location).setAlive(true);
+		}
+		new MelcherTavernKingRat(TAVERN_KING_RAT_LOCATION).setAlive(true);
 		for (Location location : THIEF_LOCATIONS) {
 			new Thief(location).setAlive(true);
 		}

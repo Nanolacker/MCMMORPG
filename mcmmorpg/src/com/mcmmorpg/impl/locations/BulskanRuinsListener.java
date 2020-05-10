@@ -48,8 +48,8 @@ public class BulskanRuinsListener implements Listener {
 					if (!pc.getZone().equals(ZONE_NAME)) {
 						return;
 					}
-					pc.setZone(ChatColor.GREEN + "Melcher");
-					pc.getSoundTrackPlayer().setSoundtrack(null);
+					pc.setZone("Unnamed Zone");
+					pc.getSoundTrackPlayer().setSoundtrack(Soundtracks.WILDNERNESS);
 				}
 			}
 		};

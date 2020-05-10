@@ -13,16 +13,20 @@ import org.bukkit.entity.Spider;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
 
 import com.mcmmorpg.common.character.CharacterCollider;
 import com.mcmmorpg.common.character.MovementSyncer;
 import com.mcmmorpg.common.character.MovementSyncer.MovementSyncMode;
+import com.mcmmorpg.common.character.PlayerCharacter.PlayerCharacterCollider;
 import com.mcmmorpg.common.character.NonPlayerCharacter;
 import com.mcmmorpg.common.character.PlayerCharacter;
 import com.mcmmorpg.common.character.Source;
 import com.mcmmorpg.common.character.XP;
 import com.mcmmorpg.common.event.EventManager;
+import com.mcmmorpg.common.physics.Collider;
 import com.mcmmorpg.common.sound.Noise;
 import com.mcmmorpg.common.time.DelayedTask;
 
@@ -32,11 +36,15 @@ public abstract class AbstractSpider extends NonPlayerCharacter {
 	private static final Noise HURT_NOISE = new Noise(Sound.ENTITY_SPIDER_HURT, 1f, 0.5f);
 	private static final Noise DEATH_NOISE = new Noise(Sound.ENTITY_SPIDER_HURT, 1f, 0.5f);
 
-	private static final Map<Entity, AbstractSpider> entityMap = new HashMap<>();
+	private static final Map<Spider, AbstractSpider> entityMap = new HashMap<>();
 
 	private final Location spawnLocation;
+	private final EntityType entityType;
+	private final int speed;
 	private final CharacterCollider hitbox;
 	private final MovementSyncer movementSyncer;
+	private final Collider surroundings;
+	private PlayerCharacter target;
 	protected Spider entity;
 
 	static {
@@ -66,13 +74,31 @@ public abstract class AbstractSpider extends NonPlayerCharacter {
 		EventManager.registerEvents(listener);
 	}
 
-	public AbstractSpider(String name, int level, Location spawnLocation) {
-		super(name, 17, spawnLocation);
+	public AbstractSpider(String name, int level, Location spawnLocation, EntityType entityType, int speed) {
+		super(name, level, spawnLocation);
 		super.setMaxHealth(maxHealth());
-		super.setHeight(1.5);
 		this.spawnLocation = spawnLocation;
+		this.entityType = entityType;
+		this.speed = speed;
 		hitbox = new CharacterCollider(this, spawnLocation, 1.5, 1, 1.5);
 		movementSyncer = new MovementSyncer(this, MovementSyncMode.CHARACTER_FOLLOWS_ENTITY);
+		surroundings = new Collider(spawnLocation, 30, 6, 30) {
+			@Override
+			protected void onCollisionEnter(Collider other) {
+				if (other instanceof PlayerCharacterCollider) {
+					PlayerCharacter pc = ((PlayerCharacterCollider) other).getCharacter();
+					onEnterRange(pc);
+				}
+			}
+
+			@Override
+			protected void onCollisionExit(Collider other) {
+				if (other instanceof PlayerCharacterCollider) {
+					PlayerCharacter pc = ((PlayerCharacterCollider) other).getCharacter();
+					onExitRange(pc);
+				}
+			}
+		};
 	}
 
 	@Override
@@ -80,9 +106,10 @@ public abstract class AbstractSpider extends NonPlayerCharacter {
 		setLocation(spawnLocation);
 		super.spawn();
 		hitbox.setActive(true);
-		entity = (Spider) spawnLocation.getWorld().spawnEntity(spawnLocation, EntityType.SPIDER);
+		entity = (Spider) spawnLocation.getWorld().spawnEntity(spawnLocation, entityType);
 		entity.setSilent(true);
 		entity.setRemoveWhenFarAway(false);
+		@SuppressWarnings("deprecation")
 		Entity passenger = entity.getPassenger();
 		if (passenger != null) {
 			passenger.remove();
@@ -93,7 +120,10 @@ public abstract class AbstractSpider extends NonPlayerCharacter {
 		}
 		movementSyncer.setEntity(entity);
 		movementSyncer.setEnabled(true);
+		PotionEffect speedEffect = new PotionEffect(PotionEffectType.SPEED, Integer.MAX_VALUE, speed);
+		entity.addPotionEffect(speedEffect);
 		entityMap.put(entity, this);
+		surroundings.setActive(true);
 	}
 
 	@Override
@@ -101,6 +131,7 @@ public abstract class AbstractSpider extends NonPlayerCharacter {
 		super.despawn();
 		hitbox.setActive(false);
 		movementSyncer.setEnabled(false);
+		surroundings.setActive(false);
 		entity.remove();
 		entityMap.remove(entity);
 	}
@@ -109,6 +140,7 @@ public abstract class AbstractSpider extends NonPlayerCharacter {
 	public void setLocation(Location location) {
 		super.setLocation(location);
 		hitbox.setCenter(location.clone().add(0, 0.5, 0));
+		surroundings.setCenter(location.clone().add(0, 2, 0));
 	}
 
 	@Override
@@ -134,6 +166,7 @@ public abstract class AbstractSpider extends NonPlayerCharacter {
 		super.onDeath();
 		hitbox.setActive(false);
 		movementSyncer.setEnabled(false);
+		surroundings.setActive(false);
 		entity.remove();
 		entityMap.remove(entity);
 		Location location = getLocation();
@@ -147,6 +180,29 @@ public abstract class AbstractSpider extends NonPlayerCharacter {
 			}
 		};
 		respawn.schedule();
+	}
+
+	protected void onEnterRange(PlayerCharacter pc) {
+		Player player = pc.getPlayer();
+		if (target == null) {
+			target = PlayerCharacter.forPlayer(player);
+			entity.setTarget(target.getPlayer());
+		}
+	}
+
+	protected void onExitRange(PlayerCharacter pc) {
+		if (pc == target) {
+			Collider[] colliders = surroundings.getCollidingColliders();
+			for (int i = 0; i < colliders.length; i++) {
+				Collider collider = colliders[i];
+				if (collider instanceof PlayerCharacterCollider) {
+					target = ((PlayerCharacterCollider) collider).getCharacter();
+					entity.setTarget(target.getPlayer());
+					return;
+				}
+			}
+			target = null;
+		}
 	}
 
 	protected abstract double maxHealth();

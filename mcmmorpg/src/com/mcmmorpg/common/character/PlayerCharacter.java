@@ -281,7 +281,7 @@ public final class PlayerCharacter extends AbstractCharacter {
 			return;
 		} else {
 			this.zone = zone;
-			sendMessage(ChatColor.GRAY + "Entering " + zone);
+			sendMessage(ChatColor.GRAY + "Entering [" + zone + ChatColor.GRAY + "]");
 		}
 	}
 

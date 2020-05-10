@@ -9,6 +9,7 @@ import com.mcmmorpg.common.character.PlayerCharacter.PlayerCharacterCollider;
 import com.mcmmorpg.common.physics.Collider;
 import com.mcmmorpg.impl.Soundtracks;
 import com.mcmmorpg.impl.Worlds;
+import com.mcmmorpg.impl.Zones;
 import com.mcmmorpg.impl.npcs.Bandit;
 import com.mcmmorpg.impl.npcs.BanditLeader;
 
@@ -25,7 +26,7 @@ public class FlintonListener implements Listener {
 			protected void onCollisionEnter(Collider other) {
 				if (other instanceof PlayerCharacterCollider) {
 					PlayerCharacter pc = ((PlayerCharacterCollider) other).getCharacter();
-					pc.setZone(ChatColor.GRAY + "Flinton");
+					pc.setZone(Zones.FLINTON);
 					pc.getSoundTrackPlayer().setSoundtrack(Soundtracks.VILLAGE);
 				}
 			}
@@ -36,7 +37,7 @@ public class FlintonListener implements Listener {
 			protected void onCollisionExit(Collider other) {
 				if (other instanceof PlayerCharacterCollider) {
 					PlayerCharacter pc = ((PlayerCharacterCollider) other).getCharacter();
-					pc.setZone(ChatColor.GREEN + "Eladrador");
+					pc.setZone(Zones.ELADRADOR);
 					pc.getSoundTrackPlayer().setSoundtrack(Soundtracks.WILDNERNESS);
 				}
 			}

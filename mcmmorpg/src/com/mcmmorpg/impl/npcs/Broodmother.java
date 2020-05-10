@@ -6,82 +6,24 @@ import org.bukkit.Location;
 import org.bukkit.boss.BarColor;
 import org.bukkit.boss.BarStyle;
 import org.bukkit.boss.BossBar;
-import org.bukkit.entity.Player;
-import org.bukkit.potion.PotionEffect;
-import org.bukkit.potion.PotionEffectType;
+import org.bukkit.entity.EntityType;
 
 import com.mcmmorpg.common.character.PlayerCharacter;
-import com.mcmmorpg.common.character.PlayerCharacter.PlayerCharacterCollider;
-import com.mcmmorpg.common.physics.Collider;
 import com.mcmmorpg.common.utils.MathUtils;
 
 public class Broodmother extends AbstractSpider {
 
 	private static final int LEVEL = 5;
+	private static final int SPEED = 2;
 	private static final double MAX_HEALTH = 300;
 	private static final double DAMAGE_AMOUNT = 12;
-	private static final PotionEffect SPEED = new PotionEffect(PotionEffectType.SPEED, Integer.MAX_VALUE, 2);
-
 	private final BossBar bossBar;
-	private final Collider surroundings;
-	private PlayerCharacter target;
 
 	public Broodmother(Location spawnLocation) {
-		super(ChatColor.RED + "Broodmother", LEVEL, spawnLocation);
+		super(ChatColor.RED + "Broodmother", LEVEL, spawnLocation, EntityType.SPIDER, SPEED);
 		bossBar = Bukkit.createBossBar(getName(), BarColor.RED, BarStyle.SEGMENTED_10);
-		surroundings = new Collider(spawnLocation, 30, 6, 30) {
-			@Override
-			protected void onCollisionEnter(Collider other) {
-				if (other instanceof PlayerCharacterCollider) {
-					Player player = ((PlayerCharacterCollider) other).getCharacter().getPlayer();
-					bossBar.addPlayer(player);
-					if (target == null) {
-						target = PlayerCharacter.forPlayer(player);
-						entity.setTarget(target.getPlayer());
-					}
-				}
-			}
+		super.setHeight(1.5);
 
-			@Override
-			protected void onCollisionExit(Collider other) {
-				if (other instanceof PlayerCharacterCollider) {
-					Player player = ((PlayerCharacterCollider) other).getCharacter().getPlayer();
-					bossBar.removePlayer(player);
-					PlayerCharacter pc = PlayerCharacter.forPlayer(player);
-					if (pc == target) {
-						Collider[] colliders = surroundings.getCollidingColliders();
-						for (int i = 0; i < colliders.length; i++) {
-							Collider collider = colliders[i];
-							if (collider instanceof PlayerCharacterCollider) {
-								target = ((PlayerCharacterCollider) collider).getCharacter();
-								entity.setTarget(target.getPlayer());
-								return;
-							}
-						}
-						target = null;
-					}
-				}
-			}
-		};
-	}
-
-	@Override
-	protected void spawn() {
-		super.spawn();
-		entity.addPotionEffect(SPEED);
-		surroundings.setActive(true);
-	}
-
-	@Override
-	protected void despawn() {
-		super.despawn();
-		surroundings.setActive(false);
-	}
-
-	@Override
-	public void setLocation(Location location) {
-		super.setLocation(location);
-		surroundings.setCenter(location.clone().add(0, 2, 0));
 	}
 
 	@Override
@@ -98,9 +40,16 @@ public class Broodmother extends AbstractSpider {
 	}
 
 	@Override
-	protected void onDeath() {
-		super.onDeath();
-		surroundings.setActive(false);
+	protected void onEnterRange(PlayerCharacter pc) {
+		super.onEnterRange(pc);
+		bossBar.addPlayer(pc.getPlayer());
+	}
+
+	@Override
+	protected void onExitRange(PlayerCharacter pc) {
+		super.onExitRange(pc);
+		bossBar.removePlayer(pc.getPlayer());
+
 	}
 
 	@Override

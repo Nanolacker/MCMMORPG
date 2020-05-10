@@ -31,10 +31,10 @@ import com.mcmmorpg.common.time.DelayedTask;
 
 public abstract class AbstractHumanEnemy extends NonPlayerCharacter {
 
-	private static final Noise HURT_NOISE = new Noise(Sound.ENTITY_PILLAGER_HURT);
-	private static final Noise DEATH_NOISE = new Noise(Sound.ENTITY_PILLAGER_DEATH);
-	private static final PotionEffect INVISIBILITY = new PotionEffect(PotionEffectType.INVISIBILITY, Integer.MAX_VALUE,
-			1);
+	protected static final Noise HURT_NOISE = new Noise(Sound.ENTITY_PILLAGER_HURT);
+	protected static final Noise DEATH_NOISE = new Noise(Sound.ENTITY_PILLAGER_DEATH);
+	protected static final PotionEffect INVISIBILITY = new PotionEffect(PotionEffectType.INVISIBILITY,
+			Integer.MAX_VALUE, 1);
 
 	protected static final Map<Zombie, AbstractHumanEnemy> aiMap = new HashMap<>();
 

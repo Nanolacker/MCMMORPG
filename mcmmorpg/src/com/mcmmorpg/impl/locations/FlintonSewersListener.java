@@ -16,11 +16,12 @@ import com.mcmmorpg.common.sound.Noise;
 import com.mcmmorpg.common.time.RepeatingTask;
 import com.mcmmorpg.impl.Soundtracks;
 import com.mcmmorpg.impl.Worlds;
+import com.mcmmorpg.impl.Zones;
 import com.mcmmorpg.impl.npcs.Bandit;
 import com.mcmmorpg.impl.npcs.CultistMage;
 import com.mcmmorpg.impl.npcs.CultistSummoner;
 import com.mcmmorpg.impl.npcs.GelatinousCube;
-import com.mcmmorpg.impl.npcs.SewerRat;
+import com.mcmmorpg.impl.npcs.MelcherTavernRat;
 
 public class FlintonSewersListener implements Listener {
 
@@ -46,7 +47,7 @@ public class FlintonSewersListener implements Listener {
 			protected void onCollisionEnter(Collider other) {
 				if (other instanceof PlayerCharacterCollider) {
 					PlayerCharacter pc = ((PlayerCharacterCollider) other).getCharacter();
-					pc.setZone(ChatColor.GRAY + "Flinton Sewers");
+					pc.setZone(Zones.FLINTON_SEWERS);
 					pc.getSoundTrackPlayer().setSoundtrack(Soundtracks.DUNGEON);
 				}
 			}
@@ -107,7 +108,7 @@ public class FlintonSewersListener implements Listener {
 			new CultistSummoner(location).setAlive(true);
 		}
 		for (Location location : RAT_LOCATIONS) {
-			new SewerRat(location).setAlive(true);
+			
 		}
 	}
 

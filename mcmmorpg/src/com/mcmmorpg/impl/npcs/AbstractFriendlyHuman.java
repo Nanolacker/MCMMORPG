@@ -56,7 +56,6 @@ public abstract class AbstractFriendlyHuman extends NonPlayerCharacter {
 			vehicle.remove();
 		}
 		ai.setAdult();
-		ai.getEquipment().clear();
 		ai.setRemoveWhenFarAway(false);
 		aiSyncer.setEntity(ai);
 		aiSyncer.setEnabled(true);
