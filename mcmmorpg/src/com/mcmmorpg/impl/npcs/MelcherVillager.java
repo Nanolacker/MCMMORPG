@@ -17,7 +17,7 @@ public class MelcherVillager extends AbstractFriendlyHuman {
 	private static final Noise FEMALE_SPEAK_NOISE = new Noise(Sound.ENTITY_VILLAGER_AMBIENT, 1, 1.25f);
 	private static final String[] DIALOGUE_OPTIONS = { "Greetings, adventurer.", "How's it going?", "What do you need?",
 			"Can I help you?", "I hear the bandits have been causing trouble.", "Welcome to Melcher.",
-			"How do you do" };
+			"How do you do?" };
 
 	private final boolean male;
 

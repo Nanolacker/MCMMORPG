@@ -6,15 +6,13 @@ import org.bukkit.Sound;
 
 import com.mcmmorpg.common.character.AbstractCharacter;
 import com.mcmmorpg.common.character.PlayerCharacter;
-import com.mcmmorpg.common.character.PlayerCharacter.PlayerCharacterCollider;
 import com.mcmmorpg.common.character.PlayerCharacterInteractionCollider;
-import com.mcmmorpg.common.physics.Collider;
 import com.mcmmorpg.common.quest.QuestStatus;
 import com.mcmmorpg.common.sound.Noise;
 import com.mcmmorpg.common.ui.InteractionSequence;
 import com.mcmmorpg.impl.Quests;
 
-public class MelcherDrunkard extends AbstractHumanEnemy {
+public class MelcherAngeredDrunkard extends AbstractHumanEnemy {
 
 	private static final int LEVEL = 2;
 	private static final double MAX_HEALTH = 100;
@@ -28,10 +26,10 @@ public class MelcherDrunkard extends AbstractHumanEnemy {
 	private final PlayerCharacterInteractionCollider interactionCollider;
 	private final InteractionSequence interaction;
 
-	public MelcherDrunkard(Location spawnLocation) {
-		super(ChatColor.YELLOW + "Drunkard", LEVEL, spawnLocation, RESPAWN_TIME, SPEED, TEXTURE_DATA,
+	public MelcherAngeredDrunkard(Location spawnLocation) {
+		super(ChatColor.YELLOW + "Angered Drunkard", LEVEL, spawnLocation, RESPAWN_TIME, SPEED, TEXTURE_DATA,
 				TEXTURE_SIGNATURE);
-		interaction = new InteractionSequence(3, 1.5) {
+		interaction = new InteractionSequence(3) {
 			@Override
 			protected void onAdvance(PlayerCharacter pc, int interactionIndex) {
 				switch (interactionIndex) {
@@ -40,7 +38,7 @@ public class MelcherDrunkard extends AbstractHumanEnemy {
 					SPEAK_NOISE.play(pc);
 					break;
 				case 1:
-					say("I'll pummel you!", pc);
+					say("What do you mean calm down? Nobody tells me what to do!", pc);
 					SPEAK_NOISE.play(pc);
 					break;
 				case 2:
@@ -74,16 +72,10 @@ public class MelcherDrunkard extends AbstractHumanEnemy {
 	@Override
 	protected void onDeath() {
 		super.onDeath();
-		Collider surroundings = new Collider(getLocation(), 25, 10, 25);
-		surroundings.setActive(true);
-		Collider[] colliders = surroundings.getCollidingColliders();
-		for (Collider collider : colliders) {
-			if (collider instanceof PlayerCharacterCollider) {
-				PlayerCharacter pc = ((PlayerCharacterCollider) collider).getCharacter();
-				Quests.CALMING_THE_TAVERN.getObjective(0).complete(pc);
-			}
+		PlayerCharacter[] nearbyPcs = PlayerCharacter.getNearbyPlayerCharacters(getLocation(), 25);
+		for (PlayerCharacter pc : nearbyPcs) {
+			Quests.CALMING_THE_TAVERN.getObjective(0).complete(pc);
 		}
-		surroundings.setActive(false);
 	}
 
 	@Override

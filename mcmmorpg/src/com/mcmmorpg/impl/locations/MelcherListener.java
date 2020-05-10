@@ -19,15 +19,50 @@ import com.mcmmorpg.impl.npcs.Highwayman;
 import com.mcmmorpg.impl.npcs.Horse;
 import com.mcmmorpg.impl.npcs.GuardJames;
 import com.mcmmorpg.impl.npcs.MelcherBartender;
-import com.mcmmorpg.impl.npcs.MelcherDrunkard;
+import com.mcmmorpg.impl.npcs.MelcherAngeredDrunkard;
 import com.mcmmorpg.impl.npcs.MelcherFarmer;
 import com.mcmmorpg.impl.npcs.MelcherLumberjack;
 import com.mcmmorpg.impl.npcs.MelcherVillager;
 import com.mcmmorpg.impl.npcs.Thief;
 import com.mcmmorpg.impl.npcs.TrainingDummy;
-import com.mcmmorpg.impl.npcs.WildBoar;
 
 public class MelcherListener implements Listener {
+
+	private static final Location[] VILLAGER_LOCATIONS = { new Location(Worlds.ELADRADOR, -1167, 73, 273),
+			new Location(Worlds.ELADRADOR, -1153, 73, 269), new Location(Worlds.ELADRADOR, -1138, 73, 260),
+			new Location(Worlds.ELADRADOR, -1146, 73, 240), new Location(Worlds.ELADRADOR, -1130, 73, 242),
+			new Location(Worlds.ELADRADOR, -1113, 72, 231), new Location(Worlds.ELADRADOR, -1100, 70, 218),
+			new Location(Worlds.ELADRADOR, -1086, 70, 233), new Location(Worlds.ELADRADOR, -1073, 70, 211),
+			new Location(Worlds.ELADRADOR, -1058, 70, 228), new Location(Worlds.ELADRADOR, -1037, 70, 233),
+			new Location(Worlds.ELADRADOR, -1025, 70, 207), new Location(Worlds.ELADRADOR, -1030, 70, 185),
+			new Location(Worlds.ELADRADOR, -1032, 70, 170), new Location(Worlds.ELADRADOR, -1013, 70, 181),
+			new Location(Worlds.ELADRADOR, -998, 70, 208), new Location(Worlds.ELADRADOR, -988, 71, 181),
+			new Location(Worlds.ELADRADOR, -969, 71, 177), new Location(Worlds.ELADRADOR, -957, 72, 157),
+			new Location(Worlds.ELADRADOR, -929, 72, 155) };
+	private static final Location[] LUMBERJACK_LOCATIONS = { new Location(Worlds.ELADRADOR, -1049, 70, 232, 225, 0) };
+	private static final Location GUARD_JAMES_LOCATION = new Location(Worlds.ELADRADOR, -1120, 73, 245);
+	private static final Location FARMER_LOCATION = new Location(Worlds.ELADRADOR, -1166, 73, 246);
+	private static final Location BARTENDER_LOCATION = new Location(Worlds.ELADRADOR, -1086, 70, 243);
+	private static final Location DRUNKARD_LOCATION = new Location(Worlds.ELADRADOR, -1075, 70, 243);
+	private static final Location[] TRAINING_DUMMY_LOCATIONS = { new Location(Worlds.ELADRADOR, -1115, 73, 249, 90, 0),
+			new Location(Worlds.ELADRADOR, -1117, 73, 251, 90, 0),
+			new Location(Worlds.ELADRADOR, -1116, 73, 255, -45, 0),
+			new Location(Worlds.ELADRADOR, -1114, 73, 252, 90, 0),
+			new Location(Worlds.ELADRADOR, -1118, 73, 248, 90, 0),
+			new Location(Worlds.ELADRADOR, -1119, 73, 256, 180, 0) };
+	private static final Location[] CHICKEN_LOCATIONS = { new Location(Worlds.ELADRADOR, -1167, 73, 243),
+			new Location(Worlds.ELADRADOR, -1167, 73, 242), new Location(Worlds.ELADRADOR, -1167, 73, 241) };
+	private static final Location[] HORSE_LOCATIONS = { new Location(Worlds.ELADRADOR, -1158, 73, 239),
+			new Location(Worlds.ELADRADOR, -1158, 73, 244), new Location(Worlds.ELADRADOR, -1158, 73, 249) };
+	private static final Location[] THIEF_LOCATIONS = { new Location(Worlds.ELADRADOR, -1157, 74, 173),
+			new Location(Worlds.ELADRADOR, -1150, 79, 147), new Location(Worlds.ELADRADOR, -1043, 74, 115),
+			new Location(Worlds.ELADRADOR, 981, 75, 111), new Location(Worlds.ELADRADOR, -919, 74, 123) };
+	private static final Location[] HIGHWAYMAN_LOCATIONS = { new Location(Worlds.ELADRADOR, -813, 72, 151),
+			new Location(Worlds.ELADRADOR, -785, 72, 158), new Location(Worlds.ELADRADOR, -756, 72, 147),
+			new Location(Worlds.ELADRADOR, -751, 72, 128), new Location(Worlds.ELADRADOR, -744, 72, 96),
+			new Location(Worlds.ELADRADOR, -727, 71, 88), new Location(Worlds.ELADRADOR, -684, 65, 81) };
+	private static final Location[] FOREST_SPIDER_LOCATIONS = {};
+	private static final Location BROODMOTHER_LOCATION = new Location(Worlds.ELADRADOR, -1138, 73, 260);
 
 	public MelcherListener() {
 		setUpBounds();
@@ -60,134 +95,37 @@ public class MelcherListener implements Listener {
 	}
 
 	private void setUpNpcs() {
-		spawnVillagers();
-		spawnLumberjacks();
-		spawnGuardJames();
-		spawnFarmer();
-		spawnBartender();
-		spawnDrunkard();
-		spawnTrainingDummies();
-		spawnChickens();
-		spawnHorses();
-		spawnThieves();
-		spawnWildBoars();
-		spawnHighwaymen();
-		spawnForestSpiders();
-		spawnBroodmother();
-	}
-
-	private void spawnVillagers() {
-		Location[] villagerLocations = { new Location(Worlds.ELADRADOR, -1167, 73, 273),
-				new Location(Worlds.ELADRADOR, -1153, 73, 269), new Location(Worlds.ELADRADOR, -1138, 73, 260),
-				new Location(Worlds.ELADRADOR, -1146, 73, 240), new Location(Worlds.ELADRADOR, -1130, 73, 242),
-				new Location(Worlds.ELADRADOR, -1113, 72, 231), new Location(Worlds.ELADRADOR, -1100, 70, 218),
-				new Location(Worlds.ELADRADOR, -1086, 70, 233), new Location(Worlds.ELADRADOR, -1073, 70, 211),
-				new Location(Worlds.ELADRADOR, -1058, 70, 228), new Location(Worlds.ELADRADOR, -1037, 70, 233),
-				new Location(Worlds.ELADRADOR, -1025, 70, 207), new Location(Worlds.ELADRADOR, -1030, 70, 185),
-				new Location(Worlds.ELADRADOR, -1032, 70, 170), new Location(Worlds.ELADRADOR, -1013, 70, 181),
-				new Location(Worlds.ELADRADOR, -998, 70, 208), new Location(Worlds.ELADRADOR, -988, 71, 181),
-				new Location(Worlds.ELADRADOR, -969, 71, 177), new Location(Worlds.ELADRADOR, -957, 72, 157),
-				new Location(Worlds.ELADRADOR, -929, 72, 155) };
-		for (int i = 0; i < villagerLocations.length; i++) {
-			Location location = villagerLocations[i];
+		for (int i = 0; i < VILLAGER_LOCATIONS.length; i++) {
+			Location location = VILLAGER_LOCATIONS[i];
 			boolean male = i % 2 == 0;
 			new MelcherVillager(location, male).setAlive(true);
 		}
-	}
-
-	private void spawnLumberjacks() {
-		Location[] lumberjackLocations = { new Location(Worlds.ELADRADOR, -1049, 70, 232, 225, 0) };
-		for (Location location : lumberjackLocations) {
+		for (Location location : LUMBERJACK_LOCATIONS) {
 			new MelcherLumberjack(location).setAlive(true);
 		}
-	}
-
-	private void spawnGuardJames() {
-		Location guardJamesLocation = new Location(Worlds.ELADRADOR, -1120, 73, 245);
-		new GuardJames(guardJamesLocation).setAlive(true);
-	}
-
-	private void spawnFarmer() {
-		Location farmerLocation = new Location(Worlds.ELADRADOR, -1166, 73, 246);
-		new MelcherFarmer(farmerLocation).setAlive(true);
-	}
-
-	private void spawnBartender() {
-		Location bartenderLocation = new Location(Worlds.ELADRADOR, -1082, 70, 225);
-		new MelcherBartender(bartenderLocation).setAlive(true);
-	}
-
-	private void spawnDrunkard() {
-		Location drunkardLocation = new Location(Worlds.ELADRADOR, -1080, 70, 225);
-		new MelcherDrunkard(drunkardLocation).setAlive(true);
-	}
-
-	private void spawnTrainingDummies() {
-		Location[] trainingDummyLocations = { new Location(Worlds.ELADRADOR, -1115, 73, 249, 90, 0),
-				new Location(Worlds.ELADRADOR, -1117, 73, 251, 90, 0),
-				new Location(Worlds.ELADRADOR, -1116, 73, 255, -45, 0),
-				new Location(Worlds.ELADRADOR, -1114, 73, 252, 90, 0),
-				new Location(Worlds.ELADRADOR, -1118, 73, 248, 90, 0),
-				new Location(Worlds.ELADRADOR, -1119, 73, 256, 180, 0) };
-		for (Location location : trainingDummyLocations) {
+		new GuardJames(GUARD_JAMES_LOCATION).setAlive(true);
+		new MelcherFarmer(FARMER_LOCATION).setAlive(true);
+		new MelcherBartender(BARTENDER_LOCATION).setAlive(true);
+		new MelcherAngeredDrunkard(DRUNKARD_LOCATION).setAlive(true);
+		for (Location location : TRAINING_DUMMY_LOCATIONS) {
 			new TrainingDummy(location).setAlive(true);
 		}
-	}
-
-	private void spawnChickens() {
-		Location[] chickenLocations = { new Location(Worlds.ELADRADOR, -1167, 73, 243),
-				new Location(Worlds.ELADRADOR, -1167, 73, 242), new Location(Worlds.ELADRADOR, -1167, 73, 241) };
-		for (Location location : chickenLocations) {
+		for (Location location : CHICKEN_LOCATIONS) {
 			new Chicken(location).setAlive(true);
 		}
-	}
-
-	private void spawnHorses() {
-		Location[] horseLocations = { new Location(Worlds.ELADRADOR, -1158, 73, 239),
-				new Location(Worlds.ELADRADOR, -1158, 73, 244), new Location(Worlds.ELADRADOR, -1158, 73, 249) };
-		for (Location location : horseLocations) {
+		for (Location location : HORSE_LOCATIONS) {
 			new Horse(ChatColor.GREEN + "Horse", 3, location).setAlive(true);
 		}
-	}
-
-	private void spawnThieves() {
-		Location[] thiefLocations = { new Location(Worlds.ELADRADOR, -1157, 74, 173),
-				new Location(Worlds.ELADRADOR, -1150, 79, 147), new Location(Worlds.ELADRADOR, -1043, 74, 115),
-				new Location(Worlds.ELADRADOR, 981, 75, 111), new Location(Worlds.ELADRADOR, -919, 74, 123) };
-		for (Location location : thiefLocations) {
+		for (Location location : THIEF_LOCATIONS) {
 			new Thief(location).setAlive(true);
 		}
-	}
-
-	private void spawnWildBoars() {
-		Location[] wildBoarLocations = { new Location(Worlds.ELADRADOR, -396, 69, -160),
-				new Location(Worlds.ELADRADOR, -396, 69, -160), new Location(Worlds.ELADRADOR, -396, 69, -160),
-				new Location(Worlds.ELADRADOR, -396, 69, -160), new Location(Worlds.ELADRADOR, -396, 69, -160) };
-		for (Location location : wildBoarLocations) {
-			new WildBoar(3, location).setAlive(true);
-		}
-	}
-
-	private void spawnHighwaymen() {
-		Location[] highwaymenLocations = { new Location(Worlds.ELADRADOR, -813, 72, 151),
-				new Location(Worlds.ELADRADOR, -785, 72, 158), new Location(Worlds.ELADRADOR, -756, 72, 147),
-				new Location(Worlds.ELADRADOR, -751, 72, 128), new Location(Worlds.ELADRADOR, -744, 72, 96),
-				new Location(Worlds.ELADRADOR, -727, 71, 88), new Location(Worlds.ELADRADOR, -684, 65, 81) };
-		for (Location location : highwaymenLocations) {
+		for (Location location : HIGHWAYMAN_LOCATIONS) {
 			new Highwayman(location).setAlive(true);
 		}
-	}
-
-	private void spawnForestSpiders() {
-		Location[] forestSpiderLocations = {};
-		for (Location location : forestSpiderLocations) {
+		for (Location location : FOREST_SPIDER_LOCATIONS) {
 			new ForestSpider(location).setAlive(true);
 		}
-	}
-
-	private void spawnBroodmother() {
-		Location broodmotherLocation = new Location(Worlds.ELADRADOR, -1138, 73, 260);
-		new Broodmother(broodmotherLocation).setAlive(true);
+		new Broodmother(BROODMOTHER_LOCATION).setAlive(true);
 	}
 
 	@EventHandler

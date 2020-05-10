@@ -301,18 +301,21 @@ public abstract class AbstractCharacter implements Source {
 		return formattedDialogue;
 	}
 
-	public final void say(String dialogue, AbstractCharacter recipient) {
+	@OverridingMethodsMustInvokeSuper
+	public void say(String dialogue, AbstractCharacter recipient) {
 		if (recipient instanceof PlayerCharacter) {
 			String formattedDialogue = formatDialogue(dialogue);
 			((PlayerCharacter) recipient).sendMessage(formattedDialogue);
 		}
 	}
 
-	public final void say(String dialogue) {
+	@OverridingMethodsMustInvokeSuper
+	public void say(String dialogue) {
 		say(dialogue, 25);
 	}
 
-	public final void say(String dialogue, double radius) {
+	@OverridingMethodsMustInvokeSuper
+	public void say(String dialogue, double radius) {
 		double diameter = radius * 2;
 		Collider area = new Collider(location, diameter, diameter, diameter);
 		area.setActive(true);

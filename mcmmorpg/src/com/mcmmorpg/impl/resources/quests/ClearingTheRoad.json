@@ -1,0 +1,14 @@
+{
+	"name": "Clearing the Road",
+	"level": 3,
+	"objectives": [
+		{
+			"goal": 10,
+			"description": "Slay 10 §7[§cHighwayman§7]"
+		},
+		{
+			"goal": 1,
+			"description": "Return to §7[§aGuard James§7]"
+		}
+	]
+}

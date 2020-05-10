@@ -15,6 +15,10 @@ public class MelcherBartender extends StaticHuman {
 	private static final String TEXTURE_SIGNATURE = "";
 	private static final int CALMING_THE_TAVERN_XP = 75;
 
+	// I ASKED YOU TO CALM HIM, NOT KILL HIM! YOU JUST MURDERED MY BIGGEST CUSTOMER!
+	// THERE GOES HALF OF MY INCOME! AND WHO'S
+	// GONNA CLEAN UP THIS MESS? THERE'S BLOOD SPLATTERED ACROSS THE FLOOR! HOW AM I
+	// SUPPOSED TO ATTRACT CUSTOMERS WHEN MY TAVERN LOOKS LIKE THIS?
 	public MelcherBartender(Location location) {
 		super(ChatColor.GREEN + "Bartender", LEVEL, location, TEXTURE_DATA, TEXTURE_SIGNATURE);
 		QuestMarker.createMarker(location.clone().add(0, 2.25, 0));
@@ -26,6 +30,7 @@ public class MelcherBartender extends StaticHuman {
 		switch (status) {
 		case COMPLETED:
 			say("Thanks for the help.", pc);
+			break;
 		case IN_PROGRESS:
 			if (Quests.CALMING_THE_TAVERN.getObjective(0).isComplete(pc)) {
 				Quests.CALMING_THE_TAVERN.getObjective(1).complete(pc);

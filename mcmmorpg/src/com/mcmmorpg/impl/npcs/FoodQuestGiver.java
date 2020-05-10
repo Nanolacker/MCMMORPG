@@ -64,18 +64,7 @@ public class FoodQuestGiver extends StaticHuman {
 					say("Go get those food supplies!", pc);
 				}
 			} else if (Quests.RECOVERING_THE_FOOD.compareStatus(pc, QuestStatus.COMPLETED)) {
-				if (Quests.GATHERING_MORE_FOOD.compareStatus(pc, QuestStatus.NOT_STARTED)) {
-					Quests.GATHERING_MORE_FOOD.start(pc);
-				} else if (Quests.GATHERING_MORE_FOOD.compareStatus(pc, QuestStatus.IN_PROGRESS)) {
-					if (pc.getItemCount(Items.BOAR_FLANK) >= 10) {
-						pc.removeItem(Items.BOAR_FLANK, 10);
-						Quests.GATHERING_MORE_FOOD.getObjective(0).setProgress(pc, 1);
-					} else {
-						say("The people need to be fed. I'm counting on you.");
-					}
-				} else {
-					say("Thanks to you, our children will have full bellies.", pc);
-				}
+				say("Thanks to you, our children will have full bellies.", pc);
 			}
 		}
 	}

@@ -3,7 +3,9 @@ package com.mcmmorpg.impl.npcs;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 
+import com.mcmmorpg.common.character.PlayerCharacter;
 import com.mcmmorpg.impl.Items;
+import com.mcmmorpg.impl.Quests;
 
 public class Thief extends AbstractHumanEnemy {
 
@@ -38,8 +40,12 @@ public class Thief extends AbstractHumanEnemy {
 	@Override
 	protected void onDeath() {
 		super.onDeath();
-		int amount = (int) (Math.random() * 3);
-		Items.FOOD_SUPPLIES.drop(getLocation(), amount);
+		PlayerCharacter[] nearbyPcs = PlayerCharacter.getNearbyPlayerCharacters(getLocation(), 25);
+		for (PlayerCharacter pc : nearbyPcs) {
+			Quests.SLAYING_THE_THIEVES.getObjective(0).addProgress(pc, 1);
+		}
+		int dropAmount = (int) (Math.random() * 3);
+		Items.FOOD_SUPPLIES.drop(getLocation(), dropAmount);
 	}
 
 }

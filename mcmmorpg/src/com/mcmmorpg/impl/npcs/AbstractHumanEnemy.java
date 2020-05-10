@@ -124,7 +124,6 @@ public abstract class AbstractHumanEnemy extends NonPlayerCharacter {
 		entity.setVisible(false);
 		ai.remove();
 		aiMap.remove(ai);
-		setLocation(spawnLocation);
 	}
 
 	@Override
@@ -153,7 +152,6 @@ public abstract class AbstractHumanEnemy extends NonPlayerCharacter {
 		Location location = getLocation();
 		DEATH_NOISE.play(location);
 		location.getWorld().spawnParticle(Particle.CLOUD, location, 10);
-		setLocation(spawnLocation);
 		DelayedTask respawn = new DelayedTask(respawnTime) {
 			@Override
 			protected void run() {

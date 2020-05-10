@@ -131,7 +131,9 @@ public class SoundSequencePlayer {
 
 	public void stop() {
 		for (DelayedTask playTask : playTasks) {
-			playTask.cancel();
+			if (playTask.isScheduled()) {
+				playTask.cancel();
+			}
 		}
 		reset();
 	}

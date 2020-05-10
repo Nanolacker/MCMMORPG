@@ -16,10 +16,20 @@ import com.mcmmorpg.common.sound.Noise;
 import com.mcmmorpg.common.time.RepeatingTask;
 import com.mcmmorpg.impl.Soundtracks;
 import com.mcmmorpg.impl.Worlds;
+import com.mcmmorpg.impl.npcs.Bandit;
+import com.mcmmorpg.impl.npcs.CultistMage;
+import com.mcmmorpg.impl.npcs.CultistSummoner;
+import com.mcmmorpg.impl.npcs.GelatinousCube;
+import com.mcmmorpg.impl.npcs.SewerRat;
 
 public class FlintonSewersListener implements Listener {
 
 	private static final Noise SEWAGE_DAMAGE_NOISE = new Noise(Sound.BLOCK_SLIME_BLOCK_HIT);
+	private static final Location[] BANDIT_LOCATIONS = {};
+	private static final Location[] GELATINOUS_CCUBE_LOCATIONS = {};
+	private static final Location[] CULTIST_MAGE_LOCATOINS = {};
+	private static final Location[] CULTIST_SUMMONER_LOCATIONS = {};
+	private static final Location[] RAT_LOCATIONS = {};
 
 	private Source sewage;
 	private Collider innerBounds;
@@ -44,7 +54,7 @@ public class FlintonSewersListener implements Listener {
 		innerBounds.setActive(true);
 		Collider outerBounds = new Collider(Worlds.ELADRADOR, 0, 0, 0, 0, 0, 0) {
 			@Override
-			protected void onCollisionEnter(Collider other) {
+			protected void onCollisionExit(Collider other) {
 				if (other instanceof PlayerCharacterCollider) {
 					PlayerCharacter pc = ((PlayerCharacterCollider) other).getCharacter();
 					pc.setZone(ChatColor.GREEN + "Flinton");
@@ -84,26 +94,20 @@ public class FlintonSewersListener implements Listener {
 	}
 
 	private void spawnNpcs() {
-		Location[] banditLocations = {};
-		Location[] gelatinouseCubeLocations = {};
-		Location[] cultistMageLocations = {};
-		Location[] cultistSummonerLocations = {};
-		Location[] ratLocations = {};
-
-		for (Location location : banditLocations) {
-
+		for (Location location : BANDIT_LOCATIONS) {
+			new Bandit(location).setAlive(true);
 		}
-		for (Location location : gelatinouseCubeLocations) {
-
+		for (Location location : GELATINOUS_CCUBE_LOCATIONS) {
+			new GelatinousCube(location).setAlive(true);
 		}
-		for (Location location : cultistMageLocations) {
-
+		for (Location location : CULTIST_MAGE_LOCATOINS) {
+			new CultistMage(location).setAlive(true);
 		}
-		for (Location location : cultistSummonerLocations) {
-
+		for (Location location : CULTIST_SUMMONER_LOCATIONS) {
+			new CultistSummoner(location).setAlive(true);
 		}
-		for (Location location : ratLocations) {
-
+		for (Location location : RAT_LOCATIONS) {
+			new SewerRat(location).setAlive(true);
 		}
 	}
 

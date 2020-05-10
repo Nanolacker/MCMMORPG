@@ -19,6 +19,8 @@ import com.mcmmorpg.common.time.DelayedTask;
  */
 public abstract class InteractionSequence {
 
+	private static final double DEFAULT_PERIOD = 3;
+
 	private static final HashMap<PlayerCharacter, List<InteractionSequence>> playingSequencesMap = new HashMap<>();
 
 	private final int interactionCount;
@@ -32,6 +34,10 @@ public abstract class InteractionSequence {
 	public InteractionSequence(int interactionCount, double period) {
 		this.interactionCount = interactionCount;
 		this.period = period;
+	}
+
+	public InteractionSequence(int interactionCount) {
+		this(interactionCount, DEFAULT_PERIOD);
 	}
 
 	static {
