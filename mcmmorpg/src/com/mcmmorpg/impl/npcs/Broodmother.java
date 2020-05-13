@@ -10,6 +10,7 @@ import org.bukkit.entity.EntityType;
 
 import com.mcmmorpg.common.character.PlayerCharacter;
 import com.mcmmorpg.common.utils.MathUtils;
+import com.mcmmorpg.impl.Quests;
 
 public class Broodmother extends AbstractSpider {
 
@@ -17,10 +18,11 @@ public class Broodmother extends AbstractSpider {
 	private static final int SPEED = 2;
 	private static final double MAX_HEALTH = 300;
 	private static final double DAMAGE_AMOUNT = 12;
+	private static final int XP_REWARD = 250;
 	private final BossBar bossBar;
 
 	public Broodmother(Location spawnLocation) {
-		super(ChatColor.RED + "Broodmother", LEVEL, spawnLocation, EntityType.SPIDER, SPEED);
+		super(ChatColor.RED + "Broodmother", LEVEL, spawnLocation, EntityType.SPIDER, SPEED, XP_REWARD);
 		bossBar = Bukkit.createBossBar(getName(), BarColor.RED, BarStyle.SEGMENTED_10);
 		super.setHeight(1.5);
 
@@ -37,6 +39,15 @@ public class Broodmother extends AbstractSpider {
 	protected void onLive() {
 		super.onLive();
 		bossBar.setProgress(1);
+	}
+
+	@Override
+	protected void onDeath() {
+		super.onDeath();
+		PlayerCharacter[] nearbyPcs = PlayerCharacter.getNearbyPlayerCharacters(getLocation(), 25);
+		for (PlayerCharacter pc : nearbyPcs) {
+			Quests.ARACHNOPHOBIA.getObjective(1).complete(pc);
+		}
 	}
 
 	@Override

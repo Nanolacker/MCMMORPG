@@ -11,5 +11,6 @@ public class Quests {
 	public static final Quest REPORTING_FOR_DUTY = Quest.forName("Reporting for Duty");
 	public static final Quest TO_THE_AID_OF_OAKSHIRE = Quest.forName("To the Aid of Oakshire");
 	public static final Quest CALMING_THE_TAVERN = Quest.forName("Calming the Tavern");
+	public static final Quest ARACHNOPHOBIA = Quest.forName("Arachnophobia");
 
 }

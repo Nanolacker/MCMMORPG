@@ -215,7 +215,7 @@ public class GelatinousCube extends NonPlayerCharacter {
 			protected void onCollisionEnter(Collider other) {
 				if (other instanceof PlayerCharacterCollider) {
 					PlayerCharacter pc = ((PlayerCharacterCollider) other).getCharacter();
-					pc.grantXp(XP);
+					pc.giveXp(XP);
 				}
 			}
 		};

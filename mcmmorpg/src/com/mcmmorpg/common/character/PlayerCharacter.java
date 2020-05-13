@@ -346,7 +346,7 @@ public final class PlayerCharacter extends AbstractCharacter {
 		return xp;
 	}
 
-	public void grantXp(int xp) {
+	public void giveXp(int xp) {
 		if (xp == 0) {
 			return;
 		}
@@ -701,6 +701,7 @@ public final class PlayerCharacter extends AbstractCharacter {
 		itemStack.setAmount(amount);
 		Inventory inventory = player.getInventory();
 		inventory.addItem(itemStack);
+		sendMessage(ChatColor.GRAY + "Item received: " + item.formatName());
 	}
 
 	public void removeItem(Item item, int amount) {

@@ -16,13 +16,14 @@ import com.mcmmorpg.impl.Zones;
 import com.mcmmorpg.impl.npcs.Broodmother;
 import com.mcmmorpg.impl.npcs.Chicken;
 import com.mcmmorpg.impl.npcs.ForestSpider;
+import com.mcmmorpg.impl.npcs.GuardJames;
 import com.mcmmorpg.impl.npcs.Highwayman;
 import com.mcmmorpg.impl.npcs.Horse;
-import com.mcmmorpg.impl.npcs.GuardJames;
-import com.mcmmorpg.impl.npcs.MelcherBartender;
 import com.mcmmorpg.impl.npcs.MelcherAngeredDrunkard;
+import com.mcmmorpg.impl.npcs.MelcherBartender;
 import com.mcmmorpg.impl.npcs.MelcherFarmer;
 import com.mcmmorpg.impl.npcs.MelcherLumberjack;
+import com.mcmmorpg.impl.npcs.MelcherMayor;
 import com.mcmmorpg.impl.npcs.MelcherTavernKingRat;
 import com.mcmmorpg.impl.npcs.MelcherTavernRat;
 import com.mcmmorpg.impl.npcs.MelcherVillager;
@@ -43,7 +44,7 @@ public class MelcherListener implements Listener {
 			new Location(Worlds.ELADRADOR, -969, 71, 177), new Location(Worlds.ELADRADOR, -957, 72, 157),
 			new Location(Worlds.ELADRADOR, -929, 72, 155) };
 	private static final Location[] LUMBERJACK_LOCATIONS = { new Location(Worlds.ELADRADOR, -1049, 70, 232, 225, 0) };
-	private static final Location GUARD_JAMES_LOCATION = new Location(Worlds.ELADRADOR, -1120, 73, 245);
+	private static final Location MAYOR_LOCATION = new Location(Worlds.ELADRADOR, -1092.5, 70, 197.5);
 	private static final Location FARMER_LOCATION = new Location(Worlds.ELADRADOR, -1166, 73, 246);
 	private static final Location BARTENDER_LOCATION = new Location(Worlds.ELADRADOR, -1086, 70, 243);
 	private static final Location DRUNKARD_LOCATION = new Location(Worlds.ELADRADOR, -1075, 70, 243);
@@ -78,6 +79,7 @@ public class MelcherListener implements Listener {
 			new Location(Worlds.ELADRADOR, -646.000000, 70.000000, -22.000000),
 			new Location(Worlds.ELADRADOR, -622.000000, 73.000000, -45.000000) };
 	private static final Location BROODMOTHER_LOCATION = new Location(Worlds.ELADRADOR, -806, 71, 159);
+	private static final Location GUARD_JAMES_LOCATION = new Location(Worlds.ELADRADOR, -837, 72, 148);
 
 	public MelcherListener() {
 		setUpBounds();
@@ -118,7 +120,7 @@ public class MelcherListener implements Listener {
 		for (Location location : LUMBERJACK_LOCATIONS) {
 			new MelcherLumberjack(location).setAlive(true);
 		}
-		new GuardJames(GUARD_JAMES_LOCATION).setAlive(true);
+		new MelcherMayor(MAYOR_LOCATION).setAlive(true);
 		new MelcherFarmer(FARMER_LOCATION).setAlive(true);
 		new MelcherBartender(BARTENDER_LOCATION).setAlive(true);
 		new MelcherAngeredDrunkard(DRUNKARD_LOCATION).setAlive(true);
@@ -145,6 +147,7 @@ public class MelcherListener implements Listener {
 			new ForestSpider(location).setAlive(true);
 		}
 		new Broodmother(BROODMOTHER_LOCATION).setAlive(true);
+		new GuardJames(GUARD_JAMES_LOCATION).setAlive(true);
 	}
 
 	@EventHandler

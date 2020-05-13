@@ -17,7 +17,7 @@ public final class XP {
 			protected void onCollisionEnter(Collider other) {
 				if (other instanceof PlayerCharacterCollider) {
 					PlayerCharacter pc = ((PlayerCharacterCollider) other).getCharacter();
-					pc.grantXp(amount);
+					pc.giveXp(amount);
 				}
 			}
 		};

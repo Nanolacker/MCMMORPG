@@ -41,6 +41,7 @@ public abstract class AbstractSpider extends NonPlayerCharacter {
 	private final Location spawnLocation;
 	private final EntityType entityType;
 	private final int speed;
+	private final int xpReward;
 	private final CharacterCollider hitbox;
 	private final MovementSyncer movementSyncer;
 	private final Collider surroundings;
@@ -74,12 +75,14 @@ public abstract class AbstractSpider extends NonPlayerCharacter {
 		EventManager.registerEvents(listener);
 	}
 
-	public AbstractSpider(String name, int level, Location spawnLocation, EntityType entityType, int speed) {
+	public AbstractSpider(String name, int level, Location spawnLocation, EntityType entityType, int speed,
+			int xpReward) {
 		super(name, level, spawnLocation);
 		super.setMaxHealth(maxHealth());
 		this.spawnLocation = spawnLocation;
 		this.entityType = entityType;
 		this.speed = speed;
+		this.xpReward = xpReward;
 		hitbox = new CharacterCollider(this, spawnLocation, 1.5, 1, 1.5);
 		movementSyncer = new MovementSyncer(this, MovementSyncMode.CHARACTER_FOLLOWS_ENTITY);
 		surroundings = new Collider(spawnLocation, 30, 6, 30) {
@@ -172,7 +175,7 @@ public abstract class AbstractSpider extends NonPlayerCharacter {
 		Location location = getLocation();
 		DEATH_NOISE.play(location);
 		location.getWorld().spawnParticle(Particle.CLOUD, location, 10);
-		XP.distributeXP(location, 35, 400);
+		XP.distributeXP(location, 35, xpReward);
 		DelayedTask respawn = new DelayedTask(RESPAWN_TIME) {
 			@Override
 			protected void run() {

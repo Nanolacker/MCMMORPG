@@ -18,8 +18,8 @@ commands:
     restoremana:
         description: Restores the specified amount of mana.
         usage: /<command>
-    grantxp:
-        description: Grants the specified amount of XP.
+    givexp:
+        description: Gives the specified amount of XP.
         usage: /<command>
     giveitem:
         description: Gives the item with the specified ID.

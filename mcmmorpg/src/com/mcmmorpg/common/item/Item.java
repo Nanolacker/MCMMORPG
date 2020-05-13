@@ -94,7 +94,7 @@ public class Item {
 	}
 
 	public String formatName() {
-		return ChatColor.WHITE + "[" + toString() + ChatColor.WHITE + "]";
+		return ChatColor.GRAY + "[" + toString() + ChatColor.GRAY + "]";
 	}
 
 }

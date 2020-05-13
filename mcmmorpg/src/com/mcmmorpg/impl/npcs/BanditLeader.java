@@ -16,6 +16,9 @@ import com.mcmmorpg.common.physics.Collider;
 public class BanditLeader extends AbstractHumanEnemy {
 
 	private static final int LEVEL = 6;
+	private static final double MAX_HEALTH = 250;
+	private static final double DAMAGE_AMOUNT = 15;
+	private static final int XP_REWARD = 500;
 	private static final double RESPAWN_TIME = 45;
 	private static final int SPEED = 2;
 	private static final String TEXTURE_DATA = "eyJ0aW1lc3RhbXAiOjE1ODE2NDI5MDk5ODIsInByb2ZpbGVJZCI6IjgyYzYwNmM1YzY1MjRiNzk4YjkxYTEyZDNhNjE2OTc3IiwicHJvZmlsZU5hbWUiOiJOb3ROb3RvcmlvdXNOZW1vIiwic2lnbmF0dXJlUmVxdWlyZWQiOnRydWUsInRleHR1cmVzIjp7IlNLSU4iOnsidXJsIjoiaHR0cDovL3RleHR1cmVzLm1pbmVjcmFmdC5uZXQvdGV4dHVyZS9hZDZjMzk4NmY4N2YwYzNmZTRmMTk0NzZiYWI4MzQ0NDM5NDlmMzQ2MDFiYWNkMjk1YjljZTM5YTdiYjNjYzk4In19fQ==";
@@ -25,8 +28,8 @@ public class BanditLeader extends AbstractHumanEnemy {
 	private final Collider bossBarArea;
 
 	public BanditLeader(Location spawnLocation) {
-		super(ChatColor.RED + "Bandit Leader", LEVEL, spawnLocation, RESPAWN_TIME, SPEED, TEXTURE_DATA,
-				TEXTURE_SIGNATURE);
+		super(ChatColor.RED + "Bandit Leader", LEVEL, spawnLocation, MAX_HEALTH, DAMAGE_AMOUNT, XP_REWARD, RESPAWN_TIME,
+				SPEED, TEXTURE_DATA, TEXTURE_SIGNATURE);
 		bossBar = Bukkit.createBossBar(getName(), BarColor.RED, BarStyle.SEGMENTED_10);
 		bossBarArea = new Collider(spawnLocation, 30, 6, 30) {
 			@Override
@@ -45,16 +48,6 @@ public class BanditLeader extends AbstractHumanEnemy {
 				}
 			}
 		};
-	}
-
-	@Override
-	protected double maxHealth() {
-		return 250;
-	}
-
-	@Override
-	protected double damageAmount() {
-		return 15;
 	}
 
 	@Override
@@ -79,12 +72,6 @@ public class BanditLeader extends AbstractHumanEnemy {
 	protected void onDeath() {
 		super.onDeath();
 		bossBarArea.setActive(false);
-	}
-
-	@Override
-	protected int xpToGrantOnDeath() {
-		// TODO Auto-generated method stub
-		return 0;
 	}
 
 }

@@ -40,6 +40,8 @@ public abstract class AbstractHumanEnemy extends NonPlayerCharacter {
 
 	protected final HumanEntity entity;
 	protected final Location spawnLocation;
+	private final double damageAmount;
+	private final int xpReward;
 	protected final double respawnTime;
 	private int speed;
 	protected final CharacterCollider hitbox;
@@ -54,11 +56,11 @@ public abstract class AbstractHumanEnemy extends NonPlayerCharacter {
 				Entity damaged = event.getEntity();
 				if (aiMap.containsKey(damager)) {
 					if (damaged instanceof Player) {
-						AbstractHumanEnemy cultist = aiMap.get(damager);
+						AbstractHumanEnemy human = aiMap.get(damager);
 						Player player = (Player) damaged;
 						PlayerCharacter pc = PlayerCharacter.forPlayer(player);
-						pc.damage(cultist.damageAmount(), cultist);
-						cultist.entity.swingHand();
+						pc.damage(human.damageAmount, human);
+						human.entity.swingHand();
 					}
 				} else if (aiMap.containsKey(damaged)) {
 					DelayedTask cancelKnockback = new DelayedTask(0.1) {
@@ -74,23 +76,19 @@ public abstract class AbstractHumanEnemy extends NonPlayerCharacter {
 		EventManager.registerEvents(listener);
 	}
 
-	protected AbstractHumanEnemy(String name, int level, Location spawnLocation, double respawnTime, int speed,
-			String textureData, String textureSignature) {
+	protected AbstractHumanEnemy(String name, int level, Location spawnLocation, double maxHealth, double damageAmount,
+			int xpReward, double respawnTime, int speed, String textureData, String textureSignature) {
 		super(name, level, spawnLocation);
-		this.entity = new HumanEntity(spawnLocation, textureData, textureSignature);
 		this.spawnLocation = spawnLocation;
+		super.setMaxHealth(maxHealth);
+		this.damageAmount = damageAmount;
+		this.xpReward = xpReward;
 		this.respawnTime = respawnTime;
 		this.speed = speed;
+		this.entity = new HumanEntity(spawnLocation, textureData, textureSignature);
 		this.hitbox = new CharacterCollider(this, spawnLocation.clone().add(0, 1, 0), 1, 2, 1);
 		this.aiSyncer = new MovementSyncer(this, MovementSyncMode.CHARACTER_FOLLOWS_ENTITY);
-		super.setMaxHealth(maxHealth());
 	}
-
-	protected abstract double maxHealth();
-
-	protected abstract double damageAmount();
-
-	protected abstract int xpToGrantOnDeath();
 
 	@Override
 	protected void spawn() {
@@ -144,7 +142,7 @@ public abstract class AbstractHumanEnemy extends NonPlayerCharacter {
 	@Override
 	protected void onDeath() {
 		super.onDeath();
-		XP.distributeXP(getLocation(), 10, xpToGrantOnDeath());
+		XP.distributeXP(getLocation(), 10, xpReward);
 		hitbox.setActive(false);
 		entity.setVisible(false);
 		ai.remove();

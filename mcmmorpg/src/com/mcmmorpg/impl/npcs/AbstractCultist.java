@@ -17,6 +17,9 @@ import com.mcmmorpg.common.ui.ProgressBar;
 
 public abstract class AbstractCultist extends AbstractHumanEnemy {
 
+	private static final int LEVEL = 10;
+	private static final double MAX_HEALTH = 100;
+	private static final int XP_REWARD = 30;
 	private static final double RESPAWN_TIME = 30;
 	private static final int SPEED = 2;
 	private static final String TEXTURE_DATA = "eyJ0aW1lc3RhbXAiOjE1ODcyNTQ0MzcxMzUsInByb2ZpbGVJZCI6ImRlNTcxYTEwMmNiODQ4ODA4ZmU3YzlmNDQ5NmVjZGFkIiwicHJvZmlsZU5hbWUiOiJNSEZfTWluZXNraW4iLCJzaWduYXR1cmVSZXF1aXJlZCI6dHJ1ZSwidGV4dHVyZXMiOnsiU0tJTiI6eyJ1cmwiOiJodHRwOi8vdGV4dHVyZXMubWluZWNyYWZ0Lm5ldC90ZXh0dXJlL2Q5NmM4NjA3NWFhOTJiYjAwYmI2NzZlNzQ5MWM5NWUxYzY5YjU0ZjlmNzY3MzU1MjlhMGY2NmUwNGQzZDI1ZmUifX19";
@@ -53,24 +56,10 @@ public abstract class AbstractCultist extends AbstractHumanEnemy {
 	}
 
 	public AbstractCultist(String name, Location spawnLocation, String spellName, double spellChannelDuration) {
-		super(name, 10, spawnLocation, RESPAWN_TIME, SPEED, TEXTURE_DATA, TEXTURE_SIGNATURE);
+		super(name, LEVEL, spawnLocation, MAX_HEALTH, 0, XP_REWARD, RESPAWN_TIME, SPEED, TEXTURE_DATA,
+				TEXTURE_SIGNATURE);
 		this.spellName = spellName;
 		this.spellChannelDuration = spellChannelDuration;
-	}
-
-	@Override
-	protected double maxHealth() {
-		return 10;
-	}
-
-	@Override
-	protected double damageAmount() {
-		return 5;
-	}
-
-	@Override
-	protected int xpToGrantOnDeath() {
-		return 10;
 	}
 
 	private void chargeSpell() {

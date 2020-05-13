@@ -17,10 +17,11 @@ import net.md_5.bungee.api.ChatColor;
 
 public class MMORPGCommandExecutor implements CommandExecutor {
 
-	private static final String[] COMMANDS = { "help", "kill", "printlocation", "heal", "restoremana", "grantxp",
+	private static final String[] COMMANDS = { "help", "kill", "printlocation", "heal", "restoremana", "givexp",
 			"giveitem", "startquest", "completequest" };
 
 	public static void registerCommands() {
+		Debug.log("Enabling developer commands");
 		MMORPGPlugin plugin = MMORPGPlugin.getInstance();
 		MMORPGCommandExecutor executor = new MMORPGCommandExecutor();
 		for (String cmdName : COMMANDS) {
@@ -73,12 +74,12 @@ public class MMORPGCommandExecutor implements CommandExecutor {
 					pc.setCurrentMana(pc.getCurrentMana() + Double.parseDouble(args[0]));
 				}
 				return true;
-			} else if (cmdName.equalsIgnoreCase("grantxp")) {
+			} else if (cmdName.equalsIgnoreCase("givexp")) {
 				PlayerCharacter pc = PlayerCharacter.forPlayer(player);
 				if (pc == null) {
 					player.sendMessage(ChatColor.RED + "Cannot use this command right now");
 				} else {
-					pc.grantXp(Integer.parseInt(args[0]));
+					pc.giveXp(Integer.parseInt(args[0]));
 				}
 				return true;
 			} else if (cmdName.equalsIgnoreCase("giveitem")) {
