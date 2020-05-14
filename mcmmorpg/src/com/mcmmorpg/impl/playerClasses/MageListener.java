@@ -45,6 +45,8 @@ public class MageListener implements Listener {
 	private static final Noise FIREBALL_CONJURE_NOISE = new Noise(Sound.ENTITY_ZOMBIE_VILLAGER_CURE);
 	private static final Noise FIREBALL_EXPLODE_1_NOISE = new Noise(Sound.ENTITY_GENERIC_EXPLODE);
 	private static final Noise FIREBALL_EXPLODE_2_NOISE = new Noise(Sound.BLOCK_FIRE_AMBIENT);
+	private static final Noise ICE_BEAM_CHANNEL_NOISE = new Noise(Sound.ENTITY_GENERIC_DRINK, 0.25f, 2f);
+	private static final Noise ICE_BEAM_HIT_NOISE = new Noise(Sound.BLOCK_GLASS_BREAK);
 	private static final Noise WHIRLWIND_AMBIENT_NOISE = new Noise(Sound.ENTITY_WITHER_DEATH);
 	private static final Noise WHIRLWIND_SPEED_NOISE = new Noise(Sound.ENTITY_WITHER_SHOOT, 1, 2);
 	private static final Noise EARTHQUAKE_NOISE = new Noise(Sound.BLOCK_GRAVEL_FALL, 1, 0.5f);
@@ -126,6 +128,7 @@ public class MageListener implements Listener {
 	private void useFireball(PlayerCharacter pc) {
 		double damageAmount = 10 * fireball.getUpgradeLevel(pc) + 5 * pc.getLevel();
 		double range = 15;
+		double hitSize = 0.85;
 		Location start = getWeaponLocation(pc).subtract(0, 1, 0);
 		Vector lookDirection = start.getDirection();
 		start.add(lookDirection).add(0, 1, 0);
@@ -134,7 +137,6 @@ public class MageListener implements Listener {
 		// ensure we don't shoot through walls
 		Location end = pc.getTargetLocation(range);
 		double maxDistance = start.distance(end);
-		double hitSize = 0.75;
 		World world = start.getWorld();
 		Fireball fireball = (Fireball) world.spawnEntity(start, EntityType.FIREBALL);
 		Projectile projectile = new Projectile(start, velocity, maxDistance, hitSize) {
@@ -209,6 +211,7 @@ public class MageListener implements Listener {
 				Location targetLocationTemp = pc.getTargetLocation(15);
 				AbstractCharacter targetCharacterTemp = null;
 				Location crosshair = pc.getLocation().add(0, 1.5, 0);
+				ICE_BEAM_CHANNEL_NOISE.play(crosshair);
 				Ray hitDetection = new Ray(crosshair, crosshair.getDirection(), 15);
 				Raycast raycast = new Raycast(hitDetection, CharacterCollider.class);
 				Collider[] hits = raycast.getHits();
@@ -237,7 +240,7 @@ public class MageListener implements Listener {
 					targetCharacter.damage(damagePerTick, pc);
 					Location hitLocation = targetCharacter.getLocation().add(0, 1, 0);
 					world.spawnParticle(Particle.FIREWORKS_SPARK, hitLocation, 10);
-					new Noise(Sound.BLOCK_GLASS_BREAK).play(hitLocation);
+					ICE_BEAM_HIT_NOISE.play(hitLocation);
 				}
 				count++;
 				if (count == maxCount) {

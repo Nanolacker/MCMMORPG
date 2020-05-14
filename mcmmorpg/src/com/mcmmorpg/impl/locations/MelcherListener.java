@@ -16,6 +16,8 @@ import com.mcmmorpg.impl.Zones;
 import com.mcmmorpg.impl.npcs.Broodmother;
 import com.mcmmorpg.impl.npcs.Chicken;
 import com.mcmmorpg.impl.npcs.ForestSpider;
+import com.mcmmorpg.impl.npcs.GelatinousCube;
+import com.mcmmorpg.impl.npcs.GiantGelatinousCube;
 import com.mcmmorpg.impl.npcs.GuardJames;
 import com.mcmmorpg.impl.npcs.Highwayman;
 import com.mcmmorpg.impl.npcs.Horse;
@@ -148,6 +150,9 @@ public class MelcherListener implements Listener {
 		}
 		new Broodmother(BROODMOTHER_LOCATION).setAlive(true);
 		new GuardJames(GUARD_JAMES_LOCATION).setAlive(true);
+
+		Location cubeLocation = new Location(Worlds.ELADRADOR, -1067, 70, 214);
+		new GiantGelatinousCube(cubeLocation).setAlive(true);
 	}
 
 	@EventHandler

@@ -21,7 +21,7 @@ import com.mcmmorpg.common.character.MovementSyncer.MovementSyncMode;
 import com.mcmmorpg.common.character.NonPlayerCharacter;
 import com.mcmmorpg.common.character.PlayerCharacter;
 import com.mcmmorpg.common.character.Source;
-import com.mcmmorpg.common.character.XP;
+import com.mcmmorpg.common.character.Xp;
 import com.mcmmorpg.common.event.EventManager;
 import com.mcmmorpg.common.sound.Noise;
 import com.mcmmorpg.common.time.DelayedTask;
@@ -148,7 +148,7 @@ public abstract class AbstractUndead extends NonPlayerCharacter {
 	}
 
 	private void grantXpToNearbyPlayers() {
-		XP.distributeXP(getLocation(), 10, xpToGrantOnDeath());
+		Xp.distributeXp(getLocation(), 10, xpToGrantOnDeath());
 	}
 
 }

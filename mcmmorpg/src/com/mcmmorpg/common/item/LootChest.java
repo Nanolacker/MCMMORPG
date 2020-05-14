@@ -40,7 +40,7 @@ public class LootChest {
 		this.location = getNearestEmptyBlock(location);
 		this.contents = contents;
 		this.removed = false;
-		this.text = new TextPanel(this.location.clone().add(0, 1, 0), ChatColor.GOLD + "Loot Chest");
+		this.text = new TextPanel(this.location.clone().add(0.5, 1, 0.5), ChatColor.GOLD + "Loot Chest");
 		text.setVisible(true);
 		Block block = this.location.getBlock();
 		block.setType(Material.CHEST);

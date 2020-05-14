@@ -11,4 +11,6 @@ public class Items {
 	public static final Item FOOD_SUPPLIES = Item.forName("Food Supplies");
 	public static final Item BOAR_FLANK = Item.forName("Boar Flank");
 
+	public static final Item MELCHER_MEAD = Item.forName("Melcher Mead");
+
 }

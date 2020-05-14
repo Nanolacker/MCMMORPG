@@ -14,8 +14,13 @@ import com.mcmmorpg.common.time.RepeatingTask;
 public class MovementSyncer {
 
 	private static final double SYNC_PERIOD = 0.1;
+	private static final double SIGNIFICANT_OFFSET_SQUARED = 0.01;
 
 	private static final List<MovementSyncer> activeSyncers = new ArrayList<>();
+
+	private AbstractCharacter character;
+	private Entity entity;
+	private MovementSyncMode syncMode;
 
 	static {
 		RepeatingTask syncTask = new RepeatingTask(SYNC_PERIOD) {
@@ -25,28 +30,27 @@ public class MovementSyncer {
 					MovementSyncer syncer = activeSyncers.get(i);
 					AbstractCharacter character = syncer.getCharacter();
 					Entity entity = syncer.getEntity();
-					MovementSyncMode syncMode = syncer.getSyncMode();
-					switch (syncMode) {
-					case CHARACTER_FOLLOWS_ENTITY:
-						Location entityLocation = entity.getLocation();
-						character.setLocation(entityLocation);
-						break;
-					case ENTITY_FOLLOWS_CHARACTER:
-						Location characterLocation = character.getLocation();
-						entity.teleport(characterLocation);
-						break;
-					default:
-						break;
+					Location characterLocation = character.getLocation();
+					Location entityLocation = entity.getLocation();
+					if (characterLocation.getWorld() != entityLocation.getWorld()
+							|| entityLocation.distanceSquared(characterLocation) > SIGNIFICANT_OFFSET_SQUARED) {
+						MovementSyncMode syncMode = syncer.getSyncMode();
+						switch (syncMode) {
+						case CHARACTER_FOLLOWS_ENTITY:
+							character.setLocation(entityLocation);
+							break;
+						case ENTITY_FOLLOWS_CHARACTER:
+							entity.teleport(characterLocation);
+							break;
+						default:
+							break;
+						}
 					}
 				}
 			}
 		};
 		syncTask.schedule();
 	}
-
-	private AbstractCharacter character;
-	private Entity entity;
-	private MovementSyncMode syncMode;
 
 	public MovementSyncer(AbstractCharacter character, MovementSyncMode syncMode) {
 		this.character = character;

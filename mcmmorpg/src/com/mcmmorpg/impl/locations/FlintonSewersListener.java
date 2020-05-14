@@ -21,7 +21,6 @@ import com.mcmmorpg.impl.npcs.Bandit;
 import com.mcmmorpg.impl.npcs.CultistMage;
 import com.mcmmorpg.impl.npcs.CultistSummoner;
 import com.mcmmorpg.impl.npcs.GelatinousCube;
-import com.mcmmorpg.impl.npcs.MelcherTavernRat;
 
 public class FlintonSewersListener implements Listener {
 

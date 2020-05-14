@@ -1,7 +1,6 @@
 {
 	"playerClass": "Fighter",
 	"level": 3,
-	"id": 3,
 	"name": "Short Sword",
 	"rarity": "COMMON",
 	"icon": "IRON_SWORD",

@@ -25,7 +25,7 @@ import com.mcmmorpg.common.character.MovementSyncer.MovementSyncMode;
 import com.mcmmorpg.common.character.NonPlayerCharacter;
 import com.mcmmorpg.common.character.PlayerCharacter;
 import com.mcmmorpg.common.character.Source;
-import com.mcmmorpg.common.character.XP;
+import com.mcmmorpg.common.character.Xp;
 import com.mcmmorpg.common.event.EventManager;
 import com.mcmmorpg.common.sound.Noise;
 import com.mcmmorpg.common.time.DelayedTask;
@@ -150,7 +150,7 @@ public class WildBoar extends NonPlayerCharacter {
 		Location location = getLocation();
 		DEATH_NOISE.play(location);
 		location.getWorld().spawnParticle(Particle.CLOUD, location, 10);
-		XP.distributeXP(location, 25, getXpToGrant());
+		Xp.distributeXp(location, 25, getXpToGrant());
 		Items.BOAR_FLANK.drop(location, 1);
 		DelayedTask respawn = new DelayedTask(RESPAWN_TIME) {
 			@Override

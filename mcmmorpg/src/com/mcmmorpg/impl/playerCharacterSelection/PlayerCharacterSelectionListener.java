@@ -69,7 +69,7 @@ public class PlayerCharacterSelectionListener implements Listener {
 		if (!PLAYER_CHARACTER_DATA_DIRECTORY.exists()) {
 			PLAYER_CHARACTER_DATA_DIRECTORY.mkdir();
 		}
-		CHARACTER_SELECTION_LOCATION = new Location(Worlds.CHARACTER_SELECTION, 0, 32, 0);
+		CHARACTER_SELECTION_LOCATION = new Location(Worlds.CHARACTER_SELECTION, 0.5, 1, 0.5);
 		OPEN_CHARACTER_SELECT_ITEM_STACK = ItemFactory.createItemStack(ChatColor.GREEN + "Select Character", null,
 				Material.EMERALD);
 		ItemFactory.registerStaticInteractable(OPEN_CHARACTER_SELECT_ITEM_STACK);
@@ -119,8 +119,11 @@ public class PlayerCharacterSelectionListener implements Listener {
 	}
 
 	private void setUpTextPanels() {
-		Location titleLocation = new Location(Worlds.CHARACTER_SELECTION, 0, 33.5, 2);
-		TextPanel title = new TextPanel(titleLocation, ChatColor.GREEN + "Welcome to MCMMORPG!");
+		Location titleLocation = new Location(Worlds.CHARACTER_SELECTION, 0.5, 3, 5);
+		TextPanel title = new TextPanel(titleLocation,
+				ChatColor.GREEN + "Welcome to MCMMORPG!\n\n" + ChatColor.WHITE + "Please ensure that "
+						+ ChatColor.YELLOW + "Particles" + ChatColor.WHITE + " in " + ChatColor.YELLOW
+						+ "Video Settings..." + ChatColor.WHITE + " is set to " + ChatColor.YELLOW + "All");
 		title.setVisible(true);
 	}
 

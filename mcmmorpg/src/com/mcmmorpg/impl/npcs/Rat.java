@@ -3,7 +3,6 @@ package com.mcmmorpg.impl.npcs;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Sound;
 import org.bukkit.entity.Entity;
@@ -21,7 +20,7 @@ import com.mcmmorpg.common.character.MovementSyncer.MovementSyncMode;
 import com.mcmmorpg.common.character.NonPlayerCharacter;
 import com.mcmmorpg.common.character.PlayerCharacter;
 import com.mcmmorpg.common.character.Source;
-import com.mcmmorpg.common.character.XP;
+import com.mcmmorpg.common.character.Xp;
 import com.mcmmorpg.common.event.EventManager;
 import com.mcmmorpg.common.sound.Noise;
 import com.mcmmorpg.common.time.DelayedTask;
@@ -121,7 +120,7 @@ public class Rat extends NonPlayerCharacter {
 		entity.remove();
 		entityMap.remove(entity);
 		Location deathLocation = getLocation();
-		XP.distributeXP(deathLocation, 25, xpReward);
+		Xp.distributeXp(deathLocation, 25, xpReward);
 		DEATH_NOISE.play(deathLocation);
 		DelayedTask respawn = new DelayedTask(RESPAWN_TIME) {
 			@Override

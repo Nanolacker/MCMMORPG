@@ -1,7 +1,6 @@
 {
 	"playerClass": "Fighter",
 	"level": 1,
-	"id": 0,
 	"name": "Apprentice Sword",
 	"rarity": "COMMON",
 	"icon": "WOODEN_SWORD",

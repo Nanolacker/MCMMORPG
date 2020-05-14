@@ -19,6 +19,7 @@ public class NonPlayerCharacter extends AbstractCharacter {
 
 	private static final double SPAWN_PERIOD_SECONDS = 1.0;
 	private static final double DEFAULT_SPAWN_RADIUS = 50.0;
+	private static final double DEFAULT_DESPAWN_RADIUS = 55.0;
 
 	private static List<NonPlayerCharacter> aliveNpcs = new ArrayList<>();
 
@@ -35,15 +36,13 @@ public class NonPlayerCharacter extends AbstractCharacter {
 					NonPlayerCharacter npc = aliveNpcs.get(i);
 					boolean alive = npc.isAlive();
 					if (alive) {
-						boolean canSpawn = npc.canSpawn();
-						boolean isSpawned = npc.isSpawned();
-						if (canSpawn) {
-							if (!isSpawned) {
-								npc.spawn();
+						if (npc.isSpawned()) {
+							if (npc.shouldDespawn()) {
+								npc.despawn();
 							}
 						} else {
-							if (isSpawned) {
-								npc.despawn();
+							if (npc.shouldSpawn()) {
+								npc.spawn();
 							}
 						}
 					}
@@ -123,10 +122,21 @@ public class NonPlayerCharacter extends AbstractCharacter {
 	 * default, returns whether there is a player nearby. Override in subclasses to
 	 * provide alternative functionality.
 	 */
-	protected boolean canSpawn() {
+	protected boolean shouldSpawn() {
 		Location location = getLocation();
 		boolean playerIsNearby = PlayerCharacter.playerCharacterIsNearby(location, DEFAULT_SPAWN_RADIUS);
 		return playerIsNearby;
+	}
+
+	/**
+	 * Returns whether the conditions are suitable for this NPC to despawn. By
+	 * default, returns whether there is a player nearby. Override in subclasses to
+	 * provide alternative functionality.
+	 */
+	protected boolean shouldDespawn() {
+		Location location = getLocation();
+		boolean playerIsNearby = PlayerCharacter.playerCharacterIsNearby(location, DEFAULT_DESPAWN_RADIUS);
+		return !playerIsNearby;
 	}
 
 }

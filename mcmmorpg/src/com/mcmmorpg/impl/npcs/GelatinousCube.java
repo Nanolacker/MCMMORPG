@@ -2,6 +2,7 @@ package com.mcmmorpg.impl.npcs;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -24,10 +25,9 @@ import com.mcmmorpg.common.character.MovementSyncer;
 import com.mcmmorpg.common.character.MovementSyncer.MovementSyncMode;
 import com.mcmmorpg.common.character.NonPlayerCharacter;
 import com.mcmmorpg.common.character.PlayerCharacter;
-import com.mcmmorpg.common.character.PlayerCharacter.PlayerCharacterCollider;
 import com.mcmmorpg.common.character.Source;
+import com.mcmmorpg.common.character.Xp;
 import com.mcmmorpg.common.event.EventManager;
-import com.mcmmorpg.common.item.LootChest;
 import com.mcmmorpg.common.physics.Collider;
 import com.mcmmorpg.common.sound.Noise;
 import com.mcmmorpg.common.time.DelayedTask;
@@ -38,10 +38,14 @@ public class GelatinousCube extends NonPlayerCharacter {
 
 	private static final int LEVEL = 12;
 	private static final int MAX_HEALTH = 150;
-	private static final int XP = 20;
+	private static final int XP_REWARD = 20;
 	private static final double BASIC_ATTACK_DAMAGE = 20;
 	private static final double ACID_SPRAY_DAMAGE = 40;
 	private static final double ACID_SPRAY_COOLDOWN = 15;
+	private static final double ACID_SPRAY_TRIGGER_RADIUS_SQUARED = 36;
+	private static final int SIZE = 5;
+	private static final double HEIGHT = 3.5;
+	private static final double WIDTH = 2.9;
 	private static final double RESPAWN_TIME = 30;
 	private static final Noise HURT_NOISE = new Noise(Sound.ENTITY_SLIME_DEATH);
 	private static final Noise DEATH_NOISE = new Noise(Sound.ENTITY_SLIME_DEATH);
@@ -52,10 +56,10 @@ public class GelatinousCube extends NonPlayerCharacter {
 	private final Location spawnLocation;
 	private final CharacterCollider hitbox;
 	private final MovementSyncer movementSyncer;
-	private final RepeatingTask useAcidSprayTask;
 	private Slime entity;
 	private ProgressBar acidSprayProgressBar;
 	private boolean canUseAcidSpray;
+	private boolean respawning;
 
 	static {
 		Listener listener = new Listener() {
@@ -82,24 +86,20 @@ public class GelatinousCube extends NonPlayerCharacter {
 			}
 		};
 		EventManager.registerEvents(listener);
-	}
-
-	public GelatinousCube(Location spawnLocation) {
-		super(ChatColor.RED + "Gelatinous Cube", LEVEL, spawnLocation);
-		super.setMaxHealth(MAX_HEALTH);
-		super.setHeight(4);
-		this.spawnLocation = spawnLocation;
-		hitbox = new CharacterCollider(this, spawnLocation, 3.5, 3.5, 3.5);
-		movementSyncer = new MovementSyncer(this, MovementSyncMode.CHARACTER_FOLLOWS_ENTITY);
-		useAcidSprayTask = new RepeatingTask(0.5) {
+		RepeatingTask useAcidSprayTask = new RepeatingTask(0.5) {
 			@Override
 			protected void run() {
-				if (isSpawned()) {
-					if (entity.isOnGround()) {
-						Entity target = entity.getTarget();
-						if (target != null) {
-							if (canUseAcidSpray && target.getLocation().distanceSquared(getLocation()) < 36) {
-								chargeAcidSpray();
+				Set<Slime> entities = entityMap.keySet();
+				for (Slime entity : entities) {
+					GelatinousCube gelatinousCube = entityMap.get(entity);
+					if (gelatinousCube.isSpawned()) {
+						if (entity.isOnGround()) {
+							Entity target = entity.getTarget();
+							if (target != null) {
+								if (gelatinousCube.canUseAcidSpray && target.getLocation().distanceSquared(
+										gelatinousCube.getLocation()) < ACID_SPRAY_TRIGGER_RADIUS_SQUARED) {
+									gelatinousCube.chargeAcidSpray();
+								}
 							}
 						}
 					}
@@ -107,7 +107,17 @@ public class GelatinousCube extends NonPlayerCharacter {
 			}
 		};
 		useAcidSprayTask.schedule();
+	}
+
+	public GelatinousCube(Location spawnLocation) {
+		super(ChatColor.RED + "Gelatinous Cube", LEVEL, spawnLocation);
+		super.setMaxHealth(MAX_HEALTH);
+		super.setHeight(HEIGHT);
+		this.spawnLocation = spawnLocation;
+		hitbox = new CharacterCollider(this, spawnLocation, WIDTH, WIDTH, WIDTH);
+		movementSyncer = new MovementSyncer(this, MovementSyncMode.CHARACTER_FOLLOWS_ENTITY);
 		canUseAcidSpray = true;
+		respawning = true;
 	}
 
 	@Override
@@ -116,11 +126,12 @@ public class GelatinousCube extends NonPlayerCharacter {
 		super.spawn();
 		hitbox.setActive(true);
 		entity = (Slime) spawnLocation.getWorld().spawnEntity(spawnLocation, EntityType.SLIME);
-		entity.setSize(6);
+		entity.setSize(SIZE);
 		entity.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, Integer.MAX_VALUE, 2));
 		entity.setRemoveWhenFarAway(false);
 		movementSyncer.setEntity(entity);
 		movementSyncer.setEnabled(true);
+		entityMap.put(entity, this);
 	}
 
 	@Override
@@ -128,13 +139,14 @@ public class GelatinousCube extends NonPlayerCharacter {
 		super.despawn();
 		hitbox.setActive(false);
 		movementSyncer.setEnabled(false);
+		entityMap.remove(entity);
 		entity.remove();
 	}
 
 	@Override
 	public void setLocation(Location location) {
 		super.setLocation(location);
-		hitbox.setCenter(location.clone().add(0, 2, 0));
+		hitbox.setCenter(location.clone().add(0, WIDTH / 2.0, 0));
 	}
 
 	@Override
@@ -148,7 +160,7 @@ public class GelatinousCube extends NonPlayerCharacter {
 	private void chargeAcidSpray() {
 		canUseAcidSpray = false;
 		entity.setAI(false);
-		acidSprayProgressBar = new ProgressBar(getLocation().add(0, 5, 0), ChatColor.WHITE + "Acid Spray", 16,
+		acidSprayProgressBar = new ProgressBar(getLocation().add(0, HEIGHT - 1, 0), ChatColor.WHITE + "Acid Spray", 16,
 				ChatColor.AQUA) {
 			@Override
 			protected void onComplete() {
@@ -170,8 +182,7 @@ public class GelatinousCube extends NonPlayerCharacter {
 	private void useAcidSpray() {
 		Location location = getLocation();
 		ACID_SPRAY_NOISE.play(location);
-		entity.setAI(true);
-		Collider acidSprayHitbox = new Collider(location.subtract(0, 3, 0), 12, 2, 12) {
+		Collider acidSprayHitbox = new Collider(location.add(0, WIDTH / 2, 0), 12, 2, 12) {
 			@Override
 			protected void onCollisionEnter(Collider other) {
 				if (other instanceof CharacterCollider) {
@@ -185,42 +196,35 @@ public class GelatinousCube extends NonPlayerCharacter {
 		acidSprayHitbox.drawFill(Particle.SNEEZE, 0.5);
 		acidSprayHitbox.setActive(true);
 		acidSprayHitbox.setActive(false);
+		entity.setAI(true);
 	}
 
 	@Override
 	protected void onDeath() {
 		super.onDeath();
-		grantXpToNearbyPlayers();
+		Location location = getLocation();
+		Xp.distributeXp(location, 25, XP_REWARD);
 		hitbox.setActive(false);
+		entityMap.remove(entity);
 		entity.remove();
 		if (acidSprayProgressBar != null) {
 			acidSprayProgressBar.dispose();
 		}
-		Location location = getLocation();
 		DEATH_NOISE.play(location);
 		location.getWorld().spawnParticle(Particle.CLOUD, location, 10);
-		LootChest.spawnLootChest(location);
-		DelayedTask respawnTask = new DelayedTask(RESPAWN_TIME) {
-			@Override
-			protected void run() {
-				setAlive(true);
-			}
-		};
-		respawnTask.schedule();
+		if (respawning) {
+			DelayedTask respawnTask = new DelayedTask(RESPAWN_TIME) {
+				@Override
+				protected void run() {
+					setAlive(true);
+				}
+			};
+			respawnTask.schedule();
+		}
 	}
 
-	private void grantXpToNearbyPlayers() {
-		Collider xpBounds = new Collider(getLocation(), 25, 25, 25) {
-			@Override
-			protected void onCollisionEnter(Collider other) {
-				if (other instanceof PlayerCharacterCollider) {
-					PlayerCharacter pc = ((PlayerCharacterCollider) other).getCharacter();
-					pc.giveXp(XP);
-				}
-			}
-		};
-		xpBounds.setActive(true);
-		xpBounds.setActive(false);
+	public void setRespawning(boolean respawning) {
+		this.respawning = respawning;
 	}
 
 	public boolean isFriendly(AbstractCharacter other) {
