@@ -1,73 +1,67 @@
 package com.mcmmorpg.common.ui;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
+import org.bukkit.boss.BarColor;
+import org.bukkit.boss.BarStyle;
+import org.bukkit.boss.BossBar;
+import org.bukkit.entity.Player;
 
+import com.mcmmorpg.common.character.PlayerCharacter;
 import com.mcmmorpg.common.time.RepeatingTask;
 import com.mcmmorpg.common.utils.MathUtils;
 import com.mcmmorpg.common.utils.StringUtils;
 
 /**
- * A bar that uses a text panel to display progress in the form of a bar that
- * fills up over time. The method onComplete() can be overridden in subclasses
- * to provide additional functionality.
+ * Override onComplete() to add completion behavior. Be sure to set rate after
+ * instantiation.
  */
 public class ProgressBar {
 
 	/**
 	 * In seconds.
 	 */
-	private static final double UPDATE_PERIOD = 0.25;
+	private static final double UPDATE_PERIOD = 0.15;
+	private static final int TEXT_PANEL_PIPE_COUNT = 16;
+
+	private static final List<ProgressBar> progressBars = new ArrayList<>();
 
 	private String title;
-	private int width;
-	private ChatColor color;
+	private ProgressBarColor color;
 	private double progress;
 	private double rate;
-	private final TextPanel textPanel;
-	private final RepeatingTask updateProgress;
+	private TextPanel textPanel;
+	private BossBar bossBar;
 
-	public ProgressBar(Location location, String title, int width, ChatColor color) {
-		this.title = title;
-		this.width = width;
-		this.color = color;
-		progress = 0;
-		rate = 0;
-		textPanel = new TextPanel(location);
-		textPanel.setVisible(true);
-		updateProgress = new RepeatingTask(UPDATE_PERIOD) {
+	static {
+		RepeatingTask progressUpdater = new RepeatingTask(UPDATE_PERIOD) {
 			@Override
 			protected void run() {
-				update();
+				for (int i = 0; i < progressBars.size(); i++) {
+					ProgressBar progressBar = progressBars.get(i);
+					progressBar.update();
+				}
 			}
 		};
-		updateProgress.schedule();
+		progressUpdater.schedule();
+	}
+
+	public ProgressBar(String title, ProgressBarColor color) {
+		this.title = title;
+		this.color = color;
+		this.progress = 0;
+		this.rate = 0;
+		this.textPanel = null;
+		this.bossBar = null;
+		progressBars.add(this);
 	}
 
 	private final void update() {
-		progress += rate * UPDATE_PERIOD;
-		StringBuilder text = new StringBuilder();
-		text.append(title);
-		text.append("\n");
-		text.append(ChatColor.GRAY + "[");
-		int numColoredPipes = (int) (progress * width);
-		int numGrayPipes = width - numColoredPipes;
-		text.append(color + StringUtils.repeat("|", numColoredPipes));
-		text.append(ChatColor.GRAY + StringUtils.repeat("|", numGrayPipes));
-		text.append(ChatColor.GRAY + "]");
-		textPanel.setText(text.toString());
-		if (progress >= 1) {
-			onComplete();
-			dispose();
-		}
-	}
-
-	public final Location getLocation() {
-		return textPanel.getLocation();
-	}
-
-	public final void setLocation(Location location) {
-		textPanel.setLocation(location);
+		setProgress(progress + rate * UPDATE_PERIOD);
 	}
 
 	public final String getTitle() {
@@ -76,22 +70,26 @@ public class ProgressBar {
 
 	public final void setTitle(String title) {
 		this.title = title;
+		if (textPanel != null) {
+			updateTextPanelText();
+		}
+		if (bossBar != null) {
+			bossBar.setTitle(title);
+		}
 	}
 
-	public final int getWidth() {
-		return width;
-	}
-
-	public final void setWidth(int width) {
-		this.width = width;
-	}
-
-	public final ChatColor getColor() {
+	public final ProgressBarColor getColor() {
 		return color;
 	}
 
-	public final void setColor(ChatColor color) {
+	public final void setColor(ProgressBarColor color) {
 		this.color = color;
+		if (textPanel != null) {
+			updateTextPanelText();
+		}
+		if (bossBar != null) {
+			bossBar.setColor(color.barColor);
+		}
 	}
 
 	/**
@@ -106,8 +104,16 @@ public class ProgressBar {
 	 */
 	public final void setProgress(double progress) {
 		this.progress = MathUtils.clamp(progress, 0, 1);
-		if (progress == 1) {
+		if (this.progress == 1) {
+			onComplete();
 			dispose();
+		} else {
+			if (textPanel != null) {
+				updateTextPanelText();
+			}
+			if (bossBar != null) {
+				updateBossBarProgress();
+			}
 		}
 	}
 
@@ -125,21 +131,93 @@ public class ProgressBar {
 		this.rate = rate;
 	}
 
+	public final void display(Location location) {
+		if (textPanel == null) {
+			textPanel = new TextPanel(location);
+			updateTextPanelText();
+			textPanel.setVisible(true);
+		} else {
+			textPanel.setLocation(location);
+		}
+	}
+
+	public final void display(PlayerCharacter pc) {
+		display(pc.getPlayer());
+	}
+
+	public final Location getDisplayLocation() {
+		return textPanel == null ? null : textPanel.getLocation();
+	}
+
+	public final void display(Player player) {
+		if (bossBar == null) {
+			bossBar = Bukkit.createBossBar(title, color.barColor, BarStyle.SOLID);
+			bossBar.setProgress(0.0);
+		}
+		bossBar.addPlayer(player);
+	}
+
+	public final void hide(PlayerCharacter pc) {
+		hide(pc.getPlayer());
+	}
+
+	public final void hide(Player player) {
+		if (bossBar != null) {
+			bossBar.removePlayer(player);
+		}
+	}
+
+	private final void updateTextPanelText() {
+		StringBuilder text = new StringBuilder();
+		text.append(title);
+		text.append("\n");
+		text.append(ChatColor.GRAY + "[");
+		int numColoredPipes = (int) (progress * TEXT_PANEL_PIPE_COUNT);
+		int numGrayPipes = TEXT_PANEL_PIPE_COUNT - numColoredPipes;
+		text.append(color.chatColor + StringUtils.repeat("|", numColoredPipes));
+		text.append(ChatColor.GRAY + StringUtils.repeat("|", numGrayPipes));
+		text.append(ChatColor.GRAY + "]");
+		textPanel.setText(text.toString());
+	}
+
+	private final void updateBossBarProgress() {
+		bossBar.setProgress(progress);
+	}
+
 	/**
-	 * Call this to get rid of it before it finishes. Automatically called when if
-	 * it does finish.
+	 * Call this to get rid of it before it finishes. Automatically called when it
+	 * does finish.
 	 */
 	public final void dispose() {
-		textPanel.setVisible(false);
-		if (updateProgress.isScheduled()) {
-			updateProgress.cancel();
+		if (textPanel != null) {
+			textPanel.setVisible(false);
 		}
+		if (bossBar != null) {
+			bossBar.removeAll();
+		}
+		progressBars.remove(this);
 	}
 
 	/**
 	 * Invoked when the progress bar becomes entirely full.
 	 */
 	protected void onComplete() {
+	}
+
+	public static enum ProgressBarColor {
+
+		BLUE(ChatColor.BLUE, BarColor.BLUE), GREEN(ChatColor.GREEN, BarColor.GREEN), PINK(ChatColor.LIGHT_PURPLE,
+				BarColor.PINK), PURPLE(ChatColor.DARK_PURPLE, BarColor.PURPLE), RED(ChatColor.RED, BarColor.RED), WHITE(
+						ChatColor.WHITE, BarColor.WHITE), YELLOW(ChatColor.YELLOW, BarColor.YELLOW);
+
+		private final ChatColor chatColor;
+		private final BarColor barColor;
+
+		ProgressBarColor(ChatColor chatColor, BarColor barColor) {
+			this.chatColor = chatColor;
+			this.barColor = barColor;
+		}
+
 	}
 
 }

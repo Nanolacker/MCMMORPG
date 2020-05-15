@@ -16,7 +16,6 @@ import com.mcmmorpg.impl.Zones;
 import com.mcmmorpg.impl.npcs.Broodmother;
 import com.mcmmorpg.impl.npcs.Chicken;
 import com.mcmmorpg.impl.npcs.ForestSpider;
-import com.mcmmorpg.impl.npcs.GelatinousCube;
 import com.mcmmorpg.impl.npcs.GiantGelatinousCube;
 import com.mcmmorpg.impl.npcs.GuardJames;
 import com.mcmmorpg.impl.npcs.Highwayman;

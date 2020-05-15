@@ -24,19 +24,19 @@ import com.mcmmorpg.impl.npcs.GelatinousCube;
 
 public class FlintonSewersListener implements Listener {
 
-	private static final Noise SEWAGE_DAMAGE_NOISE = new Noise(Sound.BLOCK_SLIME_BLOCK_HIT);
+	private static final Noise SLUDGE_DAMAGE_NOISE = new Noise(Sound.BLOCK_SLIME_BLOCK_HIT);
 	private static final Location[] BANDIT_LOCATIONS = {};
 	private static final Location[] GELATINOUS_CCUBE_LOCATIONS = {};
 	private static final Location[] CULTIST_MAGE_LOCATOINS = {};
 	private static final Location[] CULTIST_SUMMONER_LOCATIONS = {};
 	private static final Location[] RAT_LOCATIONS = {};
 
-	private Source sewage;
+	private Source sludge;
 	private Collider innerBounds;
 
 	public FlintonSewersListener() {
 		setUpBounds();
-		setUpSewage();
+		setUpSludge();
 		spawnNpcs();
 	}
 
@@ -65,11 +65,11 @@ public class FlintonSewersListener implements Listener {
 		outerBounds.setActive(true);
 	}
 
-	private void setUpSewage() {
-		sewage = new Source() {
+	private void setUpSludge() {
+		sludge = new Source() {
 			@Override
 			public String getName() {
-				return ChatColor.RED + "Sewage";
+				return ChatColor.RED + "Sludge";
 			}
 		};
 		new RepeatingTask(1) {
@@ -84,8 +84,8 @@ public class FlintonSewersListener implements Listener {
 						Location floorLocation = location.subtract(0, 1, 0);
 						Block floor = world.getBlockAt(floorLocation);
 						if (floor.getType() == Material.GLASS) {
-							pc.damage(2, sewage);
-							SEWAGE_DAMAGE_NOISE.play(floorLocation);
+							pc.damage(2, sludge);
+							SLUDGE_DAMAGE_NOISE.play(floorLocation);
 						}
 					}
 				}
@@ -107,7 +107,7 @@ public class FlintonSewersListener implements Listener {
 			new CultistSummoner(location).setAlive(true);
 		}
 		for (Location location : RAT_LOCATIONS) {
-			
+
 		}
 	}
 

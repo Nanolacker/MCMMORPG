@@ -33,19 +33,24 @@ import com.mcmmorpg.common.sound.Noise;
 import com.mcmmorpg.common.time.DelayedTask;
 import com.mcmmorpg.common.time.RepeatingTask;
 import com.mcmmorpg.common.ui.ProgressBar;
+import com.mcmmorpg.common.ui.ProgressBar.ProgressBarColor;
 
 public class GelatinousCube extends NonPlayerCharacter {
 
 	private static final int LEVEL = 12;
 	private static final int MAX_HEALTH = 150;
 	private static final int XP_REWARD = 20;
-	private static final double BASIC_ATTACK_DAMAGE = 20;
-	private static final double ACID_SPRAY_DAMAGE = 40;
+	private static final double BASIC_ATTACK_DAMAGE = 4;
+	private static final double ACID_SPRAY_DAMAGE = 10;
+	private static final double ACID_SPRAY_CHANNEL_RATE = 0.35;
 	private static final double ACID_SPRAY_COOLDOWN = 15;
 	private static final double ACID_SPRAY_TRIGGER_RADIUS_SQUARED = 36;
+	private static final double ACID_SPRAY_DAMAGE_WIDTH = 10;
+	private static final double ACID_SPRAY_DAMAGE_HEIGHT = 2;
 	private static final int SIZE = 5;
 	private static final double HEIGHT = 3.5;
 	private static final double WIDTH = 2.9;
+	private static final int SLOWNESS = 2;
 	private static final double RESPAWN_TIME = 30;
 	private static final Noise HURT_NOISE = new Noise(Sound.ENTITY_SLIME_DEATH);
 	private static final Noise DEATH_NOISE = new Noise(Sound.ENTITY_SLIME_DEATH);
@@ -127,7 +132,7 @@ public class GelatinousCube extends NonPlayerCharacter {
 		hitbox.setActive(true);
 		entity = (Slime) spawnLocation.getWorld().spawnEntity(spawnLocation, EntityType.SLIME);
 		entity.setSize(SIZE);
-		entity.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, Integer.MAX_VALUE, 2));
+		entity.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, Integer.MAX_VALUE, SLOWNESS));
 		entity.setRemoveWhenFarAway(false);
 		movementSyncer.setEntity(entity);
 		movementSyncer.setEnabled(true);
@@ -147,6 +152,9 @@ public class GelatinousCube extends NonPlayerCharacter {
 	public void setLocation(Location location) {
 		super.setLocation(location);
 		hitbox.setCenter(location.clone().add(0, WIDTH / 2.0, 0));
+		if (acidSprayProgressBar != null) {
+			acidSprayProgressBar.display(location.clone().add(0, HEIGHT + 1, 0));
+		}
 	}
 
 	@Override
@@ -159,9 +167,9 @@ public class GelatinousCube extends NonPlayerCharacter {
 
 	private void chargeAcidSpray() {
 		canUseAcidSpray = false;
-		entity.setAI(false);
-		acidSprayProgressBar = new ProgressBar(getLocation().add(0, HEIGHT - 1, 0), ChatColor.WHITE + "Acid Spray", 16,
-				ChatColor.AQUA) {
+		PotionEffect immobilizeEffect = new PotionEffect(PotionEffectType.SLOW, Integer.MAX_VALUE, 128);
+		entity.addPotionEffect(immobilizeEffect);
+		acidSprayProgressBar = new ProgressBar("Acid Spray", ProgressBarColor.WHITE) {
 			@Override
 			protected void onComplete() {
 				if (entity != null) {
@@ -169,7 +177,8 @@ public class GelatinousCube extends NonPlayerCharacter {
 				}
 			}
 		};
-		acidSprayProgressBar.setRate(0.5);
+		acidSprayProgressBar.setRate(ACID_SPRAY_CHANNEL_RATE);
+		acidSprayProgressBar.display(getLocation().add(0, HEIGHT + 1, 0));
 		DelayedTask acidSprayCooldownTask = new DelayedTask(ACID_SPRAY_COOLDOWN) {
 			@Override
 			protected void run() {
@@ -182,7 +191,8 @@ public class GelatinousCube extends NonPlayerCharacter {
 	private void useAcidSpray() {
 		Location location = getLocation();
 		ACID_SPRAY_NOISE.play(location);
-		Collider acidSprayHitbox = new Collider(location.add(0, WIDTH / 2, 0), 12, 2, 12) {
+		Collider acidSprayHitbox = new Collider(location.add(0, WIDTH / 2, 0), ACID_SPRAY_DAMAGE_WIDTH,
+				ACID_SPRAY_DAMAGE_HEIGHT, ACID_SPRAY_DAMAGE_WIDTH) {
 			@Override
 			protected void onCollisionEnter(Collider other) {
 				if (other instanceof CharacterCollider) {
@@ -196,7 +206,8 @@ public class GelatinousCube extends NonPlayerCharacter {
 		acidSprayHitbox.drawFill(Particle.SNEEZE, 0.5);
 		acidSprayHitbox.setActive(true);
 		acidSprayHitbox.setActive(false);
-		entity.setAI(true);
+		entity.removePotionEffect(PotionEffectType.SLOW);
+		entity.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, Integer.MAX_VALUE, SLOWNESS));
 	}
 
 	@Override
@@ -209,6 +220,7 @@ public class GelatinousCube extends NonPlayerCharacter {
 		entity.remove();
 		if (acidSprayProgressBar != null) {
 			acidSprayProgressBar.dispose();
+			acidSprayProgressBar = null;
 		}
 		DEATH_NOISE.play(location);
 		location.getWorld().spawnParticle(Particle.CLOUD, location, 10);

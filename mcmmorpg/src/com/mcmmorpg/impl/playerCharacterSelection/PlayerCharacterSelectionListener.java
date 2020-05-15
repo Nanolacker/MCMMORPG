@@ -152,8 +152,8 @@ public class PlayerCharacterSelectionListener implements Listener {
 		Player player = event.getPlayer();
 		sendToCharacterSelection(player);
 		if (!player.hasPlayedBefore()) {
-			player.sendMessage(ChatColor.GRAY
-					+ "Welcome newcomer! Thank you for choosing MCMMORPG! Start playing by creating a new character!");
+			player.sendMessage(ChatColor.GRAY + "Welcome! Thank you for choosing " + ChatColor.GREEN + "MCMMORPG"
+					+ ChatColor.GRAY + "! Start playing by creating a new character!");
 		}
 	}
 

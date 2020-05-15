@@ -1,6 +1,5 @@
 package com.mcmmorpg.impl.npcs;
 
-import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
@@ -14,6 +13,7 @@ import com.mcmmorpg.common.character.AbstractCharacter;
 import com.mcmmorpg.common.character.PlayerCharacter;
 import com.mcmmorpg.common.event.EventManager;
 import com.mcmmorpg.common.ui.ProgressBar;
+import com.mcmmorpg.common.ui.ProgressBar.ProgressBarColor;
 
 public abstract class AbstractCultist extends AbstractHumanEnemy {
 
@@ -64,8 +64,7 @@ public abstract class AbstractCultist extends AbstractHumanEnemy {
 
 	private void chargeSpell() {
 		ai.addPotionEffect(SLOW_EFFECT);
-		spellProgressBar = new ProgressBar(getLocation().add(0, 2.75, 0), ChatColor.WHITE + spellName, 18,
-				ChatColor.AQUA) {
+		spellProgressBar = new ProgressBar(spellName, ProgressBarColor.WHITE) {
 			@Override
 			protected void onComplete() {
 				useSpell();
@@ -73,6 +72,7 @@ public abstract class AbstractCultist extends AbstractHumanEnemy {
 			}
 		};
 		spellProgressBar.setRate(1 / spellChannelDuration);
+		spellProgressBar.display(getLocation().add(0, 2.75, 0));
 	}
 
 	protected abstract void useSpell();

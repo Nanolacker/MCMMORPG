@@ -1,5 +1,7 @@
 package com.mcmmorpg.impl.npcs;
 
+import java.util.List;
+
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -34,6 +36,7 @@ import com.mcmmorpg.common.sound.Noise;
 import com.mcmmorpg.common.time.DelayedTask;
 import com.mcmmorpg.common.time.RepeatingTask;
 import com.mcmmorpg.common.ui.ProgressBar;
+import com.mcmmorpg.common.ui.ProgressBar.ProgressBarColor;
 import com.mcmmorpg.common.utils.MathUtils;
 
 public class GiantGelatinousCube extends NonPlayerCharacter {
@@ -41,13 +44,15 @@ public class GiantGelatinousCube extends NonPlayerCharacter {
 	private static final int LEVEL = 12;
 	private static final int MAX_HEALTH = 1000;
 	private static final int XP = 20;
-	private static final double BASIC_ATTACK_DAMAGE = 20;
+	private static final double BASIC_ATTACK_DAMAGE = 4;
+	private static final double SPLIT_CHANNEL_RATE = 0.25;
 	private static final double SPLIT_COOLDOWN = 15;
 	private static final double SPLIT_TRIGGER_RADIUS_SQUARED = 400;
-	private static final int MAX_CHILD_COUNT = 5;
+	private static final int MAX_PRE_SPLIT_CHILD_COUNT = 2;
 	private static final int SIZE = 15;
 	private static final double HEIGHT = 11;
 	private static final double WIDTH = 7.7;
+	private static final int SLOWNESS = 4;
 	private static final double RESPAWN_TIME = 30;
 	private static final Noise HURT_NOISE = new Noise(Sound.ENTITY_SLIME_DEATH);
 	private static final Noise DEATH_NOISE = new Noise(Sound.ENTITY_SLIME_DEATH);
@@ -121,7 +126,7 @@ public class GiantGelatinousCube extends NonPlayerCharacter {
 					if (entity.isOnGround()) {
 						Entity target = entity.getTarget();
 						if (target != null) {
-							if (canUseSplit && childCount < MAX_CHILD_COUNT && target.getLocation()
+							if (canUseSplit && childCount <= MAX_PRE_SPLIT_CHILD_COUNT && target.getLocation()
 									.distanceSquared(getLocation()) < SPLIT_TRIGGER_RADIUS_SQUARED) {
 								chargeSplit();
 							}
@@ -154,7 +159,7 @@ public class GiantGelatinousCube extends NonPlayerCharacter {
 		surroundings.setActive(true);
 		entity = (Slime) spawnLocation.getWorld().spawnEntity(spawnLocation, EntityType.SLIME);
 		entity.setSize(SIZE);
-		entity.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, Integer.MAX_VALUE, 3));
+		entity.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, Integer.MAX_VALUE, SLOWNESS));
 		entity.setRemoveWhenFarAway(false);
 		movementSyncer.setEntity(entity);
 		movementSyncer.setEnabled(true);
@@ -186,9 +191,9 @@ public class GiantGelatinousCube extends NonPlayerCharacter {
 
 	private void chargeSplit() {
 		canUseSplit = false;
-		entity.setAI(false);
-		splitProgressBar = new ProgressBar(getLocation().add(0, HEIGHT - 1, 0), ChatColor.WHITE + "Split", 16,
-				ChatColor.AQUA) {
+		PotionEffect immobilizeEffect = new PotionEffect(PotionEffectType.SLOW, Integer.MAX_VALUE, 128);
+		entity.addPotionEffect(immobilizeEffect);
+		splitProgressBar = new ProgressBar("Split", ProgressBarColor.WHITE) {
 			@Override
 			protected void onComplete() {
 				if (entity != null) {
@@ -196,7 +201,11 @@ public class GiantGelatinousCube extends NonPlayerCharacter {
 				}
 			}
 		};
-		splitProgressBar.setRate(0.5);
+		splitProgressBar.setRate(SPLIT_CHANNEL_RATE);
+		List<Player> players = bossBar.getPlayers();
+		for (Player player : players) {
+			splitProgressBar.display(player);
+		}
 		DelayedTask splitCooldownTask = new DelayedTask(SPLIT_COOLDOWN) {
 			@Override
 			protected void run() {
@@ -208,18 +217,27 @@ public class GiantGelatinousCube extends NonPlayerCharacter {
 
 	private void useSplit() {
 		Location location = getLocation();
-		GelatinousCube child = new GelatinousCube(getLocation()) {
-			@Override
-			protected void onDeath() {
-				super.onDeath();
-				childCount--;
-			}
-		};
-		child.setRespawning(false);
-		child.setAlive(true);
-		childCount++;
-		SPLIT_SPRAY_NOISE.play(location);
-		entity.setAI(true);
+		Location[] childLocations = new Location[4];
+		childLocations[0] = location.clone().add(WIDTH / 2, 0, 0);
+		childLocations[1] = location.clone().add(-WIDTH / 2, 0, 0);
+		childLocations[2] = location.clone().add(0, 0, WIDTH / 2);
+		childLocations[3] = location.clone().add(0, 0, -WIDTH / 2);
+
+		for (Location childLocation : childLocations) {
+			GelatinousCube child = new GelatinousCube(childLocation) {
+				@Override
+				protected void onDeath() {
+					super.onDeath();
+					childCount--;
+				}
+			};
+			child.setRespawning(false);
+			child.setAlive(true);
+			childCount++;
+			SPLIT_SPRAY_NOISE.play(location);
+			entity.removePotionEffect(PotionEffectType.SLOW);
+			entity.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, Integer.MAX_VALUE, SLOWNESS));
+		}
 	}
 
 	@Override
