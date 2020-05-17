@@ -24,7 +24,6 @@ import com.mcmmorpg.common.playerClass.Skill;
 import com.mcmmorpg.common.sound.Noise;
 import com.mcmmorpg.common.time.DelayedTask;
 import com.mcmmorpg.common.time.RepeatingTask;
-import com.mcmmorpg.common.utils.Debug;
 import com.mcmmorpg.impl.PlayerClasses;
 
 public class FighterListener implements Listener {
@@ -103,8 +102,6 @@ public class FighterListener implements Listener {
 	}
 
 	private void useBash(PlayerCharacter pc) {
-		Debug.log((Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory()) + " / "
-				+ Runtime.getRuntime().totalMemory());
 		double damageAmount = 6 * bash.getUpgradeLevel(pc) + 1.5 * pc.getLevel();
 		Location location = pc.getLocation();
 		Vector lookDirection = location.getDirection();

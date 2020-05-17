@@ -35,7 +35,10 @@ public class SidebarText {
 			ScoreboardManager scoreboardManager = Bukkit.getScoreboardManager();
 			scoreboard = scoreboardManager.getNewScoreboard();
 		} else {
-			scoreboard.getObjective("objective").unregister();
+			Objective objective = scoreboard.getObjective("objective");
+			if (objective != null) {
+				objective.unregister();
+			}
 		}
 		Objective objective = scoreboard.registerNewObjective("objective", "dummy", title);
 		objective.setDisplaySlot(DisplaySlot.SIDEBAR);

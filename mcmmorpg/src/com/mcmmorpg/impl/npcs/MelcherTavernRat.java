@@ -22,7 +22,7 @@ public class MelcherTavernRat extends Rat {
 	public static boolean shouldSpawn;
 
 	static {
-		spawnBounds = new Collider(Worlds.ELADRADOR, -1080, 60, 226, -1074, 82, 230);
+		spawnBounds = new Collider(Worlds.ELADRADOR, -1090, 64, 237, -1069, 68, 248);
 		spawnBounds.setActive(true);
 		RepeatingTask spawner = new RepeatingTask(1) {
 			@Override

@@ -16,7 +16,6 @@ import com.mcmmorpg.impl.Zones;
 import com.mcmmorpg.impl.npcs.Broodmother;
 import com.mcmmorpg.impl.npcs.Chicken;
 import com.mcmmorpg.impl.npcs.ForestSpider;
-import com.mcmmorpg.impl.npcs.GiantGelatinousCube;
 import com.mcmmorpg.impl.npcs.GuardJames;
 import com.mcmmorpg.impl.npcs.Highwayman;
 import com.mcmmorpg.impl.npcs.Horse;
@@ -47,7 +46,7 @@ public class MelcherListener implements Listener {
 	private static final Location[] LUMBERJACK_LOCATIONS = { new Location(Worlds.ELADRADOR, -1049, 70, 232, 225, 0) };
 	private static final Location MAYOR_LOCATION = new Location(Worlds.ELADRADOR, -1092.5, 70, 197.5);
 	private static final Location FARMER_LOCATION = new Location(Worlds.ELADRADOR, -1166, 73, 246);
-	private static final Location BARTENDER_LOCATION = new Location(Worlds.ELADRADOR, -1086, 70, 243);
+	private static final Location BARTENDER_LOCATION = new Location(Worlds.ELADRADOR, -1086.5, 70, 243.5, -90, 0);
 	private static final Location DRUNKARD_LOCATION = new Location(Worlds.ELADRADOR, -1075, 70, 243);
 	private static final Location[] TRAINING_DUMMY_LOCATIONS = { new Location(Worlds.ELADRADOR, -1115, 73, 249, 90, 0),
 			new Location(Worlds.ELADRADOR, -1117, 73, 251, 90, 0),
@@ -59,8 +58,11 @@ public class MelcherListener implements Listener {
 			new Location(Worlds.ELADRADOR, -1167, 73, 242), new Location(Worlds.ELADRADOR, -1167, 73, 241) };
 	private static final Location[] HORSE_LOCATIONS = { new Location(Worlds.ELADRADOR, -1158, 73, 239),
 			new Location(Worlds.ELADRADOR, -1158, 73, 244), new Location(Worlds.ELADRADOR, -1158, 73, 249) };
-	private static final Location[] TAVERN_RAT_LOCATIONS = {};
-	private static final Location TAVERN_KING_RAT_LOCATION = new Location(Worlds.ELADRADOR, -1079, 70, 241);
+	private static final Location[] TAVERN_RAT_LOCATIONS = { new Location(Worlds.ELADRADOR, -1086, 65, 240),
+			new Location(Worlds.ELADRADOR, -1084, 65, 242), new Location(Worlds.ELADRADOR, -1082, 65, 245),
+			new Location(Worlds.ELADRADOR, -1079, 65, 245), new Location(Worlds.ELADRADOR, -1079, 65, 241),
+			new Location(Worlds.ELADRADOR, -1074, 65, 244), new Location(Worlds.ELADRADOR, -1072, 65, 240) };
+	private static final Location TAVERN_KING_RAT_LOCATION = new Location(Worlds.ELADRADOR, -1072, 65, 242);
 	private static final Location[] THIEF_LOCATIONS = { new Location(Worlds.ELADRADOR, -1157, 74, 173),
 			new Location(Worlds.ELADRADOR, -1150, 79, 147), new Location(Worlds.ELADRADOR, -1043, 74, 115),
 			new Location(Worlds.ELADRADOR, 981, 75, 111), new Location(Worlds.ELADRADOR, -919, 74, 123) };
@@ -88,7 +90,7 @@ public class MelcherListener implements Listener {
 	}
 
 	private void setUpBounds() {
-		Collider entranceBounds = new Collider(Worlds.ELADRADOR, -1186, 68, 110, -930, 126, 300) {
+		Collider entranceBounds = new Collider(Worlds.ELADRADOR, -1186, 30, 110, -930, 126, 300) {
 			@Override
 			protected void onCollisionEnter(Collider other) {
 				if (other instanceof PlayerCharacterCollider) {
@@ -99,7 +101,7 @@ public class MelcherListener implements Listener {
 			}
 		};
 		entranceBounds.setActive(true);
-		Collider exitBounds = new Collider(Worlds.ELADRADOR, -1191, 63, 105, -925, 131, 305) {
+		Collider exitBounds = new Collider(Worlds.ELADRADOR, -1191, 25, 105, -925, 131, 305) {
 			@Override
 			protected void onCollisionExit(Collider other) {
 				if (other instanceof PlayerCharacterCollider) {
@@ -149,9 +151,6 @@ public class MelcherListener implements Listener {
 		}
 		new Broodmother(BROODMOTHER_LOCATION).setAlive(true);
 		new GuardJames(GUARD_JAMES_LOCATION).setAlive(true);
-
-		Location cubeLocation = new Location(Worlds.ELADRADOR, -1067, 70, 214);
-		new GiantGelatinousCube(cubeLocation).setAlive(true);
 	}
 
 	@EventHandler

@@ -12,7 +12,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import com.mcmmorpg.common.character.NonPlayerCharacter;
 import com.mcmmorpg.common.item.LootChest;
 import com.mcmmorpg.common.time.GameClock;
-import com.mcmmorpg.common.ui.MMORPGCommandExecutor;
+import com.mcmmorpg.common.ui.EssentialCommands;
 
 public abstract class MMORPGPlugin extends JavaPlugin {
 
@@ -22,7 +22,7 @@ public abstract class MMORPGPlugin extends JavaPlugin {
 	public final void onEnable() {
 		isInitialized = false;
 		removeAllEntities();
-		MMORPGCommandExecutor.registerCommands();
+		EssentialCommands.registerEssentialCommands();
 		GameClock.start();
 		NonPlayerCharacter.startNPCSpawner();
 		LootChest.init();

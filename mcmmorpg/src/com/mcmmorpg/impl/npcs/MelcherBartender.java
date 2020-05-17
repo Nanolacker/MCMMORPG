@@ -26,10 +26,6 @@ public class MelcherBartender extends StaticHuman {
 	private final InteractionSequence completeCalmingTheTavernInteraction;
 	private final InteractionSequence completePestControlInteraction;
 
-	// I ASKED YOU TO CALM HIM, NOT KILL HIM! YOU JUST MURDERED MY BIGGEST CUSTOMER!
-	// THERE GOES HALF OF MY INCOME! AND WHO'S
-	// GONNA CLEAN UP THIS MESS? THERE'S BLOOD SPLATTERED ACROSS THE FLOOR! HOW AM I
-	// SUPPOSED TO ATTRACT CUSTOMERS WHEN MY TAVERN LOOKS LIKE THIS?
 	public MelcherBartender(Location location) {
 		super(ChatColor.GREEN + "Bartender", LEVEL, location, TEXTURE_DATA, TEXTURE_SIGNATURE);
 		QuestMarker.createMarker(location.clone().add(0, 2.25, 0));

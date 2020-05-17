@@ -282,10 +282,12 @@ class ItemListener implements Listener {
 	private void handlePlayerCharacterUseConsumable(PlayerCharacter pc, ConsumableItem consumable,
 			ItemStack itemStack) {
 		if (pc.isSilenced()) {
+			// do nothing
 		} else if (pc.getLevel() < consumable.getLevel()) {
 			pc.sendMessage(ChatColor.GRAY + "Your level is too low to use this item");
 		} else {
 			itemStack.setAmount(itemStack.getAmount() - 1);
+			pc.sendMessage(ChatColor.GRAY + "Used " + consumable.formatName());
 			PlayerCharacterUseConsumableItemEvent consumableEvent = new PlayerCharacterUseConsumableItemEvent(pc,
 					consumable);
 			EventManager.callEvent(consumableEvent);

@@ -5,6 +5,9 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
+import com.mcmmorpg.common.character.PlayerCharacter;
+import com.mcmmorpg.impl.Quests;
+
 public class Highwayman extends AbstractHumanEnemy {
 
 	private static final double MAX_HEALTH = 50;
@@ -25,6 +28,14 @@ public class Highwayman extends AbstractHumanEnemy {
 	protected void spawn() {
 		super.spawn();
 		entity.setMainHand(new ItemStack(Material.IRON_SWORD));
+	}
+
+	@Override
+	protected void onDeath() {
+		PlayerCharacter[] nearbyPcs = PlayerCharacter.getNearbyPlayerCharacters(getLocation(), 25);
+		for (PlayerCharacter pc : nearbyPcs) {
+			Quests.CLEARING_THE_ROAD.getObjective(0).addProgress(pc, 1);
+		}
 	}
 
 }

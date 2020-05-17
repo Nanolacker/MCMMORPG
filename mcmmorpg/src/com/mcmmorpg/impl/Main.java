@@ -1,6 +1,7 @@
 package com.mcmmorpg.impl;
 
 import com.mcmmorpg.common.MMORPGPlugin;
+import com.mcmmorpg.test.DeveloperCommands;
 
 public class Main extends MMORPGPlugin {
 
@@ -14,6 +15,7 @@ public class Main extends MMORPGPlugin {
 		PlayerClassLoader.loadClasses();
 		ItemLoader.loadItems();
 		ListenerLoader.loadListeners();
+		DeveloperCommands.registerDeveloperCommands();
 	}
 
 	@Override

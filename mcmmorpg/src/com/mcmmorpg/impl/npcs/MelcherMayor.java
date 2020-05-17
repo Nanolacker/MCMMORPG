@@ -25,10 +25,11 @@ public class MelcherMayor extends StaticHuman {
 	private final InteractionSequence completeReportingForDutyInteraction;
 	private final InteractionSequence startSlayingTheThievesInteraction;
 	private final InteractionSequence completeSlayingTheThievesInteraction;
+	private final InteractionSequence startClearingTheRoadInteraction;
 
 	public MelcherMayor(Location location) {
-		super(ChatColor.GREEN + "The Mayor", LEVEL, location, TEXTURE_DATA, TEXTURE_SIGNATURE);
-
+		super(ChatColor.GREEN + "Mayor of Melcher", LEVEL, location, TEXTURE_DATA, TEXTURE_SIGNATURE);
+		QuestMarker.createMarker(location.clone().add(0, 2.25, 0));
 		completeReportingForDutyInteraction = new InteractionSequence(5) {
 			@Override
 			protected void onAdvance(PlayerCharacter pc, int messageIndex) {
@@ -71,7 +72,7 @@ public class MelcherMayor extends StaticHuman {
 				}
 			}
 		};
-		completeSlayingTheThievesInteraction = new InteractionSequence(2) {
+		completeSlayingTheThievesInteraction = new InteractionSequence(3) {
 			@Override
 			protected void onAdvance(PlayerCharacter pc, int messageIndex) {
 				switch (messageIndex) {
@@ -80,12 +81,39 @@ public class MelcherMayor extends StaticHuman {
 							pc);
 					break;
 				case 1:
+					say("I have another quest for you when you're ready.", pc);
+					break;
+				case 2:
 					Quests.SLAYING_THE_THIEVES.getObjective(1).complete(pc);
 					break;
 				}
 			}
 		};
-		QuestMarker.createMarker(location.clone().add(0, 2.25, 0));
+		startClearingTheRoadInteraction = new InteractionSequence(1) {
+			@Override
+			protected void onAdvance(PlayerCharacter pc, int interactionIndex) {
+				switch (6) {
+				case 0:
+					say("I have one last task for you.", pc);
+					break;
+				case 1:
+					say("Highwaymen have been ambushing travellers along the road east of Melcher.", pc);
+					break;
+				case 2:
+					say("They've been murdering and looting traders coming to and leaving from this village.", pc);
+					break;
+				case 3:
+					say("They must be dealt with at once. Please take care of them for me.", pc);
+					break;
+				case 4:
+					say("When you're done, speak with the mayor of flinton to inform him that the roads have been made safer.");
+					break;
+				case 5:
+					Quests.CLEARING_THE_ROAD.start(pc);
+					break;
+				}
+			}
+		};
 	}
 
 	@Override
@@ -101,6 +129,9 @@ public class MelcherMayor extends StaticHuman {
 			} else {
 				say("Please slay those thieves for us, adventurer.", pc);
 			}
+		} else if (Quests.SLAYING_THE_THIEVES.compareStatus(pc, QuestStatus.COMPLETED)
+				&& Quests.CLEARING_THE_ROAD.compareStatus(pc, QuestStatus.NOT_STARTED)) {
+			startClearingTheRoadInteraction.advance(pc);
 		} else {
 			say("Greetings adventurer!", pc);
 		}

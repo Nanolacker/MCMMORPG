@@ -2,31 +2,3 @@ name: MCMMORPG
 version: 1.0
 main: com.mcmmorpg.impl.Main
 api-version: 1.13
-commands:
-    help:
-        description: Print helpful information about the game.
-        usage: /<command>
-    kill:
-        description: If your character is stuck, use this to respawn elsewhere.
-        usage: /<command>
-    printlocation:
-        description: Prints the coordinates of your location.
-        usage: /<command>
-    heal:
-        description: Heals you for the specified amount.
-        usage: /<command>
-    restoremana:
-        description: Restores the specified amount of mana.
-        usage: /<command>
-    givexp:
-        description: Gives the specified amount of XP.
-        usage: /<command>
-    giveitem:
-        description: Gives the item with the specified ID.
-        usage: /<command>
-    startquest:
-        description: Starts the quest with the specified name.
-        usage: /<command>
-    completequest:
-        description: Completes the quest with the specified name.
-        usage: /<command>
