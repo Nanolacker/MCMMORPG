@@ -6,6 +6,7 @@ import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
 import com.mcmmorpg.common.character.PlayerCharacter;
+import com.mcmmorpg.impl.Items;
 import com.mcmmorpg.impl.Quests;
 
 public class Highwayman extends AbstractHumanEnemy {
@@ -32,7 +33,12 @@ public class Highwayman extends AbstractHumanEnemy {
 
 	@Override
 	protected void onDeath() {
-		PlayerCharacter[] nearbyPcs = PlayerCharacter.getNearbyPlayerCharacters(getLocation(), 25);
+		super.onDeath();
+		Location location = getLocation();
+		if (Math.random() > 0.8) {
+			Items.THIEF_DAGGER.drop(getLocation(), 1);
+		}
+		PlayerCharacter[] nearbyPcs = PlayerCharacter.getNearbyPlayerCharacters(location, 25);
 		for (PlayerCharacter pc : nearbyPcs) {
 			Quests.CLEARING_THE_ROAD.getObjective(0).addProgress(pc, 1);
 		}

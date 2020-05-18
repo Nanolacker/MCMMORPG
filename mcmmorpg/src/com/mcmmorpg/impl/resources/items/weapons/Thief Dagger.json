@@ -1,8 +1,8 @@
 {
 	"playerClass": "Fighter",
 	"level": 3,
-	"name": "Short Sword",
+	"name": "Thief Dagger",
 	"rarity": "COMMON",
 	"icon": "IRON_SWORD",
-	"description": null
+	"description": "6 Base Damage"
 }

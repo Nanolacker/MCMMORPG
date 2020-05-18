@@ -701,7 +701,7 @@ public final class PlayerCharacter extends AbstractCharacter {
 		itemStack.setAmount(amount);
 		Inventory inventory = player.getInventory();
 		inventory.addItem(itemStack);
-		sendMessage(ChatColor.GRAY + "Item received: " + item.formatName());
+		sendMessage(ChatColor.GRAY + "You received " + item + ChatColor.GRAY + "!");
 	}
 
 	public void removeItem(Item item, int amount) {

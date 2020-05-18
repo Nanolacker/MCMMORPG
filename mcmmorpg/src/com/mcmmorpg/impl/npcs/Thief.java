@@ -26,12 +26,16 @@ public class Thief extends AbstractHumanEnemy {
 	@Override
 	protected void onDeath() {
 		super.onDeath();
+		Location location = getLocation();
+		int dropAmount = (int) (Math.random() * 3);
+		Items.FOOD_SUPPLIES.drop(location, dropAmount);
+		if (Math.random() > 0.8) {
+			Items.THIEF_DAGGER.drop(location, 1);
+		}
 		PlayerCharacter[] nearbyPcs = PlayerCharacter.getNearbyPlayerCharacters(getLocation(), 25);
 		for (PlayerCharacter pc : nearbyPcs) {
 			Quests.SLAYING_THE_THIEVES.getObjective(0).addProgress(pc, 1);
 		}
-		int dropAmount = (int) (Math.random() * 3);
-		Items.FOOD_SUPPLIES.drop(getLocation(), dropAmount);
 	}
 
 }

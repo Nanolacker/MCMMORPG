@@ -76,14 +76,14 @@ public abstract class AbstractSpider extends NonPlayerCharacter {
 	}
 
 	public AbstractSpider(String name, int level, Location spawnLocation, EntityType entityType, int speed,
-			int xpReward) {
+			double lengthX, double lengthY, double lengthZ, int xpReward) {
 		super(name, level, spawnLocation);
 		super.setMaxHealth(maxHealth());
 		this.spawnLocation = spawnLocation;
 		this.entityType = entityType;
 		this.speed = speed;
 		this.xpReward = xpReward;
-		hitbox = new CharacterCollider(this, spawnLocation, 1.5, 1, 1.5);
+		hitbox = new CharacterCollider(this, spawnLocation, lengthX, lengthY, lengthZ);
 		movementSyncer = new MovementSyncer(this, MovementSyncMode.CHARACTER_FOLLOWS_ENTITY);
 		surroundings = new Collider(spawnLocation, 30, 6, 30) {
 			@Override

@@ -5,6 +5,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import com.mcmmorpg.common.character.PlayerCharacter;
+import com.mcmmorpg.common.item.Item;
 import com.mcmmorpg.common.quest.Quest;
 import com.mcmmorpg.common.quest.QuestObjective;
 import com.mcmmorpg.common.ui.Command;
@@ -81,12 +82,27 @@ public class DeveloperCommands {
 				}
 			}
 		};
+		Command giveItem = new Command("giveitem") {
+			@Override
+			protected void onExecute(CommandSender sender, String[] args) {
+				Player player = (Player) sender;
+				PlayerCharacter pc = PlayerCharacter.forPlayer(player);
+				String itemName = args[0];
+				for (int i = 1; i < args.length; i++) {
+					itemName += " " + args[i];
+				}
+				Item item = Item.forName(itemName);
+				pc.giveItem(item);
+			}
+		};
+
 		CommandManager.registerCommand(printLocation);
 		CommandManager.registerCommand(heal);
 		CommandManager.registerCommand(restoreMana);
 		CommandManager.registerCommand(giveXp);
 		CommandManager.registerCommand(startQuest);
 		CommandManager.registerCommand(completeQuest);
+		CommandManager.registerCommand(giveItem);
 	}
 
 }

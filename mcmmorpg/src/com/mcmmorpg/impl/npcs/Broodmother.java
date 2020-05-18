@@ -22,10 +22,10 @@ public class Broodmother extends AbstractSpider {
 	private final BossBar bossBar;
 
 	public Broodmother(Location spawnLocation) {
-		super(ChatColor.RED + "Broodmother", LEVEL, spawnLocation, EntityType.SPIDER, SPEED, XP_REWARD);
+		super(ChatColor.RED + "Broodmother", LEVEL, spawnLocation, EntityType.SPIDER, SPEED, 1.75, 1, 1.75,
+				XP_REWARD);
 		bossBar = Bukkit.createBossBar(getName(), BarColor.RED, BarStyle.SEGMENTED_10);
 		super.setHeight(1.5);
-
 	}
 
 	@Override

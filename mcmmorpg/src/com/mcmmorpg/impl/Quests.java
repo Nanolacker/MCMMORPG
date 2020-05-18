@@ -12,5 +12,6 @@ public class Quests {
 	public static final Quest CALMING_THE_TAVERN = Quest.forName("Calming the Tavern");
 	public static final Quest ARACHNOPHOBIA = Quest.forName("Arachnophobia");
 	public static final Quest PEST_CONTROL = Quest.forName("Pest Control");
+	public static final Quest SAMPLING_SLUDGE = Quest.forName("Sampling Sludge");
 
 }

@@ -102,7 +102,7 @@ public class FighterListener implements Listener {
 	}
 
 	private void useBash(PlayerCharacter pc) {
-		double damageAmount = 6 * bash.getUpgradeLevel(pc) + 1.5 * pc.getLevel();
+		double damageAmount = 4 + 6 * bash.getUpgradeLevel(pc) + 1.5 * pc.getLevel();
 		Location location = pc.getLocation();
 		Vector lookDirection = location.getDirection();
 		World world = location.getWorld();

@@ -20,11 +20,14 @@ import com.mcmmorpg.impl.Zones;
 import com.mcmmorpg.impl.npcs.Bandit;
 import com.mcmmorpg.impl.npcs.CultistMage;
 import com.mcmmorpg.impl.npcs.CultistSummoner;
+import com.mcmmorpg.impl.npcs.FlintonSewersAlchemist;
+import com.mcmmorpg.impl.npcs.FlintonSewersRat;
 import com.mcmmorpg.impl.npcs.GelatinousCube;
 
 public class FlintonSewersListener implements Listener {
 
 	private static final Noise SLUDGE_DAMAGE_NOISE = new Noise(Sound.BLOCK_SLIME_BLOCK_HIT);
+	private static final Location ALCHEMIST_LOCATION = new Location(Worlds.ELADRADOR, -286, 82, 135);
 	private static final Location[] BANDIT_LOCATIONS = {};
 	private static final Location[] GELATINOUS_CCUBE_LOCATIONS = {};
 	private static final Location[] CULTIST_MAGE_LOCATOINS = {};
@@ -94,6 +97,7 @@ public class FlintonSewersListener implements Listener {
 	}
 
 	private void spawnNpcs() {
+		new FlintonSewersAlchemist(ALCHEMIST_LOCATION).setAlive(true);
 		for (Location location : BANDIT_LOCATIONS) {
 			new Bandit(location).setAlive(true);
 		}
@@ -107,7 +111,7 @@ public class FlintonSewersListener implements Listener {
 			new CultistSummoner(location).setAlive(true);
 		}
 		for (Location location : RAT_LOCATIONS) {
-
+			new FlintonSewersRat(location).setAlive(true);
 		}
 	}
 

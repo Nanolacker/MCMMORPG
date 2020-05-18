@@ -16,7 +16,8 @@ public class ForestSpider extends AbstractSpider {
 	private static final int XP_REWARD = 20;
 
 	public ForestSpider(Location spawnLocation) {
-		super(ChatColor.RED + "Forest Spider", LEVEL, spawnLocation, EntityType.CAVE_SPIDER, SPEED, XP_REWARD);
+		super(ChatColor.RED + "Forest Spider", LEVEL, spawnLocation, EntityType.CAVE_SPIDER, SPEED, 1.5, 0.75, 1.5,
+				XP_REWARD);
 		super.setHeight(1);
 	}
 

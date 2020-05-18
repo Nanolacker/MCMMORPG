@@ -174,7 +174,7 @@ class ItemListener implements Listener {
 				handlePlayerCharacterUseConsumable(pc, consumable, clickedItemStack);
 			} else if (clickedItem instanceof Weapon) {
 				if (rawSlot == 36 || clickedItem == pc.getWeapon()) {
-					pc.sendMessage(clickedItem.toString() + ChatColor.GRAY + " is already equipped");
+					pc.sendMessage(clickedItem + " is already equipped");
 				} else {
 					Weapon weapon = (Weapon) clickedItem;
 					PlayerClass weaponPlayerClass = weapon.getPlayerClass();
@@ -287,7 +287,7 @@ class ItemListener implements Listener {
 			pc.sendMessage(ChatColor.GRAY + "Your level is too low to use this item");
 		} else {
 			itemStack.setAmount(itemStack.getAmount() - 1);
-			pc.sendMessage(ChatColor.GRAY + "Used " + consumable.formatName());
+			pc.sendMessage(ChatColor.GRAY + "Used " + consumable);
 			PlayerCharacterUseConsumableItemEvent consumableEvent = new PlayerCharacterUseConsumableItemEvent(pc,
 					consumable);
 			EventManager.callEvent(consumableEvent);

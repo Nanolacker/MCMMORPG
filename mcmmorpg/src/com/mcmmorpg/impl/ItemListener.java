@@ -3,22 +3,29 @@ package com.mcmmorpg.impl;
 import org.bukkit.Location;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
 
 import com.mcmmorpg.common.character.AbstractCharacter;
 import com.mcmmorpg.common.character.CharacterCollider;
 import com.mcmmorpg.common.character.PlayerCharacter;
+import com.mcmmorpg.common.event.PlayerCharacterUseConsumableItemEvent;
 import com.mcmmorpg.common.event.PlayerCharacterUseWeaponEvent;
+import com.mcmmorpg.common.item.ConsumableItem;
 import com.mcmmorpg.common.item.Weapon;
 import com.mcmmorpg.common.physics.Collider;
 import com.mcmmorpg.common.physics.Ray;
 import com.mcmmorpg.common.physics.Raycast;
 import com.mcmmorpg.common.sound.Noise;
+import com.mcmmorpg.common.utils.MathUtils;
 
 public class ItemListener implements Listener {
 
+	private static final Noise SWORD_HIT_NOISE = new Noise(Sound.ENTITY_ZOMBIE_ATTACK_IRON_DOOR);
 	private static final Noise STAFF_HIT_NOISE = new Noise(Sound.BLOCK_WOODEN_TRAPDOOR_OPEN);
 
 	@EventHandler
@@ -26,36 +33,44 @@ public class ItemListener implements Listener {
 		Weapon weapon = event.getWeapon();
 		PlayerCharacter pc = event.getPlayerCharacter();
 		if (weapon == Items.APPRENTICE_SWORD) {
-			useApprenticeSword(pc);
+			useFighterWeapon(pc, 4);
+		} else if (weapon == Items.THIEF_DAGGER) {
+			useFighterWeapon(pc, 6);
+		} else if (weapon == Items.SWORD_OF_THE_MELCHER_GUARD) {
+			useFighterWeapon(pc, 10);
 		} else if (weapon == Items.APPRENTICE_STAFF) {
-			useApprenticeStaff(pc);
+			useMageStaff(pc, 2);
+		} else if (weapon == Items.STAFF_OF_THE_MELCHER_GUARD) {
+			useMageStaff(pc, 7);
 		}
 	}
 
-	private void useFighterWeapon(PlayerCharacter pc, double damage) {
+	private void useFighterWeapon(PlayerCharacter pc, double baseDamage) {
+		double damage = baseDamage = baseDamage + pc.getLevel();
 		Location start = pc.getLocation().add(0, 1.5, 0);
 		Vector direction = start.getDirection();
 		Location particleLocation = start.clone().add(direction.clone().multiply(2));
 		particleLocation.getWorld().spawnParticle(Particle.SWEEP_ATTACK, particleLocation, 0);
-		Ray ray = new Ray(start, direction, 3);
+		Ray ray = new Ray(start, direction, 5);
 		Raycast raycast = new Raycast(ray, CharacterCollider.class);
 		Collider[] hits = raycast.getHits();
 		for (Collider hit : hits) {
 			AbstractCharacter character = ((CharacterCollider) hit).getCharacter();
 			if (!character.isFriendly(pc)) {
 				character.damage(damage, pc);
-				new Noise(Sound.ENTITY_ZOMBIE_ATTACK_IRON_DOOR).play(character.getLocation());
+				SWORD_HIT_NOISE.play(character.getLocation());
 			}
 		}
 		pc.disarm(0.5);
 	}
 
-	private void useMageStaff(PlayerCharacter pc, double damage) {
+	private void useMageStaff(PlayerCharacter pc, double baseDamage) {
+		double damage = baseDamage = baseDamage + pc.getLevel();
 		Location start = pc.getLocation().add(0, 1.5, 0);
 		Vector direction = start.getDirection();
 		Location particleLocation = start.clone().add(direction.clone().multiply(2));
 		particleLocation.getWorld().spawnParticle(Particle.SWEEP_ATTACK, particleLocation, 0);
-		Ray ray = new Ray(start, direction, 3);
+		Ray ray = new Ray(start, direction, 5);
 		Raycast raycast = new Raycast(ray, CharacterCollider.class);
 		Collider[] hits = raycast.getHits();
 		for (Collider hit : hits) {
@@ -68,14 +83,19 @@ public class ItemListener implements Listener {
 		pc.disarm(1.25);
 	}
 
-	private void useApprenticeSword(PlayerCharacter pc) {
-		double damage = 4 + 2 * pc.getLevel();
-		useFighterWeapon(pc, damage);
+	@EventHandler
+	private void onUseConsumable(PlayerCharacterUseConsumableItemEvent event) {
+		PlayerCharacter pc = event.getPlayerCharacter();
+		ConsumableItem consumable = event.getConsumable();
+		if (consumable == Items.MELCHER_MEAD) {
+			useMelcherMead(pc);
+		}
 	}
 
-	private void useApprenticeStaff(PlayerCharacter pc) {
-		double damage = 2 + pc.getLevel();
-		useMageStaff(pc, damage);
+	private void useMelcherMead(PlayerCharacter pc) {
+		Player player = pc.getPlayer();
+		PotionEffect drunkness = new PotionEffect(PotionEffectType.CONFUSION, MathUtils.secondsToTicks(15), 1);
+		player.addPotionEffect(drunkness);
 	}
 
 }
