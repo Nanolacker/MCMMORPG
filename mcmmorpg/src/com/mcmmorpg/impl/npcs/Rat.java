@@ -72,7 +72,7 @@ public class Rat extends NonPlayerCharacter {
 		super.setMaxHealth(maxHealth);
 		this.damageAmount = damageAmount;
 		this.xpReward = xpReward;
-		this.hitbox = new CharacterCollider(this, spawnLocation.clone().add(0, 0.25, 0), 1, 0.5, 1);
+		this.hitbox = new CharacterCollider(this, spawnLocation.clone().add(0, 0.25, 0), 1.25, 0.5, 1.25);
 		this.movementSyncer = new MovementSynchronizer(this, MovementSynchronizerMode.CHARACTER_FOLLOWS_ENTITY);
 	}
 

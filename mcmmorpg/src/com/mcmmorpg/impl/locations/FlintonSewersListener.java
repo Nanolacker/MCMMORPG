@@ -14,6 +14,7 @@ import com.mcmmorpg.common.character.Source;
 import com.mcmmorpg.common.physics.Collider;
 import com.mcmmorpg.common.sound.Noise;
 import com.mcmmorpg.common.time.RepeatingTask;
+import com.mcmmorpg.impl.Items;
 import com.mcmmorpg.impl.Soundtracks;
 import com.mcmmorpg.impl.Worlds;
 import com.mcmmorpg.impl.Zones;
@@ -41,6 +42,7 @@ public class FlintonSewersListener implements Listener {
 		setUpBounds();
 		setUpSludge();
 		spawnNpcs();
+		setUpPortcullises();
 	}
 
 	private void setUpBounds() {
@@ -113,6 +115,10 @@ public class FlintonSewersListener implements Listener {
 		for (Location location : RAT_LOCATIONS) {
 			new FlintonSewersRat(location).setAlive(true);
 		}
+	}
+
+	private void setUpPortcullises() {
+		new FlintonSewersPortcullis(new Location(Worlds.ELADRADOR, -1006.5, 70, 212.5), false, Items.APPRENTICE_STAFF);
 	}
 
 }

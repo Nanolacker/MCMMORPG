@@ -134,7 +134,6 @@ class ItemListener implements Listener {
 		}
 		addPCToSet(swingingHands, pc);
 		Weapon weapon = pc.getWeapon();
-		// if weapon == null, punch
 		if (pc.isDisarmed()) {
 			return;
 		}

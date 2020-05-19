@@ -209,6 +209,7 @@ public class MageListener implements Listener {
 			@Override
 			protected void run() {
 				Location targetLocationTemp = pc.getTargetLocation(15);
+				boolean hitSurface = pc.getLocation().distanceSquared(targetLocationTemp) < 14 * 14;
 				AbstractCharacter targetCharacterTemp = null;
 				Location crosshair = pc.getLocation().add(0, 1.5, 0);
 				ICE_BEAM_CHANNEL_NOISE.play(crosshair);
@@ -236,11 +237,16 @@ public class MageListener implements Listener {
 				Location startLocation = getWeaponLocation(pc);
 				Ray beam = new Ray(startLocation, targetLocation);
 				beam.draw(Particle.CRIT_MAGIC, 1);
-				if (count % 3 == 0 && targetCharacter != null) {
-					targetCharacter.damage(damagePerTick, pc);
-					Location hitLocation = targetCharacter.getLocation().add(0, 1, 0);
-					world.spawnParticle(Particle.FIREWORKS_SPARK, hitLocation, 10);
-					ICE_BEAM_HIT_NOISE.play(hitLocation);
+				if (count % 3 == 0) {
+					if (targetCharacter != null) {
+						targetCharacter.damage(damagePerTick, pc);
+						Location hitLocation = targetCharacter.getLocation().add(0, 1, 0);
+						world.spawnParticle(Particle.FIREWORKS_SPARK, hitLocation, 10);
+						ICE_BEAM_HIT_NOISE.play(hitLocation);
+					} else if (hitSurface) {
+						world.spawnParticle(Particle.FIREWORKS_SPARK, targetLocation, 10);
+						ICE_BEAM_HIT_NOISE.play(targetLocation);
+					}
 				}
 				count++;
 				if (count == maxCount) {

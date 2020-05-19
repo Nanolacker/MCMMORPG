@@ -11,8 +11,8 @@ import com.mcmmorpg.impl.Quests;
 public class MelcherTavernKingRat extends Rat {
 
 	private static final int LEVEL = 2;
-	private static final double MAX_HEALTH = 50;
-	private static final double DAMAGE_AMOUNT = 4;
+	private static final double MAX_HEALTH = 100;
+	private static final double DAMAGE_AMOUNT = 6;
 	private static final int XP_REWARD = 15;
 
 	public MelcherTavernKingRat(Location spawnLocation) {

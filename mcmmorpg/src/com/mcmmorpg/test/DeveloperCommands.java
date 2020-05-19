@@ -42,6 +42,10 @@ public class DeveloperCommands {
 		Command restoreMana = new Command("restoremana") {
 			@Override
 			protected void onExecute(CommandSender sender, String[] args) {
+				Player player = (Player) sender;
+				PlayerCharacter pc = PlayerCharacter.forPlayer(player);
+				double manaAmount = Double.parseDouble(args[0]);
+				pc.setCurrentMana(pc.getCurrentHealth() + manaAmount);
 			}
 		};
 		Command giveXp = new Command("givexp") {
