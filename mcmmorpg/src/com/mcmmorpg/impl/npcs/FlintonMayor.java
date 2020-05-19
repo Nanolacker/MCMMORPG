@@ -7,8 +7,10 @@ import org.bukkit.Sound;
 import com.mcmmorpg.common.character.AbstractCharacter;
 import com.mcmmorpg.common.character.PlayerCharacter;
 import com.mcmmorpg.common.quest.QuestMarker;
+import com.mcmmorpg.common.quest.QuestStatus;
 import com.mcmmorpg.common.sound.Noise;
 import com.mcmmorpg.common.ui.InteractionSequence;
+import com.mcmmorpg.impl.Quests;
 
 public class FlintonMayor extends StaticHuman {
 
@@ -18,14 +20,35 @@ public class FlintonMayor extends StaticHuman {
 	private static final Noise SPEAK_NOISE = new Noise(Sound.ENTITY_VILLAGER_AMBIENT, 1, 0.75f);
 
 	private final InteractionSequence completeClearingTheRoadInteraction;
+	private final InteractionSequence startIntoTheSewersInteraction;
 
 	public FlintonMayor(Location location) {
 		super(ChatColor.GREEN + "Mayor of Flinton", LEVEL, location, TEXTURE_DATA, TEXTURE_SIGNATURE);
 		QuestMarker.createMarker(location.clone().add(0, 2.25, 0));
-		completeClearingTheRoadInteraction = new InteractionSequence(1) {
+		completeClearingTheRoadInteraction = new InteractionSequence(2) {
 			@Override
 			protected void onAdvance(PlayerCharacter pc, int interactionIndex) {
-
+				switch (interactionIndex) {
+				case 0:
+					say("Insert dialogue", pc);
+					break;
+				case 1:
+					Quests.CLEARING_THE_ROAD.getObjective(1).complete(pc);
+					break;
+				}
+			}
+		};
+		startIntoTheSewersInteraction = new InteractionSequence(2) {
+			@Override
+			protected void onAdvance(PlayerCharacter pc, int interactionIndex) {
+				switch (interactionIndex) {
+				case 0:
+					say("Insert dialogue", pc);
+					break;
+				case 1:
+					Quests.INTO_THE_SEWERS.start(pc);
+					break;
+				}
 			}
 		};
 	}
@@ -38,7 +61,16 @@ public class FlintonMayor extends StaticHuman {
 
 	@Override
 	protected void onInteract(PlayerCharacter pc) {
-
+		if (Quests.CLEARING_THE_ROAD.compareStatus(pc, QuestStatus.IN_PROGRESS)) {
+			if (Quests.CLEARING_THE_ROAD.getObjective(0).isComplete(pc)) {
+				completeClearingTheRoadInteraction.advance(pc);
+			} else {
+				say("Go slay highwaymen.", pc);
+			}
+		} else if (Quests.CLEARING_THE_ROAD.compareStatus(pc, QuestStatus.COMPLETED)
+				&& Quests.INTO_THE_SEWERS.compareStatus(pc, QuestStatus.NOT_STARTED)) {
+			startIntoTheSewersInteraction.advance(pc);
+		}
 	}
 
 }

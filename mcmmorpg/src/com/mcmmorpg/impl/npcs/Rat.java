@@ -15,12 +15,11 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.util.Vector;
 
 import com.mcmmorpg.common.character.CharacterCollider;
-import com.mcmmorpg.common.character.MovementSyncer;
-import com.mcmmorpg.common.character.MovementSyncer.MovementSyncMode;
+import com.mcmmorpg.common.character.MovementSynchronizer;
+import com.mcmmorpg.common.character.MovementSynchronizer.MovementSynchronizerMode;
 import com.mcmmorpg.common.character.NonPlayerCharacter;
 import com.mcmmorpg.common.character.PlayerCharacter;
 import com.mcmmorpg.common.character.Source;
-import com.mcmmorpg.common.character.Xp;
 import com.mcmmorpg.common.event.EventManager;
 import com.mcmmorpg.common.sound.Noise;
 import com.mcmmorpg.common.time.DelayedTask;
@@ -37,7 +36,7 @@ public class Rat extends NonPlayerCharacter {
 	private final double damageAmount;
 	private final int xpReward;
 	private final CharacterCollider hitbox;
-	private final MovementSyncer movementSyncer;
+	private final MovementSynchronizer movementSyncer;
 	private Silverfish entity;
 	static {
 		Listener listener = new Listener() {
@@ -74,7 +73,7 @@ public class Rat extends NonPlayerCharacter {
 		this.damageAmount = damageAmount;
 		this.xpReward = xpReward;
 		this.hitbox = new CharacterCollider(this, spawnLocation.clone().add(0, 0.25, 0), 1, 0.5, 1);
-		this.movementSyncer = new MovementSyncer(this, MovementSyncMode.CHARACTER_FOLLOWS_ENTITY);
+		this.movementSyncer = new MovementSynchronizer(this, MovementSynchronizerMode.CHARACTER_FOLLOWS_ENTITY);
 	}
 
 	@Override
@@ -120,7 +119,7 @@ public class Rat extends NonPlayerCharacter {
 		entity.remove();
 		entityMap.remove(entity);
 		Location deathLocation = getLocation();
-		Xp.distributeXp(deathLocation, 25, xpReward);
+		PlayerCharacter.distributeXp(deathLocation, 25, xpReward);
 		DEATH_NOISE.play(deathLocation);
 		DelayedTask respawn = new DelayedTask(RESPAWN_TIME) {
 			@Override

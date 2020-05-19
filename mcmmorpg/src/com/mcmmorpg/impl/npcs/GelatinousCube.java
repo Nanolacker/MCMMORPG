@@ -1,6 +1,7 @@
 package com.mcmmorpg.impl.npcs;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -21,12 +22,11 @@ import org.bukkit.util.Vector;
 
 import com.mcmmorpg.common.character.AbstractCharacter;
 import com.mcmmorpg.common.character.CharacterCollider;
-import com.mcmmorpg.common.character.MovementSyncer;
-import com.mcmmorpg.common.character.MovementSyncer.MovementSyncMode;
+import com.mcmmorpg.common.character.MovementSynchronizer;
+import com.mcmmorpg.common.character.MovementSynchronizer.MovementSynchronizerMode;
 import com.mcmmorpg.common.character.NonPlayerCharacter;
 import com.mcmmorpg.common.character.PlayerCharacter;
 import com.mcmmorpg.common.character.Source;
-import com.mcmmorpg.common.character.Xp;
 import com.mcmmorpg.common.event.EventManager;
 import com.mcmmorpg.common.physics.Collider;
 import com.mcmmorpg.common.sound.Noise;
@@ -34,6 +34,8 @@ import com.mcmmorpg.common.time.DelayedTask;
 import com.mcmmorpg.common.time.RepeatingTask;
 import com.mcmmorpg.common.ui.ProgressBar;
 import com.mcmmorpg.common.ui.ProgressBar.ProgressBarColor;
+import com.mcmmorpg.impl.Items;
+import com.mcmmorpg.impl.Quests;
 
 public class GelatinousCube extends NonPlayerCharacter {
 
@@ -60,7 +62,7 @@ public class GelatinousCube extends NonPlayerCharacter {
 
 	private final Location spawnLocation;
 	private final CharacterCollider hitbox;
-	private final MovementSyncer movementSyncer;
+	private final MovementSynchronizer movementSyncer;
 	private Slime entity;
 	private ProgressBar acidSprayProgressBar;
 	private boolean canUseAcidSpray;
@@ -120,7 +122,7 @@ public class GelatinousCube extends NonPlayerCharacter {
 		super.setHeight(HEIGHT);
 		this.spawnLocation = spawnLocation;
 		hitbox = new CharacterCollider(this, spawnLocation, WIDTH, WIDTH, WIDTH);
-		movementSyncer = new MovementSyncer(this, MovementSyncMode.CHARACTER_FOLLOWS_ENTITY);
+		movementSyncer = new MovementSynchronizer(this, MovementSynchronizerMode.CHARACTER_FOLLOWS_ENTITY);
 		canUseAcidSpray = true;
 		respawning = true;
 	}
@@ -214,7 +216,13 @@ public class GelatinousCube extends NonPlayerCharacter {
 	protected void onDeath() {
 		super.onDeath();
 		Location location = getLocation();
-		Xp.distributeXp(location, 25, XP_REWARD);
+		PlayerCharacter.distributeXp(location, 25, XP_REWARD);
+		int sludgeAmount = (int) (Math.random() * 3);
+		Items.SLUDGE.drop(location, sludgeAmount);
+		List<PlayerCharacter> nearbyPcs = PlayerCharacter.getNearbyPlayerCharacters(location, 25);
+		for (PlayerCharacter pc : nearbyPcs) {
+			Quests.SAMPLING_SLUDGE.getObjective(0).addProgress(pc, 1);
+		}
 		hitbox.setActive(false);
 		entityMap.remove(entity);
 		entity.remove();

@@ -18,8 +18,8 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 import com.mcmmorpg.common.character.CharacterCollider;
-import com.mcmmorpg.common.character.MovementSyncer;
-import com.mcmmorpg.common.character.MovementSyncer.MovementSyncMode;
+import com.mcmmorpg.common.character.MovementSynchronizer;
+import com.mcmmorpg.common.character.MovementSynchronizer.MovementSynchronizerMode;
 import com.mcmmorpg.common.character.NonPlayerCharacter;
 import com.mcmmorpg.common.character.PlayerCharacter;
 import com.mcmmorpg.common.character.Source;
@@ -37,7 +37,7 @@ public class Bat extends NonPlayerCharacter {
 
 	private final Location spawnLocation;
 	private final CharacterCollider hitbox;
-	private final MovementSyncer aiSyncer;
+	private final MovementSynchronizer aiSyncer;
 	private org.bukkit.entity.Bat entity;
 	private Vex ai;
 
@@ -69,7 +69,7 @@ public class Bat extends NonPlayerCharacter {
 		super.setHeight(1);
 		this.spawnLocation = spawnLocation;
 		hitbox = new CharacterCollider(this, spawnLocation.clone(), 2, 2, 2);
-		aiSyncer = new MovementSyncer(this, MovementSyncMode.CHARACTER_FOLLOWS_ENTITY);
+		aiSyncer = new MovementSynchronizer(this, MovementSynchronizerMode.CHARACTER_FOLLOWS_ENTITY);
 	}
 
 	private double maxHealth() {

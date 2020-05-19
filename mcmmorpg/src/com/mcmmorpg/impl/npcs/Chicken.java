@@ -4,20 +4,20 @@ import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.entity.EntityType;
 
-import com.mcmmorpg.common.character.MovementSyncer;
-import com.mcmmorpg.common.character.MovementSyncer.MovementSyncMode;
+import com.mcmmorpg.common.character.MovementSynchronizer;
+import com.mcmmorpg.common.character.MovementSynchronizer.MovementSynchronizerMode;
 import com.mcmmorpg.common.character.NonPlayerCharacter;
 
 public class Chicken extends NonPlayerCharacter {
 
 	private final Location spawnLocation;
-	private final MovementSyncer movementSyncer;
+	private final MovementSynchronizer movementSyncer;
 	private org.bukkit.entity.Chicken entity;
 
 	public Chicken(Location spawnLocation) {
 		super(ChatColor.GREEN + "Chicken", 1, spawnLocation);
 		this.spawnLocation = spawnLocation;
-		this.movementSyncer = new MovementSyncer(this, MovementSyncMode.CHARACTER_FOLLOWS_ENTITY);
+		this.movementSyncer = new MovementSynchronizer(this, MovementSynchronizerMode.CHARACTER_FOLLOWS_ENTITY);
 		super.setHeight(1);
 	}
 

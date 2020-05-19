@@ -8,8 +8,8 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 import com.mcmmorpg.common.character.HumanEntity;
-import com.mcmmorpg.common.character.MovementSyncer;
-import com.mcmmorpg.common.character.MovementSyncer.MovementSyncMode;
+import com.mcmmorpg.common.character.MovementSynchronizer;
+import com.mcmmorpg.common.character.MovementSynchronizer.MovementSynchronizerMode;
 import com.mcmmorpg.common.character.NonPlayerCharacter;
 import com.mcmmorpg.common.character.PlayerCharacter;
 import com.mcmmorpg.common.character.PlayerCharacterInteractionCollider;
@@ -22,7 +22,7 @@ public abstract class AbstractFriendlyHuman extends NonPlayerCharacter {
 	protected final HumanEntity entity;
 	protected final Location spawnLocation;
 	protected final PlayerCharacterInteractionCollider interactionCollider;
-	protected final MovementSyncer aiSyncer;
+	protected final MovementSynchronizer aiSyncer;
 	protected Cow ai;
 
 	protected AbstractFriendlyHuman(String name, int level, Location spawnLocation, String textureData,
@@ -36,7 +36,7 @@ public abstract class AbstractFriendlyHuman extends NonPlayerCharacter {
 				AbstractFriendlyHuman.this.onInteract(pc);
 			}
 		};
-		this.aiSyncer = new MovementSyncer(this, MovementSyncMode.CHARACTER_FOLLOWS_ENTITY);
+		this.aiSyncer = new MovementSynchronizer(this, MovementSynchronizerMode.CHARACTER_FOLLOWS_ENTITY);
 	}
 
 	@Override

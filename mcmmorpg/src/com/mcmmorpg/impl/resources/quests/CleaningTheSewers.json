@@ -1,0 +1,26 @@
+{
+	"name": "Cleaning the Sewers",
+	"level": 10,
+	"objectives": [
+		{
+			"goal": 15,
+			"description": "Slay 15 §7[§cBandits§7]"
+		},
+		{
+			"goal": 10,
+			"description": "Slay 10 §7[§cCultist Mage§7]"
+		},
+		{
+			"goal": 10,
+			"description": "Slay 10 §7[§cCultist Summoner§7]"
+		},
+		{
+			"goal": 1,
+			"description": "Slay the §7[§cCultist Leader Name§7]"
+		},
+		{
+			"goal": 1,
+			"description": "Return to §7[§aGuard Thomas§7]§f"
+		}
+	]
+}

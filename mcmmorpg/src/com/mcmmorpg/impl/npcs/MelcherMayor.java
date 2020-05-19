@@ -106,7 +106,8 @@ public class MelcherMayor extends StaticHuman {
 					say("They must be dealt with at once. Please take care of them for me.", pc);
 					break;
 				case 4:
-					say("When you're done, speak with the mayor of flinton to inform him that the roads have been made safer.");
+					say("When you're done, speak with the mayor of flinton to inform him that the roads have been made safer.",
+							pc);
 					break;
 				case 5:
 					Quests.CLEARING_THE_ROAD.start(pc);

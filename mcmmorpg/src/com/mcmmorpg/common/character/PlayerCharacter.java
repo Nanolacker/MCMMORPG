@@ -26,7 +26,8 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
-import com.mcmmorpg.common.character.MovementSyncer.MovementSyncMode;
+import com.mcmmorpg.common.character.MovementSynchronizer.MovementSynchronizerMode;
+import com.mcmmorpg.common.character.PlayerCharacter.PlayerCharacterCollider;
 import com.mcmmorpg.common.event.EventManager;
 import com.mcmmorpg.common.event.PlayerCharacterLevelUpEvent;
 import com.mcmmorpg.common.event.PlayerCharacterRegisterEvent;
@@ -54,6 +55,9 @@ import com.mcmmorpg.common.ui.SidebarText;
 import com.mcmmorpg.common.ui.TitleMessage;
 import com.mcmmorpg.common.utils.MathUtils;
 
+/**
+ * Represents a player character.
+ */
 public final class PlayerCharacter extends AbstractCharacter {
 
 	/**
@@ -63,10 +67,11 @@ public final class PlayerCharacter extends AbstractCharacter {
 	 */
 	private static final int[] XP_REQS = { 100, 150, 225, 325, 450, 600, 775, 975, 1200, 1450, 1725, 2025, 2350, 2700,
 			3075, 3475, 3900, 4350, 4825 };
-	private static final int MAX_XP = getMaxXp();
+	private static final int MAX_XP = determineMaxXp();
 	private static final Noise DEATH_NOISE = new Noise(Sound.ENTITY_WITHER_SPAWN);
 	private static final double MAX_DISPLACEMENT_WITHOUT_TELEPORT = 5.0;
-	private static final double INTERACT_RANGE = 4;
+	private static final double INTERACT_RANGE = 4.0;
+	private static final double SPEAK_RADIUS = 25.0;
 
 	private static final List<PlayerCharacter> pcs;
 	private static final Map<Player, PlayerCharacter> playerMap;
@@ -88,7 +93,7 @@ public final class PlayerCharacter extends AbstractCharacter {
 	private final List<String> tags;
 	private final PlayerCharacterSoundtrackPlayer soundtrackPlayer;
 	private CharacterCollider collider;
-	private final MovementSyncer movementSyncer;
+	private final MovementSynchronizer movementSyncer;
 	private boolean isDisarmed;
 	private transient boolean isSilenced;
 
@@ -96,10 +101,13 @@ public final class PlayerCharacter extends AbstractCharacter {
 		pcs = new ArrayList<>();
 		playerMap = new HashMap<>();
 		EventManager.registerEvents(new PlayerCharacterListener());
-		startRegenTask();
-		startSkillUpgradeReminderTask();
+		scheduleRegenTask();
+		scheduleSkillUpgradeReminderTask();
 	}
 
+	/**
+	 * Creates a new character with the specified values.
+	 */
 	private PlayerCharacter(Player player, boolean fresh, PlayerClass playerClass, String zone, Location location,
 			Location respawnLocation, int xp, int skillUpgradePoints, int currency, double maxHealth,
 			double currentHealth, double healthRegenRate, double maxMana, double currentMana, double manaRegenRate,
@@ -127,7 +135,7 @@ public final class PlayerCharacter extends AbstractCharacter {
 		this.collider = new PlayerCharacterCollider(this);
 		player.teleport(getLocation());
 
-		this.movementSyncer = new MovementSyncer(this, MovementSyncMode.CHARACTER_FOLLOWS_ENTITY);
+		this.movementSyncer = new MovementSynchronizer(this, MovementSynchronizerMode.CHARACTER_FOLLOWS_ENTITY);
 		movementSyncer.setEntity(player);
 		movementSyncer.setEnabled(true);
 		collider.setActive(true);
@@ -153,7 +161,10 @@ public final class PlayerCharacter extends AbstractCharacter {
 		isSilenced = false;
 	}
 
-	public static class PlayerCharacterCollider extends CharacterCollider {
+	/**
+	 * Hitbox for player characters.
+	 */
+	public static final class PlayerCharacterCollider extends CharacterCollider {
 		private static final double LENGTH = 1.0, HEIGHT = 2.0, WIDTH = 1.0;
 
 		private PlayerCharacterCollider(PlayerCharacter pc) {
@@ -166,7 +177,10 @@ public final class PlayerCharacter extends AbstractCharacter {
 		}
 	}
 
-	private static int getMaxXp() {
+	/**
+	 * Calculates the maximum xp attainable by a player character.
+	 */
+	private static int determineMaxXp() {
 		int maxXp = 0;
 		for (int i = 0; i < XP_REQS.length; i++) {
 			maxXp += XP_REQS[i];
@@ -174,7 +188,10 @@ public final class PlayerCharacter extends AbstractCharacter {
 		return maxXp;
 	}
 
-	private static void startRegenTask() {
+	/**
+	 * Schedules a task to regenerate player character health and mana periodically.
+	 */
+	private static void scheduleRegenTask() {
 		RepeatingTask regenTask = new RepeatingTask(1) {
 			@Override
 			protected void run() {
@@ -188,7 +205,11 @@ public final class PlayerCharacter extends AbstractCharacter {
 		regenTask.schedule();
 	}
 
-	private static void startSkillUpgradeReminderTask() {
+	/**
+	 * Schedules a task to remind player characters to use their skill upgrade
+	 * points periodically.
+	 */
+	private static void scheduleSkillUpgradeReminderTask() {
 		RepeatingTask skillUpgradeReminderTask = new RepeatingTask(15) {
 			@Override
 			protected void run() {
@@ -206,10 +227,16 @@ public final class PlayerCharacter extends AbstractCharacter {
 		skillUpgradeReminderTask.schedule();
 	}
 
+	/**
+	 * Returns a list of all player characters in the game.
+	 */
 	public static List<PlayerCharacter> getAll() {
 		return pcs;
 	}
 
+	/**
+	 * Creates a new player character from the specified save data.
+	 */
 	public static PlayerCharacter registerPlayerCharacter(Player player,
 			PersistentPlayerCharacterDataContainer saveData) {
 		boolean fresh = saveData.isFresh();
@@ -239,11 +266,18 @@ public final class PlayerCharacter extends AbstractCharacter {
 		return pc;
 	}
 
+	/**
+	 * Returns the player character that corresponds to the specified player.
+	 */
 	public static PlayerCharacter forPlayer(Player player) {
 		return playerMap.get(player);
 	}
 
-	public static PlayerCharacter[] getNearbyPlayerCharacters(Location location, double radius) {
+	/**
+	 * Returns a list of all player characters in the area specified by the location
+	 * and radius.
+	 */
+	public static List<PlayerCharacter> getNearbyPlayerCharacters(Location location, double radius) {
 		List<PlayerCharacter> pcs = new ArrayList<>();
 		double diameter = radius * 2;
 		Collider bounds = new Collider(location, diameter, diameter, diameter);
@@ -256,7 +290,7 @@ public final class PlayerCharacter extends AbstractCharacter {
 				pcs.add(pc);
 			}
 		}
-		return pcs.toArray(new PlayerCharacter[pcs.size()]);
+		return pcs;
 	}
 
 	/**
@@ -264,18 +298,27 @@ public final class PlayerCharacter extends AbstractCharacter {
 	 * from the specified location. False otherwise.
 	 */
 	public static boolean playerCharacterIsNearby(Location location, double radius) {
-		PlayerCharacter[] nearby = getNearbyPlayerCharacters(location, radius);
-		return nearby.length > 0;
+		List<PlayerCharacter> nearbyPcs = getNearbyPlayerCharacters(location, radius);
+		return nearbyPcs.size() > 0;
 	}
 
+	/**
+	 * Returns this player character's class.
+	 */
 	public PlayerClass getPlayerClass() {
 		return playerClass;
 	}
 
+	/**
+	 * Returns the zone this player character is currently in.
+	 */
 	public String getZone() {
 		return zone;
 	}
 
+	/**
+	 * Sets the zone this player character is currently in.
+	 */
 	public void setZone(String zone) {
 		if (zone.equals(this.zone)) {
 			return;
@@ -285,6 +328,9 @@ public final class PlayerCharacter extends AbstractCharacter {
 		}
 	}
 
+	/**
+	 * Sets this player character's location.
+	 */
 	@Override
 	public void setLocation(Location location) {
 		Location oldLocation = getLocation();
@@ -296,10 +342,16 @@ public final class PlayerCharacter extends AbstractCharacter {
 		}
 	}
 
+	/**
+	 * Returns where this player character will respawn on death.
+	 */
 	public Location getRespawnLocation() {
 		return respawnLocation;
 	}
 
+	/**
+	 * Sets where this player character will respawn on death.
+	 */
 	public void setRespawnLocation(Location respawnLocation) {
 		this.respawnLocation = respawnLocation;
 		sendMessage(ChatColor.GRAY + "Respawn point updated");
@@ -314,6 +366,9 @@ public final class PlayerCharacter extends AbstractCharacter {
 		return player.getTargetBlock(null, (int) maxRange).getLocation().add(0.5, 0.5, 0.5);
 	}
 
+	/**
+	 * Ensures that this player character's action bar is displaying the right text.
+	 */
 	private void updateActionBar() {
 		int rCurrentHealth = (int) Math.round(getCurrentHealth());
 		int rMaxHealth = (int) Math.round(getMaxHealth());
@@ -329,6 +384,9 @@ public final class PlayerCharacter extends AbstractCharacter {
 		bar.apply(player);
 	}
 
+	/**
+	 * Displays this player character's health display with hearts.
+	 */
 	private void updateHealthDisplay() {
 		double proportion = getCurrentHealth() / getMaxHealth();
 		double hearts = proportion * 20;
@@ -336,16 +394,43 @@ public final class PlayerCharacter extends AbstractCharacter {
 		player.setHealth(hearts);
 	}
 
+	/**
+	 * Displays this player character's mana display with the hunger bar.
+	 */
 	private void updateManaDisplay() {
 		double proportion = currentMana / maxMana;
 		int foodLevel = (int) Math.ceil(proportion * 20);
 		player.setFoodLevel(foodLevel);
 	}
 
+	/**
+	 * Give player characters xp in an area.
+	 */
+	public static void distributeXp(Location location, double radius, int amount) {
+		double diameter = radius * 2;
+		Collider bounds = new Collider(location, diameter, diameter, diameter) {
+			@Override
+			protected void onCollisionEnter(Collider other) {
+				if (other instanceof PlayerCharacterCollider) {
+					PlayerCharacter pc = ((PlayerCharacterCollider) other).getCharacter();
+					pc.giveXp(amount);
+				}
+			}
+		};
+		bounds.setActive(true);
+		bounds.setActive(false);
+	}
+
+	/**
+	 * Returns how much total xp this player character has earned.
+	 */
 	public int getXP() {
 		return xp;
 	}
 
+	/**
+	 * Gives the specified xp to this player character.
+	 */
 	public void giveXp(int xp) {
 		if (xp == 0) {
 			return;
@@ -358,6 +443,9 @@ public final class PlayerCharacter extends AbstractCharacter {
 		updateActionBar();
 	}
 
+	/**
+	 * Displays xp progress with the xp bar.
+	 */
 	private void updateXpDisplay() {
 		int level = getLevel();
 		player.setLevel(level);
@@ -368,7 +456,8 @@ public final class PlayerCharacter extends AbstractCharacter {
 	}
 
 	/**
-	 * Returns how much xp this pc has gained while at its current level.
+	 * Returns how much xp this player character has gained while at its current
+	 * level.
 	 */
 	private int getCurrentLevelXp() {
 		int currentLevelXp = xp;
@@ -382,6 +471,9 @@ public final class PlayerCharacter extends AbstractCharacter {
 		return currentLevelXp;
 	}
 
+	/**
+	 * Sees if this player character has enough xp to level up.
+	 */
 	private void checkForLevelUp() {
 		int newLevel = xpToLevel(xp);
 		while (newLevel > getLevel()) {
@@ -389,6 +481,9 @@ public final class PlayerCharacter extends AbstractCharacter {
 		}
 	}
 
+	/**
+	 * Returns what level the specified xp amount corresponds to.
+	 */
 	public static int xpToLevel(int xp) {
 		for (int i = 0; i < XP_REQS.length; i++) {
 			int xpValue = XP_REQS[i];
@@ -400,10 +495,16 @@ public final class PlayerCharacter extends AbstractCharacter {
 		return maxLevel();
 	}
 
+	/**
+	 * Returns the max level attainable by a player character.
+	 */
 	public static int maxLevel() {
 		return XP_REQS.length + 1;
 	}
 
+	/**
+	 * Levels up this player character.
+	 */
 	private void levelUp() {
 		int newLevel = getLevel() + 1;
 		setLevel(newLevel);
@@ -415,30 +516,46 @@ public final class PlayerCharacter extends AbstractCharacter {
 		sendMessage(ChatColor.GRAY + "Level increased to " + ChatColor.GOLD + newLevel + ChatColor.GRAY + "!");
 	}
 
+	/**
+	 * Returns how many unused skill upgrade points this player character has.
+	 */
 	public int getSkillUpgradePoints() {
 		return skillUpgradePoints;
 	}
 
 	/**
-	 * Note that players automatically receive skill points when they level up.
+	 * Sets how many unused skill upgrade points this player character has. Note
+	 * that players automatically receive skill points when they level up.
 	 */
 	public void setSkillUpgradePoints(int points) {
 		this.skillUpgradePoints = points;
 	}
 
+	/**
+	 * Returns how much currency this player character has.
+	 */
 	public int getCurrency() {
 		return currency;
 	}
 
+	/**
+	 * Returns this player character's maximum mana.
+	 */
 	public double getMaxMana() {
 		return maxMana;
 	}
 
+	/**
+	 * Sets this player character's maximum mana.
+	 */
 	public void setMaxMana(double maxMana) {
 		this.maxMana = maxMana;
 		updateActionBar();
 	}
 
+	/**
+	 * Sets this player character's current health.
+	 */
 	@Override
 	public void setCurrentHealth(double currentHealth) {
 		super.setCurrentHealth(currentHealth);
@@ -446,6 +563,9 @@ public final class PlayerCharacter extends AbstractCharacter {
 		updateHealthDisplay();
 	}
 
+	/**
+	 * Sets this player character's max health.
+	 */
 	@Override
 	public void setMaxHealth(double maxHealth) {
 		super.setMaxHealth(maxHealth);
@@ -454,23 +574,30 @@ public final class PlayerCharacter extends AbstractCharacter {
 	}
 
 	/**
-	 * In health per second.
+	 * Returns this player character's health regeneration rate in health per
+	 * second.
 	 */
 	public double getHealthRegenRate() {
 		return healthRegenRate;
 	}
 
 	/**
-	 * In health per second.
+	 * Sets this player character's health regeneration rate in health per second.
 	 */
 	public void setHealthRegenRate(double healthRegenRate) {
 		this.healthRegenRate = healthRegenRate;
 	}
 
+	/**
+	 * Returns this player character's current mana.
+	 */
 	public double getCurrentMana() {
 		return currentMana;
 	}
 
+	/**
+	 * Sets this player character's current mana.
+	 */
 	public void setCurrentMana(double currentMana) {
 		currentMana = MathUtils.clamp(currentMana, 0, maxMana);
 		this.currentMana = currentMana;
@@ -479,19 +606,22 @@ public final class PlayerCharacter extends AbstractCharacter {
 	}
 
 	/**
-	 * In mana per second.
+	 * Returns this player character's mana regeneration rate in mana per second.
 	 */
 	public double getManaRegenRate() {
 		return manaRegenRate;
 	}
 
 	/**
-	 * In mana per second.
+	 * Sets this player character's mana regeneration rate in mana per second.
 	 */
 	public void setManaRegenRate(double manaRegenRate) {
 		this.manaRegenRate = manaRegenRate;
 	}
 
+	/**
+	 * Deals the specified damage to this player character (pre-mitigation).
+	 */
 	@Override
 	public void damage(double amount, Source source) {
 		amount = getMitigatedDamage(amount, getProtections());
@@ -500,16 +630,26 @@ public final class PlayerCharacter extends AbstractCharacter {
 		player.damage(0.01);
 	}
 
+	/**
+	 * Returns how much damage will be done to this player character after
+	 * mitigations.
+	 */
 	private static double getMitigatedDamage(double damage, double protections) {
 		double damageMultiplier = damage / (damage + protections);
 		return damage * damageMultiplier;
 	}
 
+	/**
+	 * Returns the weapon that this player character is holding.
+	 */
 	public Weapon getWeapon() {
 		ItemStack itemStack = player.getInventory().getItem(0);
 		return (Weapon) Item.forItemStack(itemStack);
 	}
 
+	/**
+	 * Returns how many protections this player character has from armor.
+	 */
 	public double getProtections() {
 		double protections = 0;
 		int level = getLevel();
@@ -548,22 +688,37 @@ public final class PlayerCharacter extends AbstractCharacter {
 		return protections;
 	}
 
+	/**
+	 * Returns the item in the head slot of this player character's inventory.
+	 */
 	public ArmorItem getHeadArmor() {
 		return getArmorItem(39);
 	}
 
+	/**
+	 * Returns the item in the chest slot of this player character's inventory.
+	 */
 	public ArmorItem getChestArmor() {
 		return getArmorItem(38);
 	}
 
+	/**
+	 * Returns the item in the leg slot of this player character's inventory.
+	 */
 	public ArmorItem getLegArmor() {
 		return getArmorItem(37);
 	}
 
+	/**
+	 * Returns the item in the feet slot of this player character's inventory.
+	 */
 	public ArmorItem getFeetArmor() {
 		return getArmorItem(36);
 	}
 
+	/**
+	 * Returns the armor item in the specified inventory slot.
+	 */
 	private ArmorItem getArmorItem(int inventorySlot) {
 		ItemStack itemStack = player.getInventory().getItem(inventorySlot);
 		Item item = Item.forItemStack(itemStack);
@@ -573,35 +728,63 @@ public final class PlayerCharacter extends AbstractCharacter {
 		return null;
 	}
 
+	/**
+	 * Returns this player character's quest manager.
+	 */
 	public PlayerCharacterQuestManager getQuestManager() {
 		return questStatusManager;
 	}
 
+	/**
+	 * Opens the quest log menu.
+	 */
 	public void openQuestLog() {
 		QuestLog questLog = new QuestLog(this);
 		questLog.open();
 	}
 
+	/**
+	 * Returns this player character's skill manager.
+	 */
 	public PlayerSkillManager getSkillManager() {
 		return skillStatusManager;
 	}
 
+	/**
+	 * Returns whether this player character has the specified tag. Tags are used to
+	 * store data that can't otherwise be stored.
+	 */
 	public boolean hasTag(String tag) {
 		return tags.contains(tag);
 	}
 
+	/**
+	 * Adds the specified tag to this player character. Tags are used to store data
+	 * that can't otherwise be stored.
+	 */
 	public void addTag(String tag) {
 		tags.add(tag);
 	}
 
+	/**
+	 * Removes the specified tag from this player character. Tags are used to store
+	 * data that can't otherwise be stored.
+	 */
 	public void removeTag(String tag) {
 		tags.remove(tag);
 	}
 
+	/**
+	 * Returns all tags added to this player character.
+	 */
 	public String[] getTags() {
 		return tags.toArray(new String[tags.size()]);
 	}
 
+	/**
+	 * Returns whether this player character is disarmed (unable to use basic
+	 * attacks).
+	 */
 	public boolean isDisarmed() {
 		return isDisarmed;
 	}
@@ -619,6 +802,9 @@ public final class PlayerCharacter extends AbstractCharacter {
 		}.schedule();
 	}
 
+	/**
+	 * Returns whether this player character is silenced (unable to use skills).
+	 */
 	public boolean isSilenced() {
 		return isSilenced;
 	}
@@ -637,6 +823,9 @@ public final class PlayerCharacter extends AbstractCharacter {
 		}.schedule();
 	}
 
+	/**
+	 * Invoked when this player character dies.
+	 */
 	@Override
 	protected void onDeath() {
 		super.onDeath();
@@ -662,11 +851,17 @@ public final class PlayerCharacter extends AbstractCharacter {
 		}.schedule();
 	}
 
+	/**
+	 * Returns true if the other character is also a player character.
+	 */
 	@Override
 	public boolean isFriendly(AbstractCharacter other) {
 		return other instanceof PlayerCharacter;
 	}
 
+	/**
+	 * Displays quest information on the side.
+	 */
 	public void updateQuestDisplay() {
 		String lines = "";
 		List<Quest> inProgressQuests = Quest.getInProgressQuests(this);
@@ -679,32 +874,58 @@ public final class PlayerCharacter extends AbstractCharacter {
 		questDisplay.apply(player);
 	}
 
+	/**
+	 * Returns where this player character's hitbox should be relative to this
+	 * player character's location.
+	 */
 	private Location getColliderCenter() {
 		Location location = getLocation();
 		return location.add(0.0, 1.0, 0.0);
 	}
 
+	/**
+	 * Returns the player associated with this player character.
+	 */
 	public Player getPlayer() {
 		return player;
 	}
 
+	/**
+	 * Sends the specified message to this player character.
+	 */
 	public void sendMessage(String message) {
 		player.sendMessage(message);
 	}
 
+	/**
+	 * Gives the specified item to this player character.
+	 */
 	public void giveItem(Item item) {
 		giveItem(item, 1);
 	}
 
+	/**
+	 * Gives the specified item in the specified amount to this player character.
+	 */
 	public void giveItem(Item item, int amount) {
+		if (amount == 0) {
+			return;
+		}
 		ItemStack itemStack = item.getItemStack();
 		itemStack.setAmount(amount);
 		Inventory inventory = player.getInventory();
 		inventory.addItem(itemStack);
-		sendMessage(ChatColor.GRAY + "You received " + item + ChatColor.GRAY + "!");
+		sendMessage(ChatColor.GRAY + "You received " + (amount > 1 ? amount + " " : "") + item + ChatColor.GRAY + "!");
 	}
 
+	/**
+	 * Removes the specified item in the specified amount from this player
+	 * character.
+	 */
 	public void removeItem(Item item, int amount) {
+		if (amount == 0) {
+			return;
+		}
 		ItemStack itemStack = item.getItemStack();
 		Inventory inventory = player.getInventory();
 		ItemStack[] contents = inventory.getContents();
@@ -720,10 +941,11 @@ public final class PlayerCharacter extends AbstractCharacter {
 				}
 			}
 		}
+		sendMessage(ChatColor.GRAY + "Removed " + (amount > 1 ? amount + " " : "") + item + ChatColor.GRAY + "!");
 	}
 
 	/**
-	 * Returns how many of the item the player is carrying in their inventory.
+	 * Returns how many of the item the player character is carrying.
 	 */
 	public int getItemCount(Item item) {
 		if (item == null) {
@@ -836,7 +1058,7 @@ public final class PlayerCharacter extends AbstractCharacter {
 			}
 			event.setCancelled(true);
 			String message = event.getMessage();
-			pc.say(message);
+			pc.say(message, SPEAK_RADIUS);
 		}
 
 		@EventHandler

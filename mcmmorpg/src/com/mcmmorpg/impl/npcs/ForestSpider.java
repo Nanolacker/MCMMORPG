@@ -1,5 +1,7 @@
 package com.mcmmorpg.impl.npcs;
 
+import java.util.List;
+
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.entity.EntityType;
@@ -34,7 +36,7 @@ public class ForestSpider extends AbstractSpider {
 	@Override
 	protected void onDeath() {
 		super.onDeath();
-		PlayerCharacter[] nearbyPcs = PlayerCharacter.getNearbyPlayerCharacters(getLocation(), 25);
+		List<PlayerCharacter> nearbyPcs = PlayerCharacter.getNearbyPlayerCharacters(getLocation(), 25);
 		for (PlayerCharacter pc : nearbyPcs) {
 			Quests.ARACHNOPHOBIA.getObjective(0).addProgress(pc, 1);
 		}

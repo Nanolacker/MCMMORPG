@@ -1,5 +1,7 @@
 package com.mcmmorpg.impl.npcs;
 
+import java.util.List;
+
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 
@@ -7,7 +9,6 @@ import com.mcmmorpg.common.character.PlayerCharacter;
 import com.mcmmorpg.common.character.PlayerCharacter.PlayerCharacterCollider;
 import com.mcmmorpg.common.physics.Collider;
 import com.mcmmorpg.common.time.RepeatingTask;
-import com.mcmmorpg.common.utils.Debug;
 import com.mcmmorpg.impl.Quests;
 import com.mcmmorpg.impl.Worlds;
 
@@ -48,7 +49,7 @@ public class MelcherTavernRat extends Rat {
 	@Override
 	protected void onDeath() {
 		super.onDeath();
-		PlayerCharacter[] nearbyPcs = PlayerCharacter.getNearbyPlayerCharacters(getLocation(), 15);
+		List<PlayerCharacter> nearbyPcs = PlayerCharacter.getNearbyPlayerCharacters(getLocation(), 15);
 		for (PlayerCharacter pc : nearbyPcs) {
 			Quests.PEST_CONTROL.getObjective(0).addProgress(pc, 1);
 		}

@@ -19,12 +19,11 @@ import org.bukkit.util.Vector;
 
 import com.mcmmorpg.common.character.CharacterCollider;
 import com.mcmmorpg.common.character.HumanEntity;
-import com.mcmmorpg.common.character.MovementSyncer;
-import com.mcmmorpg.common.character.MovementSyncer.MovementSyncMode;
+import com.mcmmorpg.common.character.MovementSynchronizer;
+import com.mcmmorpg.common.character.MovementSynchronizer.MovementSynchronizerMode;
 import com.mcmmorpg.common.character.NonPlayerCharacter;
 import com.mcmmorpg.common.character.PlayerCharacter;
 import com.mcmmorpg.common.character.Source;
-import com.mcmmorpg.common.character.Xp;
 import com.mcmmorpg.common.event.EventManager;
 import com.mcmmorpg.common.sound.Noise;
 import com.mcmmorpg.common.time.DelayedTask;
@@ -45,7 +44,7 @@ public abstract class AbstractHumanEnemy extends NonPlayerCharacter {
 	protected final double respawnTime;
 	private int speed;
 	protected final CharacterCollider hitbox;
-	protected final MovementSyncer aiSyncer;
+	protected final MovementSynchronizer aiSyncer;
 	protected Zombie ai;
 
 	static {
@@ -87,7 +86,7 @@ public abstract class AbstractHumanEnemy extends NonPlayerCharacter {
 		this.speed = speed;
 		this.entity = new HumanEntity(spawnLocation, textureData, textureSignature);
 		this.hitbox = new CharacterCollider(this, spawnLocation.clone().add(0, 1, 0), 1, 2, 1);
-		this.aiSyncer = new MovementSyncer(this, MovementSyncMode.CHARACTER_FOLLOWS_ENTITY);
+		this.aiSyncer = new MovementSynchronizer(this, MovementSynchronizerMode.CHARACTER_FOLLOWS_ENTITY);
 	}
 
 	@Override
@@ -142,7 +141,7 @@ public abstract class AbstractHumanEnemy extends NonPlayerCharacter {
 	@Override
 	protected void onDeath() {
 		super.onDeath();
-		Xp.distributeXp(getLocation(), 10, xpReward);
+		PlayerCharacter.distributeXp(getLocation(), 10, xpReward);
 		hitbox.setActive(false);
 		entity.setVisible(false);
 		ai.remove();

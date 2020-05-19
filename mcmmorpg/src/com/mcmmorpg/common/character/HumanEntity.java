@@ -32,6 +32,9 @@ import net.minecraft.server.v1_15_R1.PlayerConnection;
 import net.minecraft.server.v1_15_R1.PlayerInteractManager;
 import net.minecraft.server.v1_15_R1.WorldServer;
 
+/**
+ * A human entity with equipment.
+ */
 public class HumanEntity {
 
 	private static final double RENDER_PERIOD = 1.0;
@@ -59,6 +62,10 @@ public class HumanEntity {
 		renderer.schedule();
 	}
 
+	/**
+	 * Creates a new human entity with the skin determined by the specified texture
+	 * data and texture signature.
+	 */
 	public HumanEntity(Location location, String textureData, String textureSignature) {
 		this.location = location;
 		World world = location.getWorld();
@@ -73,6 +80,9 @@ public class HumanEntity {
 		humanEntities.add(this);
 	}
 
+	/**
+	 * Displays this human entity to nearby players.
+	 */
 	private void render() {
 		World world = location.getWorld();
 		for (int i = 0; i < viewers.size(); i++) {
@@ -91,6 +101,9 @@ public class HumanEntity {
 		}
 	}
 
+	/**
+	 * Reveals this human entity to the specified player via packets.
+	 */
 	private void show(Player player) {
 		if (viewers.contains(player)) {
 			return;
@@ -104,10 +117,16 @@ public class HumanEntity {
 		viewers.add(player);
 	}
 
+	/**
+	 * Returns the location of this human entity.
+	 */
 	public Location getLocation() {
 		return location.clone();
 	}
 
+	/**
+	 * Sets the location of this human entity.
+	 */
 	public void setLocation(Location location) {
 		this.location = location;
 		if (visible) {
@@ -116,6 +135,9 @@ public class HumanEntity {
 		}
 	}
 
+	/**
+	 * Updates the location of this human entity to viewers via packets.
+	 */
 	private void setLocation0(Location location) {
 		entityPlayer.setPositionRotation(location.getX(), location.getY(), location.getZ(), location.getYaw(),
 				location.getPitch());
@@ -131,10 +153,16 @@ public class HumanEntity {
 		}
 	}
 
+	/**
+	 * Returns whether players can see this human entity.
+	 */
 	public boolean isVisible() {
 		return visible;
 	}
 
+	/**
+	 * Sets whether players can see this human entity.
+	 */
 	public void setVisible(boolean visible) {
 		this.visible = visible;
 		if (visible) {
@@ -158,6 +186,9 @@ public class HumanEntity {
 		}
 	}
 
+	/**
+	 * Set the item held in the main hand slot of this human entity.
+	 */
 	public void setMainHand(ItemStack itemStack) {
 		this.mainHand = itemStack;
 		if (visible) {
@@ -165,6 +196,9 @@ public class HumanEntity {
 		}
 	}
 
+	/**
+	 * Set the item held in the off hand slot of this human entity.
+	 */
 	public void setOffHand(ItemStack itemStack) {
 		this.offHand = itemStack;
 		if (visible) {
@@ -172,6 +206,9 @@ public class HumanEntity {
 		}
 	}
 
+	/**
+	 * Set the item held in the helmet slot of this human entity.
+	 */
 	public void setHelmet(ItemStack itemStack) {
 		this.helmet = itemStack;
 		if (visible) {
@@ -179,6 +216,9 @@ public class HumanEntity {
 		}
 	}
 
+	/**
+	 * Set the item held in the chestplate slot of this human entity.
+	 */
 	public void setChestplate(ItemStack itemStack) {
 		this.chestplate = itemStack;
 		if (visible) {
@@ -186,6 +226,9 @@ public class HumanEntity {
 		}
 	}
 
+	/**
+	 * Set the item held in the leggings slot of this human entity.
+	 */
 	public void setLeggings(ItemStack itemStack) {
 		this.leggings = itemStack;
 		if (visible) {
@@ -193,6 +236,9 @@ public class HumanEntity {
 		}
 	}
 
+	/**
+	 * Set the item held in the boots slot of this human entity.
+	 */
 	public void setBoots(ItemStack itemStack) {
 		this.boots = itemStack;
 		if (visible) {
@@ -200,6 +246,9 @@ public class HumanEntity {
 		}
 	}
 
+	/**
+	 * Animate this human entity's hand.
+	 */
 	public void swingHand() {
 		PacketPlayOutAnimation swingHand = new PacketPlayOutAnimation(entityPlayer, 0);
 		for (int i = 0; i < viewers.size(); i++) {
@@ -209,13 +258,13 @@ public class HumanEntity {
 	}
 
 	/**
-	 * Makes the skin light up red.
+	 * Makes the skin light up red. Not yet implemented.
 	 */
 	public void hurt() {
 	}
 
 	/**
-	 * Call if you don't want to use this anymore!
+	 * Call this if you don't want to use this anymore.
 	 */
 	public void dispose() {
 		humanEntities.remove(this);

@@ -1,5 +1,7 @@
 package com.mcmmorpg.impl.npcs;
 
+import java.util.List;
+
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -38,7 +40,7 @@ public class Highwayman extends AbstractHumanEnemy {
 		if (Math.random() > 0.8) {
 			Items.THIEF_DAGGER.drop(getLocation(), 1);
 		}
-		PlayerCharacter[] nearbyPcs = PlayerCharacter.getNearbyPlayerCharacters(location, 25);
+		List<PlayerCharacter> nearbyPcs = PlayerCharacter.getNearbyPlayerCharacters(location, 25);
 		for (PlayerCharacter pc : nearbyPcs) {
 			Quests.CLEARING_THE_ROAD.getObjective(0).addProgress(pc, 1);
 		}

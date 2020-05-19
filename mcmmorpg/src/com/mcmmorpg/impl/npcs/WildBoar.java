@@ -20,12 +20,11 @@ import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
 
 import com.mcmmorpg.common.character.CharacterCollider;
-import com.mcmmorpg.common.character.MovementSyncer;
-import com.mcmmorpg.common.character.MovementSyncer.MovementSyncMode;
+import com.mcmmorpg.common.character.MovementSynchronizer;
+import com.mcmmorpg.common.character.MovementSynchronizer.MovementSynchronizerMode;
 import com.mcmmorpg.common.character.NonPlayerCharacter;
 import com.mcmmorpg.common.character.PlayerCharacter;
 import com.mcmmorpg.common.character.Source;
-import com.mcmmorpg.common.character.Xp;
 import com.mcmmorpg.common.event.EventManager;
 import com.mcmmorpg.common.sound.Noise;
 import com.mcmmorpg.common.time.DelayedTask;
@@ -41,7 +40,7 @@ public class WildBoar extends NonPlayerCharacter {
 
 	private final Location spawnLocation;
 	private final CharacterCollider hitbox;
-	private final MovementSyncer aiSyncer;
+	private final MovementSynchronizer aiSyncer;
 	private Pig entity;
 	private PolarBear ai;
 
@@ -81,7 +80,7 @@ public class WildBoar extends NonPlayerCharacter {
 		super.setHeight(1);
 		this.spawnLocation = spawnLocation;
 		hitbox = new CharacterCollider(this, spawnLocation.clone().add(0, 0.5, 0), 2, 1, 2);
-		aiSyncer = new MovementSyncer(this, MovementSyncMode.CHARACTER_FOLLOWS_ENTITY);
+		aiSyncer = new MovementSynchronizer(this, MovementSynchronizerMode.CHARACTER_FOLLOWS_ENTITY);
 	}
 
 	private double maxHealth() {
@@ -150,7 +149,7 @@ public class WildBoar extends NonPlayerCharacter {
 		Location location = getLocation();
 		DEATH_NOISE.play(location);
 		location.getWorld().spawnParticle(Particle.CLOUD, location, 10);
-		Xp.distributeXp(location, 25, getXpToGrant());
+		PlayerCharacter.distributeXp(location, 25, getXpToGrant());
 		Items.BOAR_FLANK.drop(location, 1);
 		DelayedTask respawn = new DelayedTask(RESPAWN_TIME) {
 			@Override

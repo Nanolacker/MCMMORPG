@@ -1,0 +1,18 @@
+{
+	"name": "Sampling Sludge",
+	"level": 10,
+	"objectives": [
+		{
+			"goal": 20,
+			"description": "Slay 20 §7[§cGelatinous Cube§7]"
+		},
+		{
+			"goal": "1",
+			"description": "Slay the §7[§cGiant Gelatinous Cube§7] at §a(x, y, z)"
+		},
+		{
+			"goal": "1",
+			"description": "Return 25 §7[Sludge§7]§r and 1 §7[Giant Sludge§7]§r to §7[§aAlchemist§7]"
+		}
+	]
+}

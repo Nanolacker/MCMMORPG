@@ -5,6 +5,9 @@ package com.mcmmorpg.common.character;
  */
 public interface Source {
 
+	/**
+	 * Returns the name of this source.
+	 */
 	public String getName();
 
 }

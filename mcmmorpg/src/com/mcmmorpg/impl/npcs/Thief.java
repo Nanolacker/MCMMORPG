@@ -1,5 +1,7 @@
 package com.mcmmorpg.impl.npcs;
 
+import java.util.List;
+
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 
@@ -32,7 +34,7 @@ public class Thief extends AbstractHumanEnemy {
 		if (Math.random() > 0.8) {
 			Items.THIEF_DAGGER.drop(location, 1);
 		}
-		PlayerCharacter[] nearbyPcs = PlayerCharacter.getNearbyPlayerCharacters(getLocation(), 25);
+		List<PlayerCharacter> nearbyPcs = PlayerCharacter.getNearbyPlayerCharacters(getLocation(), 25);
 		for (PlayerCharacter pc : nearbyPcs) {
 			Quests.SLAYING_THE_THIEVES.getObjective(0).addProgress(pc, 1);
 		}

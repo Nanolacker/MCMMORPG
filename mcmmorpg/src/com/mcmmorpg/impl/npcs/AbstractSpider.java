@@ -18,13 +18,12 @@ import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
 
 import com.mcmmorpg.common.character.CharacterCollider;
-import com.mcmmorpg.common.character.MovementSyncer;
-import com.mcmmorpg.common.character.MovementSyncer.MovementSyncMode;
+import com.mcmmorpg.common.character.MovementSynchronizer;
+import com.mcmmorpg.common.character.MovementSynchronizer.MovementSynchronizerMode;
 import com.mcmmorpg.common.character.PlayerCharacter.PlayerCharacterCollider;
 import com.mcmmorpg.common.character.NonPlayerCharacter;
 import com.mcmmorpg.common.character.PlayerCharacter;
 import com.mcmmorpg.common.character.Source;
-import com.mcmmorpg.common.character.Xp;
 import com.mcmmorpg.common.event.EventManager;
 import com.mcmmorpg.common.physics.Collider;
 import com.mcmmorpg.common.sound.Noise;
@@ -43,7 +42,7 @@ public abstract class AbstractSpider extends NonPlayerCharacter {
 	private final int speed;
 	private final int xpReward;
 	private final CharacterCollider hitbox;
-	private final MovementSyncer movementSyncer;
+	private final MovementSynchronizer movementSyncer;
 	private final Collider surroundings;
 	private PlayerCharacter target;
 	protected Spider entity;
@@ -84,7 +83,7 @@ public abstract class AbstractSpider extends NonPlayerCharacter {
 		this.speed = speed;
 		this.xpReward = xpReward;
 		hitbox = new CharacterCollider(this, spawnLocation, lengthX, lengthY, lengthZ);
-		movementSyncer = new MovementSyncer(this, MovementSyncMode.CHARACTER_FOLLOWS_ENTITY);
+		movementSyncer = new MovementSynchronizer(this, MovementSynchronizerMode.CHARACTER_FOLLOWS_ENTITY);
 		surroundings = new Collider(spawnLocation, 30, 6, 30) {
 			@Override
 			protected void onCollisionEnter(Collider other) {
@@ -175,7 +174,7 @@ public abstract class AbstractSpider extends NonPlayerCharacter {
 		Location location = getLocation();
 		DEATH_NOISE.play(location);
 		location.getWorld().spawnParticle(Particle.CLOUD, location, 10);
-		Xp.distributeXp(location, 35, xpReward);
+		PlayerCharacter.distributeXp(location, 35, xpReward);
 		DelayedTask respawn = new DelayedTask(RESPAWN_TIME) {
 			@Override
 			protected void run() {

@@ -1,5 +1,7 @@
 package com.mcmmorpg.impl.npcs;
 
+import java.util.List;
+
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 
@@ -20,7 +22,7 @@ public class MelcherTavernKingRat extends Rat {
 	@Override
 	protected void onDeath() {
 		super.onDeath();
-		PlayerCharacter[] nearbyPcs = PlayerCharacter.getNearbyPlayerCharacters(getLocation(), 25);
+		List<PlayerCharacter> nearbyPcs = PlayerCharacter.getNearbyPlayerCharacters(getLocation(), 25);
 		for (PlayerCharacter pc : nearbyPcs) {
 			Quests.PEST_CONTROL.getObjective(1).addProgress(pc, 1);
 		}

@@ -23,8 +23,8 @@ import org.bukkit.util.Vector;
 
 import com.mcmmorpg.common.character.AbstractCharacter;
 import com.mcmmorpg.common.character.CharacterCollider;
-import com.mcmmorpg.common.character.MovementSyncer;
-import com.mcmmorpg.common.character.MovementSyncer.MovementSyncMode;
+import com.mcmmorpg.common.character.MovementSynchronizer;
+import com.mcmmorpg.common.character.MovementSynchronizer.MovementSynchronizerMode;
 import com.mcmmorpg.common.character.NonPlayerCharacter;
 import com.mcmmorpg.common.character.PlayerCharacter;
 import com.mcmmorpg.common.character.PlayerCharacter.PlayerCharacterCollider;
@@ -38,6 +38,8 @@ import com.mcmmorpg.common.time.RepeatingTask;
 import com.mcmmorpg.common.ui.ProgressBar;
 import com.mcmmorpg.common.ui.ProgressBar.ProgressBarColor;
 import com.mcmmorpg.common.utils.MathUtils;
+import com.mcmmorpg.impl.Items;
+import com.mcmmorpg.impl.Quests;
 
 public class GiantGelatinousCube extends NonPlayerCharacter {
 
@@ -62,7 +64,7 @@ public class GiantGelatinousCube extends NonPlayerCharacter {
 	private final CharacterCollider hitbox;
 	private final Collider surroundings;
 	private final BossBar bossBar;
-	private final MovementSyncer movementSyncer;
+	private final MovementSynchronizer movementSyncer;
 	private Slime entity;
 	private ProgressBar splitProgressBar;
 	private boolean canUseSplit;
@@ -92,7 +94,7 @@ public class GiantGelatinousCube extends NonPlayerCharacter {
 			}
 		};
 		bossBar = Bukkit.createBossBar(getName(), BarColor.RED, BarStyle.SEGMENTED_10);
-		movementSyncer = new MovementSyncer(this, MovementSyncMode.CHARACTER_FOLLOWS_ENTITY);
+		movementSyncer = new MovementSynchronizer(this, MovementSynchronizerMode.CHARACTER_FOLLOWS_ENTITY);
 		canUseSplit = true;
 		childCount = 0;
 
@@ -244,13 +246,19 @@ public class GiantGelatinousCube extends NonPlayerCharacter {
 	protected void onDeath() {
 		super.onDeath();
 		grantXpToNearbyPlayers();
+		Location location = getLocation();
+		List<PlayerCharacter> nearbyPcs = PlayerCharacter.getNearbyPlayerCharacters(location, 25);
+		for (PlayerCharacter pc : nearbyPcs) {
+			Quests.SAMPLING_SLUDGE.getObjective(0).addProgress(pc, 1);
+		}
+		int giantSludgeAmount = nearbyPcs.size();
+		Items.GIANT_SLUDGE.drop(location, giantSludgeAmount);
 		hitbox.setActive(false);
 		surroundings.setActive(false);
 		entity.remove();
 		if (splitProgressBar != null) {
 			splitProgressBar.dispose();
 		}
-		Location location = getLocation();
 		DEATH_NOISE.play(location);
 		location.getWorld().spawnParticle(Particle.CLOUD, location, 10);
 		LootChest.spawnLootChest(location);

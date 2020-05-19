@@ -19,7 +19,7 @@ import com.mcmmorpg.common.utils.MathUtils;
  * Represents an in-game character, which could be a player character or a
  * non-player character. Each character has, at the minimum, basic attributes
  * that include a name, level, location, alive flag, current health, max health,
- * and nameplate. This class should be extended to create custom characters.
+ * and height. This class should be extended to create custom characters.
  * Methods in subclasses which override methods in this class must invoke super.
  */
 public abstract class AbstractCharacter implements Source {
@@ -222,15 +222,24 @@ public abstract class AbstractCharacter implements Source {
 		setNameplateVisible(false);
 	}
 
+	/**
+	 * Returns how tall this character is.
+	 */
 	public final double getHeight() {
 		return height;
 	}
 
-	public void setHeight(double height) {
+	/**
+	 * Sets how tall this character is.
+	 */
+	public final void setHeight(double height) {
 		this.height = height;
 		updateNameplateLocation();
 	}
 
+	/**
+	 * Determines the text to be displayed on this character's nameplate.
+	 */
 	private final String nameplateText() {
 		int numBars = 20;
 		StringBuilder text = new StringBuilder();
@@ -251,15 +260,24 @@ public abstract class AbstractCharacter implements Source {
 		return text.toString();
 	}
 
+	/**
+	 * Uses this character's height to determine the placement of its nameplate.
+	 */
 	private final Location getNameplateLocation() {
 		return getLocation().add(0, height, 0);
 	}
 
+	/**
+	 * Ensures that this character's nameplate is positioned correctly.
+	 */
 	private final void updateNameplateLocation() {
 		Location nameplateLocation = getNameplateLocation();
 		nameplate.setLocation(nameplateLocation);
 	}
 
+	/**
+	 * Ensures that this character's nameplate is displaying text correctly.
+	 */
 	private final void updateNameplateText() {
 		String nameplateText = nameplateText();
 		nameplate.setText(nameplateText);
@@ -281,10 +299,16 @@ public abstract class AbstractCharacter implements Source {
 		return false;
 	}
 
+	/**
+	 * Returns this character's name formatted with brackets.
+	 */
 	public final String formatName() {
 		return ChatColor.GRAY + "[" + ChatColor.RESET + name + ChatColor.GRAY + "]" + ChatColor.RESET;
 	}
 
+	/**
+	 * Formats dialogue to be said by this character.
+	 */
 	public final String formatDialogue(String dialogue) {
 		if (dialogue == null) {
 			return null;
@@ -293,6 +317,9 @@ public abstract class AbstractCharacter implements Source {
 		}
 	}
 
+	/**
+	 * Formats dialogue to be said by this character.
+	 */
 	public final String[] formatDialogue(String[] dialogue) {
 		String[] formattedDialogue = new String[dialogue.length];
 		for (int i = 0; i < dialogue.length; i++) {
@@ -301,6 +328,9 @@ public abstract class AbstractCharacter implements Source {
 		return formattedDialogue;
 	}
 
+	/**
+	 * Speaks to the specified recipient.
+	 */
 	@OverridingMethodsMustInvokeSuper
 	public void say(String dialogue, AbstractCharacter recipient) {
 		if (recipient instanceof PlayerCharacter) {
@@ -309,11 +339,9 @@ public abstract class AbstractCharacter implements Source {
 		}
 	}
 
-	@OverridingMethodsMustInvokeSuper
-	public void say(String dialogue) {
-		say(dialogue, 25);
-	}
-
+	/**
+	 * Speaks to those in an area around this character.
+	 */
 	@OverridingMethodsMustInvokeSuper
 	public void say(String dialogue, double radius) {
 		double diameter = radius * 2;

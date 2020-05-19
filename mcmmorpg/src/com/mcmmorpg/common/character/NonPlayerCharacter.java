@@ -63,6 +63,9 @@ public class NonPlayerCharacter extends AbstractCharacter {
 		}
 	}
 
+	/**
+	 * Creates a new NPC.
+	 */
 	protected NonPlayerCharacter(String name, int level, Location location) {
 		super(name, level, location);
 		spawned = false;
@@ -102,6 +105,9 @@ public class NonPlayerCharacter extends AbstractCharacter {
 		EventManager.callEvent(event);
 	}
 
+	/**
+	 * Called when this NPC becomes alive.
+	 */
 	@OverridingMethodsMustInvokeSuper
 	@Override
 	protected void onLive() {
@@ -109,6 +115,9 @@ public class NonPlayerCharacter extends AbstractCharacter {
 		aliveNpcs.add(this);
 	}
 
+	/**
+	 * Called when this NPC dies.
+	 */
 	@OverridingMethodsMustInvokeSuper
 	@Override
 	protected void onDeath() {
@@ -130,8 +139,8 @@ public class NonPlayerCharacter extends AbstractCharacter {
 
 	/**
 	 * Returns whether the conditions are suitable for this NPC to despawn. By
-	 * default, returns whether there is a player nearby. Override in subclasses to
-	 * provide alternative functionality.
+	 * default, returns whether there is not a player nearby. Override in subclasses
+	 * to provide alternative functionality.
 	 */
 	protected boolean shouldDespawn() {
 		Location location = getLocation();

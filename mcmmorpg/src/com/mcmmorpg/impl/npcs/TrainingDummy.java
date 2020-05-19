@@ -8,8 +8,8 @@ import org.bukkit.entity.EntityType;
 
 import com.mcmmorpg.common.character.CharacterCollider;
 import com.mcmmorpg.common.character.NonPlayerCharacter;
+import com.mcmmorpg.common.character.PlayerCharacter;
 import com.mcmmorpg.common.character.Source;
-import com.mcmmorpg.common.character.Xp;
 import com.mcmmorpg.common.sound.Noise;
 import com.mcmmorpg.common.time.DelayedTask;
 
@@ -54,7 +54,7 @@ public class TrainingDummy extends NonPlayerCharacter {
 		DESTROY_NOISE.play(getLocation());
 		entity.remove();
 		hitbox.setActive(false);
-		Xp.distributeXp(getLocation(), 10, 3);
+		PlayerCharacter.distributeXp(getLocation(), 10, 3);
 		DelayedTask respawnTask = new DelayedTask(10) {
 			@Override
 			protected void run() {

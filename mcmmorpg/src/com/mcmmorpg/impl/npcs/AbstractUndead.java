@@ -16,12 +16,11 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.util.Vector;
 
 import com.mcmmorpg.common.character.CharacterCollider;
-import com.mcmmorpg.common.character.MovementSyncer;
-import com.mcmmorpg.common.character.MovementSyncer.MovementSyncMode;
+import com.mcmmorpg.common.character.MovementSynchronizer;
+import com.mcmmorpg.common.character.MovementSynchronizer.MovementSynchronizerMode;
 import com.mcmmorpg.common.character.NonPlayerCharacter;
 import com.mcmmorpg.common.character.PlayerCharacter;
 import com.mcmmorpg.common.character.Source;
-import com.mcmmorpg.common.character.Xp;
 import com.mcmmorpg.common.event.EventManager;
 import com.mcmmorpg.common.sound.Noise;
 import com.mcmmorpg.common.time.DelayedTask;
@@ -35,7 +34,7 @@ public abstract class AbstractUndead extends NonPlayerCharacter {
 
 	private final Location spawnLocation;
 	private final CharacterCollider hitbox;
-	private final MovementSyncer movementSyncer;
+	private final MovementSynchronizer movementSyncer;
 	private final double respawnTime;
 	private final EntityType entityType;
 	private Zombie entity;
@@ -67,12 +66,13 @@ public abstract class AbstractUndead extends NonPlayerCharacter {
 		EventManager.registerEvents(listener);
 	}
 
-	protected AbstractUndead(String name, int level, Location spawnLocation, double respawnTime, EntityType entityType) {
+	protected AbstractUndead(String name, int level, Location spawnLocation, double respawnTime,
+			EntityType entityType) {
 		super(name, level, spawnLocation);
 		super.setMaxHealth(maxHealth());
 		this.spawnLocation = spawnLocation;
 		this.hitbox = new CharacterCollider(this, spawnLocation.clone().add(0, 1.25, 0), 1, 2.5, 1);
-		this.movementSyncer = new MovementSyncer(this, MovementSyncMode.CHARACTER_FOLLOWS_ENTITY);
+		this.movementSyncer = new MovementSynchronizer(this, MovementSynchronizerMode.CHARACTER_FOLLOWS_ENTITY);
 		this.respawnTime = respawnTime;
 		this.entityType = entityType;
 	}
@@ -148,7 +148,7 @@ public abstract class AbstractUndead extends NonPlayerCharacter {
 	}
 
 	private void grantXpToNearbyPlayers() {
-		Xp.distributeXp(getLocation(), 10, xpToGrantOnDeath());
+		PlayerCharacter.distributeXp(getLocation(), 10, xpToGrantOnDeath());
 	}
 
 }
