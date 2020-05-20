@@ -17,19 +17,15 @@ import com.mcmmorpg.common.ui.ProgressBar.ProgressBarColor;
 
 public abstract class AbstractCultist extends AbstractHumanEnemy {
 
-	private static final int LEVEL = 10;
-	private static final double MAX_HEALTH = 100;
 	private static final int XP_REWARD = 30;
 	private static final double RESPAWN_TIME = 30;
 	private static final int SPEED = 2;
-	private static final String TEXTURE_DATA = "eyJ0aW1lc3RhbXAiOjE1ODcyNTQ0MzcxMzUsInByb2ZpbGVJZCI6ImRlNTcxYTEwMmNiODQ4ODA4ZmU3YzlmNDQ5NmVjZGFkIiwicHJvZmlsZU5hbWUiOiJNSEZfTWluZXNraW4iLCJzaWduYXR1cmVSZXF1aXJlZCI6dHJ1ZSwidGV4dHVyZXMiOnsiU0tJTiI6eyJ1cmwiOiJodHRwOi8vdGV4dHVyZXMubWluZWNyYWZ0Lm5ldC90ZXh0dXJlL2Q5NmM4NjA3NWFhOTJiYjAwYmI2NzZlNzQ5MWM5NWUxYzY5YjU0ZjlmNzY3MzU1MjlhMGY2NmUwNGQzZDI1ZmUifX19";
-	private static final String TEXTURE_SIGNATURE = "uks+6CegMiDE3DNcnJ5ZMf0iA6AtGTGUkncv9DbukLgzAYp9gmgWsm0TKaRbtOcH9TSWNYid2jr2XyezYwIxqDwZGdYLno2cqtdjwE+EzPhhvGZX5YkEHwyQtcRiPp1Yz1Mp5XBFfBPfAa6p+YTw9ry5+V4cEGfoxuxFZ3LZny8MngLnVuNro80H17Hb1QNzCSoJ224z3M9J5thNs5gliz9KO1cotbd4g9ejiBF8u+OgpU57U+0steLy8MyTGtJw1vfiRnmZ69a73BjwYkM+BIhGpR63N9Zt3GcJIn56Uwpn1ACFjHIyzVjjKrM6XTH/pXy/GQ277cmaULKBQuL0ryNb1EeLV6gkNfEqH+DFUy4wPSBnR9hKaLMP8hXJaV/JkQJk/AzzGItqyxNk8j3YzQjqwOvzJkUDUvf+rNqJMp9dZ6ZmQlH6jnvTxRlLFnTpgd0T00qjrRqQaHgE2bWsVkftsGJBg46uXKOBl/togm+1cIsHO3FfXB9gCbgBIFMYdm3rkHqc0h0otLyefd5qBZmxZQmbNv3FWCWUx/STmCVmfpZCsMu8JgWmvTRoFT2HqQEVx/uUn5zQI/EK1EXbLk+BzUBueYVDDsH5cz0fpKuUDxHI7lB4YVFfASN5kzvwNl8pNQEq02HYI5RFDsVrB0OoFFhm0EqKTI04VeYDx9M=";
 	private static final PotionEffect SLOW_EFFECT = new PotionEffect(PotionEffectType.SLOW, Integer.MAX_VALUE, 5,
 			false);
 
 	private final String spellName;
 	private final double spellChannelDuration;
-	private ProgressBar spellProgressBar;
+	protected ProgressBar spellProgressBar;
 
 	static {
 		Listener listener = new Listener() {
@@ -55,14 +51,14 @@ public abstract class AbstractCultist extends AbstractHumanEnemy {
 		EventManager.registerEvents(listener);
 	}
 
-	public AbstractCultist(String name, Location spawnLocation, String spellName, double spellChannelDuration) {
-		super(name, LEVEL, spawnLocation, MAX_HEALTH, 0, XP_REWARD, RESPAWN_TIME, SPEED, TEXTURE_DATA,
-				TEXTURE_SIGNATURE);
+	public AbstractCultist(String name, int level, Location spawnLocation, double maxHealth, String textureData,
+			String textureSignature, String spellName, double spellChannelDuration) {
+		super(name, level, spawnLocation, maxHealth, 0, XP_REWARD, RESPAWN_TIME, SPEED, textureData, textureSignature);
 		this.spellName = spellName;
 		this.spellChannelDuration = spellChannelDuration;
 	}
 
-	private void chargeSpell() {
+	protected void chargeSpell() {
 		ai.addPotionEffect(SLOW_EFFECT);
 		spellProgressBar = new ProgressBar(spellName, ProgressBarColor.WHITE) {
 			@Override
@@ -81,6 +77,14 @@ public abstract class AbstractCultist extends AbstractHumanEnemy {
 		ai.removePotionEffect(PotionEffectType.SLOW);
 		if (spellProgressBar != null) {
 			spellProgressBar.dispose();
+		}
+	}
+
+	@Override
+	public void setLocation(Location location) {
+		super.setLocation(location);
+		if (spellProgressBar != null) {
+			spellProgressBar.display(getLocation().add(0, 2.75, 0));
 		}
 	}
 

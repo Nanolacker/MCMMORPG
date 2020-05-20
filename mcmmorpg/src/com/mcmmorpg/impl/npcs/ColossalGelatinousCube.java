@@ -41,7 +41,7 @@ import com.mcmmorpg.common.utils.MathUtils;
 import com.mcmmorpg.impl.Items;
 import com.mcmmorpg.impl.Quests;
 
-public class GiantGelatinousCube extends NonPlayerCharacter {
+public class ColossalGelatinousCube extends NonPlayerCharacter {
 
 	private static final int LEVEL = 12;
 	private static final int MAX_HEALTH = 1000;
@@ -70,8 +70,8 @@ public class GiantGelatinousCube extends NonPlayerCharacter {
 	private boolean canUseSplit;
 	private int childCount;
 
-	public GiantGelatinousCube(Location spawnLocation) {
-		super(ChatColor.RED + "Giant Gelatinous Cube", LEVEL, spawnLocation);
+	public ColossalGelatinousCube(Location spawnLocation) {
+		super(ChatColor.RED + "Colossal Gelatinous Cube", LEVEL, spawnLocation);
 		super.setMaxHealth(MAX_HEALTH);
 		super.setHeight(HEIGHT);
 		this.spawnLocation = spawnLocation;
@@ -103,13 +103,13 @@ public class GiantGelatinousCube extends NonPlayerCharacter {
 			private void onHit(EntityDamageByEntityEvent event) {
 				Entity damager = event.getDamager();
 				Entity damaged = event.getEntity();
-				if (damager == GiantGelatinousCube.this.entity) {
+				if (damager == ColossalGelatinousCube.this.entity) {
 					if (damaged instanceof Player) {
 						Player player = (Player) damaged;
 						PlayerCharacter pc = PlayerCharacter.forPlayer(player);
-						pc.damage(BASIC_ATTACK_DAMAGE, GiantGelatinousCube.this);
+						pc.damage(BASIC_ATTACK_DAMAGE, ColossalGelatinousCube.this);
 					}
-				} else if (damaged == GiantGelatinousCube.this.entity) {
+				} else if (damaged == ColossalGelatinousCube.this.entity) {
 					DelayedTask cancelKnockback = new DelayedTask(0.1) {
 						@Override
 						protected void run() {
@@ -255,6 +255,7 @@ public class GiantGelatinousCube extends NonPlayerCharacter {
 		Items.GIANT_SLUDGE.drop(location, giantSludgeAmount);
 		hitbox.setActive(false);
 		surroundings.setActive(false);
+		movementSyncer.setEnabled(false);
 		entity.remove();
 		if (splitProgressBar != null) {
 			splitProgressBar.dispose();

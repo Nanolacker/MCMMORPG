@@ -97,11 +97,11 @@ public class MelcherListener implements Listener {
 	private static final Location GUARD_JAMES_LOCATION = new Location(Worlds.ELADRADOR, -837, 72, 148);
 
 	public MelcherListener() {
-		setUpBounds();
+		setBounds();
 		setUpNpcs();
 	}
 
-	private void setUpBounds() {
+	private void setBounds() {
 		Collider entranceBounds = new Collider(Worlds.ELADRADOR, -1186, 30, 110, -930, 126, 300) {
 			@Override
 			protected void onCollisionEnter(Collider other) {

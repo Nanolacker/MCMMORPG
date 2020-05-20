@@ -56,8 +56,10 @@ public class FlintonSewersPortcullis {
 			blockLocation.setY(blockLocation.getY() + 1);
 		}
 
+		double interactionSizeX = northFacing ? sizeX : sizeX + 4;
+		double interactionSizeZ = northFacing ? sizeZ + 4 : sizeZ;
 		PlayerCharacterInteractionCollider interactionCollider = new PlayerCharacterInteractionCollider(
-				location.clone().add(0, HEIGHT / 2.0, 0), sizeX, HEIGHT, sizeZ) {
+				location.clone().add(0, HEIGHT / 2.0, 0), interactionSizeX, HEIGHT, interactionSizeZ) {
 			@Override
 			protected void onInteract(PlayerCharacter pc) {
 				if (pc.getItemCount(key) >= 1) {
@@ -73,8 +75,9 @@ public class FlintonSewersPortcullis {
 		interactionCollider.setActive(true);
 		interactionCollider.setVisible(true);
 
-		TextPanel text = new TextPanel(location.clone().add(0, HEIGHT / 2.0, 0),
-				ChatColor.GRAY + "Requires " + key.formatName() + ChatColor.GRAY + " to open");
+		Location textLocation = location.clone().add(0, HEIGHT / 2.0, 0);
+		TextPanel text = new TextPanel(textLocation,
+				ChatColor.GRAY + "Right Click to Open\n\nRequires " + key.formatName() + ChatColor.GRAY + " to open");
 		text.setVisible(true);
 
 		this.closed = true;

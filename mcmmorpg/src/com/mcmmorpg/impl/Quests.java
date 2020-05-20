@@ -14,5 +14,6 @@ public class Quests {
 	public static final Quest SAMPLING_SLUDGE = Quest.forName("Sampling Sludge");
 	public static final Quest INTO_THE_SEWERS = Quest.forName("Into the Sewers");
 	public static final Quest CLEARING_THE_SEWERS = Quest.forName("Clearing the Sewers");
+	public static final Quest CULLING_THE_CULT = Quest.forName("Culling the Cult");
 
 }

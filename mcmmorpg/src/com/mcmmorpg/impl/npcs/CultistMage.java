@@ -1,5 +1,7 @@
 package com.mcmmorpg.impl.npcs;
 
+import java.util.List;
+
 import org.bukkit.ChatColor;
 import org.bukkit.Effect;
 import org.bukkit.Location;
@@ -12,19 +14,26 @@ import org.bukkit.util.Vector;
 
 import com.mcmmorpg.common.character.AbstractCharacter;
 import com.mcmmorpg.common.character.CharacterCollider;
+import com.mcmmorpg.common.character.PlayerCharacter;
 import com.mcmmorpg.common.physics.Collider;
 import com.mcmmorpg.common.physics.Projectile;
 import com.mcmmorpg.common.sound.Noise;
 import com.mcmmorpg.common.time.DelayedTask;
+import com.mcmmorpg.impl.Quests;
 
 public class CultistMage extends AbstractCultist {
 
+	private static final int LEVEL = 10;
+	private static final double MAX_HEALTH = 100;
+	private static final String TEXTURE_DATA = "eyJ0aW1lc3RhbXAiOjE1ODcyNTQ0MzcxMzUsInByb2ZpbGVJZCI6ImRlNTcxYTEwMmNiODQ4ODA4ZmU3YzlmNDQ5NmVjZGFkIiwicHJvZmlsZU5hbWUiOiJNSEZfTWluZXNraW4iLCJzaWduYXR1cmVSZXF1aXJlZCI6dHJ1ZSwidGV4dHVyZXMiOnsiU0tJTiI6eyJ1cmwiOiJodHRwOi8vdGV4dHVyZXMubWluZWNyYWZ0Lm5ldC90ZXh0dXJlL2Q5NmM4NjA3NWFhOTJiYjAwYmI2NzZlNzQ5MWM5NWUxYzY5YjU0ZjlmNzY3MzU1MjlhMGY2NmUwNGQzZDI1ZmUifX19";
+	private static final String TEXTURE_SIGNATURE = "uks+6CegMiDE3DNcnJ5ZMf0iA6AtGTGUkncv9DbukLgzAYp9gmgWsm0TKaRbtOcH9TSWNYid2jr2XyezYwIxqDwZGdYLno2cqtdjwE+EzPhhvGZX5YkEHwyQtcRiPp1Yz1Mp5XBFfBPfAa6p+YTw9ry5+V4cEGfoxuxFZ3LZny8MngLnVuNro80H17Hb1QNzCSoJ224z3M9J5thNs5gliz9KO1cotbd4g9ejiBF8u+OgpU57U+0steLy8MyTGtJw1vfiRnmZ69a73BjwYkM+BIhGpR63N9Zt3GcJIn56Uwpn1ACFjHIyzVjjKrM6XTH/pXy/GQ277cmaULKBQuL0ryNb1EeLV6gkNfEqH+DFUy4wPSBnR9hKaLMP8hXJaV/JkQJk/AzzGItqyxNk8j3YzQjqwOvzJkUDUvf+rNqJMp9dZ6ZmQlH6jnvTxRlLFnTpgd0T00qjrRqQaHgE2bWsVkftsGJBg46uXKOBl/togm+1cIsHO3FfXB9gCbgBIFMYdm3rkHqc0h0otLyefd5qBZmxZQmbNv3FWCWUx/STmCVmfpZCsMu8JgWmvTRoFT2HqQEVx/uUn5zQI/EK1EXbLk+BzUBueYVDDsH5cz0fpKuUDxHI7lB4YVFfASN5kzvwNl8pNQEq02HYI5RFDsVrB0OoFFhm0EqKTI04VeYDx9M=";
 	private static final Noise FIREBALL_CONJURE_NOISE = new Noise(Sound.ENTITY_ZOMBIE_VILLAGER_CURE);
 	private static final Noise FIREBALL_EXPLODE_1_NOISE = new Noise(Sound.ENTITY_GENERIC_EXPLODE);
 	private static final Noise FIREBALL_EXPLODE_2_NOISE = new Noise(Sound.BLOCK_FIRE_AMBIENT);
 
 	public CultistMage(Location spawnLocation) {
-		super(ChatColor.RED + "Cultist Mage", spawnLocation, "Fireball", 3);
+		super(ChatColor.RED + "Cultist Mage", LEVEL, spawnLocation, MAX_HEALTH, TEXTURE_DATA, TEXTURE_SIGNATURE,
+				"Fireball", 3);
 	}
 
 	@Override
@@ -97,6 +106,14 @@ public class CultistMage extends AbstractCultist {
 			}
 		};
 		projectile.fire();
+	}
+
+	@Override
+	protected void onDeath() {
+		List<PlayerCharacter> nearbyPcs = PlayerCharacter.getNearbyPlayerCharacters(getLocation(), 25);
+		for (PlayerCharacter pc : nearbyPcs) {
+			Quests.CULLING_THE_CULT.getObjective(0).addProgress(pc, 1);
+		}
 	}
 
 }

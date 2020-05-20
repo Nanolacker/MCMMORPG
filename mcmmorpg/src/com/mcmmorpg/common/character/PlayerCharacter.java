@@ -634,6 +634,10 @@ public final class PlayerCharacter extends AbstractCharacter {
 	 * mitigations.
 	 */
 	private static double getMitigatedDamage(double damage, double protections) {
+		if (damage == 0) {
+			// prevent divide by 0
+			return 0;
+		}
 		double damageMultiplier = damage / (damage + protections);
 		return damage * damageMultiplier;
 	}

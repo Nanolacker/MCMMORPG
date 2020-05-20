@@ -9,17 +9,20 @@ import com.mcmmorpg.common.physics.Collider;
 import com.mcmmorpg.impl.Soundtracks;
 import com.mcmmorpg.impl.Worlds;
 import com.mcmmorpg.impl.Zones;
-import com.mcmmorpg.impl.npcs.Bandit;
-import com.mcmmorpg.impl.npcs.BanditLeader;
+import com.mcmmorpg.impl.npcs.FlintonMayor;
+import com.mcmmorpg.impl.npcs.FlintonVillager;
 
 public class FlintonListener implements Listener {
 
+	private static final Location MAYOR_LOCATION = new Location(Worlds.ELADRADOR, 0, 0, 0);
+	private static final Location[] VILLAGER_LOCATIONS = {};
+
 	public FlintonListener() {
-		setUpBounds();
+		setBounds();
 		spawnNpcs();
 	}
 
-	private void setUpBounds() {
+	private void setBounds() {
 		Collider entranceBounds = new Collider(Worlds.ELADRADOR, 0, 0, 0, 0, 0, 0) {
 			@Override
 			protected void onCollisionEnter(Collider other) {
@@ -45,12 +48,12 @@ public class FlintonListener implements Listener {
 	}
 
 	private void spawnNpcs() {
-		Location[] banditLocations = {};
-		for (Location location : banditLocations) {
-			new Bandit(location).setAlive(true);
+		new FlintonMayor(MAYOR_LOCATION).setAlive(true);
+		for (int i = 0; i < VILLAGER_LOCATIONS.length; i++) {
+			Location location = VILLAGER_LOCATIONS[i];
+			boolean male = i % 2 == 0;
+			new FlintonVillager(location, male).setAlive(true);
 		}
-		Location bossLocation = new Location(Worlds.ELADRADOR, 0, 0, 0);
-		new BanditLeader(bossLocation).setAlive(true);
 	}
 
 }

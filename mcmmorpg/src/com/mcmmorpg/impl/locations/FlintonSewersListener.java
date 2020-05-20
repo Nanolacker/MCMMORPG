@@ -13,6 +13,7 @@ import org.bukkit.event.Listener;
 
 import com.mcmmorpg.common.character.PlayerCharacter;
 import com.mcmmorpg.common.character.PlayerCharacter.PlayerCharacterCollider;
+import com.mcmmorpg.common.item.LootChest;
 import com.mcmmorpg.common.character.Source;
 import com.mcmmorpg.common.physics.Collider;
 import com.mcmmorpg.common.sound.Noise;
@@ -27,6 +28,7 @@ import com.mcmmorpg.impl.npcs.CultistMage;
 import com.mcmmorpg.impl.npcs.CultistSummoner;
 import com.mcmmorpg.impl.npcs.FlintonSewersAlchemist;
 import com.mcmmorpg.impl.npcs.FlintonSewersRat;
+import com.mcmmorpg.impl.npcs.FlintonSewersXylphanos;
 import com.mcmmorpg.impl.npcs.GelatinousCube;
 import com.mcmmorpg.impl.npcs.SmallGelatinousCube;
 
@@ -41,6 +43,7 @@ public class FlintonSewersListener implements Listener {
 	private static final Location[] CULTIST_MAGE_LOCATOINS = {};
 	private static final Location[] CULTIST_SUMMONER_LOCATIONS = {};
 	private static final Location[] RAT_LOCATIONS = {};
+	private static final Location[] LOOT_CHEST_LOCATIONS = {};
 
 	public static final Map<PlayerCharacter, Integer> smallGelatinousCubeCounts = new HashMap<>();
 
@@ -48,13 +51,14 @@ public class FlintonSewersListener implements Listener {
 	private Collider innerBounds;
 
 	public FlintonSewersListener() {
-		setUpBounds();
+		setBounds();
 		setUpSludge();
 		spawnNpcs();
 		setUpPortcullises();
+		placeLootChests();
 	}
 
-	private void setUpBounds() {
+	private void setBounds() {
 		innerBounds = new Collider(Worlds.ELADRADOR, -999, -999, -999, 999, 999, 999) {
 			@Override
 			protected void onCollisionEnter(Collider other) {
@@ -133,10 +137,17 @@ public class FlintonSewersListener implements Listener {
 		for (Location location : RAT_LOCATIONS) {
 			new FlintonSewersRat(location).setAlive(true);
 		}
+		new FlintonSewersXylphanos(
+				new Location(Worlds.ELADRADOR, -1016.773831, 70.000000, 190.152897, 62.335854f, 31.613012f))
+						.setAlive(true);
 	}
 
 	private void setUpPortcullises() {
 		new FlintonSewersPortcullis(new Location(Worlds.ELADRADOR, -1006.5, 70, 212.5), false, Items.APPRENTICE_STAFF);
+	}
+
+	private void placeLootChests() {
+		
 	}
 
 }
