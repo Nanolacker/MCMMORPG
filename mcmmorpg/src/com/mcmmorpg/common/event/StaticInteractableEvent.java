@@ -5,6 +5,9 @@ import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 import org.bukkit.inventory.ItemStack;
 
+/**
+ * An event called when a player interacts with a static interactable item.
+ */
 public class StaticInteractableEvent extends Event {
 
 	private static final HandlerList handlers = new HandlerList();
@@ -26,10 +29,16 @@ public class StaticInteractableEvent extends Event {
 		return handlers;
 	}
 
+	/**
+	 * Returns the player in this event.
+	 */
 	public Player getPlayer() {
 		return player;
 	}
 
+	/**
+	 * Returns the interactable in this event.
+	 */
 	public ItemStack getInteractable() {
 		return interactable;
 	}

@@ -6,6 +6,9 @@ import org.bukkit.event.HandlerList;
 import com.mcmmorpg.common.character.AbstractCharacter;
 import com.mcmmorpg.common.character.Source;
 
+/**
+ * An event called when a character is killed by a source.
+ */
 public class CharacterKillEvent extends Event {
 
 	private static final HandlerList handlers = new HandlerList();
@@ -27,10 +30,16 @@ public class CharacterKillEvent extends Event {
 		return handlers;
 	}
 
+	/**
+	 * Returns the character that was killed in the event.
+	 */
 	public AbstractCharacter getKilled() {
 		return killed;
 	}
 
+	/**
+	 * Returns the source that killed the character in the event.
+	 */
 	public Source getKiller() {
 		return killer;
 	}

@@ -5,6 +5,9 @@ import org.bukkit.event.HandlerList;
 
 import com.mcmmorpg.common.character.NonPlayerCharacter;
 
+/**
+ * An event called when an NPC spawns;
+ */
 public class NonPlayerCharacterSpawnEvent extends Event {
 
 	private static final HandlerList handlers = new HandlerList();
@@ -24,6 +27,9 @@ public class NonPlayerCharacterSpawnEvent extends Event {
 		return handlers;
 	}
 
+	/**
+	 * Returns the NPC that spawned in this event.
+	 */
 	public NonPlayerCharacter getNpc() {
 		return npc;
 	}

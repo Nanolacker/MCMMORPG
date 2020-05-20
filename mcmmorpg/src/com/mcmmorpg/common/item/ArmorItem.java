@@ -6,6 +6,9 @@ import org.bukkit.inventory.ItemStack;
 
 import com.mcmmorpg.common.playerClass.PlayerClass;
 
+/**
+ * An item that can be equipped to provide protections.
+ */
 public class ArmorItem extends Item {
 
 	private final String playerClass;

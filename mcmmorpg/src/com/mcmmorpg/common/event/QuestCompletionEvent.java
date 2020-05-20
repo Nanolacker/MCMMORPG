@@ -6,6 +6,9 @@ import org.bukkit.event.HandlerList;
 import com.mcmmorpg.common.character.PlayerCharacter;
 import com.mcmmorpg.common.quest.Quest;
 
+/**
+ * An event called when a player character completes a quest.
+ */
 public class QuestCompletionEvent extends Event {
 
 	private static final HandlerList handlers = new HandlerList();
@@ -27,10 +30,16 @@ public class QuestCompletionEvent extends Event {
 		return handlers;
 	}
 
-	public PlayerCharacter getPlayer() {
+	/**
+	 * Returns the player character that completed the quest.
+	 */
+	public PlayerCharacter getPlayerCharacter() {
 		return pc;
 	}
 
+	/**
+	 * Returns the completed quest.
+	 */
 	public Quest getQuest() {
 		return quest;
 	}

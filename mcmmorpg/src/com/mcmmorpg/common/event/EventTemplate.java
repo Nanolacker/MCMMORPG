@@ -4,7 +4,7 @@ import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
 /**
- * This is a template for writing custom Events.
+ * This is a template for writing events.
  */
 public class EventTemplate extends Event {
 

@@ -5,6 +5,9 @@ import org.bukkit.event.HandlerList;
 
 import com.mcmmorpg.common.character.AbstractCharacter;
 
+/**
+ * An event called whenever a character dies.
+ */
 public class CharacterDeathEvent extends Event {
 
 	private static final HandlerList handlers = new HandlerList();
@@ -24,6 +27,9 @@ public class CharacterDeathEvent extends Event {
 		return handlers;
 	}
 
+	/**
+	 * Returns the character that died in the event.
+	 */
 	public AbstractCharacter getCharacter() {
 		return character;
 	}

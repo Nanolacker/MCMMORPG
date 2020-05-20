@@ -5,8 +5,7 @@ import org.bukkit.Location;
 import org.bukkit.World;
 
 /**
- * An immutable representation of a location that can be safely serialized or
- * stored in JSON format.
+ * A representation of a location that can be serialized.
  */
 public final class PersistentLocation {
 
@@ -23,6 +22,9 @@ public final class PersistentLocation {
 		this.pitch = pitch;
 	}
 
+	/**
+	 * Creates a persistent location from the specified location.
+	 */
 	public PersistentLocation(Location location) {
 		this(location.getWorld().getName(), location.getX(), location.getY(), location.getZ(), location.getYaw(),
 				location.getPitch());
@@ -56,6 +58,9 @@ public final class PersistentLocation {
 		return Bukkit.getWorld(worldName);
 	}
 
+	/**
+	 * Converts this persistent location to a location.
+	 */
 	public Location toLocation() {
 		World world = getWorld();
 		return new Location(world, x, y, z, yaw, pitch);

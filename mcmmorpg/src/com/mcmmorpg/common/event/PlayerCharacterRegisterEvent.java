@@ -5,6 +5,10 @@ import org.bukkit.event.HandlerList;
 
 import com.mcmmorpg.common.character.PlayerCharacter;
 
+/**
+ * An event called when a player character is registered (i.e. when a player
+ * character joins the game).
+ */
 public class PlayerCharacterRegisterEvent extends Event {
 
 	private static final HandlerList handlers = new HandlerList();
@@ -24,6 +28,9 @@ public class PlayerCharacterRegisterEvent extends Event {
 		return handlers;
 	}
 
+	/**
+	 * Returns the registered player character.
+	 */
 	public PlayerCharacter getPlayerCharacter() {
 		return pc;
 	}

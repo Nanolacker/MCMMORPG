@@ -22,6 +22,9 @@ import com.mcmmorpg.common.character.PlayerCharacter;
 import com.mcmmorpg.common.time.RepeatingTask;
 import com.mcmmorpg.common.ui.TextPanel;
 
+/**
+ * Place chests that player characters can loot.
+ */
 public class LootChest {
 
 	private static final int MAX_SPAWN_RADIUS = 5;
@@ -47,6 +50,10 @@ public class LootChest {
 		chestMap.put(this.location, this);
 	}
 
+	/**
+	 * Create a loot chest at the specified location with the specified items
+	 * contents.
+	 */
 	public static LootChest spawnLootChest(Location location, Item... contents) {
 		return new LootChest(location, contents);
 	}
@@ -77,6 +84,9 @@ public class LootChest {
 		}
 	}
 
+	/**
+	 * Returns the loot chest at the specified location.
+	 */
 	static LootChest forLocation(Location location) {
 		return chestMap.get(location);
 	}
@@ -101,10 +111,16 @@ public class LootChest {
 		return null;
 	}
 
+	/**
+	 * Returns the location of this loot chest.
+	 */
 	public Location getLocation() {
 		return location;
 	}
 
+	/**
+	 * Returns the item contents of this loot chest.
+	 */
 	public Item[] getContents() {
 		return contents;
 	}
@@ -125,6 +141,9 @@ public class LootChest {
 		inventories.add(inventory);
 	}
 
+	/**
+	 * Removes this loot chest from its location.
+	 */
 	public void remove() {
 		if (removed) {
 			return;

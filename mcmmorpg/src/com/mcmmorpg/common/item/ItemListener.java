@@ -27,7 +27,7 @@ import org.bukkit.inventory.ItemStack;
 
 import com.mcmmorpg.common.character.PlayerCharacter;
 import com.mcmmorpg.common.event.EventManager;
-import com.mcmmorpg.common.event.LootChestOpenEvent;
+import com.mcmmorpg.common.event.PlayerCharacterOpenLootChestEvent;
 import com.mcmmorpg.common.event.PlayerCharacterUseConsumableItemEvent;
 import com.mcmmorpg.common.event.PlayerCharacterUseWeaponEvent;
 import com.mcmmorpg.common.event.StaticInteractableEvent;
@@ -315,7 +315,7 @@ class ItemListener implements Listener {
 		}
 		chest.open(pc);
 		chest.remove();
-		EventManager.callEvent(new LootChestOpenEvent(chest));
+		EventManager.callEvent(new PlayerCharacterOpenLootChestEvent(pc, chest));
 	}
 
 	@EventHandler

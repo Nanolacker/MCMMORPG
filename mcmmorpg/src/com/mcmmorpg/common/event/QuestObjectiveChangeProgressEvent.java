@@ -6,6 +6,10 @@ import org.bukkit.event.HandlerList;
 import com.mcmmorpg.common.character.PlayerCharacter;
 import com.mcmmorpg.common.quest.QuestObjective;
 
+/**
+ * An event called when a player character's progress toward a quest objective
+ * is changed.
+ */
 public class QuestObjectiveChangeProgressEvent extends Event {
 
 	private static final HandlerList handlers = new HandlerList();
@@ -32,18 +36,30 @@ public class QuestObjectiveChangeProgressEvent extends Event {
 		return handlers;
 	}
 
-	public PlayerCharacter getPlayer() {
+	/**
+	 * Returns the player character in this event.
+	 */
+	public PlayerCharacter getPlayerCharacter() {
 		return pc;
 	}
 
+	/**
+	 * Returns the quest objective in this event.
+	 */
 	public QuestObjective getObjective() {
 		return objective;
 	}
 
+	/**
+	 * Returns the progress the player character had previously.
+	 */
 	public int getPreviousProgress() {
 		return previousProgress;
 	}
 
+	/**
+	 * Returns the progress the player character has now.
+	 */
 	public int getNewProgress() {
 		return newProgress;
 	}

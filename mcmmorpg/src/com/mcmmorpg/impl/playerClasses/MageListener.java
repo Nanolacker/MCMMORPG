@@ -19,7 +19,7 @@ import com.mcmmorpg.common.character.AbstractCharacter;
 import com.mcmmorpg.common.character.CharacterCollider;
 import com.mcmmorpg.common.character.PlayerCharacter;
 import com.mcmmorpg.common.event.PlayerCharacterLevelUpEvent;
-import com.mcmmorpg.common.event.SkillUseEvent;
+import com.mcmmorpg.common.event.PlayerCharacterUseSkillEvent;
 import com.mcmmorpg.common.physics.Collider;
 import com.mcmmorpg.common.physics.Projectile;
 import com.mcmmorpg.common.physics.Ray;
@@ -97,7 +97,7 @@ public class MageListener implements Listener {
 	}
 
 	@EventHandler
-	private void onUseSkill(SkillUseEvent event) {
+	private void onUseSkill(PlayerCharacterUseSkillEvent event) {
 		PlayerCharacter pc = event.getPlayerCharacter();
 		if (pc.getPlayerClass() != PlayerClasses.MAGE) {
 			return;

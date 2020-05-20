@@ -6,6 +6,9 @@ import org.bukkit.inventory.ItemStack;
 
 import com.mcmmorpg.common.playerClass.PlayerClass;
 
+/**
+ * An item to be wielded in the main hand of player characters.
+ */
 public class Weapon extends Item {
 
 	private final String playerClass;

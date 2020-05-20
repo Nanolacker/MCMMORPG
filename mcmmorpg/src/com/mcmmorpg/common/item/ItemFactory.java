@@ -22,11 +22,17 @@ public class ItemFactory {
 	private ItemFactory() {
 	}
 
+	/**
+	 * Convenience method for creating item stacks.
+	 */
 	public static ItemStack createItemStack(String name, String lore, Material material) {
 		List<String> loreAsList = StringUtils.lineSplit(lore);
 		return createItemStack0(name, loreAsList, material);
 	}
 
+	/**
+	 * Convenience method for creating item stacks.
+	 */
 	public static ItemStack createItemStack0(String name, List<String> lore, Material material) {
 		ItemStack itemStack = new ItemStack(material);
 		ItemMeta itemMeta = itemStack.getItemMeta();

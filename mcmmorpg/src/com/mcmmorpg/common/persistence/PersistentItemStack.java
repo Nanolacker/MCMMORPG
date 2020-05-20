@@ -9,6 +9,9 @@ import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
+/**
+ * A representation of an item stack that can be serialized.
+ */
 public final class PersistentItemStack {
 
 	private final Material type;
@@ -18,6 +21,9 @@ public final class PersistentItemStack {
 	private final ItemFlag[] flags;
 	private final boolean unbreakable;
 
+	/**
+	 * Creates a persistent item stack from the specified item stack.
+	 */
 	public PersistentItemStack(ItemStack itemStack) {
 		this.type = itemStack.getType();
 		this.amount = itemStack.getAmount();
@@ -34,6 +40,9 @@ public final class PersistentItemStack {
 		this.unbreakable = itemMeta.isUnbreakable();
 	}
 
+	/**
+	 * Converts this persistent item stack to an item stack.
+	 */
 	public ItemStack getItemStack() {
 		ItemStack itemStack = new ItemStack(type, amount);
 		ItemMeta itemMeta = itemStack.getItemMeta();

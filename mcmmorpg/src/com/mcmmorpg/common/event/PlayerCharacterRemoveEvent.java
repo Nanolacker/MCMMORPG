@@ -5,6 +5,10 @@ import org.bukkit.event.HandlerList;
 
 import com.mcmmorpg.common.character.PlayerCharacter;
 
+/**
+ * An event called when a player character is removed (i.e. when a player
+ * character leaves the game).
+ */
 public class PlayerCharacterRemoveEvent extends Event {
 
 	private static final HandlerList handlers = new HandlerList();
@@ -24,6 +28,9 @@ public class PlayerCharacterRemoveEvent extends Event {
 		return handlers;
 	}
 
+	/**
+	 * Returns the removed player character.
+	 */
 	public PlayerCharacter getPlayerCharacter() {
 		return pc;
 	}

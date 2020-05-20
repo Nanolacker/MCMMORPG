@@ -15,6 +15,9 @@ import com.mcmmorpg.common.quest.PlayerCharacterQuestData;
 import com.mcmmorpg.common.quest.PlayerCharacterQuestManager;
 import com.mcmmorpg.common.quest.Quest;
 
+/**
+ * A representation of player character data that can be serialized.
+ */
 public class PersistentPlayerCharacterDataContainer {
 
 	private final boolean fresh;
@@ -63,6 +66,9 @@ public class PersistentPlayerCharacterDataContainer {
 		this.tags = tags;
 	}
 
+	/**
+	 * Creates a data container for the specified player character.
+	 */
 	public static PersistentPlayerCharacterDataContainer createSaveData(PlayerCharacter pc) {
 		PlayerClass playerClass = pc.getPlayerClass();
 		String zone = pc.getZone();
@@ -88,6 +94,9 @@ public class PersistentPlayerCharacterDataContainer {
 				manaRegenRate, completedQuests, allQuestData, skillData, inventoryContents, tags);
 	}
 
+	/**
+	 * Creates a data container for a brand new character.
+	 */
 	public static PersistentPlayerCharacterDataContainer createFreshSaveData(Player player, PlayerClass playerClass,
 			String startZone, Location startLocation, Weapon startWeapon) {
 		Location respawnLocation = startLocation;

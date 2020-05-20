@@ -13,7 +13,6 @@ import org.bukkit.event.Listener;
 
 import com.mcmmorpg.common.character.PlayerCharacter;
 import com.mcmmorpg.common.character.PlayerCharacter.PlayerCharacterCollider;
-import com.mcmmorpg.common.item.LootChest;
 import com.mcmmorpg.common.character.Source;
 import com.mcmmorpg.common.physics.Collider;
 import com.mcmmorpg.common.sound.Noise;

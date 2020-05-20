@@ -8,6 +8,7 @@ import javax.annotation.OverridingMethodsMustInvokeSuper;
 import org.bukkit.Location;
 
 import com.mcmmorpg.common.event.EventManager;
+import com.mcmmorpg.common.event.NonPlayerCharacterDespawnEvent;
 import com.mcmmorpg.common.event.NonPlayerCharacterSpawnEvent;
 import com.mcmmorpg.common.time.RepeatingTask;
 
@@ -101,7 +102,7 @@ public class NonPlayerCharacter extends AbstractCharacter {
 	protected void despawn() {
 		spawned = false;
 		setNameplateVisible(false);
-		NonPlayerCharacterSpawnEvent event = new NonPlayerCharacterSpawnEvent(this);
+		NonPlayerCharacterDespawnEvent event = new NonPlayerCharacterDespawnEvent(this);
 		EventManager.callEvent(event);
 	}
 

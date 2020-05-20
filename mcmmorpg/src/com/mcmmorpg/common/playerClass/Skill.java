@@ -7,7 +7,7 @@ import org.bukkit.inventory.ItemStack;
 
 import com.mcmmorpg.common.character.PlayerCharacter;
 import com.mcmmorpg.common.event.EventManager;
-import com.mcmmorpg.common.event.SkillUseEvent;
+import com.mcmmorpg.common.event.PlayerCharacterUseSkillEvent;
 import com.mcmmorpg.common.item.ItemFactory;
 import com.mcmmorpg.common.sound.Noise;
 import com.mcmmorpg.common.time.RepeatingTask;
@@ -232,7 +232,7 @@ public final class Skill {
 	}
 
 	void use(PlayerCharacter pc) {
-		SkillUseEvent event = new SkillUseEvent(pc, this);
+		PlayerCharacterUseSkillEvent event = new PlayerCharacterUseSkillEvent(pc, this);
 		EventManager.callEvent(event);
 		pc.setCurrentMana(pc.getCurrentMana() - manaCost);
 		cooldown(pc, cooldown);
