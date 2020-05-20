@@ -1,5 +1,8 @@
 package com.mcmmorpg.impl.locations;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -19,21 +22,27 @@ import com.mcmmorpg.impl.Soundtracks;
 import com.mcmmorpg.impl.Worlds;
 import com.mcmmorpg.impl.Zones;
 import com.mcmmorpg.impl.npcs.Bandit;
+import com.mcmmorpg.impl.npcs.ColossalGelatinousCube;
 import com.mcmmorpg.impl.npcs.CultistMage;
 import com.mcmmorpg.impl.npcs.CultistSummoner;
 import com.mcmmorpg.impl.npcs.FlintonSewersAlchemist;
 import com.mcmmorpg.impl.npcs.FlintonSewersRat;
 import com.mcmmorpg.impl.npcs.GelatinousCube;
+import com.mcmmorpg.impl.npcs.SmallGelatinousCube;
 
 public class FlintonSewersListener implements Listener {
 
 	private static final Noise SLUDGE_DAMAGE_NOISE = new Noise(Sound.BLOCK_SLIME_BLOCK_HIT);
+	private static final int MAX_SMALL_GELATINOUS_CUBE_COUNT_PER_PLAYER_CHARACTER = 5;
 	private static final Location ALCHEMIST_LOCATION = new Location(Worlds.ELADRADOR, -286, 82, 135);
 	private static final Location[] BANDIT_LOCATIONS = {};
 	private static final Location[] GELATINOUS_CCUBE_LOCATIONS = {};
+	private static final Location[] COLOSSAL_GELATINOUS_CUBE_LOCATIONS = {};
 	private static final Location[] CULTIST_MAGE_LOCATOINS = {};
 	private static final Location[] CULTIST_SUMMONER_LOCATIONS = {};
 	private static final Location[] RAT_LOCATIONS = {};
+
+	public static final Map<PlayerCharacter, Integer> smallGelatinousCubeCounts = new HashMap<>();
 
 	private Source sludge;
 	private Collider innerBounds;
@@ -46,13 +55,14 @@ public class FlintonSewersListener implements Listener {
 	}
 
 	private void setUpBounds() {
-		innerBounds = new Collider(Worlds.ELADRADOR, 0, 0, 0, 0, 0, 0) {
+		innerBounds = new Collider(Worlds.ELADRADOR, -999, -999, -999, 999, 999, 999) {
 			@Override
 			protected void onCollisionEnter(Collider other) {
 				if (other instanceof PlayerCharacterCollider) {
 					PlayerCharacter pc = ((PlayerCharacterCollider) other).getCharacter();
 					pc.setZone(Zones.FLINTON_SEWERS);
 					pc.getSoundTrackPlayer().setSoundtrack(Soundtracks.DUNGEON);
+					smallGelatinousCubeCounts.put(pc, 0);
 				}
 			}
 		};
@@ -64,6 +74,7 @@ public class FlintonSewersListener implements Listener {
 					PlayerCharacter pc = ((PlayerCharacterCollider) other).getCharacter();
 					pc.setZone(ChatColor.GREEN + "Flinton");
 					pc.getSoundTrackPlayer().setSoundtrack(Soundtracks.VILLAGE);
+					smallGelatinousCubeCounts.remove(pc);
 				}
 			}
 		};
@@ -91,6 +102,10 @@ public class FlintonSewersListener implements Listener {
 						if (floor.getType() == Material.GLASS) {
 							pc.damage(2, sludge);
 							SLUDGE_DAMAGE_NOISE.play(floorLocation);
+							if (smallGelatinousCubeCounts
+									.get(pc) < MAX_SMALL_GELATINOUS_CUBE_COUNT_PER_PLAYER_CHARACTER) {
+								new SmallGelatinousCube(pc.getLocation(), pc).setAlive(true);
+							}
 						}
 					}
 				}
@@ -105,6 +120,9 @@ public class FlintonSewersListener implements Listener {
 		}
 		for (Location location : GELATINOUS_CCUBE_LOCATIONS) {
 			new GelatinousCube(location).setAlive(true);
+		}
+		for (Location location : COLOSSAL_GELATINOUS_CUBE_LOCATIONS) {
+			new ColossalGelatinousCube(location).setAlive(true);
 		}
 		for (Location location : CULTIST_MAGE_LOCATOINS) {
 			new CultistMage(location).setAlive(true);

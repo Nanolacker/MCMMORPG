@@ -224,6 +224,7 @@ public class GelatinousCube extends NonPlayerCharacter {
 			Quests.SAMPLING_SLUDGE.getObjective(0).addProgress(pc, 1);
 		}
 		hitbox.setActive(false);
+		movementSyncer.setEnabled(false);
 		entityMap.remove(entity);
 		entity.remove();
 		if (acidSprayProgressBar != null) {
