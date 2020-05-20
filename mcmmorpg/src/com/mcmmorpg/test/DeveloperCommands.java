@@ -1,5 +1,8 @@
 package com.mcmmorpg.test;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -11,6 +14,7 @@ import com.mcmmorpg.common.quest.QuestObjective;
 import com.mcmmorpg.common.ui.Command;
 import com.mcmmorpg.common.ui.CommandManager;
 import com.mcmmorpg.common.utils.Debug;
+import com.mcmmorpg.common.utils.IOUtils;
 
 public class DeveloperCommands {
 
@@ -99,6 +103,27 @@ public class DeveloperCommands {
 				pc.giveItem(item);
 			}
 		};
+		Command saveLocation = new Command("savelocation") {
+			@Override
+			protected void onExecute(CommandSender sender, String[] args) {
+				Player player = (Player) sender;
+				Location location = player.getLocation();
+				File file = new File("C:\\Users\\conno\\Desktop\\Locations.txt");
+				if (!file.exists()) {
+					IOUtils.createFile(file);
+				}
+
+				try {
+					FileWriter fileWriter = new FileWriter(file, true);
+					fileWriter.append(String.format("new Location(Worlds.ELADRADOR, %f, %f, %f, %ff, %ff),\n",
+							location.getX(), location.getY(), location.getZ(), location.getYaw(), location.getPitch()));
+					Debug.log("saved " + location);
+					fileWriter.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+		};
 
 		CommandManager.registerCommand(printLocation);
 		CommandManager.registerCommand(heal);
@@ -107,6 +132,7 @@ public class DeveloperCommands {
 		CommandManager.registerCommand(startQuest);
 		CommandManager.registerCommand(completeQuest);
 		CommandManager.registerCommand(giveItem);
+		CommandManager.registerCommand(saveLocation);
 	}
 
 }

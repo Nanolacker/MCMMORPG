@@ -70,8 +70,15 @@ public class MelcherListener implements Listener {
 			new Location(Worlds.ELADRADOR, 981, 75, 111), new Location(Worlds.ELADRADOR, -919, 74, 123) };
 	private static final Location[] HIGHWAYMAN_LOCATIONS = { new Location(Worlds.ELADRADOR, -813, 72, 151),
 			new Location(Worlds.ELADRADOR, -785, 72, 158), new Location(Worlds.ELADRADOR, -756, 72, 147),
-			new Location(Worlds.ELADRADOR, -751, 72, 128), new Location(Worlds.ELADRADOR, -744, 72, 96),
-			new Location(Worlds.ELADRADOR, -727, 71, 88), new Location(Worlds.ELADRADOR, -684, 65, 81) };
+			new Location(Worlds.ELADRADOR, -727, 71, 88), new Location(Worlds.ELADRADOR, -684, 65, 81),
+			new Location(Worlds.ELADRADOR, -680.297733, 64.000000, 74.673399, 317.667206f, 17.724596f),
+			new Location(Worlds.ELADRADOR, -630.226817, 67.000000, 66.887372, 199.503250f, 22.242643f),
+			new Location(Worlds.ELADRADOR, -646.951926, 68.000000, 26.681379, 147.024582f, 21.895102f),
+			new Location(Worlds.ELADRADOR, -637.849987, 71.000000, -34.146066, 210.971893f, 20.504936f),
+			new Location(Worlds.ELADRADOR, -570.910808, 75.000000, -79.454968, 230.434174f, 22.590183f),
+			new Location(Worlds.ELADRADOR, -516.452902, 74.000000, -113.060670, 318.361694f, 24.675428f),
+			new Location(Worlds.ELADRADOR, -465.374197, 73.000000, -84.707907, 334.695587f, 36.491856f),
+			new Location(Worlds.ELADRADOR, -427.140385, 78.000000, -32.814684, 336.085419f, 23.980362f), };
 	private static final Location[] FOREST_SPIDER_LOCATIONS = {
 			new Location(Worlds.ELADRADOR, -815.000000, 71.000000, 159.000000),
 			new Location(Worlds.ELADRADOR, -792.000000, 73.000000, 147.000000),
@@ -82,7 +89,10 @@ public class MelcherListener implements Listener {
 			new Location(Worlds.ELADRADOR, -626.000000, 68.000000, 41.000000),
 			new Location(Worlds.ELADRADOR, -656.000000, 68.000000, 13.000000),
 			new Location(Worlds.ELADRADOR, -646.000000, 70.000000, -22.000000),
-			new Location(Worlds.ELADRADOR, -622.000000, 73.000000, -45.000000) };
+			new Location(Worlds.ELADRADOR, -622.000000, 73.000000, -45.000000),
+			new Location(Worlds.ELADRADOR, -599.626059, 75.000000, -68.358134, 240.513687f, 21.895067f),
+			new Location(Worlds.ELADRADOR, -545.113880, 75.000000, -106.429543, 231.825058f, 11.816359f),
+			new Location(Worlds.ELADRADOR, -456.903532, 72.000000, -62.710678, 329.483612f, 15.291774f) };
 	private static final Location BROODMOTHER_LOCATION = new Location(Worlds.ELADRADOR, -806, 71, 159);
 	private static final Location GUARD_JAMES_LOCATION = new Location(Worlds.ELADRADOR, -837, 72, 148);
 

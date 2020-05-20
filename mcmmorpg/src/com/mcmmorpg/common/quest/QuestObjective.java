@@ -1,11 +1,18 @@
 package com.mcmmorpg.common.quest;
 
+import org.bukkit.Sound;
+
 import com.mcmmorpg.common.character.PlayerCharacter;
 import com.mcmmorpg.common.event.EventManager;
 import com.mcmmorpg.common.event.QuestObjectiveChangeProgressEvent;
+import com.mcmmorpg.common.sound.Noise;
 import com.mcmmorpg.common.utils.MathUtils;
 
+import net.md_5.bungee.api.ChatColor;
+
 public class QuestObjective {
+
+	private static final Noise OBJECTIVE_COMPLETE_NOISE = new Noise(Sound.ENTITY_EXPERIENCE_ORB_PICKUP);
 
 	private final int goal;
 	private final String description;
@@ -85,6 +92,10 @@ public class QuestObjective {
 				progress);
 		EventManager.callEvent(event);
 		pc.updateQuestDisplay();
+		if (progress == goal) {
+			pc.sendMessage(description + ChatColor.GRAY + " complete!");
+			OBJECTIVE_COMPLETE_NOISE.play(pc);
+		}
 		quest.checkForCompletion(pc);
 	}
 
