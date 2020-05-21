@@ -54,14 +54,18 @@ public class ItemListener implements Listener {
 		Ray ray = new Ray(start, direction, 5);
 		Raycast raycast = new Raycast(ray, CharacterCollider.class);
 		Collider[] hits = raycast.getHits();
+		boolean missed = true;
 		for (Collider hit : hits) {
 			AbstractCharacter character = ((CharacterCollider) hit).getCharacter();
 			if (!character.isFriendly(pc)) {
 				character.damage(damage, pc);
 				SWORD_HIT_NOISE.play(character.getLocation());
+				missed = false;
 			}
 		}
-		pc.disarm(0.5);
+		if (!missed) {
+			pc.disarm(0.5);
+		}
 	}
 
 	private void useMageStaff(PlayerCharacter pc, double baseDamage) {
@@ -73,14 +77,18 @@ public class ItemListener implements Listener {
 		Ray ray = new Ray(start, direction, 5);
 		Raycast raycast = new Raycast(ray, CharacterCollider.class);
 		Collider[] hits = raycast.getHits();
+		boolean missed = true;
 		for (Collider hit : hits) {
 			AbstractCharacter character = ((CharacterCollider) hit).getCharacter();
 			if (!character.isFriendly(pc)) {
 				character.damage(damage, pc);
 				STAFF_HIT_NOISE.play(character.getLocation());
+				missed = false;
 			}
 		}
-		pc.disarm(1.25);
+		if (!missed) {
+			pc.disarm(1.25);
+		}
 	}
 
 	@EventHandler

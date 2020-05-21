@@ -37,9 +37,7 @@ public class Highwayman extends AbstractHumanEnemy {
 	protected void onDeath() {
 		super.onDeath();
 		Location location = getLocation();
-		if (Math.random() > 0.8) {
-			Items.THIEF_DAGGER.drop(getLocation(), 1);
-		}
+		Items.THIEF_DAGGER.drop(getLocation(), 1, 0.2);
 		List<PlayerCharacter> nearbyPcs = PlayerCharacter.getNearbyPlayerCharacters(location, 25);
 		for (PlayerCharacter pc : nearbyPcs) {
 			Quests.CLEARING_THE_ROAD.getObjective(0).addProgress(pc, 1);

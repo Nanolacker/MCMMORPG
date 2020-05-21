@@ -15,6 +15,9 @@ public class Items {
 	public static final Item BOAR_FLANK = Item.forName("Boar Flank");
 	public static final Item SLUDGE = Item.forName("Sludge");
 	public static final Item GIANT_SLUDGE = Item.forName("Giant Sludge");
+	public static final Item WEST_SEWERS_KEY = Item.forName("West Sewers Key");
+	public static final Item NORTH_SEWERS_KEY = Item.forName("North Sewers Key");
+	public static final Item EAST_SEWERS_KEY = Item.forName("East Sewers Key");
 
 	public static final Item MELCHER_MEAD = Item.forName("Melcher Mead");
 

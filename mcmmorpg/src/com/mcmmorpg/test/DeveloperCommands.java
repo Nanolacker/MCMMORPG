@@ -3,8 +3,12 @@ package com.mcmmorpg.test;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 
 import com.mcmmorpg.common.character.PlayerCharacter;
@@ -13,6 +17,7 @@ import com.mcmmorpg.common.quest.Quest;
 import com.mcmmorpg.common.quest.QuestObjective;
 import com.mcmmorpg.common.ui.Command;
 import com.mcmmorpg.common.ui.CommandManager;
+import com.mcmmorpg.common.utils.CardinalDirection;
 import com.mcmmorpg.common.utils.Debug;
 import com.mcmmorpg.common.utils.IOUtils;
 
@@ -124,6 +129,26 @@ public class DeveloperCommands {
 				}
 			}
 		};
+		Command direction = new Command("direction") {
+			@Override
+			protected void onExecute(CommandSender sender, String[] args) {
+				Player player = (Player) sender;
+				Location location = player.getLocation();
+				Debug.log(CardinalDirection.forVector(location.getDirection()));
+			}
+		};
+		Command removeEntities = new Command("removeentities") {
+			@Override
+			protected void onExecute(CommandSender sender, String[] args) {
+				for (World world : Bukkit.getWorlds()) {
+					for (Entity entity : world.getEntities()) {
+						if (entity != sender) {
+							entity.remove();
+						}
+					}
+				}
+			}
+		};
 
 		CommandManager.registerCommand(printLocation);
 		CommandManager.registerCommand(heal);
@@ -133,6 +158,8 @@ public class DeveloperCommands {
 		CommandManager.registerCommand(completeQuest);
 		CommandManager.registerCommand(giveItem);
 		CommandManager.registerCommand(saveLocation);
+		CommandManager.registerCommand(direction);
+		CommandManager.registerCommand(removeEntities);
 	}
 
 }

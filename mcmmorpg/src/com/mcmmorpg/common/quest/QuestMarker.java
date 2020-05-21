@@ -7,6 +7,7 @@ import com.mcmmorpg.common.character.PlayerCharacter;
 import com.mcmmorpg.common.character.PlayerCharacter.PlayerCharacterCollider;
 import com.mcmmorpg.common.physics.Collider;
 import com.mcmmorpg.common.ui.TextPanel;
+import com.mcmmorpg.common.utils.CardinalDirection;
 
 public class QuestMarker {
 
@@ -25,11 +26,12 @@ public class QuestMarker {
 			protected void onCollisionEnter(Collider other) {
 				if (other instanceof PlayerCharacterCollider) {
 					PlayerCharacter pc = ((PlayerCharacterCollider) other).getCharacter();
-					pc.sendMessage(
-							String.format(
-									ChatColor.YELLOW + "Quest marker " + ChatColor.GRAY + "located at "
-											+ ChatColor.GREEN + "(%.0f, %.0f, %.0f)",
-									location.getX(), location.getY(), location.getZ()));
+					CardinalDirection direction = CardinalDirection
+							.forVector(location.clone().subtract(pc.getLocation()).toVector());
+					pc.sendMessage(String.format(
+							ChatColor.YELLOW + "Quest marker " + ChatColor.GRAY + "located " + ChatColor.GREEN
+									+ direction + ChatColor.GRAY + " at " + ChatColor.GREEN + "(%.0f, %.0f, %.0f)",
+							location.getX(), location.getY(), location.getZ()));
 				}
 			}
 		};

@@ -27,7 +27,6 @@ import com.mcmmorpg.common.event.EventManager;
 import com.mcmmorpg.common.sound.Noise;
 import com.mcmmorpg.common.time.DelayedTask;
 import com.mcmmorpg.impl.Items;
-import com.mcmmorpg.impl.Quests;
 import com.mcmmorpg.impl.locations.FlintonSewersListener;
 
 public class SmallGelatinousCube extends NonPlayerCharacter {
@@ -78,7 +77,7 @@ public class SmallGelatinousCube extends NonPlayerCharacter {
 	}
 
 	public SmallGelatinousCube(Location spawnLocation, PlayerCharacter cause) {
-		super(ChatColor.RED + "Gelatinous Cube", LEVEL, spawnLocation);
+		super(ChatColor.RED + "Ooze", LEVEL, spawnLocation);
 		super.setMaxHealth(MAX_HEALTH);
 		super.setHeight(HEIGHT);
 		this.spawnLocation = spawnLocation;
@@ -132,10 +131,6 @@ public class SmallGelatinousCube extends NonPlayerCharacter {
 		PlayerCharacter.distributeXp(location, 25, XP_REWARD);
 		int sludgeAmount = (int) (Math.random() * 1.25);
 		Items.SLUDGE.drop(location, sludgeAmount);
-		List<PlayerCharacter> nearbyPcs = PlayerCharacter.getNearbyPlayerCharacters(location, 25);
-		for (PlayerCharacter pc : nearbyPcs) {
-			Quests.SAMPLING_SLUDGE.getObjective(0).addProgress(pc, 1);
-		}
 		hitbox.setActive(false);
 		movementSyncer.setEnabled(false);
 		int count = FlintonSewersListener.smallGelatinousCubeCounts.get(cause) - 1;

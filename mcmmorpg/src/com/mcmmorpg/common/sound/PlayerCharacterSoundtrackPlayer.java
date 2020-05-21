@@ -16,7 +16,7 @@ public class PlayerCharacterSoundtrackPlayer {
 	 *            null to stop playing
 	 */
 	public void setSoundtrack(SoundSequence soundtrack) {
-		if (noisePlayer != null) {
+		if (noisePlayer != null && soundtrack != noisePlayer.getSequence()) {
 			noisePlayer.stop();
 		}
 		if (soundtrack == null) {

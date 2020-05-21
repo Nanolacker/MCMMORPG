@@ -52,6 +52,7 @@ import com.mcmmorpg.common.time.RepeatingTask;
 import com.mcmmorpg.common.ui.ActionBarText;
 import com.mcmmorpg.common.ui.SidebarText;
 import com.mcmmorpg.common.ui.TitleMessage;
+import com.mcmmorpg.common.utils.CardinalDirection;
 import com.mcmmorpg.common.utils.MathUtils;
 
 /**
@@ -323,7 +324,7 @@ public final class PlayerCharacter extends AbstractCharacter {
 			return;
 		} else {
 			this.zone = zone;
-			sendMessage(ChatColor.GRAY + "Entering [" + zone + ChatColor.GRAY + "]");
+			sendMessage(ChatColor.GRAY + "Entering " + zone);
 		}
 	}
 
@@ -339,6 +340,7 @@ public final class PlayerCharacter extends AbstractCharacter {
 		if (distance > MAX_DISPLACEMENT_WITHOUT_TELEPORT) {
 			player.teleport(location);
 		}
+		updateActionBar();
 	}
 
 	/**
@@ -373,12 +375,14 @@ public final class PlayerCharacter extends AbstractCharacter {
 		int rMaxHealth = (int) Math.round(getMaxHealth());
 		int rCurrentMana = (int) Math.round(currentMana);
 		int rMaxMana = (int) Math.round(maxMana);
-		int currentLevelXp = getCurrentLevelXp();
-		int level = getLevel();
-		int targetXp = level == maxLevel() ? 0 : XP_REQS[level - 1];
+		Location location = player.getLocation();
+		int rX = (int) Math.round(location.getX());
+		int rY = (int) Math.round(location.getY());
+		int rZ = (int) Math.round(location.getZ());
+		String direction = CardinalDirection.forVector(location.getDirection()).toString();
 		String text = String.format(
-				ChatColor.RED + "HP: %d/%d    " + ChatColor.AQUA + "MP: %d/%d    " + ChatColor.GREEN + "XP: %d/%d",
-				rCurrentHealth, rMaxHealth, rCurrentMana, rMaxMana, currentLevelXp, targetXp);
+				ChatColor.RED + "HP: %d/%d  " + ChatColor.AQUA + "MP: %d/%d  " + ChatColor.GREEN + "(%d, %d, %d) %s",
+				rCurrentHealth, rMaxHealth, rCurrentMana, rMaxMana, rX, rY, rZ, direction);
 		ActionBarText bar = new ActionBarText(text);
 		bar.apply(player);
 	}

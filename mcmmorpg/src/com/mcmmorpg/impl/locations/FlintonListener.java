@@ -14,6 +14,7 @@ import com.mcmmorpg.impl.npcs.FlintonVillager;
 
 public class FlintonListener implements Listener {
 
+	private static final Location PLAYER_CHARACTER_RESPAWN_LOCATION = new Location(Worlds.ELADRADOR, 0, 0, 0);
 	private static final Location MAYOR_LOCATION = new Location(Worlds.ELADRADOR, 0, 0, 0);
 	private static final Location[] VILLAGER_LOCATIONS = {};
 
@@ -40,6 +41,7 @@ public class FlintonListener implements Listener {
 				if (other instanceof PlayerCharacterCollider) {
 					PlayerCharacter pc = ((PlayerCharacterCollider) other).getCharacter();
 					pc.setZone(Zones.ELADRADOR);
+					pc.setRespawnLocation(PLAYER_CHARACTER_RESPAWN_LOCATION);
 					pc.getSoundTrackPlayer().setSoundtrack(Soundtracks.WILDNERNESS);
 				}
 			}

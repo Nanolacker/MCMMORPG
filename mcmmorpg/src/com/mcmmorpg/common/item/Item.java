@@ -88,6 +88,16 @@ public class Item {
 		entity.setCustomNameVisible(true);
 	}
 
+	public void drop(Location location, int maxAmount, double probability) {
+		int amount = 0;
+		for (int i = 0; i < maxAmount; i++) {
+			if (Math.random() < probability) {
+				amount++;
+			}
+		}
+		drop(location, amount);
+	}
+
 	@Override
 	public String toString() {
 		return rarity.getColor() + name;

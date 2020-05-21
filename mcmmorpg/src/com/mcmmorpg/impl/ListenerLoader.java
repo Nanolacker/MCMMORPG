@@ -1,7 +1,6 @@
 package com.mcmmorpg.impl;
 
 import com.mcmmorpg.common.event.EventManager;
-import com.mcmmorpg.impl.locations.BulskanRuinsListener;
 import com.mcmmorpg.impl.locations.CrestfordGraveyardListener;
 import com.mcmmorpg.impl.locations.CrestfordListener;
 import com.mcmmorpg.impl.locations.FlintonListener;
@@ -26,7 +25,6 @@ public class ListenerLoader {
 		EventManager.registerEvents(new CrestfordListener());
 		EventManager.registerEvents(new FlintonSewersListener());
 		EventManager.registerEvents(new CrestfordGraveyardListener());
-		EventManager.registerEvents(new BulskanRuinsListener());
 		EventManager.registerEvents(new FlintonListener());
 	}
 

@@ -56,8 +56,8 @@ public class FlintonSewersPortcullis {
 			blockLocation.setY(blockLocation.getY() + 1);
 		}
 
-		double interactionSizeX = northFacing ? sizeX : sizeX + 4;
-		double interactionSizeZ = northFacing ? sizeZ + 4 : sizeZ;
+		double interactionSizeX = northFacing ? sizeX : sizeX + 2;
+		double interactionSizeZ = northFacing ? sizeZ + 2 : sizeZ;
 		PlayerCharacterInteractionCollider interactionCollider = new PlayerCharacterInteractionCollider(
 				location.clone().add(0, HEIGHT / 2.0, 0), interactionSizeX, HEIGHT, interactionSizeZ) {
 			@Override
@@ -73,11 +73,10 @@ public class FlintonSewersPortcullis {
 			}
 		};
 		interactionCollider.setActive(true);
-		interactionCollider.setVisible(true);
 
 		Location textLocation = location.clone().add(0, HEIGHT / 2.0, 0);
 		TextPanel text = new TextPanel(textLocation,
-				ChatColor.GRAY + "Right Click to Open\n\nRequires " + key.formatName() + ChatColor.GRAY + " to open");
+				ChatColor.GRAY + "Right Click to Open\n\nRequires " + key.formatName());
 		text.setVisible(true);
 
 		this.closed = true;
@@ -111,7 +110,6 @@ public class FlintonSewersPortcullis {
 	}
 
 	private void close() {
-		closed = true;
 		for (int i = 0; i < HEIGHT; i++) {
 			Block[] row = blocks[HEIGHT - 1 - i];
 			DelayedTask shift = new DelayedTask(SHIFT_PERIOD + i * SHIFT_PERIOD) {
@@ -128,6 +126,12 @@ public class FlintonSewersPortcullis {
 			};
 			shift.schedule();
 		}
+		new DelayedTask(HEIGHT * SHIFT_PERIOD) {
+			@Override
+			protected void run() {
+				closed = true;
+			}
+		}.schedule();
 	}
 
 }

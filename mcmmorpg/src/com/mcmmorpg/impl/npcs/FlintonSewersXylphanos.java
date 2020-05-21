@@ -104,6 +104,12 @@ public class FlintonSewersXylphanos extends AbstractCultist {
 	}
 
 	@Override
+	public void setLocation(Location location) {
+		super.setLocation(location);
+		surroundings.setCenter(location);
+	}
+
+	@Override
 	public void setCurrentHealth(double currentHealth) {
 		super.setCurrentHealth(currentHealth);
 		double progress = MathUtils.clamp(currentHealth / getMaxHealth(), 0.0, 1.0);
