@@ -3,6 +3,8 @@ package com.mcmmorpg.test;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -15,6 +17,7 @@ import com.mcmmorpg.common.character.PlayerCharacter;
 import com.mcmmorpg.common.item.Item;
 import com.mcmmorpg.common.quest.Quest;
 import com.mcmmorpg.common.quest.QuestObjective;
+import com.mcmmorpg.common.time.DelayedTask;
 import com.mcmmorpg.common.ui.Command;
 import com.mcmmorpg.common.ui.CommandManager;
 import com.mcmmorpg.common.utils.CardinalDirection;
@@ -149,6 +152,22 @@ public class DeveloperCommands {
 				}
 			}
 		};
+		Command reloadmmorpg = new Command("reloadmmorpg") {
+			@Override
+			protected void onExecute(CommandSender sender, String[] args) {
+				Debug.log("reloading...");
+				List<PlayerCharacter> pcs = new ArrayList<>(PlayerCharacter.listAll());
+				for (PlayerCharacter pc : pcs) {
+					pc.remove();
+				}
+				new DelayedTask(1.5) {
+					@Override
+					protected void run() {
+						Bukkit.getServer().reload();
+					}
+				}.schedule();
+			}
+		};
 
 		CommandManager.registerCommand(printLocation);
 		CommandManager.registerCommand(heal);
@@ -160,6 +179,7 @@ public class DeveloperCommands {
 		CommandManager.registerCommand(saveLocation);
 		CommandManager.registerCommand(direction);
 		CommandManager.registerCommand(removeEntities);
+		CommandManager.registerCommand(reloadmmorpg);
 	}
 
 }

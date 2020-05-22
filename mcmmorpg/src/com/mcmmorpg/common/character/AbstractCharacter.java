@@ -164,6 +164,9 @@ public abstract class AbstractCharacter implements Source {
 
 	@OverridingMethodsMustInvokeSuper
 	public void damage(double amount, Source source) {
+		if (!alive) {
+			return;
+		}
 		// Don't damage negative amount.
 		amount = Math.max(amount, 0);
 		double newHealth = currentHealth - amount;

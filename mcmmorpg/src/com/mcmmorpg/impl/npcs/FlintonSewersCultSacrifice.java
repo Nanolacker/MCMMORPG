@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
+
 import com.mcmmorpg.common.character.PlayerCharacter;
 import com.mcmmorpg.common.time.RepeatingTask;
 

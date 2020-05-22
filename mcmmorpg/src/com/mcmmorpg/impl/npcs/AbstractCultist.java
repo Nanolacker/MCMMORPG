@@ -18,7 +18,7 @@ import com.mcmmorpg.common.ui.ProgressBar.ProgressBarColor;
 public abstract class AbstractCultist extends AbstractHumanEnemy {
 
 	private static final int XP_REWARD = 30;
-	private static final double RESPAWN_TIME = 30;
+	private static final double RESPAWN_TIME = 60;
 	private static final int SPEED = 2;
 	private static final PotionEffect SLOW_EFFECT = new PotionEffect(PotionEffectType.SLOW, Integer.MAX_VALUE, 5,
 			false);

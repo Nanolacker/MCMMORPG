@@ -6,6 +6,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.PrintStream;
 
+import com.google.common.io.Files;
 import com.google.gson.Gson;
 import com.google.gson.stream.JsonReader;
 import com.mcmmorpg.common.MMORPGPlugin;
@@ -75,6 +76,14 @@ public class IOUtils {
 	public static void createFile(File file) {
 		try {
 			file.createNewFile();
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	public static void copyFile(File from, File to) {
+		try {
+			Files.copy(from, to);
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}

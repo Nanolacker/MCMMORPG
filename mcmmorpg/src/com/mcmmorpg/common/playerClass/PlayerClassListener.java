@@ -28,7 +28,7 @@ class PlayerClassListener implements Listener {
 		new RepeatingTask(0.1) {
 			@Override
 			protected void run() {
-				List<PlayerCharacter> pcs = PlayerCharacter.getAll();
+				List<PlayerCharacter> pcs = PlayerCharacter.listAll();
 				for (int i = 0; i < pcs.size(); i++) {
 					PlayerCharacter pc = pcs.get(i);
 					PlayerClass playerClass = pc.getPlayerClass();

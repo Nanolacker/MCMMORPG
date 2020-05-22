@@ -27,6 +27,7 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 import com.mcmmorpg.common.character.MovementSynchronizer.MovementSynchronizerMode;
+import com.mcmmorpg.common.event.CharacterKillEvent;
 import com.mcmmorpg.common.event.EventManager;
 import com.mcmmorpg.common.event.PlayerCharacterLevelUpEvent;
 import com.mcmmorpg.common.event.PlayerCharacterRegisterEvent;
@@ -51,7 +52,7 @@ import com.mcmmorpg.common.time.DelayedTask;
 import com.mcmmorpg.common.time.RepeatingTask;
 import com.mcmmorpg.common.ui.ActionBarText;
 import com.mcmmorpg.common.ui.SidebarText;
-import com.mcmmorpg.common.ui.TitleMessage;
+import com.mcmmorpg.common.ui.TitleText;
 import com.mcmmorpg.common.utils.CardinalDirection;
 import com.mcmmorpg.common.utils.MathUtils;
 
@@ -92,7 +93,7 @@ public final class PlayerCharacter extends AbstractCharacter {
 	private final PlayerSkillManager skillStatusManager;
 	private final List<String> tags;
 	private final PlayerCharacterSoundtrackPlayer soundtrackPlayer;
-	private CharacterCollider collider;
+	private CharacterCollider hitbox;
 	private final MovementSynchronizer movementSyncer;
 	private boolean isDisarmed;
 	private transient boolean isSilenced;
@@ -132,13 +133,13 @@ public final class PlayerCharacter extends AbstractCharacter {
 		player.getInventory().setContents(inventoryContents);
 		this.tags = new ArrayList<>(Arrays.asList(tags));
 		soundtrackPlayer = new PlayerCharacterSoundtrackPlayer(this);
-		this.collider = new PlayerCharacterCollider(this);
+		this.hitbox = new PlayerCharacterCollider(this);
 		player.teleport(getLocation());
 
 		this.movementSyncer = new MovementSynchronizer(this, MovementSynchronizerMode.CHARACTER_FOLLOWS_ENTITY);
 		movementSyncer.setEntity(player);
 		movementSyncer.setEnabled(true);
-		collider.setActive(true);
+		hitbox.setActive(true);
 
 		active = true;
 		setAlive(true);
@@ -230,7 +231,7 @@ public final class PlayerCharacter extends AbstractCharacter {
 	/**
 	 * Returns a list of all player characters in the game.
 	 */
-	public static List<PlayerCharacter> getAll() {
+	public static List<PlayerCharacter> listAll() {
 		return pcs;
 	}
 
@@ -336,7 +337,7 @@ public final class PlayerCharacter extends AbstractCharacter {
 		Location oldLocation = getLocation();
 		double distance = location.distance(oldLocation);
 		super.setLocation(location);
-		collider.setCenter(getColliderCenter());
+		hitbox.setCenter(getColliderCenter());
 		if (distance > MAX_DISPLACEMENT_WITHOUT_TELEPORT) {
 			player.teleport(location);
 		}
@@ -371,7 +372,8 @@ public final class PlayerCharacter extends AbstractCharacter {
 	 * Ensures that this player character's action bar is displaying the right text.
 	 */
 	private void updateActionBar() {
-		int rCurrentHealth = (int) Math.round(getCurrentHealth());
+		// so 0 current health isn't displayed when alive
+		int rCurrentHealth = (int) Math.ceil(getCurrentHealth());
 		int rMaxHealth = (int) Math.round(getMaxHealth());
 		int rCurrentMana = (int) Math.round(currentMana);
 		int rMaxMana = (int) Math.round(maxMana);
@@ -836,10 +838,11 @@ public final class PlayerCharacter extends AbstractCharacter {
 	@Override
 	protected void onDeath() {
 		super.onDeath();
+		// hitbox.setActive(false);
 		disarm(4);
 		silence(4);
-		TitleMessage deathMessage = new TitleMessage(ChatColor.RED + "YOU DIED", "");
-		deathMessage.sendTo(player);
+		TitleText deathMessage = new TitleText(ChatColor.RED + "YOU DIED", null);
+		deathMessage.apply(player);
 		PotionEffect veilEffect = new PotionEffect(PotionEffectType.BLINDNESS, 80, 1);
 		PotionEffect invisibiltyEffect = new PotionEffect(PotionEffectType.INVISIBILITY, 40, 1);
 		PotionEffect slownessEffect = new PotionEffect(PotionEffectType.SLOW, 40, 5);
@@ -854,6 +857,7 @@ public final class PlayerCharacter extends AbstractCharacter {
 				sendMessage(ChatColor.GRAY + "Respawning...");
 				player.teleport(respawnLocation);
 				setAlive(true);
+				hitbox.setActive(true);
 			}
 		}.schedule();
 	}
@@ -994,7 +998,7 @@ public final class PlayerCharacter extends AbstractCharacter {
 	 */
 	public void remove() {
 		active = false;
-		collider.setActive(false);
+		hitbox.setActive(false);
 		soundtrackPlayer.setSoundtrack(null);
 		movementSyncer.setEnabled(false);
 		pcs.remove(this);
@@ -1015,6 +1019,15 @@ public final class PlayerCharacter extends AbstractCharacter {
 		 * click due to multiple types of events being fired.
 		 */
 		private final Set<PlayerCharacter> interactingPlayers = new HashSet<>();
+
+		@EventHandler
+		private void onKillPlayerCharacter(CharacterKillEvent event) {
+			AbstractCharacter killed = event.getKilled();
+			if (killed instanceof PlayerCharacter) {
+				Source killer = event.getKiller();
+				((PlayerCharacter) killed).sendMessage(ChatColor.GRAY + "Killed by " + killer.getName());
+			}
+		}
 
 		@EventHandler
 		private void onInteract(PlayerInteractEvent event) {

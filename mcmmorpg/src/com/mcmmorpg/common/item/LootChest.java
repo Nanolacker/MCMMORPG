@@ -14,13 +14,18 @@ import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.World;
 import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
+import org.bukkit.block.data.BlockData;
+import org.bukkit.block.data.Directional;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 
 import com.mcmmorpg.common.character.PlayerCharacter;
+import com.mcmmorpg.common.time.DelayedTask;
 import com.mcmmorpg.common.time.RepeatingTask;
 import com.mcmmorpg.common.ui.TextPanel;
+import com.mcmmorpg.common.utils.CardinalDirection;
 
 /**
  * Place chests that player characters can loot.
@@ -35,27 +40,26 @@ public class LootChest {
 	static List<Inventory> inventories = new ArrayList<>();
 
 	private final Location location;
+	private final CardinalDirection direction;
+	private final double respawnTime;
 	private final Item[] contents;
 	private final TextPanel text;
 	private boolean removed;
 
-	private LootChest(Location location, Item[] contents) {
+	private LootChest(Location location, CardinalDirection direction, double respawnTime, Item[] contents) {
 		this.location = getNearestEmptyBlock(location);
+		this.direction = direction;
+		this.respawnTime = respawnTime;
 		this.contents = contents;
 		this.removed = false;
 		this.text = new TextPanel(this.location.clone().add(0.5, 1, 0.5), ChatColor.GOLD + "Loot Chest");
 		text.setVisible(true);
 		Block block = this.location.getBlock();
 		block.setType(Material.CHEST);
+		BlockData blockData = block.getBlockData();
+		((Directional) blockData).setFacing(blockFaceForCardinalDirection(direction));
+		block.setBlockData(blockData);
 		chestMap.put(this.location, this);
-	}
-
-	/**
-	 * Create a loot chest at the specified location with the specified items
-	 * contents.
-	 */
-	public static LootChest spawnLootChest(Location location, Item... contents) {
-		return new LootChest(location, contents);
 	}
 
 	/**
@@ -72,6 +76,42 @@ public class LootChest {
 			}
 		};
 		particleTask.schedule();
+	}
+
+	public static LootChest spawnLootChest(Location location, CardinalDirection direction, double respawnTime,
+			Item... contents) {
+		return new LootChest(location, direction, respawnTime, contents);
+	}
+
+	/**
+	 * Create a loot chest at the specified location with the specified items
+	 * contents.
+	 */
+	public static LootChest spawnLootChest(Location location, CardinalDirection direction, Item... contents) {
+		return new LootChest(location, direction, 0, contents);
+	}
+
+	/**
+	 * Create a loot chest at the specified location with the specified items
+	 * contents.
+	 */
+	public static LootChest spawnLootChest(Location location, Item... contents) {
+		return new LootChest(location, CardinalDirection.NORTH, 0, contents);
+	}
+
+	private static BlockFace blockFaceForCardinalDirection(CardinalDirection direction) {
+		switch (direction) {
+		case EAST:
+			return BlockFace.EAST;
+		case NORTH:
+			return BlockFace.NORTH;
+		case SOUTH:
+			return BlockFace.SOUTH;
+		case WEST:
+			return BlockFace.WEST;
+		default:
+			throw new IllegalArgumentException("Invalid direction");
+		}
 	}
 
 	/**
@@ -126,7 +166,7 @@ public class LootChest {
 	}
 
 	void open(PlayerCharacter pc) {
-		Inventory inventory = Bukkit.createInventory(null, 27, "Loot");
+		Inventory inventory = Bukkit.createInventory(null, 27, "Loot Chest");
 		ArrayList<ItemStack> itemStacks = new ArrayList<>(27);
 		for (int i = 0; i < contents.length; i++) {
 			ItemStack itemStack = contents[i].getItemStack();
@@ -139,6 +179,18 @@ public class LootChest {
 		inventory.setContents(itemStacks.toArray(new ItemStack[itemStacks.size()]));
 		pc.getPlayer().openInventory(inventory);
 		inventories.add(inventory);
+		if (respawnTime > 0) {
+			respawn();
+		}
+	}
+
+	private void respawn() {
+		new DelayedTask(respawnTime) {
+			@Override
+			protected void run() {
+				spawnLootChest(location, direction, respawnTime, contents);
+			}
+		}.schedule();
 	}
 
 	/**

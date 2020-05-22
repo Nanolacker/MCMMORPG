@@ -15,7 +15,8 @@ import com.mcmmorpg.common.time.RepeatingTask;
 public class MovementSynchronizer {
 
 	private static final double SYNC_PERIOD = 0.1;
-	private static final double SIGNIFICANT_OFFSET_SQUARED = 0.01;
+	private static final double SIGNIFICANT_POSITION_OFFSET_SQUARED = 0.01;
+	private static final double SIGNIFICANT_ANGLE_OFF_SET = Math.toRadians(5);
 
 	private static final List<MovementSynchronizer> activeSynchronizer = new ArrayList<>();
 
@@ -29,24 +30,7 @@ public class MovementSynchronizer {
 			protected void run() {
 				for (int i = 0; i < activeSynchronizer.size(); i++) {
 					MovementSynchronizer synchronizer = activeSynchronizer.get(i);
-					AbstractCharacter character = synchronizer.getCharacter();
-					Entity entity = synchronizer.getEntity();
-					Location characterLocation = character.getLocation();
-					Location entityLocation = entity.getLocation();
-					if (characterLocation.getWorld() != entityLocation.getWorld()
-							|| entityLocation.distanceSquared(characterLocation) > SIGNIFICANT_OFFSET_SQUARED) {
-						MovementSynchronizerMode mode = synchronizer.getMode();
-						switch (mode) {
-						case CHARACTER_FOLLOWS_ENTITY:
-							character.setLocation(entityLocation);
-							break;
-						case ENTITY_FOLLOWS_CHARACTER:
-							entity.teleport(characterLocation);
-							break;
-						default:
-							break;
-						}
-					}
+					synchronizer.updateLocation();
 				}
 			}
 		};
@@ -120,6 +104,32 @@ public class MovementSynchronizer {
 	 */
 	public MovementSynchronizerMode getMode() {
 		return mode;
+	}
+
+	private void updateLocation() {
+		Location characterLocation = character.getLocation();
+		Location entityLocation = entity.getLocation();
+
+		double angle = characterLocation.getDirection().angle(entityLocation.getDirection());
+		if (angle < SIGNIFICANT_ANGLE_OFF_SET) {
+			if (characterLocation.getWorld() == entityLocation.getWorld()) {
+				double distanceSquared = characterLocation.distanceSquared(entityLocation);
+				if (distanceSquared < SIGNIFICANT_POSITION_OFFSET_SQUARED) {
+					return;
+				}
+			}
+		}
+
+		switch (mode) {
+		case CHARACTER_FOLLOWS_ENTITY:
+			character.setLocation(entityLocation);
+			break;
+		case ENTITY_FOLLOWS_CHARACTER:
+			entity.teleport(characterLocation);
+			break;
+		default:
+			break;
+		}
 	}
 
 	/**

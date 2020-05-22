@@ -110,6 +110,7 @@ public class CultistMage extends AbstractCultist {
 
 	@Override
 	protected void onDeath() {
+		super.onDeath();
 		List<PlayerCharacter> nearbyPcs = PlayerCharacter.getNearbyPlayerCharacters(getLocation(), 25);
 		for (PlayerCharacter pc : nearbyPcs) {
 			Quests.CULLING_THE_CULT.getObjective(0).addProgress(pc, 1);

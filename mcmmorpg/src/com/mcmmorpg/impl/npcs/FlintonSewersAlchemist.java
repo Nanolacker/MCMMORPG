@@ -6,6 +6,7 @@ import org.bukkit.Sound;
 
 import com.mcmmorpg.common.character.AbstractCharacter;
 import com.mcmmorpg.common.character.PlayerCharacter;
+import com.mcmmorpg.common.quest.QuestMarker;
 import com.mcmmorpg.common.quest.QuestStatus;
 import com.mcmmorpg.common.sound.Noise;
 import com.mcmmorpg.common.ui.InteractionSequence;
@@ -24,6 +25,7 @@ public class FlintonSewersAlchemist extends StaticHuman {
 
 	public FlintonSewersAlchemist(Location location) {
 		super(ChatColor.GREEN + "Alchemist", LEVEL, location, TEXTURE_DATA, TEXTURE_SIGNATURE);
+		QuestMarker.createMarker(location.clone().add(0, 2.25, 0));
 		startSamplingSludge = new InteractionSequence(2) {
 			@Override
 			protected void onAdvance(PlayerCharacter pc, int interactionIndex) {
@@ -45,7 +47,7 @@ public class FlintonSewersAlchemist extends StaticHuman {
 					break;
 				case 1:
 					pc.removeItem(Items.SLUDGE, 25);
-					pc.removeItem(Items.GIANT_SLUDGE, 2);
+					pc.removeItem(Items.COLOSSAL_SLUDGE, 2);
 					Quests.SAMPLING_SLUDGE.getObjective(2).complete(pc);
 				}
 			}
@@ -57,7 +59,7 @@ public class FlintonSewersAlchemist extends StaticHuman {
 		if (Quests.SAMPLING_SLUDGE.compareStatus(pc, QuestStatus.NOT_STARTED)) {
 			startSamplingSludge.advance(pc);
 		} else if (Quests.SAMPLING_SLUDGE.compareStatus(pc, QuestStatus.IN_PROGRESS)) {
-			if (pc.getItemCount(Items.SLUDGE) >= 25 && pc.getItemCount(Items.GIANT_SLUDGE) >= 2) {
+			if (pc.getItemCount(Items.SLUDGE) >= 25 && pc.getItemCount(Items.COLOSSAL_SLUDGE) >= 2) {
 				completeSamplingSludge.advance(pc);
 			} else {
 				say("Get me sludge.", pc);

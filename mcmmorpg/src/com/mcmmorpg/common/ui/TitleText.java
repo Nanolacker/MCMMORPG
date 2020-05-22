@@ -5,7 +5,7 @@ import org.bukkit.entity.Player;
 import com.mcmmorpg.common.character.PlayerCharacter;
 import com.mcmmorpg.common.utils.MathUtils;
 
-public class TitleMessage {
+public class TitleText {
 
 	private final String title;
 	private final String subtitle;
@@ -13,7 +13,7 @@ public class TitleMessage {
 	private final int stayTicks;
 	private final int fadeOutTicks;
 
-	public TitleMessage(String title, String subtitle, double fadeInSeconds, double staySeconds, double fadeOutSeconds) {
+	public TitleText(String title, String subtitle, double fadeInSeconds, double staySeconds, double fadeOutSeconds) {
 		this.title = title;
 		this.subtitle = subtitle;
 		this.fadeInTicks = MathUtils.secondsToTicks(fadeInSeconds);
@@ -21,7 +21,7 @@ public class TitleMessage {
 		this.fadeOutTicks = MathUtils.secondsToTicks(fadeOutSeconds);
 	}
 
-	public TitleMessage(String title, String subtitle) {
+	public TitleText(String title, String subtitle) {
 		this.title = title;
 		this.subtitle = subtitle;
 		// default values used by Bukkit
@@ -30,12 +30,12 @@ public class TitleMessage {
 		this.fadeOutTicks = 20;
 	}
 
-	public void sendTo(Player player) {
+	public void apply(Player player) {
 		player.sendTitle(title, subtitle, fadeInTicks, stayTicks, fadeOutTicks);
 	}
 	
-	public void sendTo(PlayerCharacter pc) {
-		sendTo(pc.getPlayer());
+	public void apply(PlayerCharacter pc) {
+		apply(pc.getPlayer());
 	}
 
 }

@@ -59,6 +59,7 @@ public class CultistSummoner extends AbstractCultist {
 
 	@Override
 	protected void onDeath() {
+		super.onDeath();
 		List<PlayerCharacter> nearbyPcs = PlayerCharacter.getNearbyPlayerCharacters(getLocation(), 25);
 		for (PlayerCharacter pc : nearbyPcs) {
 			Quests.CULLING_THE_CULT.getObjective(1).addProgress(pc, 1);

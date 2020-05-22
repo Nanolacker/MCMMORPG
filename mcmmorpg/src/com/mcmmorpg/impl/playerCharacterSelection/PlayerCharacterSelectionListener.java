@@ -28,6 +28,7 @@ import com.mcmmorpg.common.item.Weapon;
 import com.mcmmorpg.common.persistence.PersistentPlayerCharacterDataContainer;
 import com.mcmmorpg.common.playerClass.PlayerClass;
 import com.mcmmorpg.common.sound.Noise;
+import com.mcmmorpg.common.time.DelayedTask;
 import com.mcmmorpg.common.ui.TextPanel;
 import com.mcmmorpg.common.utils.IOUtils;
 import com.mcmmorpg.impl.Items;
@@ -163,7 +164,7 @@ public class PlayerCharacterSelectionListener implements Listener {
 		Player player = event.getPlayer();
 		PlayerCharacter pc = PlayerCharacter.forPlayer(player);
 		if (pc != null) {
-			removeAndSavePlayerCharacter(pc);
+			savePlayerCharacter(pc);
 		}
 		profileMap.remove(player);
 	}
@@ -189,9 +190,19 @@ public class PlayerCharacterSelectionListener implements Listener {
 			Player player = event.getPlayer();
 			player.sendMessage(ChatColor.GRAY + "Logging out...");
 			PlayerCharacter pc = PlayerCharacter.forPlayer(player);
-			removeAndSavePlayerCharacter(pc);
-			sendToCharacterSelection(player);
-			CHARACTER_TRANSITION_NOISE.play(player);
+			savePlayerCharacter(pc);
+			player.closeInventory();
+			player.getInventory().clear();
+			pc.remove();
+
+			// so that npcs can despawn correctly
+			new DelayedTask(1.5) {
+				@Override
+				protected void run() {
+					sendToCharacterSelection(player);
+					CHARACTER_TRANSITION_NOISE.play(player);
+				}
+			}.schedule();
 		}
 	}
 
@@ -410,14 +421,13 @@ public class PlayerCharacterSelectionListener implements Listener {
 		inventory.setItem(8, OPEN_MENU_ITEM_STACK);
 	}
 
-	private void removeAndSavePlayerCharacter(PlayerCharacter pc) {
+	private void savePlayerCharacter(PlayerCharacter pc) {
 		Player player = pc.getPlayer();
 		PlayerCharacterSelectionProfile profile = profileMap.get(player);
 		int characterSlot = profile.getCurrentCharacterSlot();
 		PersistentPlayerCharacterDataContainer data = PersistentPlayerCharacterDataContainer.createSaveData(pc);
 		File saveFile = getCharacterSaveFile(player, characterSlot);
 		IOUtils.writeJson(saveFile, data);
-		pc.remove();
 	}
 
 	@EventHandler

@@ -51,9 +51,9 @@ public class ColossalGelatinousCube extends NonPlayerCharacter {
 	private static final double SPLIT_COOLDOWN = 15;
 	private static final double SPLIT_TRIGGER_RADIUS_SQUARED = 400;
 	private static final int MAX_PRE_SPLIT_CHILD_COUNT = 2;
-	private static final int SIZE = 15;
-	private static final double HEIGHT = 11;
-	private static final double WIDTH = 7.7;
+	private static final int SIZE = 12;
+	private static final double HEIGHT = 8;
+	private static final double WIDTH = 7;
 	private static final int SLOWNESS = 4;
 	private static final double RESPAWN_TIME = 30;
 	private static final Noise HURT_NOISE = new Noise(Sound.ENTITY_SLIME_DEATH);
@@ -252,7 +252,7 @@ public class ColossalGelatinousCube extends NonPlayerCharacter {
 			Quests.SAMPLING_SLUDGE.getObjective(1).addProgress(pc, 1);
 		}
 		int giantSludgeAmount = nearbyPcs.size();
-		Items.GIANT_SLUDGE.drop(location, giantSludgeAmount);
+		Items.COLOSSAL_SLUDGE.drop(location, giantSludgeAmount);
 		hitbox.setActive(false);
 		surroundings.setActive(false);
 		movementSyncer.setEnabled(false);

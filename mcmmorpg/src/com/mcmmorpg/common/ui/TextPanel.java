@@ -14,6 +14,9 @@ import com.mcmmorpg.common.utils.StringUtils;
 import net.minecraft.server.v1_15_R1.EntityArmorStand;
 import net.minecraft.server.v1_15_R1.World;
 
+/**
+ * Displays text at a location.
+ */
 public final class TextPanel {
 
 	private static final double LINE_SEPEARATION_DISTANCE = 0.25;
