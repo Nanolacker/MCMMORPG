@@ -70,7 +70,7 @@ public class PlayerCharacterSelectionListener implements Listener {
 		if (!PLAYER_CHARACTER_DATA_DIRECTORY.exists()) {
 			PLAYER_CHARACTER_DATA_DIRECTORY.mkdir();
 		}
-		CHARACTER_SELECTION_LOCATION = new Location(Worlds.CHARACTER_SELECTION, 0.5, 1, 0.5);
+		CHARACTER_SELECTION_LOCATION = new Location(Worlds.CHARACTER_SELECTION, 0, 1, 0);
 		OPEN_CHARACTER_SELECT_ITEM_STACK = ItemFactory.createItemStack(ChatColor.GREEN + "Select Character", null,
 				Material.EMERALD);
 		ItemFactory.registerStaticInteractable(OPEN_CHARACTER_SELECT_ITEM_STACK);
@@ -120,12 +120,30 @@ public class PlayerCharacterSelectionListener implements Listener {
 	}
 
 	private void setUpTextPanels() {
-		Location titleLocation = new Location(Worlds.CHARACTER_SELECTION, 0.5, 3, 5);
+		Location titleLocation = new Location(Worlds.CHARACTER_SELECTION, 0, 3, 5);
 		TextPanel title = new TextPanel(titleLocation,
 				ChatColor.GREEN + "Welcome to MCMMORPG!\n\n" + ChatColor.WHITE + "Please ensure that "
 						+ ChatColor.YELLOW + "Particles" + ChatColor.WHITE + " in " + ChatColor.YELLOW
 						+ "Video Settings..." + ChatColor.WHITE + " is set to " + ChatColor.YELLOW + "All");
+
+		Location creditsTitleLocation = new Location(Worlds.CHARACTER_SELECTION, 0, 4, -5);
+		TextPanel creditsTitle = new TextPanel(creditsTitleLocation,
+				ChatColor.GREEN + "" + ChatColor.UNDERLINE + "Credits");
+
+		Location credits1Location = new Location(Worlds.CHARACTER_SELECTION, -3, 3, -5);
+		TextPanel credits1 = new TextPanel(credits1Location, ChatColor.GREEN + "" + ChatColor.UNDERLINE
+				+ "Designer/Programmer\n\n" + ChatColor.RESET + "" + ChatColor.YELLOW + "Connor Reinholdtsen");
+		credits1.setLineLength(25);
+
+		Location credits2Location = new Location(Worlds.CHARACTER_SELECTION, 3, 3, -5);
+		TextPanel credits2 = new TextPanel(credits2Location, ChatColor.GREEN + "" + ChatColor.UNDERLINE
+				+ "Builder/Writer\n\n" + ChatColor.RESET + "" + ChatColor.YELLOW + "Amy George");
+		credits2.setLineLength(25);
+
 		title.setVisible(true);
+		creditsTitle.setVisible(true);
+		credits1.setVisible(true);
+		credits2.setVisible(true);
 	}
 
 	private void sendToCharacterSelection(Player player) {

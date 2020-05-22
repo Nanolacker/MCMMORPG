@@ -35,9 +35,9 @@ public class SmallGelatinousCube extends NonPlayerCharacter {
 	private static final int MAX_HEALTH = 50;
 	private static final int XP_REWARD = 5;
 	private static final double BASIC_ATTACK_DAMAGE = 4;
-	private static final int SIZE = 1;
-	private static final double HEIGHT = 1;
-	private static final double WIDTH = 1;
+	private static final int SIZE = 2;
+	private static final double HEIGHT = 1.2;
+	private static final double WIDTH = 1.2;
 	private static final Noise HURT_NOISE = new Noise(Sound.ENTITY_SLIME_DEATH);
 	private static final Noise DEATH_NOISE = new Noise(Sound.ENTITY_SLIME_DEATH);
 

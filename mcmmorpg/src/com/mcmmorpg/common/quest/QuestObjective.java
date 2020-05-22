@@ -87,6 +87,9 @@ public class QuestObjective {
 		}
 		int previousProgress = getProgress(pc);
 		progress = (int) MathUtils.clamp(progress, 0, goal);
+		if (progress == previousProgress) {
+			return;
+		}
 		data.setProgress(this.index, progress);
 		QuestObjectiveChangeProgressEvent event = new QuestObjectiveChangeProgressEvent(pc, this, previousProgress,
 				progress);
