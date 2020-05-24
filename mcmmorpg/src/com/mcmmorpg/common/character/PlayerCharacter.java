@@ -383,8 +383,8 @@ public final class PlayerCharacter extends AbstractCharacter {
 		int rZ = (int) Math.round(location.getZ());
 		String direction = CardinalDirection.forVector(location.getDirection()).toString();
 		String text = String.format(
-				ChatColor.RED + "HP: %d/%d  " + ChatColor.AQUA + "MP: %d/%d  " + ChatColor.GREEN + "(%d, %d, %d) %s",
-				rCurrentHealth, rMaxHealth, rCurrentMana, rMaxMana, rX, rY, rZ, direction);
+				ChatColor.RED + "HP: %d/%d  " + ChatColor.GREEN + "(%d, %d, %d) %s  " + ChatColor.AQUA + "MP: %d/%d",
+				rCurrentHealth, rMaxHealth, rX, rY, rZ, direction, rCurrentMana, rMaxMana);
 		ActionBarText bar = new ActionBarText(text);
 		bar.apply(player);
 	}

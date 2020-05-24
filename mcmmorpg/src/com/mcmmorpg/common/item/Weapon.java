@@ -5,6 +5,7 @@ import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
 import com.mcmmorpg.common.playerClass.PlayerClass;
+import com.mcmmorpg.common.utils.Debug;
 
 /**
  * An item to be wielded in the main hand of player characters.
@@ -13,13 +14,16 @@ public class Weapon extends Item {
 
 	private final String playerClass;
 	private final int level;
+	private final double baseDamage;
 
 	private transient PlayerClass playerClass0;
 
-	public Weapon(String name, ItemRarity rarity, Material icon, String description, String playerClass, int level) {
+	public Weapon(String name, ItemRarity rarity, Material icon, String description, String playerClass, int level,
+			double baseDamage) {
 		super(name, rarity, icon, description);
 		this.playerClass = playerClass;
 		this.level = level;
+		this.baseDamage = baseDamage;
 	}
 
 	@Override
@@ -32,11 +36,16 @@ public class Weapon extends Item {
 	protected ItemStack createItemStack() {
 		ItemRarity rarity = getRarity();
 		String description = getDescription();
-		String lore = ChatColor.GOLD + playerClass + " Weapon" + ChatColor.GOLD + "\nLevel " + level + "\n"
-				+ rarity.getColor() + rarity + " Item"
-				+ (description == null ? "" : ("\n\n" + ChatColor.RESET + description)) + ChatColor.GRAY
-				+ "\n\nShift-click to equip";
-		return ItemFactory.createItemStack(rarity.getColor() + getName(), lore, getIcon());
+		StringBuilder lore = new StringBuilder();
+		lore.append(rarity.getColor() + rarity.toString() + " Item\n");
+		lore.append(ChatColor.GOLD + playerClass + " Weapon\n");
+		lore.append("Level " + level + "\n");
+		lore.append((int) baseDamage + " Base Damage\n\n");
+		if (description != null) {
+			lore.append(ChatColor.RESET + description + "\n\n");
+		}
+		lore.append(ChatColor.GRAY + "Shift-click to equip");
+		return ItemFactory.createItemStack(rarity.getColor() + getName(), lore.toString(), getIcon());
 	}
 
 	public PlayerClass getPlayerClass() {
@@ -45,6 +54,10 @@ public class Weapon extends Item {
 
 	public int getLevel() {
 		return level;
+	}
+
+	public double getBaseDamage() {
+		return baseDamage;
 	}
 
 }

@@ -80,7 +80,7 @@ public class GuardJames extends StaticHuman {
 				case 5:
 					PlayerClass playerClass = pc.getPlayerClass();
 					if (playerClass == PlayerClasses.FIGHER) {
-						pc.giveItem(Items.SWORD_OF_THE_MELCHER_GUARD);
+						pc.giveItem(Items.SPEAR_OF_THE_MELCHER_GUARD);
 					} else if (playerClass == PlayerClasses.MAGE) {
 						pc.giveItem(Items.STAFF_OF_THE_MELCHER_GUARD);
 					}

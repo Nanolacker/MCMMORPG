@@ -28,10 +28,11 @@ import com.mcmmorpg.common.event.EventManager;
 import com.mcmmorpg.common.physics.Collider;
 import com.mcmmorpg.common.sound.Noise;
 import com.mcmmorpg.common.time.DelayedTask;
+import com.mcmmorpg.common.utils.BukkitUtils;
 
 public abstract class AbstractSpider extends NonPlayerCharacter {
 
-	private static final double RESPAWN_TIME = 30;
+	private static final double RESPAWN_TIME = 60;
 	private static final Noise HURT_NOISE = new Noise(Sound.ENTITY_SPIDER_HURT, 1f, 0.5f);
 	private static final Noise DEATH_NOISE = new Noise(Sound.ENTITY_SPIDER_HURT, 1f, 0.5f);
 
@@ -108,7 +109,7 @@ public abstract class AbstractSpider extends NonPlayerCharacter {
 		setLocation(spawnLocation);
 		super.spawn();
 		hitbox.setActive(true);
-		entity = (Spider) spawnLocation.getWorld().spawnEntity(spawnLocation, entityType);
+		entity = (Spider) BukkitUtils.spawnNonpersistentEntity(spawnLocation, entityType);
 		entity.setSilent(true);
 		entity.setRemoveWhenFarAway(false);
 		@SuppressWarnings("deprecation")

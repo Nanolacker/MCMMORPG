@@ -6,6 +6,7 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 import com.mcmmorpg.common.character.NonPlayerCharacter;
+import com.mcmmorpg.common.utils.BukkitUtils;
 
 public class Horse extends NonPlayerCharacter {
 
@@ -21,7 +22,7 @@ public class Horse extends NonPlayerCharacter {
 	protected void spawn() {
 		super.spawn();
 		Location location = getLocation();
-		entity = (org.bukkit.entity.Horse) location.getWorld().spawnEntity(location, EntityType.HORSE);
+		entity = (org.bukkit.entity.Horse) BukkitUtils.spawnNonpersistentEntity(location, EntityType.HORSE);
 		entity.addPotionEffect(SLOWNESS);
 		entity.setInvulnerable(true);
 		entity.setAdult();

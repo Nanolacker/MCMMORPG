@@ -3,16 +3,16 @@
 	"level": 10,
 	"objectives": [
 		{
-			"goal": 20,
-			"description": "Slay 20 §7[§cGelatinous Cube§7]"
+			"goal": 30,
+			"description": "Slay 30 §7[§cGelatinous Cube§7]"
 		},
 		{
 			"goal": "1",
-			"description": "Slay the §7[§cColossal Gelatinous Cube§7] at §a(x, y, z)"
+			"description": "Slay the §7[§cColossal Gelatinous Cube§7] at §a(-117, 42, 96)"
 		},
 		{
 			"goal": "1",
-			"description": "Return 25 §7[Sludge§7]§r and 1 §7[§aGiant Sludge§7]§r to §7[§aAlchemist§7]"
+			"description": "Return 25 §7[Sludge§7]§r and 1 §7[§aGiant Sludge§7]§r to §7[§aAlchemist§7] at §a(-274, 42, 78)"
 		}
 	]
 }

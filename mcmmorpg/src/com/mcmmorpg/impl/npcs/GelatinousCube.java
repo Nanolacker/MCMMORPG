@@ -34,6 +34,7 @@ import com.mcmmorpg.common.time.DelayedTask;
 import com.mcmmorpg.common.time.RepeatingTask;
 import com.mcmmorpg.common.ui.ProgressBar;
 import com.mcmmorpg.common.ui.ProgressBar.ProgressBarColor;
+import com.mcmmorpg.common.utils.BukkitUtils;
 import com.mcmmorpg.impl.Items;
 import com.mcmmorpg.impl.Quests;
 
@@ -53,7 +54,7 @@ public class GelatinousCube extends NonPlayerCharacter {
 	private static final double HEIGHT = 3.5;
 	private static final double WIDTH = 2.9;
 	private static final int SLOWNESS = 2;
-	private static final double RESPAWN_TIME = 30;
+	private static final double RESPAWN_TIME = 60;
 	private static final Noise HURT_NOISE = new Noise(Sound.ENTITY_SLIME_DEATH);
 	private static final Noise DEATH_NOISE = new Noise(Sound.ENTITY_SLIME_DEATH);
 	private static final Noise ACID_SPRAY_NOISE = new Noise(Sound.BLOCK_LAVA_EXTINGUISH);
@@ -132,7 +133,7 @@ public class GelatinousCube extends NonPlayerCharacter {
 		setLocation(spawnLocation);
 		super.spawn();
 		hitbox.setActive(true);
-		entity = (Slime) spawnLocation.getWorld().spawnEntity(spawnLocation, EntityType.SLIME);
+		entity = (Slime) BukkitUtils.spawnNonpersistentEntity(spawnLocation, EntityType.SLIME);
 		entity.setSize(SIZE);
 		entity.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, Integer.MAX_VALUE, SLOWNESS));
 		entity.setRemoveWhenFarAway(false);

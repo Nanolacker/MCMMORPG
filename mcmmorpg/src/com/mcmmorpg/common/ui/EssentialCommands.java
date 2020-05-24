@@ -11,13 +11,13 @@ public class EssentialCommands {
 	public static void registerEssentialCommands() {
 		Command help = new Command("help") {
 			@Override
-			protected void onExecute(CommandSender sender, String[] args) {
+			protected void execute(CommandSender sender, String[] args) {
 				sender.sendMessage(ChatColor.GRAY + "Help feature coming soon.");
 			}
 		};
-		Command kill = new Command("kill") {
+		Command killMe = new Command("killMe") {
 			@Override
-			protected void onExecute(CommandSender sender, String[] args) {
+			protected void execute(CommandSender sender, String[] args) {
 				if (sender instanceof Player) {
 					Player player = (Player) sender;
 					PlayerCharacter pc = PlayerCharacter.forPlayer(player);
@@ -30,10 +30,10 @@ public class EssentialCommands {
 				}
 			}
 		};
-		kill.setDescription("If your character is stuck, use this to respawn elsewhere.");
+		killMe.setDescription("If your character is stuck, use this to respawn elsewhere.");
 
 		CommandManager.registerCommand(help);
-		CommandManager.registerCommand(kill);
+		CommandManager.registerCommand(killMe);
 	}
 
 }

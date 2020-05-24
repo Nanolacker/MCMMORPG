@@ -28,6 +28,7 @@ import com.mcmmorpg.common.playerClass.Skill;
 import com.mcmmorpg.common.sound.Noise;
 import com.mcmmorpg.common.time.DelayedTask;
 import com.mcmmorpg.common.time.RepeatingTask;
+import com.mcmmorpg.common.utils.BukkitUtils;
 import com.mcmmorpg.impl.PlayerClasses;
 
 public class MageListener implements Listener {
@@ -138,7 +139,7 @@ public class MageListener implements Listener {
 		Location end = pc.getTargetLocation(range);
 		double maxDistance = start.distance(end);
 		World world = start.getWorld();
-		Fireball fireball = (Fireball) world.spawnEntity(start, EntityType.FIREBALL);
+		Fireball fireball = (Fireball) BukkitUtils.spawnNonpersistentEntity(start, EntityType.FIREBALL);
 		Projectile projectile = new Projectile(start, velocity, maxDistance, hitSize) {
 			// -40 to account for error
 			boolean explode = start.distanceSquared(end) < range * range - 40;

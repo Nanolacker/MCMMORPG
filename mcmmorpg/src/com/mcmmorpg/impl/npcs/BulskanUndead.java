@@ -7,7 +7,7 @@ import org.bukkit.entity.EntityType;
 public class BulskanUndead extends AbstractUndead {
 
 	private static final int LEVEL = 16;
-	private static final double RESPAWN_TIME = 30;
+	private static final double RESPAWN_TIME = 60;
 
 	public BulskanUndead(Location spawnLocation, boolean respawn) {
 		super(ChatColor.RED + "Undead", LEVEL, spawnLocation, respawn ? RESPAWN_TIME : -1, EntityType.HUSK);

@@ -1,8 +1,9 @@
 {
-	"playerClass": "Mage",
-	"level": 1,
 	"name": "Apprentice Staff",
 	"rarity": "COMMON",
 	"icon": "WOODEN_HOE",
-	"description": "2 Base Damage"
+	"description": null,
+	"playerClass": "Mage",
+	"level": 1,
+	"baseDamage": 2
 }

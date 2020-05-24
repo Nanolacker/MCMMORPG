@@ -28,7 +28,6 @@ import com.mcmmorpg.common.item.Weapon;
 import com.mcmmorpg.common.persistence.PersistentPlayerCharacterDataContainer;
 import com.mcmmorpg.common.playerClass.PlayerClass;
 import com.mcmmorpg.common.sound.Noise;
-import com.mcmmorpg.common.time.DelayedTask;
 import com.mcmmorpg.common.ui.TextPanel;
 import com.mcmmorpg.common.utils.IOUtils;
 import com.mcmmorpg.impl.Items;
@@ -183,6 +182,7 @@ public class PlayerCharacterSelectionListener implements Listener {
 		PlayerCharacter pc = PlayerCharacter.forPlayer(player);
 		if (pc != null) {
 			savePlayerCharacter(pc);
+			pc.remove();
 		}
 		profileMap.remove(player);
 	}
@@ -212,15 +212,8 @@ public class PlayerCharacterSelectionListener implements Listener {
 			player.closeInventory();
 			player.getInventory().clear();
 			pc.remove();
-
-			// so that npcs can despawn correctly
-			new DelayedTask(1.5) {
-				@Override
-				protected void run() {
-					sendToCharacterSelection(player);
-					CHARACTER_TRANSITION_NOISE.play(player);
-				}
-			}.schedule();
+			sendToCharacterSelection(player);
+			CHARACTER_TRANSITION_NOISE.play(player);
 		}
 	}
 

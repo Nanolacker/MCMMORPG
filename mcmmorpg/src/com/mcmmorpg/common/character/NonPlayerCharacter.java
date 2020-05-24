@@ -24,7 +24,7 @@ public class NonPlayerCharacter extends AbstractCharacter {
 
 	private static List<NonPlayerCharacter> aliveNpcs = new ArrayList<>();
 
-	private boolean spawned;
+	private boolean isSpawned;
 
 	/**
 	 * Invoked when plugin is enabled.
@@ -69,7 +69,7 @@ public class NonPlayerCharacter extends AbstractCharacter {
 	 */
 	protected NonPlayerCharacter(String name, int level, Location location) {
 		super(name, level, location);
-		spawned = false;
+		isSpawned = false;
 	}
 
 	/**
@@ -77,7 +77,7 @@ public class NonPlayerCharacter extends AbstractCharacter {
 	 * or dead.
 	 */
 	public final boolean isSpawned() {
-		return spawned;
+		return isSpawned;
 	}
 
 	/**
@@ -87,7 +87,7 @@ public class NonPlayerCharacter extends AbstractCharacter {
 	 */
 	@OverridingMethodsMustInvokeSuper
 	protected void spawn() {
-		spawned = true;
+		isSpawned = true;
 		setNameplateVisible(true);
 		NonPlayerCharacterSpawnEvent event = new NonPlayerCharacterSpawnEvent(this);
 		EventManager.callEvent(event);
@@ -100,7 +100,7 @@ public class NonPlayerCharacter extends AbstractCharacter {
 	 */
 	@OverridingMethodsMustInvokeSuper
 	protected void despawn() {
-		spawned = false;
+		isSpawned = false;
 		setNameplateVisible(false);
 		NonPlayerCharacterDespawnEvent event = new NonPlayerCharacterDespawnEvent(this);
 		EventManager.callEvent(event);
@@ -124,7 +124,7 @@ public class NonPlayerCharacter extends AbstractCharacter {
 	protected void onDeath() {
 		super.onDeath();
 		aliveNpcs.remove(this);
-		spawned = false;
+		isSpawned = false;
 	}
 
 	/**

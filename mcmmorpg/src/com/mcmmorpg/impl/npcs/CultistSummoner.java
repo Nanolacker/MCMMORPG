@@ -50,7 +50,7 @@ public class CultistSummoner extends AbstractCultist {
 			return;
 		}
 		Location location = getLocation();
-		Location undeadSpawnLocation = location.add(location.getDirection().multiply(2));
+		Location undeadSpawnLocation = location.add(location.getDirection()).add(0, 1, 0);
 		BulskanUndead undead = new BulskanUndead(undeadSpawnLocation, false);
 		undead.setAlive(true);
 		spawnedUndead.add(undead);

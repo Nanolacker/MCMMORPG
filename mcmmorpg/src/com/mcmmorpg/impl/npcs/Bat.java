@@ -26,10 +26,11 @@ import com.mcmmorpg.common.character.Source;
 import com.mcmmorpg.common.event.EventManager;
 import com.mcmmorpg.common.sound.Noise;
 import com.mcmmorpg.common.time.DelayedTask;
+import com.mcmmorpg.common.utils.BukkitUtils;
 
 public class Bat extends NonPlayerCharacter {
 
-	private static final double RESPAWN_TIME = 30;
+	private static final double RESPAWN_TIME = 60;
 	private static final Noise HURT_NOISE = new Noise(Sound.ENTITY_BAT_HURT);
 	private static final Noise DEATH_NOISE = new Noise(Sound.ENTITY_BAT_DEATH);
 
@@ -85,9 +86,9 @@ public class Bat extends NonPlayerCharacter {
 		setLocation(spawnLocation);
 		super.spawn();
 		hitbox.setActive(true);
-		entity = (org.bukkit.entity.Bat) spawnLocation.getWorld().spawnEntity(spawnLocation, EntityType.BAT);
+		entity = (org.bukkit.entity.Bat) BukkitUtils.spawnNonpersistentEntity(spawnLocation, EntityType.BAT);
 		entity.setInvulnerable(true);
-		ai = (Vex) spawnLocation.getWorld().spawnEntity(spawnLocation, EntityType.VEX);
+		ai = (Vex) BukkitUtils.spawnNonpersistentEntity(spawnLocation, EntityType.VEX);
 		ai.setSilent(true);
 		ai.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, Integer.MAX_VALUE, 1));
 		ai.setRemoveWhenFarAway(false);

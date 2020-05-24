@@ -2,6 +2,6 @@
 	"name": "Potion of Lesser Healing",
 	"rarity": "UNCOMMON",
 	"icon": "GLASS_BOTTLE",
-	"description": "Rocover XX HP",
-	"level": 5
+	"description": "Rocover §c50 HP",
+	"level": 10
 }

@@ -4,10 +4,10 @@ import java.util.List;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.inventory.ItemStack;
-
+import org.bukkit.Sound;
 import com.mcmmorpg.common.character.PlayerCharacter;
+import com.mcmmorpg.common.character.Source;
+import com.mcmmorpg.common.sound.Noise;
 import com.mcmmorpg.impl.Items;
 import com.mcmmorpg.impl.Quests;
 
@@ -17,10 +17,12 @@ public class Highwayman extends AbstractHumanEnemy {
 	private static final double DAMAGE_AMOUNT = 7;
 	private static final int XP_REWARD = 10;
 	private static final int LEVEL = 5;
-	private static final double RESPAWN_TIME = 30;
+	private static final double RESPAWN_TIME = 60;
 	private static final int SPEED = 2;
-	private static final String TEXTURE_DATA = "eyJ0aW1lc3RhbXAiOjE1ODE2NDI5MDk5ODIsInByb2ZpbGVJZCI6IjgyYzYwNmM1YzY1MjRiNzk4YjkxYTEyZDNhNjE2OTc3IiwicHJvZmlsZU5hbWUiOiJOb3ROb3RvcmlvdXNOZW1vIiwic2lnbmF0dXJlUmVxdWlyZWQiOnRydWUsInRleHR1cmVzIjp7IlNLSU4iOnsidXJsIjoiaHR0cDovL3RleHR1cmVzLm1pbmVjcmFmdC5uZXQvdGV4dHVyZS9hZDZjMzk4NmY4N2YwYzNmZTRmMTk0NzZiYWI4MzQ0NDM5NDlmMzQ2MDFiYWNkMjk1YjljZTM5YTdiYjNjYzk4In19fQ==";
-	private static final String TEXTURE_SIGNATURE = "yXcQay1LwWqkKfAdBsgvekvigWmy3GBdrMl5xnl/QfTWLIMX0yz9JTJkCJeSnyMDM/FAif+a7mtAtsuf83C56xkqTmWhsRcGvBjKfvU83h9ejfesYEDvUQvEjfaD7BxwGYsHp9+Dy/caS9lbH0E1hFCO373w92XIXBSzjo1dJPdnXK2XyqMJeVmtqVHva3mMLInHtWExzU65eliIyCztaKQ/7YxoiSBhRtyamzp6JnoA9lw3fSFqYwrjAWY9ppoVnAIqH0qjqx85wyET2x9p4uFP983keTjekYzvKew29lmgS0iije3+7Lj4WcgF4ZAYL1X/GTEgzlEVTMf0n6A8k3FTDWcRNOThnY39L+nmFBXKz4sho9THpE4tilFqAt+qOSRyeil6+m1vHnrnmLtk4HhnLeC3n0bWUZ6+zdeTseGK2ldUbgnhW043wjrI0rDcHJFxbN/5OWGMOv8rD0Jk0cPC+uUd2iZ39/PZ5hbMOX/JCtWfDD67iPguSl/DJ/gla9Wr+faDrtXYq6Jjm1+06T4QupQL0PoU3gV+oKg/Q8DlPTxoytac2UinFweRgOXlheVdAfrfyquEGP7azJ5fxSw7IvTBuUMF0rE549B2t1rtyyvMKO8QXQzcRuE3W58tgzuz1Fa8JSJAYymxsaZxbKkscssqiJfQ3J0F53BsG5E=";
+	private static final String TEXTURE_DATA = "ewogICJ0aW1lc3RhbXAiIDogMTU5MDI4OTc4NzI4MiwKICAicHJvZmlsZUlkIiA6ICJmMjc0YzRkNjI1MDQ0ZTQxOGVmYmYwNmM3NWIyMDIxMyIsCiAgInByb2ZpbGVOYW1lIiA6ICJIeXBpZ3NlbCIsCiAgInNpZ25hdHVyZVJlcXVpcmVkIiA6IHRydWUsCiAgInRleHR1cmVzIiA6IHsKICAgICJTS0lOIiA6IHsKICAgICAgInVybCIgOiAiaHR0cDovL3RleHR1cmVzLm1pbmVjcmFmdC5uZXQvdGV4dHVyZS9iN2NhOGU4NWViYmFjYjM2N2ExMGUyMmRiMTg0YWNhNGE5MGY4ZGIzZmU4YzM4YWRlMTRkYmEzNGU4NTBlYmJiIgogICAgfQogIH0KfQ==";
+	private static final String TEXTURE_SIGNATURE = "mlQoWa/DUmlDlUbnt92/+a1UmVzIyRTUq6t+eUGw21A7yGazbmWRJB/4pXs22sNpVTU6Q5bO3W6M+9Am7+z2+qV6/S5iIIog9u9iyFvgApKR0bdddSrYlwu/8jDi3nkp7HcahEMB3EaLrjwtn9XabIjYU7rmGVbEsfxkoHsT+uUzp5bVpzlS5Pxbd7p5zcS05nv2GlmDS/4CM2EQ5c+Bju1CEp+akKjLXUcjnqlUoT7irn692J5XtL3eyxEPFviv/HfPQMlX4Tdh0nnzwhBImpviejJb33V5zd1Liua/t3ufVZL+mpBi0hp9NSegkdpA//0euvjU0LQxU2jwfspmPn/enKuJs/5XA44Tr6dueon6rRFo0CEpnsA/z7+bQz3Dvv3opo/vdtJhvaTBsb88Tlbo1Wp5OaFPNYi5Ycit2tWXSGIbHbSythMJTGLZn6qKx3Epi7WNE9M/zqVPvCU7c8iqOqJoMDUc4e26lJOE9qaPyIysTF36UvxKilSqLSVcx/jplbGqBZJW7+2uRz5CeX11LesKdKZQtkM98EDApkzHDdE9S6dlqK2+qPBMdYcqtN+VrSUrs80BkapFnHIXfRVSt3RlfBsAsIOEf4wghHRq0FxrYHfrN0lMbQ9WdakW40Y6ZwwmaL7TKIhwguo1EM73yZ8XSrr9Y8cRyBVqrFU=";
+	protected static final Noise HURT_NOISE = new Noise(Sound.ENTITY_PILLAGER_HURT);
+	protected static final Noise DEATH_NOISE = new Noise(Sound.ENTITY_PILLAGER_DEATH);
 
 	public Highwayman(Location spawnLocation) {
 		super(ChatColor.RED + "Highwayman", LEVEL, spawnLocation, MAX_HEALTH, DAMAGE_AMOUNT, XP_REWARD, RESPAWN_TIME,
@@ -28,15 +30,16 @@ public class Highwayman extends AbstractHumanEnemy {
 	}
 
 	@Override
-	protected void spawn() {
-		super.spawn();
-		entity.setMainHand(new ItemStack(Material.IRON_SWORD));
+	public void damage(double amount, Source source) {
+		super.damage(amount, source);
+		HURT_NOISE.play(getLocation());
 	}
 
 	@Override
 	protected void onDeath() {
 		super.onDeath();
 		Location location = getLocation();
+		DEATH_NOISE.play(location);
 		Items.THIEF_DAGGER.drop(getLocation(), 1, 0.2);
 		List<PlayerCharacter> nearbyPcs = PlayerCharacter.getNearbyPlayerCharacters(location, 25);
 		for (PlayerCharacter pc : nearbyPcs) {

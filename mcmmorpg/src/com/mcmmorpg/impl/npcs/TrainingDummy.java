@@ -12,9 +12,11 @@ import com.mcmmorpg.common.character.PlayerCharacter;
 import com.mcmmorpg.common.character.Source;
 import com.mcmmorpg.common.sound.Noise;
 import com.mcmmorpg.common.time.DelayedTask;
+import com.mcmmorpg.common.utils.BukkitUtils;
 
 public class TrainingDummy extends NonPlayerCharacter {
 
+	private static final double RESPAWN_TIME = 10;
 	private static final Noise DAMAGE_NOISE = new Noise(Sound.BLOCK_IRON_TRAPDOOR_CLOSE);
 	private static final Noise DESTROY_NOISE = new Noise(Sound.BLOCK_FENCE_GATE_CLOSE);
 
@@ -31,7 +33,7 @@ public class TrainingDummy extends NonPlayerCharacter {
 	protected void spawn() {
 		super.spawn();
 		Location location = getLocation();
-		entity = (ArmorStand) location.getWorld().spawnEntity(location, EntityType.ARMOR_STAND);
+		entity = (ArmorStand) BukkitUtils.spawnNonpersistentEntity(location, EntityType.ARMOR_STAND);
 		hitbox.setActive(true);
 	}
 
@@ -55,7 +57,7 @@ public class TrainingDummy extends NonPlayerCharacter {
 		entity.remove();
 		hitbox.setActive(false);
 		PlayerCharacter.distributeXp(getLocation(), 10, 3);
-		DelayedTask respawnTask = new DelayedTask(10) {
+		DelayedTask respawnTask = new DelayedTask(RESPAWN_TIME) {
 			@Override
 			protected void run() {
 				setAlive(true);

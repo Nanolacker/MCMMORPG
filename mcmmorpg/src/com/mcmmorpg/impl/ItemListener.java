@@ -23,10 +23,13 @@ import com.mcmmorpg.common.physics.Raycast;
 import com.mcmmorpg.common.sound.Noise;
 import com.mcmmorpg.common.utils.MathUtils;
 
+import net.md_5.bungee.api.ChatColor;
+
 public class ItemListener implements Listener {
 
 	private static final Noise SWORD_HIT_NOISE = new Noise(Sound.ENTITY_ZOMBIE_ATTACK_IRON_DOOR);
 	private static final Noise STAFF_HIT_NOISE = new Noise(Sound.BLOCK_WOODEN_TRAPDOOR_OPEN);
+	private static final Noise USE_HEAL_POTION_NOISE = new Noise(Sound.BLOCK_LAVA_EXTINGUISH);
 
 	@EventHandler
 	private void onUseWeapon(PlayerCharacterUseWeaponEvent event) {
@@ -36,7 +39,7 @@ public class ItemListener implements Listener {
 			useFighterWeapon(pc, 4);
 		} else if (weapon == Items.THIEF_DAGGER) {
 			useFighterWeapon(pc, 6);
-		} else if (weapon == Items.SWORD_OF_THE_MELCHER_GUARD) {
+		} else if (weapon == Items.SPEAR_OF_THE_MELCHER_GUARD) {
 			useFighterWeapon(pc, 10);
 		} else if (weapon == Items.APPRENTICE_STAFF) {
 			useMageStaff(pc, 2);
@@ -95,15 +98,30 @@ public class ItemListener implements Listener {
 	private void onUseConsumable(PlayerCharacterUseConsumableItemEvent event) {
 		PlayerCharacter pc = event.getPlayerCharacter();
 		ConsumableItem consumable = event.getConsumable();
-		if (consumable == Items.MELCHER_MEAD) {
+		if (consumable == Items.POTION_OF_MINOR_HEALING) {
+			useHealingPotion(pc, 25);
+		} else if (consumable == Items.POTION_OF_LESSER_HEALING) {
+			useHealingPotion(pc, 25);
+		} else if (consumable == Items.POTION_OF_HEALING) {
+			useHealingPotion(pc, 25);
+		} else if (consumable == Items.POTION_OF_GREATER_HEALING) {
+			useHealingPotion(pc, 25);
+		} else if (consumable == Items.MELCHER_MEAD) {
 			useMelcherMead(pc);
 		}
+	}
+
+	private void useHealingPotion(PlayerCharacter pc, double healAmount) {
+		pc.heal(healAmount, pc);
+		pc.sendMessage(ChatColor.GRAY + "Recovered " + ChatColor.RED + (int) healAmount + " HP");
+		USE_HEAL_POTION_NOISE.play(pc);
 	}
 
 	private void useMelcherMead(PlayerCharacter pc) {
 		Player player = pc.getPlayer();
 		PotionEffect drunkness = new PotionEffect(PotionEffectType.CONFUSION, MathUtils.secondsToTicks(15), 1);
 		player.addPotionEffect(drunkness);
+		pc.sendMessage(ChatColor.GRAY + "You fill dizzy.");
 	}
 
 }

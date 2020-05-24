@@ -26,6 +26,7 @@ import com.mcmmorpg.common.character.Source;
 import com.mcmmorpg.common.event.EventManager;
 import com.mcmmorpg.common.sound.Noise;
 import com.mcmmorpg.common.time.DelayedTask;
+import com.mcmmorpg.common.utils.BukkitUtils;
 import com.mcmmorpg.impl.Items;
 import com.mcmmorpg.impl.locations.FlintonSewersListener;
 
@@ -93,7 +94,7 @@ public class SmallGelatinousCube extends NonPlayerCharacter {
 		setLocation(spawnLocation);
 		super.spawn();
 		hitbox.setActive(true);
-		entity = (Slime) spawnLocation.getWorld().spawnEntity(spawnLocation, EntityType.SLIME);
+		entity = (Slime) BukkitUtils.spawnNonpersistentEntity(spawnLocation, EntityType.SLIME);
 		entity.setSize(SIZE);
 		entity.setRemoveWhenFarAway(false);
 		movementSyncer.setEntity(entity);

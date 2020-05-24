@@ -1,7 +1,6 @@
 package com.mcmmorpg.common.item;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -25,6 +24,7 @@ import com.mcmmorpg.common.character.PlayerCharacter;
 import com.mcmmorpg.common.time.DelayedTask;
 import com.mcmmorpg.common.time.RepeatingTask;
 import com.mcmmorpg.common.ui.TextPanel;
+import com.mcmmorpg.common.utils.BukkitUtils;
 import com.mcmmorpg.common.utils.CardinalDirection;
 
 /**
@@ -32,50 +32,57 @@ import com.mcmmorpg.common.utils.CardinalDirection;
  */
 public class LootChest {
 
-	private static final int MAX_SPAWN_RADIUS = 5;
-	private static final double PARTICLE_TASK_PERIOD_SECONDS = 1.5;
+	private static final double UPDATE_PERIOD_SECONDS = 1.0;
+	private static final double SPAWN_RADIUS = 40;
+	private static final double DESPAWN_RADIUS = 45;
 	private static final int PARTICLE_COUNT = 3;
 
-	private static final Map<Location, LootChest> chestMap = new HashMap<>();
-	static List<Inventory> inventories = new ArrayList<>();
+	private static final List<LootChest> lootChests = new ArrayList<>();
+	private static final Map<Location, LootChest> spawnedChestMap = new HashMap<>();
+	static final List<Inventory> inventories = new ArrayList<>();
 
-	private final Location location;
+	private final Location targetLocation;
 	private final CardinalDirection direction;
 	private final double respawnTime;
 	private final Item[] contents;
 	private final TextPanel text;
-	private boolean removed;
+	private Location trueLocation;
+	private boolean isSpawned;
 
 	private LootChest(Location location, CardinalDirection direction, double respawnTime, Item[] contents) {
-		this.location = getNearestEmptyBlock(location);
+		this.targetLocation = BukkitUtils.nearestEmptyBlockLocation(location);
 		this.direction = direction;
 		this.respawnTime = respawnTime;
 		this.contents = contents;
-		this.removed = false;
-		this.text = new TextPanel(this.location.clone().add(0.5, 1, 0.5), ChatColor.GOLD + "Loot Chest");
-		text.setVisible(true);
-		Block block = this.location.getBlock();
-		block.setType(Material.CHEST);
-		BlockData blockData = block.getBlockData();
-		((Directional) blockData).setFacing(blockFaceForCardinalDirection(direction));
-		block.setBlockData(blockData);
-		chestMap.put(this.location, this);
+		this.text = new TextPanel(location, ChatColor.GOLD + "Loot Chest");
+		isSpawned = false;
+		lootChests.add(this);
 	}
 
 	/**
 	 * Called when the plugin is enabled.
 	 */
 	public static void init() {
-		RepeatingTask particleTask = new RepeatingTask(PARTICLE_TASK_PERIOD_SECONDS) {
+		RepeatingTask update = new RepeatingTask(UPDATE_PERIOD_SECONDS) {
 			@Override
-			protected void run() {
-				Collection<LootChest> chests = chestMap.values();
-				for (LootChest chest : chests) {
-					chest.spawnParticles();
+			public void run() {
+				for (int i = 0; i < lootChests.size(); i++) {
+					LootChest lootChest = lootChests.get(i);
+					if (lootChest.isSpawned) {
+						if (lootChest.shouldDespawn()) {
+							lootChest.despawn();
+						} else {
+							lootChest.spawnParticles();
+						}
+					} else {
+						if (lootChest.shouldSpawn()) {
+							lootChest.spawn();
+						}
+					}
 				}
 			}
 		};
-		particleTask.schedule();
+		update.schedule();
 	}
 
 	public static LootChest spawnLootChest(Location location, CardinalDirection direction, double respawnTime,
@@ -115,47 +122,17 @@ public class LootChest {
 	}
 
 	/**
-	 * Called when the plugin is disabled.
-	 */
-	public static void removeAll() {
-		List<LootChest> chests = new ArrayList<>(chestMap.values());
-		for (LootChest chest : chests) {
-			chest.remove();
-		}
-	}
-
-	/**
 	 * Returns the loot chest at the specified location.
 	 */
 	static LootChest forLocation(Location location) {
-		return chestMap.get(location);
-	}
-
-	private static Location getNearestEmptyBlock(Location location) {
-		World world = location.getWorld();
-		int baseX = location.getBlockX();
-		int baseY = location.getBlockY();
-		int baseZ = location.getBlockZ();
-		for (int radius = 0; radius <= MAX_SPAWN_RADIUS; radius++) {
-			for (int x = -radius; x <= radius; x++) {
-				for (int y = -radius; y <= radius; y++) {
-					for (int z = -radius; z <= radius; z++) {
-						Block block = world.getBlockAt(baseX + x, baseY + y, baseZ + z);
-						if (block.getType() == Material.AIR) {
-							return block.getLocation();
-						}
-					}
-				}
-			}
-		}
-		return null;
+		return spawnedChestMap.get(location);
 	}
 
 	/**
 	 * Returns the location of this loot chest.
 	 */
 	public Location getLocation() {
-		return location;
+		return targetLocation;
 	}
 
 	/**
@@ -184,37 +161,74 @@ public class LootChest {
 		}
 	}
 
+	private boolean shouldSpawn() {
+		return PlayerCharacter.playerCharacterIsNearby(targetLocation, SPAWN_RADIUS);
+	}
+
+	private boolean shouldDespawn() {
+		return !PlayerCharacter.playerCharacterIsNearby(targetLocation, DESPAWN_RADIUS);
+	}
+
+	private void spawn() {
+		isSpawned = true;
+		trueLocation = BukkitUtils.nearestEmptyBlockLocation(targetLocation);
+		text.setLocation(trueLocation.clone().add(0.5, 1, 0.5));
+		text.setVisible(true);
+		Block block = trueLocation.getBlock();
+		block.setType(Material.CHEST);
+		BlockData blockData = block.getBlockData();
+		((Directional) blockData).setFacing(blockFaceForCardinalDirection(direction));
+		block.setBlockData(blockData);
+		spawnedChestMap.put(trueLocation, this);
+	}
+
+	private void despawn() {
+		isSpawned = false;
+		spawnedChestMap.remove(trueLocation);
+		text.setVisible(false);
+		trueLocation.getBlock().setType(Material.AIR);
+	}
+
 	private void respawn() {
 		new DelayedTask(respawnTime) {
 			@Override
 			protected void run() {
-				spawnLootChest(location, direction, respawnTime, contents);
+				spawnLootChest(targetLocation, direction, respawnTime, contents);
 			}
 		}.schedule();
+	}
+
+	private void spawnParticles() {
+		World world = trueLocation.getWorld();
+		for (int i = 0; i < PARTICLE_COUNT; i++) {
+			double offsetX = Math.random();
+			double offsetY = Math.random() + 0.5;
+			double offsetZ = Math.random();
+			Vector offset = new Vector(offsetX, offsetY, offsetZ);
+			Location particleLocation = trueLocation.clone().add(offset);
+			world.spawnParticle(Particle.VILLAGER_HAPPY, particleLocation, PARTICLE_COUNT);
+		}
 	}
 
 	/**
 	 * Removes this loot chest from its location.
 	 */
 	public void remove() {
-		if (removed) {
-			return;
+		lootChests.remove(this);
+		if (isSpawned) {
+			spawnedChestMap.remove(trueLocation);
+			trueLocation.getBlock().setType(Material.AIR);
+			text.setVisible(false);
 		}
-		chestMap.remove(location);
-		location.getBlock().setType(Material.AIR);
-		text.setVisible(false);
-		removed = true;
 	}
 
-	private void spawnParticles() {
-		World world = location.getWorld();
-		for (int i = 0; i < PARTICLE_COUNT; i++) {
-			double offsetX = Math.random();
-			double offsetY = Math.random() + 0.5;
-			double offsetZ = Math.random();
-			Vector offset = new Vector(offsetX, offsetY, offsetZ);
-			Location particleLocation = location.clone().add(offset);
-			world.spawnParticle(Particle.VILLAGER_HAPPY, particleLocation, PARTICLE_COUNT);
+	/**
+	 * Called when the plugin is disabled.
+	 */
+	public static void removeAll() {
+		for (int i = 0; i < lootChests.size(); i++) {
+			LootChest lootChest = lootChests.get(i);
+			lootChest.remove();
 		}
 	}
 

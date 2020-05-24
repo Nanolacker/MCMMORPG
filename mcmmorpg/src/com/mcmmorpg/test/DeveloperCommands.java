@@ -4,7 +4,9 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -23,15 +25,21 @@ import com.mcmmorpg.common.ui.CommandManager;
 import com.mcmmorpg.common.utils.CardinalDirection;
 import com.mcmmorpg.common.utils.Debug;
 import com.mcmmorpg.common.utils.IOUtils;
+import com.mcmmorpg.impl.Worlds;
 
 public class DeveloperCommands {
+
+	private static final Map<String, Location> LOCATION_MAP = new HashMap<>();
 
 	public static void registerDeveloperCommands() {
 		Debug.log("Registering developer commands");
 
+		LOCATION_MAP.put("Melcher", new Location(Worlds.ELADRADOR, -1019, 70, 191));
+		LOCATION_MAP.put("Flinton Sewers", new Location(Worlds.ELADRADOR, -270, 42.5, 78));
+
 		Command printLocation = new Command("printlocation") {
 			@Override
-			protected void onExecute(CommandSender sender, String[] args) {
+			protected void execute(CommandSender sender, String[] args) {
 				Player player = (Player) sender;
 				Location location = player.getLocation();
 				int x = (int) location.getX();
@@ -44,7 +52,7 @@ public class DeveloperCommands {
 		};
 		Command heal = new Command("heal") {
 			@Override
-			protected void onExecute(CommandSender sender, String[] args) {
+			protected void execute(CommandSender sender, String[] args) {
 				Player player = (Player) sender;
 				PlayerCharacter pc = PlayerCharacter.forPlayer(player);
 				double healAmount = Double.parseDouble(args[0]);
@@ -53,7 +61,7 @@ public class DeveloperCommands {
 		};
 		Command restoreMana = new Command("restoremana") {
 			@Override
-			protected void onExecute(CommandSender sender, String[] args) {
+			protected void execute(CommandSender sender, String[] args) {
 				Player player = (Player) sender;
 				PlayerCharacter pc = PlayerCharacter.forPlayer(player);
 				double manaAmount = Double.parseDouble(args[0]);
@@ -62,7 +70,7 @@ public class DeveloperCommands {
 		};
 		Command giveXp = new Command("givexp") {
 			@Override
-			protected void onExecute(CommandSender sender, String[] args) {
+			protected void execute(CommandSender sender, String[] args) {
 				Player player = (Player) sender;
 				PlayerCharacter pc = PlayerCharacter.forPlayer(player);
 				int xpAmount = Integer.parseInt(args[0]);
@@ -71,7 +79,7 @@ public class DeveloperCommands {
 		};
 		Command startQuest = new Command("startquest") {
 			@Override
-			protected void onExecute(CommandSender sender, String[] args) {
+			protected void execute(CommandSender sender, String[] args) {
 				Player player = (Player) sender;
 				PlayerCharacter pc = PlayerCharacter.forPlayer(player);
 				String questName = args[0];
@@ -84,7 +92,7 @@ public class DeveloperCommands {
 		};
 		Command completeQuest = new Command("completequest") {
 			@Override
-			protected void onExecute(CommandSender sender, String[] args) {
+			protected void execute(CommandSender sender, String[] args) {
 				Player player = (Player) sender;
 				PlayerCharacter pc = PlayerCharacter.forPlayer(player);
 				String questName = args[0];
@@ -100,7 +108,7 @@ public class DeveloperCommands {
 		};
 		Command giveItem = new Command("giveitem") {
 			@Override
-			protected void onExecute(CommandSender sender, String[] args) {
+			protected void execute(CommandSender sender, String[] args) {
 				Player player = (Player) sender;
 				PlayerCharacter pc = PlayerCharacter.forPlayer(player);
 				String itemName = args[0];
@@ -113,7 +121,7 @@ public class DeveloperCommands {
 		};
 		Command saveLocation = new Command("savelocation") {
 			@Override
-			protected void onExecute(CommandSender sender, String[] args) {
+			protected void execute(CommandSender sender, String[] args) {
 				Player player = (Player) sender;
 				Location location = player.getLocation();
 				File file = new File("C:\\Users\\conno\\Desktop\\Locations.txt");
@@ -134,7 +142,7 @@ public class DeveloperCommands {
 		};
 		Command direction = new Command("direction") {
 			@Override
-			protected void onExecute(CommandSender sender, String[] args) {
+			protected void execute(CommandSender sender, String[] args) {
 				Player player = (Player) sender;
 				Location location = player.getLocation();
 				Debug.log(CardinalDirection.forVector(location.getDirection()));
@@ -142,7 +150,7 @@ public class DeveloperCommands {
 		};
 		Command removeEntities = new Command("removeentities") {
 			@Override
-			protected void onExecute(CommandSender sender, String[] args) {
+			protected void execute(CommandSender sender, String[] args) {
 				for (World world : Bukkit.getWorlds()) {
 					for (Entity entity : world.getEntities()) {
 						if (entity != sender) {
@@ -154,7 +162,7 @@ public class DeveloperCommands {
 		};
 		Command reloadmmorpg = new Command("reloadmmorpg") {
 			@Override
-			protected void onExecute(CommandSender sender, String[] args) {
+			protected void execute(CommandSender sender, String[] args) {
 				Debug.log("reloading...");
 				List<PlayerCharacter> pcs = new ArrayList<>(PlayerCharacter.listAll());
 				for (PlayerCharacter pc : pcs) {
@@ -166,6 +174,19 @@ public class DeveloperCommands {
 						Bukkit.getServer().reload();
 					}
 				}.schedule();
+			}
+		};
+		Command goTo = new Command("goto") {
+			@Override
+			protected void execute(CommandSender sender, String[] args) {
+				Player player = (Player) sender;
+				PlayerCharacter pc = PlayerCharacter.forPlayer(player);
+				String locationName = args[0];
+				for (int i = 1; i < args.length; i++) {
+					locationName += " " + args[i];
+				}
+				Location location = LOCATION_MAP.get(locationName);
+				pc.setLocation(location);
 			}
 		};
 
@@ -180,6 +201,7 @@ public class DeveloperCommands {
 		CommandManager.registerCommand(direction);
 		CommandManager.registerCommand(removeEntities);
 		CommandManager.registerCommand(reloadmmorpg);
+		CommandManager.registerCommand(goTo);
 	}
 
 }

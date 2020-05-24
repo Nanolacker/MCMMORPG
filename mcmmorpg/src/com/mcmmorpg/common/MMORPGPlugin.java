@@ -21,6 +21,7 @@ public abstract class MMORPGPlugin extends JavaPlugin {
 	@Override
 	public final void onEnable() {
 		isInitialized = false;
+		removeAllEntities();
 		EssentialCommands.registerEssentialCommands();
 		GameClock.start();
 		NonPlayerCharacter.startNPCSpawner();
@@ -32,7 +33,6 @@ public abstract class MMORPGPlugin extends JavaPlugin {
 	@Override
 	public final void onDisable() {
 		onMMORPGStop();
-		//removeAllEntities();
 		kickAllPlayers();
 		NonPlayerCharacter.despawnAll();
 		LootChest.removeAll();

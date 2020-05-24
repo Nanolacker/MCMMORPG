@@ -19,7 +19,7 @@ public abstract class Command {
 		bukkitCommand.setUsage(usageMessage);
 	}
 
-	protected abstract void onExecute(CommandSender sender, String[] args);
+	protected abstract void execute(CommandSender sender, String[] args);
 
 	private static class BukkitCommand0 extends BukkitCommand {
 
@@ -32,7 +32,7 @@ public abstract class Command {
 
 		@Override
 		public boolean execute(CommandSender sender, String alias, String[] args) {
-			command.onExecute(sender, args);
+			command.execute(sender, args);
 			return true;
 		}
 

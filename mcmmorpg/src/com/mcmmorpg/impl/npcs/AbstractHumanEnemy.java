@@ -5,7 +5,6 @@ import java.util.Map;
 
 import org.bukkit.Location;
 import org.bukkit.Particle;
-import org.bukkit.Sound;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
@@ -25,13 +24,11 @@ import com.mcmmorpg.common.character.NonPlayerCharacter;
 import com.mcmmorpg.common.character.PlayerCharacter;
 import com.mcmmorpg.common.character.Source;
 import com.mcmmorpg.common.event.EventManager;
-import com.mcmmorpg.common.sound.Noise;
 import com.mcmmorpg.common.time.DelayedTask;
+import com.mcmmorpg.common.utils.BukkitUtils;
 
 public abstract class AbstractHumanEnemy extends NonPlayerCharacter {
 
-	protected static final Noise HURT_NOISE = new Noise(Sound.ENTITY_PILLAGER_HURT);
-	protected static final Noise DEATH_NOISE = new Noise(Sound.ENTITY_PILLAGER_DEATH);
 	protected static final PotionEffect INVISIBILITY = new PotionEffect(PotionEffectType.INVISIBILITY,
 			Integer.MAX_VALUE, 1);
 
@@ -95,7 +92,7 @@ public abstract class AbstractHumanEnemy extends NonPlayerCharacter {
 		super.spawn();
 		hitbox.setActive(true);
 		entity.setVisible(true);
-		ai = (Zombie) spawnLocation.getWorld().spawnEntity(spawnLocation, EntityType.ZOMBIE);
+		ai = (Zombie) BukkitUtils.spawnNonpersistentEntity(spawnLocation, EntityType.ZOMBIE);
 		ai.setBaby(false);
 		ai.setSilent(true);
 		ai.addPotionEffect(INVISIBILITY);
@@ -135,19 +132,17 @@ public abstract class AbstractHumanEnemy extends NonPlayerCharacter {
 		super.damage(amount, source);
 		// for light up red effect
 		entity.hurt();
-		HURT_NOISE.play(getLocation());
 	}
 
 	@Override
 	protected void onDeath() {
 		super.onDeath();
-		PlayerCharacter.distributeXp(getLocation(), 10, xpReward);
+		PlayerCharacter.distributeXp(getLocation(), 50, xpReward);
 		hitbox.setActive(false);
 		entity.setVisible(false);
 		ai.remove();
 		aiMap.remove(ai);
 		Location location = getLocation();
-		DEATH_NOISE.play(location);
 		location.getWorld().spawnParticle(Particle.CLOUD, location, 10);
 		DelayedTask respawn = new DelayedTask(respawnTime) {
 			@Override

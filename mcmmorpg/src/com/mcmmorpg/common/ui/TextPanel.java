@@ -205,6 +205,7 @@ public final class TextPanel {
 	private void addEntity(int index, World world) {
 		EntityArmorStand entity = new EntityArmorStand(world, location.getX(),
 				location.getY() - index * LINE_SEPEARATION_DISTANCE, location.getZ());
+		entity.persist = false;
 		entity.setNoGravity(true);
 		entity.collides = false;
 		entity.setInvisible(true);

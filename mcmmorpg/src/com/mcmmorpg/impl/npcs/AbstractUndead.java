@@ -24,6 +24,7 @@ import com.mcmmorpg.common.character.Source;
 import com.mcmmorpg.common.event.EventManager;
 import com.mcmmorpg.common.sound.Noise;
 import com.mcmmorpg.common.time.DelayedTask;
+import com.mcmmorpg.common.utils.BukkitUtils;
 
 public abstract class AbstractUndead extends NonPlayerCharacter {
 
@@ -88,7 +89,7 @@ public abstract class AbstractUndead extends NonPlayerCharacter {
 		setLocation(spawnLocation);
 		super.spawn();
 		hitbox.setActive(true);
-		entity = (Zombie) spawnLocation.getWorld().spawnEntity(spawnLocation, entityType);
+		entity = (Zombie) BukkitUtils.spawnNonpersistentEntity(spawnLocation, entityType);
 		entity.setBaby(false);
 		entity.getEquipment().clear();
 		entity.setRemoveWhenFarAway(false);

@@ -7,6 +7,7 @@ import com.mcmmorpg.common.character.AbstractCharacter;
 import com.mcmmorpg.common.character.NonPlayerCharacter;
 import com.mcmmorpg.common.character.PlayerCharacter;
 import com.mcmmorpg.common.character.PlayerCharacterInteractionCollider;
+import com.mcmmorpg.common.utils.BukkitUtils;
 
 public abstract class Witch extends NonPlayerCharacter {
 
@@ -28,7 +29,7 @@ public abstract class Witch extends NonPlayerCharacter {
 	protected void spawn() {
 		super.spawn();
 		Location location = getLocation();
-		entity = (org.bukkit.entity.Witch) location.getWorld().spawnEntity(location, EntityType.WITCH);
+		entity = (org.bukkit.entity.Witch) BukkitUtils.spawnNonpersistentEntity(location, EntityType.WITCH);
 		entity.setAI(false);
 		entity.setInvulnerable(true);
 		entity.setRemoveWhenFarAway(false);

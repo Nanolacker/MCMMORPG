@@ -1,8 +1,9 @@
 {
-	"playerClass": "Fighter",
-	"level": 1,
 	"name": "Apprentice Sword",
 	"rarity": "COMMON",
 	"icon": "WOODEN_SWORD",
-	"description": "4 Base Damage"
+	"description": null,
+	"playerClass": "Fighter",
+	"level": 1,
+	"baseDamage": 4
 }

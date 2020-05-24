@@ -19,6 +19,7 @@ import org.bukkit.inventory.ItemStack;
 
 import com.mcmmorpg.common.time.DelayedTask;
 import com.mcmmorpg.common.time.RepeatingTask;
+import com.mcmmorpg.common.utils.BukkitUtils;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
 
@@ -178,7 +179,7 @@ public class HumanEntity {
 		this.visible = visible;
 		if (visible) {
 			setLocation0(location);
-			equipment = (ArmorStand) location.getWorld().spawnEntity(location, EntityType.ARMOR_STAND);
+			equipment = (ArmorStand) BukkitUtils.spawnNonpersistentEntity(location, EntityType.ARMOR_STAND);
 			equipment.setVisible(false);
 			equipment.setRemoveWhenFarAway(false);
 			EntityEquipment equipmentItems = equipment.getEquipment();

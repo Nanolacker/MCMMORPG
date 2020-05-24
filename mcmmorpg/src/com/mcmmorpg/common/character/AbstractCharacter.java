@@ -250,7 +250,7 @@ public abstract class AbstractCharacter implements Source {
 				+ name + '\n');
 		text.append(ChatColor.GRAY + "[");
 		double currentToMaxHealthRatio = currentHealth / maxHealth;
-		int numRedBars = (int) (numBars * currentToMaxHealthRatio);
+		int numRedBars = (int) Math.ceil(numBars * currentToMaxHealthRatio);
 		text.append(ChatColor.RED.toString());
 		for (int i = 0; i < numRedBars; i++) {
 			text.append('|');

@@ -54,7 +54,7 @@ public class FlintonSewersXylphanos extends AbstractCultist {
 	public FlintonSewersXylphanos(Location spawnLocation) {
 		super(ChatColor.RED + "Xylphanos", LEVEL, spawnLocation, MAX_HEALTH, TEXTURE_DATA, TEXTURE_SIGNATURE,
 				"Field of Death", FIELD_OF_DEATH_CHANNEL_DURATION);
-		surroundings = new Collider(getLocation(), 40, 10, 40) {
+		surroundings = new Collider(getLocation(), 50, 10, 50) {
 			@Override
 			protected void onCollisionEnter(Collider other) {
 				if (other instanceof PlayerCharacterCollider) {
@@ -76,7 +76,7 @@ public class FlintonSewersXylphanos extends AbstractCultist {
 			protected void onAdvance(PlayerCharacter pc, int interactionIndex) {
 				switch (interactionIndex) {
 				case 0:
-					say("dialogue", 40);
+					say("dialogue", 50);
 					break;
 				case 1:
 					Location location = getLocation();

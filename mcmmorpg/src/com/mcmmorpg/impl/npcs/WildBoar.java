@@ -28,11 +28,12 @@ import com.mcmmorpg.common.character.Source;
 import com.mcmmorpg.common.event.EventManager;
 import com.mcmmorpg.common.sound.Noise;
 import com.mcmmorpg.common.time.DelayedTask;
+import com.mcmmorpg.common.utils.BukkitUtils;
 import com.mcmmorpg.impl.Items;
 
 public class WildBoar extends NonPlayerCharacter {
 
-	private static final double RESPAWN_TIME = 5;
+	private static final double RESPAWN_TIME = 60;
 	private static final Noise DAMAGE_NOISE = new Noise(Sound.ENTITY_PIG_HURT, 1, 0.5f);
 	private static final Noise DEATH_NOISE = new Noise(Sound.ENTITY_PIG_DEATH, 1, 0.5f);
 
@@ -96,12 +97,12 @@ public class WildBoar extends NonPlayerCharacter {
 		setLocation(spawnLocation);
 		super.spawn();
 		hitbox.setActive(true);
-		entity = (Pig) spawnLocation.getWorld().spawnEntity(spawnLocation, EntityType.PIG);
+		entity = (Pig) BukkitUtils.spawnNonpersistentEntity(spawnLocation, EntityType.PIG);
 		entity.setAdult();
 		entity.setInvulnerable(true);
 		entity.setSilent(true);
 		entity.setRemoveWhenFarAway(false);
-		ai = (PolarBear) spawnLocation.getWorld().spawnEntity(spawnLocation, EntityType.POLAR_BEAR);
+		ai = (PolarBear) BukkitUtils.spawnNonpersistentEntity(spawnLocation, EntityType.POLAR_BEAR);
 		ai.setAdult();
 		ai.setCollidable(false);
 		ai.setInvulnerable(true);

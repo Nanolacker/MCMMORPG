@@ -19,6 +19,7 @@ import com.mcmmorpg.common.physics.Collider;
 import com.mcmmorpg.common.physics.Projectile;
 import com.mcmmorpg.common.sound.Noise;
 import com.mcmmorpg.common.time.DelayedTask;
+import com.mcmmorpg.common.utils.BukkitUtils;
 import com.mcmmorpg.impl.Quests;
 
 public class CultistMage extends AbstractCultist {
@@ -50,7 +51,7 @@ public class CultistMage extends AbstractCultist {
 		double maxDistance = start.distance(end);
 		double hitSize = 0.75;
 		World world = start.getWorld();
-		Fireball fireball = (Fireball) world.spawnEntity(start, EntityType.FIREBALL);
+		Fireball fireball = (Fireball) BukkitUtils.spawnNonpersistentEntity(start, EntityType.FIREBALL);
 		Projectile projectile = new Projectile(start, velocity, maxDistance, hitSize) {
 			// -40 to account for error
 			boolean explode = start.distanceSquared(end) < range * range - 40;

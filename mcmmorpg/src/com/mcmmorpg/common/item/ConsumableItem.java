@@ -17,10 +17,15 @@ public class ConsumableItem extends Item {
 	protected ItemStack createItemStack() {
 		ItemRarity rarity = getRarity();
 		String description = getDescription();
-		String lore = ChatColor.GOLD + "Level " + level + "\n" + rarity.getColor() + rarity + " Item\n\n"
-				+ description == null ? ""
-						: (ChatColor.RESET + description) + ChatColor.GRAY + "\n\nShift-click to use";
-		return ItemFactory.createItemStack(rarity.getColor() + getName(), lore, getIcon());
+		StringBuilder lore = new StringBuilder();
+		lore.append(rarity.getColor() + rarity.toString() + " Item\n");
+		lore.append(ChatColor.GOLD + "Level " + level + "\n");
+		if (description != null) {
+			lore.append(ChatColor.RESET + description + "\n\n");
+		}
+		lore.append(ChatColor.GRAY + "Shift-click to use");
+		return ItemFactory.createItemStack(rarity.getColor() + getName(), lore.toString(), getIcon());
+
 	}
 
 	public int getLevel() {

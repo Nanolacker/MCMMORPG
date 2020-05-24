@@ -1,8 +1,9 @@
 {
-	"playerClass": "Mage",
-	"level": 3,
 	"name": "Brittle Wand",
 	"rarity": "COMMON",
 	"icon": "STICK",
-	"description": null
+	"description": null,
+	"playerClass": "Mage",
+	"level": 3,
+	"baseDamage": 5
 }
