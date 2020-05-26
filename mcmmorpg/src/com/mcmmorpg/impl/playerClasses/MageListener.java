@@ -119,18 +119,11 @@ public class MageListener implements Listener {
 		}
 	}
 
-	private Location getWeaponLocation(PlayerCharacter pc) {
-		Location location = pc.getLocation().add(0, 1, 0);
-		Vector direction = location.getDirection();
-		direction.rotateAroundY(-Math.PI / 4);
-		return location.add(direction);
-	}
-
 	private void useFireball(PlayerCharacter pc) {
 		double damageAmount = 10 * fireball.getUpgradeLevel(pc) + 5 * pc.getLevel();
 		double range = 15;
 		double hitSize = 0.85;
-		Location start = getWeaponLocation(pc).subtract(0, 1, 0);
+		Location start = pc.getHandLocation().subtract(0, 1, 0);
 		Vector lookDirection = start.getDirection();
 		start.add(lookDirection).add(0, 1, 0);
 		FIREBALL_CONJURE_NOISE.play(start);
@@ -235,7 +228,7 @@ public class MageListener implements Listener {
 				final Location targetLocation = targetLocationTemp;
 				final AbstractCharacter targetCharacter = targetCharacterTemp;
 
-				Location startLocation = getWeaponLocation(pc);
+				Location startLocation = pc.getHandLocation();
 				Ray beam = new Ray(startLocation, targetLocation);
 				beam.draw(Particle.CRIT_MAGIC, 1);
 				if (count % 3 == 0) {
@@ -389,7 +382,7 @@ public class MageListener implements Listener {
 		double size = 4;
 		int projectileParticleCount = 10;
 		int boxParticleCount = 75;
-		Location start = getWeaponLocation(pc);
+		Location start = pc.getHandLocation();
 		Vector velocity = start.getDirection().multiply(4);
 		Location end = pc.getTargetLocation(15);
 		double maxDistance = start.distance(end);

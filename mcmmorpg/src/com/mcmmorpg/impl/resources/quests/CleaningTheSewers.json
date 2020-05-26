@@ -7,6 +7,10 @@
 			"description": "Slay 15 §7[§cBandit§7]"
 		},
 		{
+			"goal": 3,
+			"description": "Slay 3 §7[§cBandit Chief§7]"
+		},
+		{
 			"goal": 1,
 			"description": "Return to §7[§aGuard Thomas§7]§f"
 		}

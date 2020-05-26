@@ -38,7 +38,7 @@ public class Projectile {
 		fired = false;
 	}
 
-	public final void fire() {
+	public void fire() {
 		if (fired) {
 			throw new IllegalStateException("Projectile already fired");
 		}
@@ -62,7 +62,7 @@ public class Projectile {
 		return velocity;
 	}
 
-	public final void setVelocity(Vector velocity) {
+	public void setVelocity(Vector velocity) {
 		this.velocity = velocity;
 	}
 
@@ -70,7 +70,7 @@ public class Projectile {
 		return maxDistance;
 	}
 
-	public final void setMaxDistance(double maxDistance) {
+	public void setMaxDistance(double maxDistance) {
 		this.maxDistance = maxDistance;
 	}
 
@@ -78,7 +78,7 @@ public class Projectile {
 		return hitSize;
 	}
 
-	public final void setHitSize(double hitSize) {
+	public void setHitSize(double hitSize) {
 		this.hitSize = hitSize;
 		collider.setDimensions(hitSize, hitSize, hitSize);
 	}
@@ -97,7 +97,7 @@ public class Projectile {
 		return fired;
 	}
 
-	public final void setVisible(boolean visible) {
+	public void setVisible(boolean visible) {
 		collider.setVisible(visible);
 	}
 

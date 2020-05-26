@@ -25,6 +25,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
+import org.bukkit.util.Vector;
 
 import com.mcmmorpg.common.character.MovementSynchronizer.MovementSynchronizerMode;
 import com.mcmmorpg.common.event.CharacterKillEvent;
@@ -345,6 +346,17 @@ public final class PlayerCharacter extends AbstractCharacter {
 	}
 
 	/**
+	 * Returns the location of this player character's hand. Useful for determining
+	 * the start location of spells.
+	 */
+	public Location getHandLocation() {
+		Location handLocation = getLocation().add(0, 1, 0);
+		Vector direction = handLocation.getDirection();
+		direction.rotateAroundY(-Math.PI / 4);
+		return handLocation.add(direction.multiply(0.5));
+	}
+
+	/**
 	 * Returns where this player character will respawn on death.
 	 */
 	public Location getRespawnLocation() {
@@ -355,8 +367,10 @@ public final class PlayerCharacter extends AbstractCharacter {
 	 * Sets where this player character will respawn on death.
 	 */
 	public void setRespawnLocation(Location respawnLocation) {
-		this.respawnLocation = respawnLocation;
-		sendMessage(ChatColor.GRAY + "Respawn point updated");
+		if (!this.respawnLocation.equals(respawnLocation)) {
+			this.respawnLocation = respawnLocation;
+			sendMessage(ChatColor.GRAY + "Respawn point updated");
+		}
 	}
 
 	/**

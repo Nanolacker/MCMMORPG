@@ -13,6 +13,7 @@ import com.mcmmorpg.impl.Quests;
 import com.mcmmorpg.impl.Soundtracks;
 import com.mcmmorpg.impl.Worlds;
 import com.mcmmorpg.impl.Zones;
+import com.mcmmorpg.impl.npcs.Adventurer;
 import com.mcmmorpg.impl.npcs.Broodmother;
 import com.mcmmorpg.impl.npcs.Chicken;
 import com.mcmmorpg.impl.npcs.ForestSpider;
@@ -57,6 +58,18 @@ public class MelcherListener implements Listener {
 			new Location(Worlds.ELADRADOR, -1114, 73, 252, 90, 0),
 			new Location(Worlds.ELADRADOR, -1118, 73, 248, 90, 0),
 			new Location(Worlds.ELADRADOR, -1119, 73, 256, 180, 0) };
+	private static final Location[] ADVENTURER_LOCATIONS = {
+			new Location(Worlds.ELADRADOR, -1122.425572, 73.000000, 261.720727, 179.691650f, 22.590204f),
+			new Location(Worlds.ELADRADOR, -1126.663995, 72.937500, 253.256357, 178.649048f, 23.980371f),
+			new Location(Worlds.ELADRADOR, -1120.104211, 73.000000, 250.863035, 239.816299f, 13.554127f),
+			new Location(Worlds.ELADRADOR, -878.337963, 72.000000, 164.330094, -2.471985f, 26.413113f),
+			new Location(Worlds.ELADRADOR, -823.522638, 72.000000, 153.239366, -181.107422f, 67.770515f),
+			new Location(Worlds.ELADRADOR, -756.885689, 72.000000, 121.383997, -75.107544f, 41.704929f),
+			new Location(Worlds.ELADRADOR, -649.650656, 64.000000, 79.879587, -353.435791f, 41.009830f),
+			new Location(Worlds.ELADRADOR, -651.847714, 67.000000, 38.008869, -150.176498f, 21.199955f),
+			new Location(Worlds.ELADRADOR, -585.913308, 74.000000, -77.914642, -6.642093f, 30.236000f),
+			new Location(Worlds.ELADRADOR, -469.161661, 73.000000, -103.509018, -291.626099f, 46.570435f),
+			new Location(Worlds.ELADRADOR, -404.779515, 82.000000, -11.314008, -280.852203f, 22.242554f) };
 	private static final Location[] CHICKEN_LOCATIONS = { new Location(Worlds.ELADRADOR, -1167, 73, 243),
 			new Location(Worlds.ELADRADOR, -1167, 73, 242), new Location(Worlds.ELADRADOR, -1167, 73, 241) };
 	private static final Location[] HORSE_LOCATIONS = { new Location(Worlds.ELADRADOR, -1158, 73, 239),
@@ -93,8 +106,17 @@ public class MelcherListener implements Listener {
 			new Location(Worlds.ELADRADOR, -622.000000, 73.000000, -45.000000),
 			new Location(Worlds.ELADRADOR, -599.626059, 75.000000, -68.358134, 240.513687f, 21.895067f),
 			new Location(Worlds.ELADRADOR, -545.113880, 75.000000, -106.429543, 231.825058f, 11.816359f),
-			new Location(Worlds.ELADRADOR, -456.903532, 72.000000, -62.710678, 329.483612f, 15.291774f) };
-	private static final Location BROODMOTHER_LOCATION = new Location(Worlds.ELADRADOR, -806, 71, 159);
+			new Location(Worlds.ELADRADOR, -456.903532, 72.000000, -62.710678, 329.483612f, 15.291774f),
+			new Location(Worlds.ELADRADOR, -813.256476, 74.000000, -93.550042, 5.561591f, 25.718084f),
+			new Location(Worlds.ELADRADOR, -819.643090, 74.000000, -91.068068, 5.561591f, 25.718084f),
+			new Location(Worlds.ELADRADOR, -822.335181, 74.000000, -86.354005, 5.561591f, 25.718084f),
+			new Location(Worlds.ELADRADOR, -823.469786, 74.000000, -80.915253, 5.561591f, 25.718084f),
+			new Location(Worlds.ELADRADOR, -828.272300, 74.000000, -85.618514, 160.565094f, 20.157419f),
+			new Location(Worlds.ELADRADOR, -826.661654, 74.000000, -92.967181, 203.312759f, 19.114796f),
+			new Location(Worlds.ELADRADOR, -822.018759, 74.000000, -100.451275, 226.598053f, 19.809881f),
+			new Location(Worlds.ELADRADOR, -814.411626, 74.000000, -99.851284, 287.417755f, 28.150875f) };
+	private static final Location BROODMOTHER_LOCATION = new Location(Worlds.ELADRADOR, -813.208736, 74.000000,
+			-83.282707, -202.963303f, 1.390176f);
 	private static final Location GUARD_JAMES_LOCATION = new Location(Worlds.ELADRADOR, -837, 72, 148);
 
 	public MelcherListener() {
@@ -143,6 +165,9 @@ public class MelcherListener implements Listener {
 		new MelcherAngeredDrunkard(DRUNKARD_LOCATION).setAlive(true);
 		for (Location location : TRAINING_DUMMY_LOCATIONS) {
 			new TrainingDummy(location).setAlive(true);
+		}
+		for (Location location : ADVENTURER_LOCATIONS) {
+			new Adventurer(location).setAlive(true);
 		}
 		for (Location location : CHICKEN_LOCATIONS) {
 			new Chicken(location).setAlive(true);

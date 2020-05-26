@@ -5,7 +5,6 @@ import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
 import com.mcmmorpg.common.playerClass.PlayerClass;
-import com.mcmmorpg.common.utils.Debug;
 
 /**
  * An item to be wielded in the main hand of player characters.

@@ -23,14 +23,12 @@ public class MelcherMayor extends StaticHuman {
 	private static final Noise SPEAK_NOISE = new Noise(Sound.ENTITY_VILLAGER_AMBIENT, 1, 0.75f);
 
 	private final InteractionSequence completeReportingForDutyInteraction;
-	private final InteractionSequence startSlayingTheThievesInteraction;
 	private final InteractionSequence completeSlayingTheThievesInteraction;
-	private final InteractionSequence startClearingTheRoadInteraction;
 
 	public MelcherMayor(Location location) {
 		super(ChatColor.GREEN + "Mayor of Melcher", LEVEL, location, TEXTURE_DATA, TEXTURE_SIGNATURE);
 		QuestMarker.createMarker(location.clone().add(0, 2.25, 0));
-		completeReportingForDutyInteraction = new InteractionSequence(5) {
+		completeReportingForDutyInteraction = new InteractionSequence(7) {
 			@Override
 			protected void onAdvance(PlayerCharacter pc, int messageIndex) {
 				switch (messageIndex) {
@@ -49,30 +47,21 @@ public class MelcherMayor extends StaticHuman {
 							pc);
 					break;
 				case 4:
+					say("To start, thieves that live in the woods around Melcher have been stealing food from the people of Melcher. Our people are going to starve if we don't do something.",
+							pc);
+					break;
+				case 5:
+					say("I want you to find their hideout and teach them a lesson. Their crimes will not go unpunished!",
+							pc);
+					break;
+				case 6:
 					Quests.REPORTING_FOR_DUTY.getObjective(0).complete(pc);
-					break;
-				}
-			}
-		};
-		startSlayingTheThievesInteraction = new InteractionSequence(3) {
-			@Override
-			protected void onAdvance(PlayerCharacter pc, int messageIndex) {
-				switch (messageIndex) {
-				case 0:
-					say("Thieves that live in the woods around Melcher have been stealing food from the people of Melcher. Our people are going to starve if we don't do something.",
-							pc);
-					break;
-				case 1:
-					say("I want you to find their hideout and slay them for us. Their crimes will not go unpunished!",
-							pc);
-					break;
-				case 2:
 					Quests.SLAYING_THE_THIEVES.start(pc);
 					break;
 				}
 			}
 		};
-		completeSlayingTheThievesInteraction = new InteractionSequence(3) {
+		completeSlayingTheThievesInteraction = new InteractionSequence(7) {
 			@Override
 			protected void onAdvance(PlayerCharacter pc, int messageIndex) {
 				switch (messageIndex) {
@@ -81,35 +70,23 @@ public class MelcherMayor extends StaticHuman {
 							pc);
 					break;
 				case 1:
-					say("I have another quest for you when you're ready.", pc);
+					say("I have one last task for you, however.", pc);
 					break;
 				case 2:
-					Quests.SLAYING_THE_THIEVES.getObjective(1).complete(pc);
-					break;
-				}
-			}
-		};
-		startClearingTheRoadInteraction = new InteractionSequence(1) {
-			@Override
-			protected void onAdvance(PlayerCharacter pc, int interactionIndex) {
-				switch (6) {
-				case 0:
-					say("I have one last task for you.", pc);
-					break;
-				case 1:
 					say("Highwaymen have been ambushing travellers along the road east of Melcher.", pc);
 					break;
-				case 2:
-					say("They've been murdering and looting traders coming to and leaving from this village.", pc);
-					break;
 				case 3:
-					say("They must be dealt with at once. Please take care of them for me.", pc);
+					say("They've been murdering and looting traders who visit Melcher.", pc);
 					break;
 				case 4:
+					say("They must be dealt with at once. Please take care of them for me.", pc);
+					break;
+				case 5:
 					say("When you're done, speak with the mayor of flinton to inform him that the roads have been made safer.",
 							pc);
 					break;
-				case 5:
+				case 6:
+					Quests.SLAYING_THE_THIEVES.getObjective(1).complete(pc);
 					Quests.CLEARING_THE_ROAD.start(pc);
 					break;
 				}
@@ -121,18 +98,12 @@ public class MelcherMayor extends StaticHuman {
 	protected void onInteract(PlayerCharacter pc) {
 		if (Quests.REPORTING_FOR_DUTY.compareStatus(pc, QuestStatus.IN_PROGRESS)) {
 			completeReportingForDutyInteraction.advance(pc);
-		} else if (Quests.REPORTING_FOR_DUTY.compareStatus(pc, QuestStatus.COMPLETED)
-				&& Quests.SLAYING_THE_THIEVES.compareStatus(pc, QuestStatus.NOT_STARTED)) {
-			startSlayingTheThievesInteraction.advance(pc);
 		} else if (Quests.SLAYING_THE_THIEVES.compareStatus(pc, QuestStatus.IN_PROGRESS)) {
 			if (Quests.SLAYING_THE_THIEVES.getObjective(0).isComplete(pc)) {
 				completeSlayingTheThievesInteraction.advance(pc);
 			} else {
-				say("Please slay those thieves for us, adventurer.", pc);
+				say("Please teach those thieves a lesson for us, adventurer.", pc);
 			}
-		} else if (Quests.SLAYING_THE_THIEVES.compareStatus(pc, QuestStatus.COMPLETED)
-				&& Quests.CLEARING_THE_ROAD.compareStatus(pc, QuestStatus.NOT_STARTED)) {
-			startClearingTheRoadInteraction.advance(pc);
 		} else {
 			say("Greetings adventurer!", pc);
 		}

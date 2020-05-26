@@ -109,7 +109,7 @@ public abstract class AbstractHumanEnemy extends NonPlayerCharacter {
 		aiSyncer.setEnabled(true);
 		aiMap.put(ai, this);
 	}
-
+ 
 	@Override
 	protected void despawn() {
 		super.despawn();

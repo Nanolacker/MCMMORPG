@@ -49,9 +49,9 @@ public class LootChest {
 	private Location trueLocation;
 	private boolean isSpawned;
 
-	private LootChest(Location location, CardinalDirection direction, double respawnTime, Item[] contents) {
-		this.targetLocation = BukkitUtils.nearestEmptyBlockLocation(location);
-		this.direction = direction;
+	private LootChest(Location location, double respawnTime, Item[] contents) {
+		this.targetLocation = location;
+		this.direction = CardinalDirection.forVector(location.getDirection());
 		this.respawnTime = respawnTime;
 		this.contents = contents;
 		this.text = new TextPanel(location, ChatColor.GOLD + "Loot Chest");
@@ -85,25 +85,22 @@ public class LootChest {
 		update.schedule();
 	}
 
-	public static LootChest spawnLootChest(Location location, CardinalDirection direction, double respawnTime,
-			Item... contents) {
-		return new LootChest(location, direction, respawnTime, contents);
-	}
-
 	/**
 	 * Create a loot chest at the specified location with the specified items
-	 * contents.
+	 * contents. The direction of the loot chest depends on the yaw of its location.
+	 * The loot chest will respawn after the specified duration.
 	 */
-	public static LootChest spawnLootChest(Location location, CardinalDirection direction, Item... contents) {
-		return new LootChest(location, direction, 0, contents);
+	public static LootChest spawnLootChest(Location location, double respawnTime, Item... contents) {
+		return new LootChest(location, respawnTime, contents);
 	}
 
 	/**
 	 * Create a loot chest at the specified location with the specified items
-	 * contents.
+	 * contents. The direction of the loot chest depends on the yaw of its location.
+	 * The loot chest will not respawn after being looted.
 	 */
 	public static LootChest spawnLootChest(Location location, Item... contents) {
-		return new LootChest(location, CardinalDirection.NORTH, 0, contents);
+		return new LootChest(location, 0, contents);
 	}
 
 	private static BlockFace blockFaceForCardinalDirection(CardinalDirection direction) {
@@ -193,7 +190,7 @@ public class LootChest {
 		new DelayedTask(respawnTime) {
 			@Override
 			protected void run() {
-				spawnLootChest(targetLocation, direction, respawnTime, contents);
+				spawnLootChest(targetLocation, respawnTime, contents);
 			}
 		}.schedule();
 	}
@@ -226,8 +223,10 @@ public class LootChest {
 	 * Called when the plugin is disabled.
 	 */
 	public static void removeAll() {
-		for (int i = 0; i < lootChests.size(); i++) {
-			LootChest lootChest = lootChests.get(i);
+		int lootChestCount = lootChests.size();
+		for (int i = 0; i < lootChestCount; i++) {
+			LootChest lootChest = lootChests.get(0);
+			// because lootChests is being modified
 			lootChest.remove();
 		}
 	}

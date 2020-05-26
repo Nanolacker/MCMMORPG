@@ -34,7 +34,7 @@ public class MathUtils {
 	 * Converts from seconds to ticks, rounding up to the nearest tick.
 	 */
 	public static int secondsToTicks(double seconds) {
-		return (int) (seconds * 20.0);
+		return (int) Math.round(seconds * 20.0);
 	}
 
 	public static double ticksToSeconds(int ticks) {

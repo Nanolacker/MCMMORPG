@@ -20,6 +20,7 @@ import com.mcmmorpg.common.item.Weapon;
 import com.mcmmorpg.common.physics.Collider;
 import com.mcmmorpg.common.physics.Ray;
 import com.mcmmorpg.common.physics.Raycast;
+import com.mcmmorpg.common.playerClass.PlayerClass;
 import com.mcmmorpg.common.sound.Noise;
 import com.mcmmorpg.common.utils.MathUtils;
 
@@ -33,23 +34,18 @@ public class ItemListener implements Listener {
 
 	@EventHandler
 	private void onUseWeapon(PlayerCharacterUseWeaponEvent event) {
-		Weapon weapon = event.getWeapon();
 		PlayerCharacter pc = event.getPlayerCharacter();
-		if (weapon == Items.APPRENTICE_SWORD) {
-			useFighterWeapon(pc, 4);
-		} else if (weapon == Items.THIEF_DAGGER) {
-			useFighterWeapon(pc, 6);
-		} else if (weapon == Items.SPEAR_OF_THE_MELCHER_GUARD) {
-			useFighterWeapon(pc, 10);
-		} else if (weapon == Items.APPRENTICE_STAFF) {
-			useMageStaff(pc, 2);
-		} else if (weapon == Items.STAFF_OF_THE_MELCHER_GUARD) {
-			useMageStaff(pc, 7);
+		PlayerClass playerClass = pc.getPlayerClass();
+		Weapon weapon = event.getWeapon();
+		if (playerClass == PlayerClasses.FIGHER) {
+			useFighterWeapon(pc, weapon);
+		} else if (playerClass == PlayerClasses.MAGE) {
+			useMageWeapon(pc, weapon);
 		}
 	}
 
-	private void useFighterWeapon(PlayerCharacter pc, double baseDamage) {
-		double damage = baseDamage = baseDamage + pc.getLevel();
+	private void useFighterWeapon(PlayerCharacter pc, Weapon weapon) {
+		double damage = weapon.getBaseDamage() + 2 * pc.getLevel();
 		Location start = pc.getLocation().add(0, 1.5, 0);
 		Vector direction = start.getDirection();
 		Location particleLocation = start.clone().add(direction.clone().multiply(2));
@@ -71,8 +67,16 @@ public class ItemListener implements Listener {
 		}
 	}
 
-	private void useMageStaff(PlayerCharacter pc, double baseDamage) {
-		double damage = baseDamage = baseDamage + pc.getLevel();
+	private void useMageWeapon(PlayerCharacter pc, Weapon weapon) {
+		if (weapon == Items.APPRENTICE_STAFF || weapon == Items.STAFF_OF_THE_MELCHER_GUARD) {
+			useMageStaff(pc, weapon);
+		} else if (weapon == Items.SKELETAL_WAND) {
+			useMageWand(pc, weapon, Particle.SPELL_WITCH);
+		}
+	}
+
+	private void useMageStaff(PlayerCharacter pc, Weapon weapon) {
+		double damage = weapon.getBaseDamage() + pc.getLevel();
 		Location start = pc.getLocation().add(0, 1.5, 0);
 		Vector direction = start.getDirection();
 		Location particleLocation = start.clone().add(direction.clone().multiply(2));
@@ -92,6 +96,26 @@ public class ItemListener implements Listener {
 		if (!missed) {
 			pc.disarm(1.25);
 		}
+	}
+
+	private void useMageWand(PlayerCharacter pc, Weapon weapon, Particle particleEffect) {
+		double damageAmount = weapon.getBaseDamage() + pc.getLevel();
+		double maxDistance = 15;
+		Location start = pc.getHandLocation();
+		Location end = start.clone().add(start.getDirection().multiply(maxDistance));
+		Ray ray = new Ray(start, end);
+		ray.draw(particleEffect, 1);
+		Raycast raycast = new Raycast(ray);
+		Collider[] hits = raycast.getHits();
+		for (Collider hit : hits) {
+			if (hit instanceof CharacterCollider) {
+				AbstractCharacter character = ((CharacterCollider) hit).getCharacter();
+				if (!character.isFriendly(pc)) {
+					character.damage(damageAmount, pc);
+				}
+			}
+		}
+		pc.disarm(1);
 	}
 
 	@EventHandler

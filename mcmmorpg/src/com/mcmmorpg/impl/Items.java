@@ -9,20 +9,32 @@ public class Items {
 
 	public static final Weapon APPRENTICE_SWORD = (Weapon) Item.forName("Apprentice Sword");
 	public static final Weapon APPRENTICE_STAFF = (Weapon) Item.forName("Apprentice Staff");
-	public static final Weapon THIEF_DAGGER = (Weapon) Item.forName("Thief Dagger");
 	public static final Weapon SPEAR_OF_THE_MELCHER_GUARD = (Weapon) Item.forName("Sword of the Melcher Guard");
 	public static final Weapon STAFF_OF_THE_MELCHER_GUARD = (Weapon) Item.forName("Staff of the Melcher Guard");
-	public static final Weapon BATTLE_AXE = (Weapon) Item.forName("Battle Axe");
-	public static final Weapon SKELETAL_WAND = (Weapon) Item.forName("Skeletal Wand");
 
-	public static final ArmorItem BATTERED_MAIL_HELMET = (ArmorItem) Item.forName("Battered Mail Helmet");
-	public static final ArmorItem BATTERED_MAIL_BREASTPLATE = (ArmorItem) Item.forName("Battered Mail Breastplate");
-	public static final ArmorItem BATTERED_GREAVES = (ArmorItem) Item.forName("Battered Greaves");
-	public static final ArmorItem BATTERED_MAIL_BOOTS = (ArmorItem) Item.forName("Battered Mail Boots");
+	public static final Weapon THIEF_DAGGER = (Weapon) Item.forName("Thief Dagger");
+	public static final ArmorItem HIDE_HEADGEAR = (ArmorItem) Item.forName("Hide Headgear");
+	public static final ArmorItem HIDE_TUNIC = (ArmorItem) Item.forName("Hide Tunic");
+	public static final ArmorItem HIDE_LEGGINGS = (ArmorItem) Item.forName("Hide Leggings");
+	public static final ArmorItem HIDE_BOOTS = (ArmorItem) Item.forName("Hide Boots");
+
+	public static final Weapon BRITTLE_WAND = (Weapon) Item.forName("Brittle Wand");
+	public static final ArmorItem TORN_HOOD = (ArmorItem) Item.forName("Torn Hood");
 	public static final ArmorItem TORN_ROBES = (ArmorItem) Item.forName("Torn Robes");
-	public static final ArmorItem WORN_SHOES = (ArmorItem) Item.forName("Worn Shoes");
-	
-	public static final ArmorItem CULTIST_ROBES = (ArmorItem) Item.forName("Cultist Robes");
+	public static final ArmorItem TORN_LEGGINGS = (ArmorItem) Item.forName("Torn Leggings");
+	public static final ArmorItem TORN_SHOES = (ArmorItem) Item.forName("Torn Shoes");
+
+	public static final Weapon BATTLE_AXE = (Weapon) Item.forName("Battle Axe");
+	public static final ArmorItem BATTERED_MAIL_HELMET = (ArmorItem) Item.forName("Battered Mail Helmet");
+	public static final ArmorItem BATTERED_MAIL_CUIRASS = (ArmorItem) Item.forName("Battered Mail Cuirass");
+	public static final ArmorItem BATTERED_MAIL_GREAVES = (ArmorItem) Item.forName("Battered Mail Greaves");
+	public static final ArmorItem BATTERED_MAIL_BOOTS = (ArmorItem) Item.forName("Battered Mail Boots");
+
+	public static final Weapon SKELETAL_WAND = (Weapon) Item.forName("Skeletal Wand");
+	public static final ArmorItem CONJURERS_HOOD = (ArmorItem) Item.forName("Conjurer's Hood");
+	public static final ArmorItem CONJURERS_ROBES = (ArmorItem) Item.forName("Conjurer's Robes");
+	public static final ArmorItem CONJURERS_LEGGINGS = (ArmorItem) Item.forName("Conjurer's Leggings");
+	public static final ArmorItem CONJURERS_SHOES = (ArmorItem) Item.forName("Conjurer's Shoes");
 
 	public static final Item FOOD_SUPPLIES = Item.forName("Food Supplies");
 	public static final Item BOAR_FLANK = Item.forName("Boar Flank");

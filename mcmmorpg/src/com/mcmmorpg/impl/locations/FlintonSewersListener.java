@@ -18,18 +18,19 @@ import org.bukkit.util.Vector;
 import com.mcmmorpg.common.character.PlayerCharacter;
 import com.mcmmorpg.common.character.PlayerCharacter.PlayerCharacterCollider;
 import com.mcmmorpg.common.character.Source;
+import com.mcmmorpg.common.item.Item;
 import com.mcmmorpg.common.item.LootChest;
 import com.mcmmorpg.common.physics.Collider;
 import com.mcmmorpg.common.sound.Noise;
 import com.mcmmorpg.common.time.RepeatingTask;
 import com.mcmmorpg.common.ui.TextPanel;
 import com.mcmmorpg.common.ui.TitleText;
-import com.mcmmorpg.common.utils.CardinalDirection;
 import com.mcmmorpg.common.utils.MathUtils;
 import com.mcmmorpg.impl.Items;
 import com.mcmmorpg.impl.Soundtracks;
 import com.mcmmorpg.impl.Worlds;
 import com.mcmmorpg.impl.Zones;
+import com.mcmmorpg.impl.npcs.Adventurer;
 import com.mcmmorpg.impl.npcs.ColossalGelatinousCube;
 import com.mcmmorpg.impl.npcs.CultistMage;
 import com.mcmmorpg.impl.npcs.CultistSummoner;
@@ -40,6 +41,8 @@ import com.mcmmorpg.impl.npcs.FlintonSewersCultSacrifice;
 import com.mcmmorpg.impl.npcs.FlintonSewersRat;
 import com.mcmmorpg.impl.npcs.FlintonSewersXylphanos;
 import com.mcmmorpg.impl.npcs.GelatinousCube;
+import com.mcmmorpg.impl.npcs.GuardNadia;
+import com.mcmmorpg.impl.npcs.GuardThomas;
 import com.mcmmorpg.impl.npcs.SmallGelatinousCube;
 
 public class FlintonSewersListener implements Listener {
@@ -56,6 +59,15 @@ public class FlintonSewersListener implements Listener {
 	private static final Location PLAYER_CHARACTER_RESPAWN_LOCATION = new Location(Worlds.ELADRADOR, -269, 42.5, 78,
 			180, 0);
 	private static final Location ALCHEMIST_LOCATION = new Location(Worlds.ELADRADOR, -274, 42.5, 79, 180, 0);
+	private static final Location GUARD_NADIA_LOCATION = new Location(Worlds.ELADRADOR, -288.655881, 43.000000,
+			24.776586, 341.285797f, 49.350960f);
+	private static final Location GUARD_THOMAS_LOCATION = new Location(Worlds.ELADRADOR, -286.187316, 43.000000,
+			25.479414, 14.596418f, 42.747627f);
+	private static final Location[] ADVENTURER_LOCATIONS = {
+			new Location(Worlds.ELADRADOR, -283.220539, 42.500000, 69.581283, -29.541777f, 25.022989f),
+			new Location(Worlds.ELADRADOR, -264.001247, 42.500000, 79.596785, 191.547241f, 20.193523f),
+			new Location(Worlds.ELADRADOR, -289.408052, 43.000000, 29.271209, 315.324951f, 29.504995f),
+			new Location(Worlds.ELADRADOR, -285.484066, 43.000000, 28.261551, 6.412842f, 18.072203f) };
 	private static final Location[] RAT_LOCATIONS = {
 			new Location(Worlds.ELADRADOR, -232.826374, 42.500000, 85.681498, -38.950882f, 18.419712f),
 			new Location(Worlds.ELADRADOR, -201.771779, 42.500000, 93.330063, -122.013359f, 18.767254f),
@@ -138,28 +150,36 @@ public class FlintonSewersListener implements Listener {
 			new Location(Worlds.ELADRADOR, -361.319396, 43.000000, -4.471523, -0.179626f, 29.875282f), };
 	private static final Location[] CULTIST_MAGE_LOCATOINS = {
 			new Location(Worlds.ELADRADOR, -408.327771, 42.000000, 56.875984, 154.889282f, 25.704796f),
-			new Location(Worlds.ELADRADOR, -407.245511, 42.000000, 49.336538, 155.236816f, 25.704796f) };
+			new Location(Worlds.ELADRADOR, -407.245511, 42.000000, 49.336538, 155.236816f, 25.704796f),
+			new Location(Worlds.ELADRADOR, -364.974173, 43.000000, 64.404108, 181.571655f, 41.357449f),
+			new Location(Worlds.ELADRADOR, -360.449712, 43.000000, 64.460531, 181.571655f, 41.357449f) };
 	private static final Location[] CULTIST_SUMMONER_LOCATIONS = {
 			new Location(Worlds.ELADRADOR, -413.452912, 42.000000, 52.049572, 91.239502f, 39.953979f),
 			new Location(Worlds.ELADRADOR, -423.961213, 42.000000, 62.317555, 178.472473f, 77.836029f),
 			new Location(Worlds.ELADRADOR, -434.167149, 42.000000, 52.071448, 269.180481f, 60.111427f),
-			new Location(Worlds.ELADRADOR, -424.141625, 42.000000, 41.386090, 4.057861f, 47.252380f) };
+			new Location(Worlds.ELADRADOR, -424.141625, 42.000000, 41.386090, 4.057861f, 47.252380f),
+			new Location(Worlds.ELADRADOR, -364.516160, 43.000000, 58.550369, 310.110229f, 22.937761f),
+			new Location(Worlds.ELADRADOR, -360.506589, 43.000000, 59.223588, 27.611450f, 26.065636f) };
 	private static final Location[] SACRIFICE_LOCATIONS = {
 			new Location(Worlds.ELADRADOR, -428.389763, 46.000000, 54.862500, 164.465683f, 421.052555f),
 			new Location(Worlds.ELADRADOR, -426.321504, 47.000000, 49.862500, 183.232819f, 84.800171f),
 			new Location(Worlds.ELADRADOR, -422.642433, 49.000000, 52.862500, 176.977356f, 74.373940f) };
 	private static final Location XYLPHANOS_LOCATION = new Location(Worlds.ELADRADOR, -424.004659, 42.000000, 51.943707,
 			259.449280f, 79.573784f);
-	private static final Location[] LOOT_CHEST_LOCATIONS = {
-			new Location(Worlds.ELADRADOR, -204.412130, 44.000000, 70.546381, -99.654922f, 58.026360f),
-			new Location(Worlds.ELADRADOR, -207.574530, 44.000000, 49.483283, -1.006195f, 43.777161f),
-			new Location(Worlds.ELADRADOR, -219.392660, 44.000000, -2.571479, -95.189117f, 53.160770f),
-			new Location(Worlds.ELADRADOR, -159, 44, 14, -84.363235f, 44.819820f),
-			new Location(Worlds.ELADRADOR, -188.425285, 44.000000, 104.443225, 251.362183f, 62.544495f),
-			new Location(Worlds.ELADRADOR, -354.506557, 44.000000, 57.414971, 259.406860f, 61.154373f),
-			new Location(Worlds.ELADRADOR, -354.520152, 44.000000, 29.389884, 263.229248f, 45.862587f),
-			new Location(Worlds.ELADRADOR, -357.437898, 44.000000, 4.411252, 0.941406f, 41.344559f),
-			new Location(Worlds.ELADRADOR, -273.401182, 44.000000, 9.612517, 166.771606f, 26.400301f) };
+	private static final Location[] LOOT_CHEST_LOCATIONS = { new Location(Worlds.ELADRADOR, -204, 44, 70, 90, 0),
+			new Location(Worlds.ELADRADOR, -208, 44, 49, 180, 0), new Location(Worlds.ELADRADOR, -220, 44, -3, 90, 0),
+			new Location(Worlds.ELADRADOR, -159, 44, 14, 90, 0), new Location(Worlds.ELADRADOR, -188, 44, 104, 90, 0),
+			new Location(Worlds.ELADRADOR, -354, 44, 57, 90, 0), new Location(Worlds.ELADRADOR, -354, 44, 29, 90, 0),
+			new Location(Worlds.ELADRADOR, -357, 44, 4, 180, 0), new Location(Worlds.ELADRADOR, -273, 44, 9, 0, 0) };
+	private static final Item[][] LOOT_CHEST_CONTENTS = { { Items.EAST_SEWERS_KEY, Items.POTION_OF_LESSER_HEALING },
+			{ Items.WEST_SEWERS_KEY, Items.POTION_OF_LESSER_HEALING },
+			{ Items.EAST_SEWERS_KEY, Items.POTION_OF_LESSER_HEALING },
+			{ Items.NORTH_SEWERS_KEY, Items.POTION_OF_LESSER_HEALING, Items.POTION_OF_LESSER_HEALING },
+			{ Items.NORTH_SEWERS_KEY, Items.POTION_OF_LESSER_HEALING },
+			{ Items.WEST_SEWERS_KEY, Items.POTION_OF_HEALING },
+			{ Items.NORTH_SEWERS_KEY, Items.POTION_OF_LESSER_HEALING },
+			{ Items.NORTH_SEWERS_KEY, Items.POTION_OF_LESSER_HEALING }, { Items.SKELETAL_WAND, Items.BATTLE_AXE,
+					Items.POTION_OF_LESSER_HEALING, Items.POTION_OF_LESSER_HEALING, Items.POTION_OF_HEALING } };
 
 	public static final Map<PlayerCharacter, Integer> smallGelatinousCubeCounts = new HashMap<>();
 
@@ -244,12 +264,16 @@ public class FlintonSewersListener implements Listener {
 					}
 				}
 			}
-
 		}.schedule();
 	}
 
 	private void spawnNpcs() {
 		new FlintonSewersAlchemist(ALCHEMIST_LOCATION).setAlive(true);
+		new GuardNadia(GUARD_NADIA_LOCATION).setAlive(true);
+		new GuardThomas(GUARD_THOMAS_LOCATION).setAlive(true);
+		for (Location location : ADVENTURER_LOCATIONS) {
+			new Adventurer(location).setAlive(true);
+		}
 		for (Location location : RAT_LOCATIONS) {
 			new FlintonSewersRat(location).setAlive(true);
 		}
@@ -289,8 +313,10 @@ public class FlintonSewersListener implements Listener {
 	}
 
 	private void placeLootChests() {
-		for (Location location : LOOT_CHEST_LOCATIONS) {
-			LootChest.spawnLootChest(location, CardinalDirection.SOUTH, 5);
+		for (int i = 0; i < LOOT_CHEST_LOCATIONS.length; i++) {
+			Location location = LOOT_CHEST_LOCATIONS[i];
+			Item[] contents = LOOT_CHEST_CONTENTS[i];
+			LootChest.spawnLootChest(location, 5, contents);
 		}
 	}
 

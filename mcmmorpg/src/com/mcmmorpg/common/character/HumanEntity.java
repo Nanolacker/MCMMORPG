@@ -17,7 +17,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.EntityEquipment;
 import org.bukkit.inventory.ItemStack;
 
-import com.mcmmorpg.common.time.DelayedTask;
 import com.mcmmorpg.common.time.RepeatingTask;
 import com.mcmmorpg.common.utils.BukkitUtils;
 import com.mojang.authlib.GameProfile;
@@ -40,9 +39,7 @@ import net.minecraft.server.v1_15_R1.WorldServer;
 public class HumanEntity {
 
 	private static final double RENDER_PERIOD = 1.0;
-	private static final double RENDER_RADIUS = 50.0;
-	private static final int PACKET_COUNT = 5;
-	private static final double PACKET_SEND_PERIOD = 0.2;
+	private static final double RENDER_RADIUS = 40.0;
 
 	private static final List<HumanEntity> humanEntities = new ArrayList<>();
 
@@ -113,19 +110,12 @@ public class HumanEntity {
 			return;
 		}
 		PlayerConnection playerConnection = ((CraftPlayer) player).getHandle().playerConnection;
-		for (int i = 0; i < PACKET_COUNT; i++) {
-			new DelayedTask(i * PACKET_SEND_PERIOD) {
-				@Override
-				protected void run() {
-					PacketPlayOutPlayerInfo addPlayerPacket = new PacketPlayOutPlayerInfo(
-							PacketPlayOutPlayerInfo.EnumPlayerInfoAction.ADD_PLAYER, entityPlayer);
-					PacketPlayOutNamedEntitySpawn spawnPacket = new PacketPlayOutNamedEntitySpawn(entityPlayer);
+		PacketPlayOutPlayerInfo addPlayerPacket = new PacketPlayOutPlayerInfo(
+				PacketPlayOutPlayerInfo.EnumPlayerInfoAction.ADD_PLAYER, entityPlayer);
+		PacketPlayOutNamedEntitySpawn spawnPacket = new PacketPlayOutNamedEntitySpawn(entityPlayer);
 
-					playerConnection.sendPacket(addPlayerPacket);
-					playerConnection.sendPacket(spawnPacket);
-				}
-			}.schedule();
-		}
+		playerConnection.sendPacket(addPlayerPacket);
+		playerConnection.sendPacket(spawnPacket);
 		viewers.add(player);
 	}
 
