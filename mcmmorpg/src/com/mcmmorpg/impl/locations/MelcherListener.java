@@ -166,8 +166,10 @@ public class MelcherListener implements Listener {
 		for (Location location : TRAINING_DUMMY_LOCATIONS) {
 			new TrainingDummy(location).setAlive(true);
 		}
-		for (Location location : ADVENTURER_LOCATIONS) {
-			new Adventurer(location).setAlive(true);
+		for (int i = 0; i < ADVENTURER_LOCATIONS.length; i++) {
+			Location location = ADVENTURER_LOCATIONS[i];
+			boolean male = Math.random() < 0.5;
+			new Adventurer(location, male).setAlive(true);
 		}
 		for (Location location : CHICKEN_LOCATIONS) {
 			new Chicken(location).setAlive(true);

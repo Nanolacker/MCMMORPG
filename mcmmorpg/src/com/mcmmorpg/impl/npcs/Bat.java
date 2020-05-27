@@ -30,6 +30,9 @@ import com.mcmmorpg.common.utils.BukkitUtils;
 
 public class Bat extends NonPlayerCharacter {
 
+	private static final int LEVEL = 10;
+	private static final double MAX_HEALTH = 50;
+	private static final double DAMAGE_AMOUNT = 10;
 	private static final double RESPAWN_TIME = 60;
 	private static final Noise HURT_NOISE = new Noise(Sound.ENTITY_BAT_HURT);
 	private static final Noise DEATH_NOISE = new Noise(Sound.ENTITY_BAT_DEATH);
@@ -56,7 +59,7 @@ public class Bat extends NonPlayerCharacter {
 						if (pc == null) {
 							return;
 						}
-						pc.damage(bat.damageAmount(), bat);
+						pc.damage(DAMAGE_AMOUNT, bat);
 					}
 				}
 			}
@@ -64,21 +67,13 @@ public class Bat extends NonPlayerCharacter {
 		EventManager.registerEvents(listener);
 	}
 
-	public Bat(int level, Location spawnLocation, double respawnTime) {
-		super(ChatColor.RED + "Bat", level, spawnLocation);
-		super.setMaxHealth(maxHealth());
+	public Bat(Location spawnLocation) {
+		super(ChatColor.RED + "Bat", LEVEL, spawnLocation);
+		super.setMaxHealth(MAX_HEALTH);
 		super.setHeight(1);
 		this.spawnLocation = spawnLocation;
 		hitbox = new CharacterCollider(this, spawnLocation.clone(), 2, 2, 2);
 		aiSyncer = new MovementSynchronizer(this, MovementSynchronizerMode.CHARACTER_FOLLOWS_ENTITY);
-	}
-
-	private double maxHealth() {
-		return 10 + 2 * getLevel();
-	}
-
-	private double damageAmount() {
-		return 2 * getLevel();
 	}
 
 	@Override
@@ -111,7 +106,9 @@ public class Bat extends NonPlayerCharacter {
 	public void setLocation(Location location) {
 		super.setLocation(location);
 		hitbox.setCenter(location.clone().add(0, 0.5, 0));
-		entity.teleport(location);
+		if (isSpawned()) {
+			entity.teleport(location);
+		}
 	}
 
 	@Override

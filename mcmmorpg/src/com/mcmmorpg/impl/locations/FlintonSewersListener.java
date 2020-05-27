@@ -67,7 +67,14 @@ public class FlintonSewersListener implements Listener {
 			new Location(Worlds.ELADRADOR, -283.220539, 42.500000, 69.581283, -29.541777f, 25.022989f),
 			new Location(Worlds.ELADRADOR, -264.001247, 42.500000, 79.596785, 191.547241f, 20.193523f),
 			new Location(Worlds.ELADRADOR, -289.408052, 43.000000, 29.271209, 315.324951f, 29.504995f),
-			new Location(Worlds.ELADRADOR, -285.484066, 43.000000, 28.261551, 6.412842f, 18.072203f) };
+			new Location(Worlds.ELADRADOR, -285.484066, 43.000000, 28.261551, 6.412842f, 18.072203f),
+			new Location(Worlds.ELADRADOR, -360.449712, 43.000000, 64.460531, 181.571655f, 41.357449f),
+			new Location(Worlds.ELADRADOR, -364.974173, 43.000000, 64.404108, 181.571655f, 41.357449f),
+			new Location(Worlds.ELADRADOR, -274.542431, 42.500000, 49.999362, 163.343491f, 31.278784f),
+			new Location(Worlds.ELADRADOR, -276.569870, 42.500000, 109.014945, -70.951630f, 33.364014f),
+			new Location(Worlds.ELADRADOR, -316.701861, 42.500000, 91.748185, -148.106323f, 42.400116f),
+			new Location(Worlds.ELADRADOR, -304.604724, 42.500000, 48.562879, -124.126617f, 31.278788f),
+			new Location(Worlds.ELADRADOR, -279.839748, 42.500000, 41.056248, -337.811829f, 19.462366f) };
 	private static final Location[] RAT_LOCATIONS = {
 			new Location(Worlds.ELADRADOR, -232.826374, 42.500000, 85.681498, -38.950882f, 18.419712f),
 			new Location(Worlds.ELADRADOR, -201.771779, 42.500000, 93.330063, -122.013359f, 18.767254f),
@@ -115,7 +122,7 @@ public class FlintonSewersListener implements Listener {
 			new Location(Worlds.ELADRADOR, -182.075481, 42.500000, 82.429137, -23.823486f, 33.711517f),
 			new Location(Worlds.ELADRADOR, -157.577617, 42.500000, 101.407450, -48.498413f, 41.357437f),
 			new Location(Worlds.ELADRADOR, -137.925418, 42.500000, 113.935849, -163.881348f, 38.229561f),
-			new Location(Worlds.ELADRADOR, -137.542198, 42.500000, 81.123624, -133.645752f, 42.052521f), };
+			new Location(Worlds.ELADRADOR, -137.542198, 42.500000, 81.123624, -133.645752f, 42.052521f) };
 	private static final Location[] COLOSSAL_GELATINOUS_CUBE_LOCATIONS = {
 			new Location(Worlds.ELADRADOR, -111.284247, 42.000000, 90.107313, -1.620275f, 81.672386f) };
 	private static final Location[] BANDIT_LOCATIONS = {
@@ -271,8 +278,10 @@ public class FlintonSewersListener implements Listener {
 		new FlintonSewersAlchemist(ALCHEMIST_LOCATION).setAlive(true);
 		new GuardNadia(GUARD_NADIA_LOCATION).setAlive(true);
 		new GuardThomas(GUARD_THOMAS_LOCATION).setAlive(true);
-		for (Location location : ADVENTURER_LOCATIONS) {
-			new Adventurer(location).setAlive(true);
+		for (int i = 0; i < ADVENTURER_LOCATIONS.length; i++) {
+			Location location = ADVENTURER_LOCATIONS[i];
+			boolean male = Math.random() < 0.5;
+			new Adventurer(location, male).setAlive(true);
 		}
 		for (Location location : RAT_LOCATIONS) {
 			new FlintonSewersRat(location).setAlive(true);
