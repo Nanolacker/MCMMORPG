@@ -5,6 +5,9 @@ public class MathUtils {
 	private MathUtils() {
 	}
 
+	/**
+	 * Returns num restricted between min and max (inclusive).
+	 */
 	public static double clamp(double num, double min, double max) {
 		if (num < min) {
 			return min;
@@ -14,6 +17,9 @@ public class MathUtils {
 		return num;
 	}
 
+	/**
+	 * Returns whether num is between the two endpoints.
+	 */
 	public static boolean isBetween(double num, double min, boolean includeMin, double max, boolean includeMax) {
 		if (includeMin) {
 			if (includeMax) {
@@ -31,12 +37,15 @@ public class MathUtils {
 	}
 
 	/**
-	 * Converts from seconds to ticks, rounding up to the nearest tick.
+	 * Converts seconds approximately (rounded) to ticks.
 	 */
 	public static int secondsToTicks(double seconds) {
 		return (int) Math.round(seconds * 20.0);
 	}
 
+	/**
+	 * Converts from ticks to seconds exactly.
+	 */
 	public static double ticksToSeconds(int ticks) {
 		return ticks / 20.0;
 	}

@@ -24,11 +24,17 @@ public class SidebarText {
 	private String title;
 	private String text;
 
+	/**
+	 * Creates sidebar text with the specified title and text to be displayed below.
+	 */
 	public SidebarText(String title, String text) {
 		this.title = title;
 		this.text = text;
 	}
 
+	/**
+	 * Applies sidebar text to the specified player.
+	 */
 	public void apply(Player player) {
 		Scoreboard scoreboard = player.getScoreboard();
 		if (scoreboard == null) {

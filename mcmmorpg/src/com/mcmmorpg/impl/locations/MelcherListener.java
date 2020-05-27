@@ -46,7 +46,15 @@ public class MelcherListener implements Listener {
 			new Location(Worlds.ELADRADOR, -969, 71, 177), new Location(Worlds.ELADRADOR, -957, 72, 157),
 			new Location(Worlds.ELADRADOR, -929, 72, 155), new Location(Worlds.ELADRADOR, -1082, 70, 242),
 			new Location(Worlds.ELADRADOR, -1073, 70, 241), new Location(Worlds.ELADRADOR, -1079, 75, 240),
-			new Location(Worlds.ELADRADOR, -1094, 70, 202), new Location(Worlds.ELADRADOR, -1089, 70, 202) };
+			new Location(Worlds.ELADRADOR, -1094, 70, 202), new Location(Worlds.ELADRADOR, -1089, 70, 202),
+			new Location(Worlds.ELADRADOR, -1160.519999, 73.000000, 260.705379, -84.450874f, 27.899969f),
+			new Location(Worlds.ELADRADOR, -1145.512238, 73.000000, 253.067318, -108.151115f, 36.450005f),
+			new Location(Worlds.ELADRADOR, -1125.251013, 73.000000, 237.489915, -81.750854f, 41.850060f),
+			new Location(Worlds.ELADRADOR, -1092.976828, 70.000000, 228.970498, -106.501106f, 47.700119f),
+			new Location(Worlds.ELADRADOR, -1053.620191, 70.000000, 201.375376, -64.951118f, -21.899975f),
+			new Location(Worlds.ELADRADOR, -1029.301359, 70.000000, 199.677786, -121.501740f, 32.700016f),
+			new Location(Worlds.ELADRADOR, -1002.244331, 70.000000, 194.330394, -75.001625f, 39.299908f),
+			new Location(Worlds.ELADRADOR, -970.673039, 72.000000, 153.875745, -13.502177f, 34.199734f) };
 	private static final Location[] LUMBERJACK_LOCATIONS = { new Location(Worlds.ELADRADOR, -1049, 70, 232, 225, 0) };
 	private static final Location MAYOR_LOCATION = new Location(Worlds.ELADRADOR, -1092.5, 70, 197.5);
 	private static final Location FARMER_LOCATION = new Location(Worlds.ELADRADOR, -1166, 73, 246);

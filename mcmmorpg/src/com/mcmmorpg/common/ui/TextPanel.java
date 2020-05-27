@@ -46,6 +46,10 @@ public final class TextPanel {
 		spawner.schedule();
 	}
 
+	/**
+	 * Create a new text panel at the specified location with the specified text.
+	 * setVisible() still needs to be invoked before this text panel will display.
+	 */
 	public TextPanel(Location location, String text) {
 		this.visible = false;
 		spawned = false;
@@ -55,14 +59,24 @@ public final class TextPanel {
 		entities = new ArrayList<>();
 	}
 
+	/**
+	 * Create a new text panel at the specified location with empty text.
+	 * setVisible() still needs to be invoked before this text panel will display.
+	 */
 	public TextPanel(Location location) {
 		this(location, "");
 	}
 
+	/**
+	 * Returns whether players can see this text panel.
+	 */
 	public boolean isVisible() {
 		return visible;
 	}
 
+	/**
+	 * Sets whether players can see this text panel.
+	 */
 	public void setVisible(boolean visible) {
 		if (this.visible == visible) {
 			return;
@@ -112,10 +126,16 @@ public final class TextPanel {
 		removeAllEntities();
 	}
 
+	/**
+	 * Returns where this text panel is being displayed from.
+	 */
 	public Location getLocation() {
 		return location;
 	}
 
+	/**
+	 * Sets where this text panel is being displayed from.
+	 */
 	public void setLocation(Location location) {
 		this.location = location;
 		Location targetEntityLocation = location.clone();
@@ -130,19 +150,32 @@ public final class TextPanel {
 		}
 	}
 
+	/**
+	 * Return how many characters are allowed to be in a line for this text panel.
+	 */
 	public int getLineLength() {
 		return lineLength;
 	}
 
+	/**
+	 * Sets how many characters are allowed to be in a line for this text panel and
+	 * updates its text.
+	 */
 	public void setLineLength(int lineLength) {
 		this.lineLength = lineLength;
 		setText0();
 	}
 
+	/**
+	 * Return the text displayed by this text panel.
+	 */
 	public String getText() {
 		return text;
 	}
 
+	/**
+	 * Sets the text displayed by this text panel.
+	 */
 	public void setText(String text) {
 		this.text = text;
 		setText0();

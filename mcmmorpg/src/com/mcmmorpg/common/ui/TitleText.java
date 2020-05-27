@@ -5,6 +5,10 @@ import org.bukkit.entity.Player;
 import com.mcmmorpg.common.character.PlayerCharacter;
 import com.mcmmorpg.common.utils.MathUtils;
 
+/**
+ * Allows text to be displayed to a player in the center of their view in big
+ * letters (title slot).
+ */
 public class TitleText {
 
 	private final String title;
@@ -13,6 +17,9 @@ public class TitleText {
 	private final int stayTicks;
 	private final int fadeOutTicks;
 
+	/**
+	 * Create a new title text.
+	 */
 	public TitleText(String title, String subtitle, double fadeInSeconds, double staySeconds, double fadeOutSeconds) {
 		this.title = title;
 		this.subtitle = subtitle;
@@ -21,6 +28,9 @@ public class TitleText {
 		this.fadeOutTicks = MathUtils.secondsToTicks(fadeOutSeconds);
 	}
 
+	/**
+	 * Create a new title text, using default fade durations.
+	 */
 	public TitleText(String title, String subtitle) {
 		this.title = title;
 		this.subtitle = subtitle;
@@ -30,10 +40,16 @@ public class TitleText {
 		this.fadeOutTicks = 20;
 	}
 
+	/**
+	 * Display text to the player.
+	 */
 	public void apply(Player player) {
 		player.sendTitle(title, subtitle, fadeInTicks, stayTicks, fadeOutTicks);
 	}
-	
+
+	/**
+	 * Display text to the player character.
+	 */
 	public void apply(PlayerCharacter pc) {
 		apply(pc.getPlayer());
 	}

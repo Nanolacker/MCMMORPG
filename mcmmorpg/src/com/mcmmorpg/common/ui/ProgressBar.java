@@ -17,8 +17,8 @@ import com.mcmmorpg.common.utils.MathUtils;
 import com.mcmmorpg.common.utils.StringUtils;
 
 /**
- * Override onComplete() to add completion behavior. Be sure to set rate after
- * instantiation.
+ * A progress bar. Override onComplete() to add completion behavior. Be sure to
+ * set rate after instantiation.
  */
 public class ProgressBar {
 
@@ -50,6 +50,9 @@ public class ProgressBar {
 		progressUpdater.schedule();
 	}
 
+	/**
+	 * Create a new progress bar with the specified title and color.
+	 */
 	public ProgressBar(String title, ProgressBarColor color) {
 		this.title = title;
 		this.color = color;
@@ -64,10 +67,16 @@ public class ProgressBar {
 		setProgress(progress + rate * UPDATE_PERIOD);
 	}
 
+	/**
+	 * Returns the title of this progress bar.
+	 */
 	public final String getTitle() {
 		return title;
 	}
 
+	/**
+	 * Sets the title of this progress bar.
+	 */
 	public final void setTitle(String title) {
 		this.title = title;
 		if (textPanel != null) {
@@ -78,10 +87,16 @@ public class ProgressBar {
 		}
 	}
 
+	/**
+	 * Returns the color of this progress bar.
+	 */
 	public final ProgressBarColor getColor() {
 		return color;
 	}
 
+	/**
+	 * Sets the color of this progress bar.
+	 */
 	public final void setColor(ProgressBarColor color) {
 		this.color = color;
 		if (textPanel != null) {
@@ -93,14 +108,14 @@ public class ProgressBar {
 	}
 
 	/**
-	 * 0-1.
+	 * Returns the progress of this progress bar from 0-1.
 	 */
 	public final double getProgress() {
 		return progress;
 	}
 
 	/**
-	 * 0-1.
+	 * Sets the progress of this progress bar from 0-1.
 	 */
 	public final void setProgress(double progress) {
 		this.progress = MathUtils.clamp(progress, 0, 1);
@@ -118,19 +133,32 @@ public class ProgressBar {
 	}
 
 	/**
-	 * In proportion per second.
+	 * Returns the fill rate of this progress bar, in proportion per second.
 	 */
 	public final double getRate() {
 		return rate;
 	}
 
 	/**
-	 * In proportion per second.
+	 * Sets the fill rate of this progress bar, in proportion per second.
 	 */
 	public final void setRate(double rate) {
 		this.rate = rate;
 	}
 
+	/**
+	 * Returns the location at which this progress bar is being displayed via a text
+	 * panel, or null if it is not being displayed via text panel.
+	 */
+	public final Location getDisplayLocation() {
+		return textPanel == null ? null : textPanel.getLocation();
+	}
+
+	/**
+	 * Show this progress bar at the specified location using a text panel.
+	 * Subsequent calls of this method will relocate the text panel, but not
+	 * duplicate it.
+	 */
 	public final void display(Location location) {
 		if (textPanel == null) {
 			textPanel = new TextPanel(location);
@@ -141,14 +169,16 @@ public class ProgressBar {
 		}
 	}
 
+	/**
+	 * Display this progress bar to the specified player character using a boss bar.
+	 */
 	public final void display(PlayerCharacter pc) {
 		display(pc.getPlayer());
 	}
 
-	public final Location getDisplayLocation() {
-		return textPanel == null ? null : textPanel.getLocation();
-	}
-
+	/**
+	 * Display this progress bar to the specified player using a boss bar.
+	 */
 	public final void display(Player player) {
 		if (bossBar == null) {
 			bossBar = Bukkit.createBossBar(title, color.barColor, BarStyle.SOLID);
@@ -157,10 +187,17 @@ public class ProgressBar {
 		bossBar.addPlayer(player);
 	}
 
+	/**
+	 * Stops displaying this progress bar via boss bar to the specified player
+	 * character.
+	 */
 	public final void hide(PlayerCharacter pc) {
 		hide(pc.getPlayer());
 	}
 
+	/**
+	 * Stops displaying this progress bar via boss bar to the specified player.
+	 */
 	public final void hide(Player player) {
 		if (bossBar != null) {
 			bossBar.removePlayer(player);
@@ -204,11 +241,15 @@ public class ProgressBar {
 	protected void onComplete() {
 	}
 
+	/**
+	 * A color scheme that can be used with a progress bar.
+	 */
 	public static enum ProgressBarColor {
 
-		BLUE(ChatColor.BLUE, BarColor.BLUE), GREEN(ChatColor.GREEN, BarColor.GREEN), PINK(ChatColor.LIGHT_PURPLE,
-				BarColor.PINK), PURPLE(ChatColor.DARK_PURPLE, BarColor.PURPLE), RED(ChatColor.RED, BarColor.RED), WHITE(
-						ChatColor.WHITE, BarColor.WHITE), YELLOW(ChatColor.YELLOW, BarColor.YELLOW);
+		BLUE(ChatColor.BLUE, BarColor.BLUE), GREEN(ChatColor.GREEN, BarColor.GREEN),
+		PINK(ChatColor.LIGHT_PURPLE, BarColor.PINK), PURPLE(ChatColor.DARK_PURPLE, BarColor.PURPLE),
+		RED(ChatColor.RED, BarColor.RED), WHITE(ChatColor.WHITE, BarColor.WHITE),
+		YELLOW(ChatColor.YELLOW, BarColor.YELLOW);
 
 		private final ChatColor chatColor;
 		private final BarColor barColor;

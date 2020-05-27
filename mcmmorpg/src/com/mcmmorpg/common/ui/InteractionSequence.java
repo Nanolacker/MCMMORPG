@@ -15,7 +15,7 @@ import com.mcmmorpg.common.time.DelayedTask;
 
 /**
  * A sequence of interactions with pauses that can be sent to a player. Good for
- * dialogue.
+ * NPC dialogue.
  */
 public abstract class InteractionSequence {
 
@@ -28,14 +28,18 @@ public abstract class InteractionSequence {
 	private final Map<PlayerCharacter, MessageSequencePlayer> sequencePlayerMap = new HashMap<>();
 
 	/**
-	 * @param period
-	 *            the delay between messages in seconds
+	 * Creates a new interaction sequence with the specified number of interactions
+	 * and period.
 	 */
 	public InteractionSequence(int interactionCount, double period) {
 		this.interactionCount = interactionCount;
 		this.period = period;
 	}
 
+	/**
+	 * Creates a new interaction sequence with the specified number of interactions
+	 * and a default period.
+	 */
 	public InteractionSequence(int interactionCount) {
 		this(interactionCount, DEFAULT_PERIOD);
 	}
@@ -56,6 +60,9 @@ public abstract class InteractionSequence {
 		EventManager.registerEvents(listener);
 	}
 
+	/**
+	 * Advance to the next interaction in this sequence.
+	 */
 	public final void advance(PlayerCharacter pc) {
 		if (!sequencePlayerMap.containsKey(pc)) {
 			if (!playingSequencesMap.containsKey(pc)) {
@@ -70,11 +77,17 @@ public abstract class InteractionSequence {
 		sequencePlayer.advance();
 	}
 
+	/**
+	 * Cancel the player character's interaction with this sequence.
+	 */
 	public final void cancel(PlayerCharacter pc) {
 		MessageSequencePlayer sequencePlayer = sequencePlayerMap.get(pc);
 		sequencePlayer.cancel();
 	}
 
+	/**
+	 * What executes when the player advances to an interaction.
+	 */
 	protected abstract void onAdvance(PlayerCharacter pc, int interactionIndex);
 
 	private static class MessageSequencePlayer {

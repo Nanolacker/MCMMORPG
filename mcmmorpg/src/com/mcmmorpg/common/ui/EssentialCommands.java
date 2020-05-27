@@ -6,6 +6,9 @@ import org.bukkit.entity.Player;
 
 import com.mcmmorpg.common.character.PlayerCharacter;
 
+/**
+ * Registers commands that are essential to any implementation of MCMMORPG.
+ */
 public class EssentialCommands {
 
 	public static void registerEssentialCommands() {

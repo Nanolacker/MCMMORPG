@@ -13,6 +13,9 @@ import net.minecraft.server.v1_15_R1.ChatMessageType;
 import net.minecraft.server.v1_15_R1.IChatBaseComponent.ChatSerializer;
 import net.minecraft.server.v1_15_R1.PacketPlayOutChat;
 
+/**
+ * Display text on a player's action bar.
+ */
 public class ActionBarText {
 
 	private static final double APPLY_TASK_PERIOD_SECONDS = 2.0;
@@ -35,6 +38,9 @@ public class ActionBarText {
 
 	private PacketPlayOutChat packet;
 
+	/**
+	 * Display text on a player's action bar.
+	 */
 	public ActionBarText(String text) {
 		packet = new PacketPlayOutChat(ChatSerializer.a("{\"text\":\"" + text + "\"}"), ChatMessageType.a((byte) 2));
 	}
@@ -53,6 +59,9 @@ public class ActionBarText {
 		((CraftPlayer) player).getHandle().playerConnection.sendPacket(packet);
 	}
 
+	/**
+	 * Clears the action bar of any text for the player.
+	 */
 	public static void clear(Player player) {
 		actionBarMap.remove(player);
 	}

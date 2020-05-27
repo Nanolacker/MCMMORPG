@@ -3,22 +3,39 @@ package com.mcmmorpg.common.ui;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.defaults.BukkitCommand;
 
+/**
+ * Represents a command that can be created at runtime and dispatched by command
+ * senders.
+ */
 public abstract class Command {
 
 	final BukkitCommand bukkitCommand;
 
+	/**
+	 * Create a new command. The command must be registered with the command manager
+	 * before being used.
+	 */
 	public Command(String name) {
 		bukkitCommand = new BukkitCommand0(name, this);
 	}
 
+	/**
+	 * Set the description for this command.
+	 */
 	public void setDescription(String description) {
 		bukkitCommand.setDescription(description);
 	}
 
+	/**
+	 * Set the usage message for this command.
+	 */
 	public void setUsageMessage(String usageMessage) {
 		bukkitCommand.setUsage(usageMessage);
 	}
 
+	/**
+	 * What executes when the command is dispatched.
+	 */
 	protected abstract void execute(CommandSender sender, String[] args);
 
 	private static class BukkitCommand0 extends BukkitCommand {

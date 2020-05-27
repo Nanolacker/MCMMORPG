@@ -16,6 +16,10 @@ public class Debug {
 		// no instances
 	}
 
+	/**
+	 * Prints the message to the console and players, including the stack trace
+	 * element from which this method was called for ease of debugging.
+	 */
 	public static void log(Object message) {
 		boolean initialized = MMORPGPlugin.isInitialized();
 		StackTraceElement source = Thread.currentThread().getStackTrace()[2];
@@ -32,6 +36,10 @@ public class Debug {
 		}
 	}
 
+	/**
+	 * Prints the formatted message to the console and players, including the stack trace
+	 * element from which this method was called for ease of debugging.
+	 */
 	public static void logf(String format, Object... args) {
 		String message = String.format(format, args);
 		log(message);

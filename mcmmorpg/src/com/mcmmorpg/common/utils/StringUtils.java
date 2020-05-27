@@ -1,7 +1,6 @@
 package com.mcmmorpg.common.utils;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import org.bukkit.ChatColor;
@@ -73,9 +72,6 @@ public class StringUtils {
 			lines.add(line);
 			chatColor = ChatColor.getLastColors(line);
 		}
-		if (Math.random() < 1) {
-			System.out.println(ChatColor.RED);
-		}
 		return lines;
 	}
 
@@ -120,6 +116,9 @@ public class StringUtils {
 		return token.substring(0, i + 1);
 	}
 
+	/**
+	 * Returns whether the string is a number.
+	 */
 	public static boolean isNumeric(String s) {
 		return s.matches("-?\\d+(\\.\\d+)?");
 	}

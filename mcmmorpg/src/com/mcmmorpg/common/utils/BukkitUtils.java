@@ -9,6 +9,10 @@ import org.bukkit.entity.EntityType;
 
 public class BukkitUtils {
 
+	/**
+	 * Preferred method of spawning Bukkit entities, as this method prevents entity
+	 * persistence errors from occuring.
+	 **/
 	@SuppressWarnings("deprecation")
 	public static Entity spawnNonpersistentEntity(Location location, EntityType entityType) {
 		Entity entity = location.getWorld().spawnEntity(location, entityType);
@@ -16,6 +20,10 @@ public class BukkitUtils {
 		return entity;
 	}
 
+	/**
+	 * Returns the location of the nearest block of type air to the specified
+	 * location.
+	 **/
 	public static Location nearestEmptyBlockLocation(Location location) {
 		World world = location.getWorld();
 		int baseX = location.getBlockX();
