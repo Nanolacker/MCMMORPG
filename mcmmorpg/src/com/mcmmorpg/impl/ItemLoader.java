@@ -11,7 +11,7 @@ import com.mcmmorpg.common.utils.IOUtils;
 public class ItemLoader {
 
 	public static void loadItems() {
-		File baseItemsFolder = new File(IOUtils.getDataFolder(), "resources\\items");
+		File baseItemsFolder = new File(IOUtils.getDataFolder(), "resources/items");
 
 		File miscellaneousItemsFolder = new File(baseItemsFolder, "miscellaneous");
 		File consumablesFolder = new File(baseItemsFolder, "consumables");

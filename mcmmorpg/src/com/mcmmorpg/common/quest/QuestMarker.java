@@ -9,6 +9,9 @@ import com.mcmmorpg.common.physics.Collider;
 import com.mcmmorpg.common.ui.TextPanel;
 import com.mcmmorpg.common.utils.CardinalDirection;
 
+/**
+ * A marker that guides player characters toward quest-related locations.
+ */
 public class QuestMarker {
 
 	private static final String TEXT = ChatColor.YELLOW + "!";
@@ -38,23 +41,40 @@ public class QuestMarker {
 		area.setActive(true);
 	}
 
+	/**
+	 * Creates a quest marker that has the standard radius in which player
+	 * characters will be notified.
+	 */
 	public static QuestMarker createMarker(Location location) {
 		return createMarker(location, STANDARD_RADIUS);
 	}
 
+	/**
+	 * Creates a quest marker with the specified radius in which player characters
+	 * will be notified.
+	 */
 	public static QuestMarker createMarker(Location location, double radius) {
 		return new QuestMarker(location, radius);
 	}
 
+	/**
+	 * Returns the location of this quest marker.
+	 */
 	public Location getLocation() {
 		return textPanel.getLocation();
 	}
 
+	/**
+	 * Moves this quest marker to the specified location.
+	 */
 	public void setLocation(Location location) {
 		textPanel.setLocation(location);
 		area.setCenter(location);
 	}
 
+	/**
+	 * Sets whether or not this quest marker is visible. By default, it is visible.
+	 */
 	public void setVisible(boolean visible) {
 		textPanel.setVisible(visible);
 	}

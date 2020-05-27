@@ -12,6 +12,9 @@ import com.mcmmorpg.common.item.ItemFactory;
 import com.mcmmorpg.common.sound.Noise;
 import com.mcmmorpg.common.time.RepeatingTask;
 
+/**
+ * A skill, or ability, to be used by a player character. Usually made in JSON.
+ */
 public final class Skill {
 
 	private static final double COOLDOWN_UPDATE_PERIOD_SECONDS = 0.1;
@@ -36,6 +39,9 @@ public final class Skill {
 	private transient PlayerClass playerClass;
 	private transient ItemStack hotbarItemStack;
 
+	/**
+	 * Create a new skill.
+	 */
 	public Skill(String name, String description, int manaCost, int cooldown, int minimumLevel,
 			String prerequisiteSkill, int maximumUpgradeLevel, int skillTreeRow, int skillTreeColumn, Material icon) {
 		this.name = name;
@@ -55,52 +61,90 @@ public final class Skill {
 		hotbarItemStack = createHotbarItemStack();
 	}
 
+	/**
+	 * Returns the name of this skill.
+	 */
 	public String getName() {
 		return name;
 	}
 
+	/**
+	 * Returns the description of this skill.
+	 */
 	public String getDescription() {
 		return description;
 	}
 
+	/**
+	 * Returns how much mana is consumed when a player character uses this skill.
+	 */
 	public double getManaCost() {
 		return manaCost;
 	}
 
+	/**
+	 * Returns the minimum level required to unlock this skill.
+	 */
 	public int getMinimumLevel() {
 		return minimumLevel;
 	}
 
+	/**
+	 * Returns the skill that must be unlocked prior to unlocking this one.
+	 */
 	public Skill getPrerequisiteSkill() {
 		return playerClass.skillForName(prerequisiteSkill);
 	}
 
+	/**
+	 * Returns the maximum level that this skill can be upgraded to.
+	 */
 	public int getMaximumUpgradeLevel() {
 		return maximumUpgradeLevel;
 	}
 
+	/**
+	 * Returns the row that this skill occupies in its player class's skill tree.
+	 */
 	public int getSkillTreeRow() {
 		return skillTreeRow;
 	}
 
+	/**
+	 * Returns the column that this skill occupies in its player class's skill tree.
+	 */
 	public int getSkillTreeColumn() {
 		return skillTreeColumn;
 	}
 
+	/**
+	 * Returns the visual icon of this skill.
+	 */
 	public Material getIcon() {
 		return icon;
 	}
 
+	/**
+	 * Return the player class that this skill belongs to.
+	 */
 	public PlayerClass getPlayerClass() {
 		return playerClass;
 	}
 
+	/**
+	 * Returns whether the player character has unlocked this skill in the skill
+	 * tree.
+	 */
 	public boolean isUnlocked(PlayerCharacter pc) {
 		PlayerSkillManager manager = pc.getSkillManager();
 		PlayerSkillData data = manager.getSkillData(this);
 		return data != null;
 	}
 
+	/**
+	 * Returns what level the player character has upgraded this skill to in the
+	 * skill tree.
+	 */
 	public int getUpgradeLevel(PlayerCharacter pc) {
 		PlayerSkillManager manager = pc.getSkillManager();
 		PlayerSkillData data = manager.getSkillData(this);
@@ -185,6 +229,9 @@ public final class Skill {
 		return itemStack;
 	}
 
+	/**
+	 * Returns how long this skill will be on cooldown for the player character.
+	 */
 	public double getCooldown(PlayerCharacter pc) {
 		if (getUpgradeLevel(pc) == 0) {
 			throw new IllegalArgumentException("Player has not unlocked skill");
@@ -194,6 +241,9 @@ public final class Skill {
 		return data.getSkillCooldownSeconds();
 	}
 
+	/**
+	 * Returns whether this skill is on cooldown for the player character.
+	 */
 	public boolean isOnCooldown(PlayerCharacter pc) {
 		return getCooldown(pc) != 0;
 	}
@@ -221,7 +271,12 @@ public final class Skill {
 		cooldownTask.schedule();
 	}
 
-	public boolean prerequisitesAreMet(PlayerCharacter pc) {
+	/**
+	 * Returns whether the prerequisites are met for this player to upgrade this
+	 * skill in the skill tree (i.e. prerequisite skill unlocked and minimum level
+	 * attained).
+	 */
+	boolean prerequisitesAreMet(PlayerCharacter pc) {
 		if (prerequisiteSkill != null) {
 			Skill prereq = playerClass.skillForName(prerequisiteSkill);
 			if (!prereq.isUnlocked(pc) || pc.getLevel() < minimumLevel) {

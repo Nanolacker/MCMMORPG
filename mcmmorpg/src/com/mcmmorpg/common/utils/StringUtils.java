@@ -1,6 +1,7 @@
 package com.mcmmorpg.common.utils;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.bukkit.ChatColor;
@@ -63,7 +64,7 @@ public class StringUtils {
 				} else {
 					// add token to current line
 					line += token + " ";
-					// +1 for space
+					// ++ for space
 					currentLineLength++;
 				}
 			}
@@ -71,6 +72,9 @@ public class StringUtils {
 			line = line.trim();
 			lines.add(line);
 			chatColor = ChatColor.getLastColors(line);
+		}
+		if (Math.random() < 1) {
+			System.out.println(ChatColor.RED);
 		}
 		return lines;
 	}

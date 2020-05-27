@@ -124,7 +124,7 @@ public class DeveloperCommands {
 			protected void execute(CommandSender sender, String[] args) {
 				Player player = (Player) sender;
 				Location location = player.getLocation();
-				File file = new File("C:\\Users\\conno\\Desktop\\Locations.txt");
+				File file = new File("C:/Users/conno/Desktop/Locations.txt");
 				if (!file.exists()) {
 					IOUtils.createFile(file);
 				}

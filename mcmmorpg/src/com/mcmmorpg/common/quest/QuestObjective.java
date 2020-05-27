@@ -10,6 +10,10 @@ import com.mcmmorpg.common.utils.MathUtils;
 
 import net.md_5.bungee.api.ChatColor;
 
+/**
+ * Represents a single task for a player character to complete. These are the
+ * building blocks of quests.
+ */
 public class QuestObjective {
 
 	private static final Noise OBJECTIVE_COMPLETE_NOISE = new Noise(Sound.ENTITY_EXPERIENCE_ORB_PICKUP);
@@ -19,6 +23,9 @@ public class QuestObjective {
 	private transient Quest quest;
 	private transient int index;
 
+	/**
+	 * Creates a new quest objective.
+	 */
 	public QuestObjective(int goal, String description) {
 		this.goal = goal;
 		this.description = description;

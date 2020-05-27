@@ -6,6 +6,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Manages data for a player character's quests.
+ */
 public class PlayerCharacterQuestManager {
 
 	private final List<Quest> completedQuests;

@@ -14,6 +14,10 @@ import com.mcmmorpg.common.item.LootChest;
 import com.mcmmorpg.common.time.GameClock;
 import com.mcmmorpg.common.ui.EssentialCommands;
 
+/**
+ * The center of an MCMMORPG implementation that will handle the essential start
+ * up and shut down procedures.
+ */
 public abstract class MMORPGPlugin extends JavaPlugin {
 
 	private static boolean isInitialized;
@@ -38,7 +42,7 @@ public abstract class MMORPGPlugin extends JavaPlugin {
 		LootChest.removeAll();
 	}
 
-	public static void removeAllEntities() {
+	private static void removeAllEntities() {
 		List<World> worlds = Bukkit.getWorlds();
 		for (World world : worlds) {
 			List<Entity> entities = world.getEntities();
@@ -55,16 +59,28 @@ public abstract class MMORPGPlugin extends JavaPlugin {
 		}
 	}
 
+	/**
+	 * Returns whether or not the plugin has fully started up.
+	 */
 	public static boolean isInitialized() {
 		return isInitialized;
 	}
 
+	/**
+	 * Returns the MCMMORPG plugin in use.
+	 */
 	public static MMORPGPlugin getInstance() {
 		return getPlugin(MMORPGPlugin.class);
 	}
 
+	/**
+	 * Invoked after the plugin starts up.
+	 */
 	protected abstract void onMMORPGStart();
 
+	/**
+	 * Invoked before the plugin shuts down.
+	 */
 	protected abstract void onMMORPGStop();
 
 }

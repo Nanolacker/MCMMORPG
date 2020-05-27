@@ -20,6 +20,10 @@ import com.mcmmorpg.common.character.PlayerCharacter;
 import com.mcmmorpg.common.sound.Noise;
 import com.mcmmorpg.common.time.RepeatingTask;
 
+/**
+ * Handles essential events pertaining to player classes, such as skill tree
+ * navigation.
+ */
 class PlayerClassListener implements Listener {
 
 	private static final Noise CLICK_NOISE = new Noise(Sound.BLOCK_LEVER_CLICK);

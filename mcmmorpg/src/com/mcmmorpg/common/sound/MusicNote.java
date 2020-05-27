@@ -1,5 +1,8 @@
 package com.mcmmorpg.common.sound;
 
+/**
+ * Music notes whose pitches can be easily obtained.
+ */
 public enum MusicNote {
 
 	F_SHARP_1(0.5f), G_FLAT_1(0.5f), G_2(0.529732f), G_SHARP_3(0.561231f), A_FLAT_3(0.561231f), A_4(0.594604f),
@@ -16,6 +19,9 @@ public enum MusicNote {
 		this.pitch = pitch;
 	}
 
+	/**
+	 * Returns the pitch of this music note.
+	 */
 	public float getPitch() {
 		return pitch;
 	}

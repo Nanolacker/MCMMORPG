@@ -3,18 +3,16 @@ package com.mcmmorpg.common.sound;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * A sequence of sounds that can be played with a sound sequence player.
+ */
 public class SoundSequence {
 
 	private List<SoundSequenceNode> nodes;
-	/**
-	 * In seconds.
-	 */
 	private double duration;
 
 	/**
-	 * 
-	 * @param duration
-	 *            in seconds
+	 * Creates a sound sequence with the specified duration in seconds.
 	 */
 	public SoundSequence(double duration) {
 		nodes = new ArrayList<>();
@@ -22,8 +20,7 @@ public class SoundSequence {
 	}
 
 	/**
-	 * @param time
-	 *            the second at which the noise should play in the sequence
+	 * Adds a sound to this sequence at the specified time in seconds.
 	 */
 	public void add(Noise sound, double time) {
 		if (time > duration) {
@@ -34,9 +31,7 @@ public class SoundSequence {
 	}
 
 	/**
-	 * In seconds.
-	 * 
-	 * @return
+	 * Returns this sequence's duration in seconds.
 	 */
 	public double getDuration() {
 		return duration;

@@ -16,6 +16,10 @@ import com.mcmmorpg.common.event.QuestCompletionEvent;
 import com.mcmmorpg.common.item.ItemFactory;
 import com.mcmmorpg.common.sound.Noise;
 
+/**
+ * Represents a sequence of tasks to be completed by a player character. Usually
+ * created with JSON.
+ */
 public class Quest {
 
 	private static final Noise COMPLETE_NOISE = new Noise(Sound.ENTITY_PLAYER_LEVELUP);
@@ -30,12 +34,18 @@ public class Quest {
 	private final int level;
 	private final QuestObjective[] objectives;
 
+	/**
+	 * Create a new quest.
+	 */
 	public Quest(String name, int level, QuestObjective[] objectives) {
 		this.name = name;
 		this.level = level;
 		this.objectives = objectives;
 	}
 
+	/**
+	 * Sets up this quest. This must be called after construction!
+	 */
 	public void initialize() {
 		for (int i = 0; i < objectives.length; i++) {
 			QuestObjective objective = objectives[i];
@@ -44,30 +54,51 @@ public class Quest {
 		quests.put(name, this);
 	}
 
+	/**
+	 * Returns the quest of the specified name.
+	 */
 	public static Quest forName(String name) {
 		return quests.get(name);
 	}
 
-	public static List<Quest> getAll() {
-		return new ArrayList<Quest>(quests.values());
+	/**
+	 * Returns an array containing every quest in the game.
+	 */
+	public static Quest[] getAll() {
+		return quests.values().toArray(new Quest[quests.size()]);
 	}
 
+	/**
+	 * Returns the name of this quest.
+	 */
 	public String getName() {
 		return name;
 	}
 
+	/**
+	 * Return the recommended level for this quest.
+	 */
 	public int getLevel() {
 		return level;
 	}
 
+	/**
+	 * Returns this quest's objectives.
+	 */
 	public QuestObjective[] getObjectives() {
 		return objectives;
 	}
 
+	/**
+	 * Returns the quest objective of the specified index.
+	 */
 	public QuestObjective getObjective(int index) {
 		return objectives[index];
 	}
 
+	/**
+	 * Returns a player character's status on this quest.
+	 */
 	public QuestStatus getStatus(PlayerCharacter pc) {
 		return pc.getQuestManager().getStatus(this);
 	}
@@ -80,6 +111,9 @@ public class Quest {
 		return getStatus(pc) == status;
 	}
 
+	/**
+	 * Begin this quest for the specified player character.
+	 */
 	public void start(PlayerCharacter pc) {
 		if (getStatus(pc) != QuestStatus.NOT_STARTED) {
 			return;
@@ -114,6 +148,10 @@ public class Quest {
 		return ItemFactory.createItemStack(ChatColor.YELLOW + name, lore, Material.BOOK);
 	}
 
+	/**
+	 * Return the lines that should be used to display this quest in the quest log
+	 * or quest sidebar.
+	 */
 	public String getQuestLogLines(PlayerCharacter pc) {
 		String objectiveLines = "";
 		for (QuestObjective objective : objectives) {
@@ -131,9 +169,13 @@ public class Quest {
 		return objectiveLines;
 	}
 
+	/**
+	 * Returns a list containing every quest that is in progress for the player
+	 * character.
+	 */
 	public static List<Quest> getInProgressQuests(PlayerCharacter pc) {
 		List<Quest> inProgressQuests = new ArrayList<>();
-		List<Quest> allQuests = Quest.getAll();
+		Quest[] allQuests = Quest.getAll();
 		for (Quest quest : allQuests) {
 			if (quest.getStatus(pc) == QuestStatus.IN_PROGRESS) {
 				inProgressQuests.add(quest);

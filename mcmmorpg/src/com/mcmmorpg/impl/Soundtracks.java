@@ -16,7 +16,7 @@ public class Soundtracks {
 	public static final SoundSequence DUNGEON;
 
 	static {
-		File soundtrackFolder = new File(IOUtils.getDataFolder(), "resources\\soundtracks");
+		File soundtrackFolder = new File(IOUtils.getDataFolder(), "resources/soundtracks");
 
 		File villageFile = new File(soundtrackFolder, "Village.json");
 		VILLAGE = IOUtils.readJson(villageFile, PersistentSoundSequenceDataContainer.class).toSoundSequence();

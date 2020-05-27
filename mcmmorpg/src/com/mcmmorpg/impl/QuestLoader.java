@@ -13,7 +13,7 @@ import com.mcmmorpg.common.utils.IOUtils;
 public class QuestLoader {
 
 	public static void loadQuests() {
-		File questFolder = new File(IOUtils.getDataFolder(), "resources\\quests");
+		File questFolder = new File(IOUtils.getDataFolder(), "resources/quests");
 		File[] questFiles = questFolder.listFiles();
 		for (File questFile : questFiles) {
 			Quest quest = IOUtils.readJson(questFile, Quest.class);

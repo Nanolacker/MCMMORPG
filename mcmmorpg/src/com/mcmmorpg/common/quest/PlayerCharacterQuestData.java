@@ -1,7 +1,7 @@
 package com.mcmmorpg.common.quest;
 
 /**
- * Stores a player's progress on a certain quest.
+ * Stores a player's progress on a single quest.
  */
 public class PlayerCharacterQuestData {
 

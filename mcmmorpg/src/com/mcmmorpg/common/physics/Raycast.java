@@ -7,10 +7,17 @@ import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.util.Vector;
 
+/**
+ * Casts a ray to check for collisions.
+ */
 public final class Raycast {
 
 	private final Collider[] hits;
 
+	/**
+	 * Creates a raycast with the specified ray. The raycast will only target
+	 * colliders of the specified class.
+	 */
 	public Raycast(Ray ray, Class<? extends Collider> target) {
 		List<ColliderBucket> nearbyBuckets = new ArrayList<>();
 		double bucketSize = ColliderBucket.BUCKET_SIZE;
@@ -60,21 +67,17 @@ public final class Raycast {
 		hits = hitsList.toArray(new Collider[hitsList.size()]);
 	}
 
+	/**
+	 * Creates a raycast with the specified ray. The raycast will target colliders
+	 * of all classes.
+	 */
 	public Raycast(Ray ray) {
 		this(ray, Collider.class);
 	}
 
 	/**
-	 * Null if there was no hit.
+	 * Returns the colliders that the ray in this raycast intersected.
 	 */
-	public Collider getFirstHit() {
-		if (hits.length == 0) {
-			return null;
-		} else {
-			return hits[0];
-		}
-	}
-
 	public Collider[] getHits() {
 		return hits;
 	}

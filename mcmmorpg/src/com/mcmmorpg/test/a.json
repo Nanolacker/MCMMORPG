@@ -1,0 +1,227 @@
+{
+	"fresh": false,
+	"playerClassName": "Fighter",
+	"zone": "?7Flinton Sewers",
+	"location": {
+		"worldName": "world_eladrador",
+		"x": -196.7773160494584,
+		"y": 44.29280504426689,
+		"z": 83.20440548097693,
+		"yaw": 37.195404,
+		"pitch": 15.599707
+	},
+	"respawnLocation": {
+		"worldName": "world_eladrador",
+		"x": -269.0,
+		"y": 42.5,
+		"z": 78.0,
+		"yaw": 180.0,
+		"pitch": 0.0
+	},
+	"xp": 25,
+	"skillUpgradePoints": 0,
+	"currency": 0,
+	"maxHealth": 25.0,
+	"currentHealth": 25.0,
+	"healthRegenRate": 2.0,
+	"maxMana": 10.0,
+	"currentMana": 10.0,
+	"manaRegenRate": 1.0,
+	"completedQuestNames": [
+	],
+	"questData": [
+		{
+			"questName": "Into the Sewers",
+			"objectiveData": [
+				0
+			]
+		},
+		{
+			"questName": "Reporting for Duty",
+			"objectiveData": [
+				0
+			]
+		},
+		{
+			"questName": "Sampling Sludge",
+			"objectiveData": [
+				0,
+				0,
+				0
+			]
+		}
+	],
+	"skillData": [
+		{
+			"skillName": "Bash",
+			"playerClassName": "Fighter",
+			"upgradeLevel": 1,
+			"skillCooldownSeconds": 0.0
+		}
+	],
+	"inventory": {
+		"persistentContents": [
+			{
+				"type": "WOODEN_SWORD",
+				"amount": 1,
+				"displayName": "?7Apprentice Sword",
+				"lore": [
+					"?7Common Item",
+					"?7?6Fighter Weapon",
+					"?6Level 1",
+					"?64 Base Damage",
+					"?6",
+					"?6?7Shift-click to",
+					"?6?7equip"
+				],
+				"flags": [
+					"HIDE_ENCHANTS",
+					"HIDE_ATTRIBUTES",
+					"HIDE_UNBREAKABLE",
+					"HIDE_DESTROYS",
+					"HIDE_PLACED_ON",
+					"HIDE_POTION_EFFECTS"
+				],
+				"unbreakable": true
+			},
+			{
+				"type": "SHIELD",
+				"amount": 1,
+				"displayName": "?aBash",
+				"lore": [
+					"?6Fighter Skill?b",
+					"?bCost: 10?e",
+					"?eCooldown: 5?f",
+					"?f",
+					"?fDamage enemies in",
+					"?f?fan area in front",
+					"?f?f?fof you"
+				],
+				"flags": [
+					"HIDE_ENCHANTS",
+					"HIDE_ATTRIBUTES",
+					"HIDE_UNBREAKABLE",
+					"HIDE_DESTROYS",
+					"HIDE_PLACED_ON",
+					"HIDE_POTION_EFFECTS"
+				],
+				"unbreakable": true
+			},
+			{
+				"type": "HONEY_BOTTLE",
+				"amount": 1,
+				"displayName": "?aPotion of Healing",
+				"lore": [
+					"?aUncommon Item",
+					"?a?6Level 10",
+					"?6?rRocover ?c80 HP",
+					"?r",
+					"?r?7Shift-click to use"
+				],
+				"flags": [
+					"HIDE_ENCHANTS",
+					"HIDE_ATTRIBUTES",
+					"HIDE_UNBREAKABLE",
+					"HIDE_DESTROYS",
+					"HIDE_PLACED_ON",
+					"HIDE_POTION_EFFECTS"
+				],
+				"unbreakable": true
+			},
+			{
+				"type": "LEVER",
+				"amount": 1,
+				"displayName": "?aWest Sewers Key",
+				"lore": [
+					"?aUncommon Item",
+					"?a?rOpens the west",
+					"?a?rportcullis in",
+					"?a?r?rFlinton Sewers"
+				],
+				"flags": [
+					"HIDE_ENCHANTS",
+					"HIDE_ATTRIBUTES",
+					"HIDE_UNBREAKABLE",
+					"HIDE_DESTROYS",
+					"HIDE_PLACED_ON",
+					"HIDE_POTION_EFFECTS"
+				],
+				"unbreakable": true
+			},
+			{
+				"type": "SHIELD",
+				"amount": 1,
+				"displayName": "?aBash",
+				"lore": [
+					"?6Fighter Skill?b",
+					"?bCost: 10?e",
+					"?eCooldown: 5?f",
+					"?f",
+					"?fDamage enemies in",
+					"?f?fan area in front",
+					"?f?f?fof you"
+				],
+				"flags": [
+					"HIDE_ENCHANTS",
+					"HIDE_ATTRIBUTES",
+					"HIDE_UNBREAKABLE",
+					"HIDE_DESTROYS",
+					"HIDE_PLACED_ON",
+					"HIDE_POTION_EFFECTS"
+				],
+				"unbreakable": true
+			},
+			null,
+			null,
+			null,
+			{
+				"type": "COMPASS",
+				"amount": 1,
+				"displayName": "?eMenu",
+				"flags": [
+					"HIDE_ENCHANTS",
+					"HIDE_ATTRIBUTES",
+					"HIDE_UNBREAKABLE",
+					"HIDE_DESTROYS",
+					"HIDE_PLACED_ON",
+					"HIDE_POTION_EFFECTS"
+				],
+				"unbreakable": true
+			},
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null
+		]
+	},
+	"tags": [
+	]
+}

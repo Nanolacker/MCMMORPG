@@ -12,6 +12,9 @@ import com.mcmmorpg.common.sound.SoundSequence.SoundSequenceNode;
 import com.mcmmorpg.common.time.DelayedTask;
 import com.mcmmorpg.common.time.GameClock;
 
+/**
+ * Plays a sound sequence ambiently or to a specific player.
+ */
 public class SoundSequencePlayer {
 
 	private final SoundSequence sequence;
@@ -28,22 +31,40 @@ public class SoundSequencePlayer {
 	 */
 	private double startTime;
 
+	/**
+	 * Create a sound sequence player to play strictly to the specific player.
+	 */
 	public SoundSequencePlayer(SoundSequence sequence, Player player) {
 		this(sequence, noise -> noise.play(player));
 	}
 
+	/**
+	 * Create a sound sequence player to play strictly to the specific player
+	 * character.
+	 */
 	public SoundSequencePlayer(SoundSequence sequence, PlayerCharacter pc) {
 		this(sequence, pc.getPlayer());
 	}
 
+	/**
+	 * Create a sound sequence player to play strictly to the specific player from
+	 * the specified source.
+	 */
 	public SoundSequencePlayer(SoundSequence sequence, Player player, Location source) {
 		this(sequence, noise -> noise.play(player, source));
 	}
 
+	/**
+	 * Create a sound sequence player to play strictly to the specific player
+	 * character from the specified source.
+	 */
 	public SoundSequencePlayer(SoundSequence sequence, PlayerCharacter pc, Location source) {
 		this(sequence, pc.getPlayer(), source);
 	}
 
+	/**
+	 * Create a sound sequence player to play from the specified source.
+	 */
 	public SoundSequencePlayer(SoundSequence sequence, Location source) {
 		this(sequence, noise -> noise.play(source));
 	}
@@ -55,32 +76,54 @@ public class SoundSequencePlayer {
 		this.timeStamp = 0;
 	}
 
+	/**
+	 * Returns the sound sequence played.
+	 */
 	public SoundSequence getSequence() {
 		return sequence;
 	}
 
+	/**
+	 * Returns whether or not this sound sequence player will loop (i.e. repeat).
+	 */
 	public boolean isLooping() {
 		return loop;
 	}
 
+	/**
+	 * Sets whether or not this sound sequence player will loop (i.e. repeat).
+	 */
 	public void setLooping(boolean loop) {
 		this.loop = loop;
 	}
 
+	/**
+	 * Returns whether or not this sound sequence player is playing.
+	 */
 	public boolean isPlaying() {
 		return isPlaying;
 	}
 
+	/**
+	 * Returns how many seconds into the sequence has played.
+	 */
 	public double getCurrentTime() {
 		return timeStamp + GameClock.getTime() - startTime;
 	}
 
+	/**
+	 * Sets how many seconds into the sequence has played. Use this to rewind or
+	 * fast forward.
+	 */
 	public void setCurrentTime(double currentTime) {
 		this.timeStamp = currentTime;
 		pause();
 		play();
 	}
 
+	/**
+	 * Play the sound sequence.
+	 */
 	public void play() {
 		if (isPlaying) {
 			stop();
@@ -120,6 +163,9 @@ public class SoundSequencePlayer {
 		finishTask.schedule();
 	}
 
+	/**
+	 * Pause this sound sequence player, maintaining the time in the sequence.
+	 */
 	public void pause() {
 		timeStamp = getCurrentTime();
 		isPlaying = false;
@@ -129,6 +175,10 @@ public class SoundSequencePlayer {
 		playTasks.clear();
 	}
 
+	/**
+	 * Stop this sound sequence player. The time of this sound sequence player is
+	 * reset to the beginning of the sequence.
+	 */
 	public void stop() {
 		for (DelayedTask playTask : playTasks) {
 			if (playTask.isScheduled()) {

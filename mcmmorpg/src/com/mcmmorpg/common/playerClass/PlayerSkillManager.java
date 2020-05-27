@@ -6,11 +6,18 @@ import java.util.Map;
 
 import com.mcmmorpg.common.character.PlayerCharacter;
 
+/**
+ * Manages data for a player character's skills.
+ */
 public class PlayerSkillManager {
 
 	private final PlayerCharacter pc;
 	private final Map<Skill, PlayerSkillData> skillDataMap;
 
+	/**
+	 * Create a new skill manager for the specified player character using previous
+	 * skill data.
+	 */
 	public PlayerSkillManager(PlayerCharacter pc, PlayerSkillData[] allSkillData) {
 		this.pc = pc;
 		skillDataMap = new HashMap<>();

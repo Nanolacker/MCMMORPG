@@ -10,6 +10,10 @@ import org.bukkit.inventory.ItemStack;
 
 import com.mcmmorpg.common.character.PlayerCharacter;
 
+/**
+ * The center of player character advancement. A skill tree allows player
+ * character to unlock and upgrade new skills by clicking in a skill tree menu.
+ */
 public class SkillTree {
 
 	private final PlayerClass playerClass;
@@ -21,6 +25,9 @@ public class SkillTree {
 		inventoryMap = new HashMap<>();
 	}
 
+	/**
+	 * Opens the skill tree for ths specified player character.
+	 */
 	public void open(PlayerCharacter pc) {
 		Inventory inventory = createInventory(pc);
 		inventoryMap.put(pc, inventory);

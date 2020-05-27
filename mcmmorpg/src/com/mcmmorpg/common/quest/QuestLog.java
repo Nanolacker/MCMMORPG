@@ -15,6 +15,9 @@ import org.bukkit.inventory.ItemStack;
 import com.mcmmorpg.common.character.PlayerCharacter;
 import com.mcmmorpg.common.event.EventManager;
 
+/**
+ * A menu in which a player character can view quests.
+ */
 public class QuestLog {
 
 	private static final List<Inventory> questLogInventories = new ArrayList<>();
@@ -25,6 +28,9 @@ public class QuestLog {
 
 	private final PlayerCharacter pc;
 
+	/**
+	 * Create a quest log for the specified player character.
+	 */
 	public QuestLog(PlayerCharacter pc) {
 		this.pc = pc;
 	}
@@ -41,6 +47,9 @@ public class QuestLog {
 		return inventory;
 	}
 
+	/**
+	 * Opens the quest log for the player character.
+	 */
 	public void open() {
 		Inventory inventory = createInventory();
 		pc.getPlayer().openInventory(inventory);

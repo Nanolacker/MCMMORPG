@@ -35,15 +35,25 @@ public final class PlayerClass {
 		EventManager.registerEvents(new PlayerClassListener());
 	}
 
+	/**
+	 * Creates a new player class. Functionality for skill use will need to be
+	 * handles elsewhere though events.
+	 */
 	public PlayerClass(String name, Skill[] skills) {
 		this.name = name;
 		this.skills = skills;
 	}
 
+	/**
+	 * Returns the player class of the specified name.
+	 */
 	public static PlayerClass forName(String name) {
 		return playerClasses.get(name);
 	}
 
+	/**
+	 * Sets up this player class. This must be called after construction!
+	 */
 	public void initialize() {
 		hotbarItemStackMap = new HashMap<>();
 		for (Skill skill : skills) {
@@ -56,20 +66,30 @@ public final class PlayerClass {
 		playerClasses.put(name, this);
 	}
 
+	/**
+	 * Returns the name of this player class.
+	 */
 	public String getName() {
 		return name;
 	}
 
+	/**
+	 * Returns the skills of this player class.
+	 */
 	public Skill[] getSkills() {
 		return skills;
 	}
 
+	/**
+	 * Returns this class's skill tree.
+	 */
 	public SkillTree getSkillTree() {
 		return skillTree;
 	}
 
 	/**
-	 * Returns null if no skill with the specified name exists.
+	 * Returns the skill belonging to this class of the specified name. Returns null
+	 * if no skill with the specified name exists.
 	 */
 	public Skill skillForName(String skillName) {
 		for (Skill skill : skills) {
@@ -80,6 +100,10 @@ public final class PlayerClass {
 		return null;
 	}
 
+	/**
+	 * Returns the skill corresponding to a skill item stack on a player character's
+	 * hotbar.
+	 */
 	Skill skillForHotbarItemStack(ItemStack itemStack) {
 		if (itemStack == null) {
 			return null;
