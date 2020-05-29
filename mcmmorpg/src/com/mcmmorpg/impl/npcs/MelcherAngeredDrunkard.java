@@ -25,7 +25,7 @@ public class MelcherAngeredDrunkard extends AbstractHumanEnemy {
 
 	private static final int LEVEL = 2;
 	private static final double MAX_HEALTH = 50;
-	private static final double DAMAGE_AMOUNT = 8;
+	private static final double DAMAGE_AMOUNT = 5;
 	private static final int XP_REWARD = 25;
 	private static final double RESPAWN_TIME = 60;
 	private static final int SPEED = 1;

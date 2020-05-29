@@ -378,8 +378,12 @@ public final class PlayerCharacter extends AbstractCharacter {
 	 * distance of maxRange away from the player in their look direction.
 	 */
 	public Location getTargetLocation(double maxRange) {
-		// add 0.5 to average
-		return player.getTargetBlock(null, (int) maxRange).getLocation().add(0.5, 0.5, 0.5);
+		if (active) {
+			// add 0.5 to average
+			return player.getTargetBlock(null, (int) maxRange).getLocation().add(0.5, 0.5, 0.5);
+		} else {
+			return getLocation();
+		}
 	}
 
 	/**

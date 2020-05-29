@@ -96,7 +96,7 @@ public class ItemListener implements Listener {
 			}
 		}
 		if (!missed) {
-			pc.disarm(1.25);
+			pc.disarm(0.75);
 		}
 	}
 
@@ -138,13 +138,14 @@ public class ItemListener implements Listener {
 	}
 
 	private void useHealingPotion(PlayerCharacter pc, double healAmount) {
+		USE_POTION_NOISE.play(pc);
 		pc.heal(healAmount, pc);
 		pc.sendMessage(ChatColor.GRAY + "Recovered " + ChatColor.RED + (int) healAmount + " HP");
-		USE_POTION_NOISE.play(pc);
 	}
 
 	private void useMelcherMead(PlayerCharacter pc) {
 		Player player = pc.getPlayer();
+		USE_POTION_NOISE.play(pc);
 		PotionEffect drunkness = new PotionEffect(PotionEffectType.CONFUSION, MathUtils.secondsToTicks(15), 1);
 		player.addPotionEffect(drunkness);
 		pc.sendMessage(ChatColor.GRAY + "You fill dizzy.");

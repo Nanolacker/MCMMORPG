@@ -16,7 +16,7 @@ public class MelcherTavernRat extends Rat {
 
 	private static final int LEVEL = 1;
 	private static final double MAX_HEALTH = 25;
-	private static final double DAMAGE_AMOUNT = 5;
+	private static final double DAMAGE_AMOUNT = 4;
 	private static final int XP_REWARD = 5;
 
 	private static final Collider spawnBounds;

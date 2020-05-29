@@ -100,11 +100,11 @@ public abstract class AbstractCultist extends AbstractHumanEnemy {
 		super.onDeath();
 		cancelSpell();
 		Location location = getLocation();
-		Items.CONJURERS_CLOAK.drop(location, 0.1);
-		Items.CONJURERS_HOOD.drop(location, 0.1);
-		Items.CONJURERS_LEGGINGS.drop(location, 0.1);
-		Items.CONJURERS_SHOES.drop(location, 0.1);
-		Items.POTION_OF_LESSER_HEALING.drop(location, 0.1);
+		Items.CONJURERS_CLOAK.drop(location, 0.05);
+		Items.CONJURERS_HOOD.drop(location, 0.05);
+		Items.CONJURERS_LEGGINGS.drop(location, 0.05);
+		Items.CONJURERS_SHOES.drop(location, 0.05);
+		Items.POTION_OF_LESSER_HEALING.drop(location, 0.05);
 		Items.SKELETAL_WAND.drop(location, 0.05);
 	}
 

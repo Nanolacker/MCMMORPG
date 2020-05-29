@@ -47,16 +47,16 @@ public class Thief extends AbstractHumanEnemy {
 		}
 		int dropAmount = (int) (Math.random() * 3);
 		Items.FOOD_SUPPLIES.drop(location, dropAmount);
-		Items.THIEF_DAGGER.drop(getLocation(), 0.05);
-		Items.BRITTLE_WAND.drop(getLocation(), 0.05);
-		Items.HIDE_BOOTS.drop(location, 0.05);
-		Items.HIDE_HEADGEAR.drop(location, 0.05);
-		Items.HIDE_LEGGINGS.drop(location, 0.05);
-		Items.HIDE_TUNIC.drop(location, 0.05);
-		Items.TORN_HOOD.drop(location, 0.05);
-		Items.TORN_LEGGINGS.drop(location, 0.05);
-		Items.TORN_ROBES.drop(location, 0.05);
-		Items.TORN_SHOES.drop(location, 0.05);
+		Items.THIEF_DAGGER.drop(getLocation(), 0.02);
+		Items.BRITTLE_WAND.drop(getLocation(), 0.02);
+		Items.HIDE_BOOTS.drop(location, 0.02);
+		Items.HIDE_HEADGEAR.drop(location, 0.02);
+		Items.HIDE_LEGGINGS.drop(location, 0.02);
+		Items.HIDE_TUNIC.drop(location, 0.02);
+		Items.TORN_HOOD.drop(location, 0.02);
+		Items.TORN_LEGGINGS.drop(location, 0.02);
+		Items.TORN_ROBES.drop(location, 0.02);
+		Items.TORN_SHOES.drop(location, 0.02);
 	}
 
 }

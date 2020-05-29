@@ -35,8 +35,8 @@ public class MageListener implements Listener {
 
 	private static final double[] MAX_HEALTH = { 20.0, 25.0, 31.0, 38.0, 46.0, 55.0, 65.0, 76.0, 88.0, 101.0, 115.0,
 			130.0, 146.0, 163.0, 181.0, 200.0, 220.0, 241.0, 263.0, 286.0 };
-	private static final double[] HEALTH_REGEN_RATE = { 2.0, 2.2, 2.4, 2.6, 2.8, 3.0, 3.2, 3.4, 3.6, 3.8, 4.0, 4.2, 4.4,
-			4.6, 4.8, 5.0, 5.2, 5.4, 5.6, 5.8 };
+	private static final double[] HEALTH_REGEN_RATE = { 0.5, 0.6, 0.7, 0.8, 0.9, 1.0, 1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 1.7,
+			1.8, 1.9, 2, 2.1, 2.2, 2.3, 2.4, };
 	private static final double[] MAX_MANA = { 15.0, 19.0, 23.0, 27.0, 31.0, 35.0, 39.0, 43.0, 47.0, 51.0, 55.0, 59.0,
 			63.0, 67.0, 71.0, 75.0, 79.0, 83.0, 87.0, 91.0 };
 	private static final double[] MANA_REGEN_RATE = { 2.0, 2.5, 3.0, 3.5, 4.0, 4.5, 5.0, 5.5, 6.0, 6.5, 7.0, 7.5, 8.0,
@@ -120,7 +120,7 @@ public class MageListener implements Listener {
 	}
 
 	private void useFireball(PlayerCharacter pc) {
-		double damageAmount = 4 * pc.getWeapon().getBaseDamage() * fireball.getUpgradeLevel(pc) + 3 * pc.getLevel();
+		double damageAmount = 3 * pc.getWeapon().getBaseDamage() * fireball.getUpgradeLevel(pc) + 3 * pc.getLevel();
 		double range = 15;
 		double hitSize = 0.85;
 		Location start = pc.getHandLocation().subtract(0, 1, 0);
@@ -192,7 +192,8 @@ public class MageListener implements Listener {
 	}
 
 	private void useIceBeam(PlayerCharacter pc) {
-		double damagePerTick = 0.5 * pc.getWeapon().getBaseDamage() * iceBeam.getUpgradeLevel(pc) + 0.5 * pc.getLevel();
+		double damagePerTick = 0.75 * pc.getWeapon().getBaseDamage() * iceBeam.getUpgradeLevel(pc)
+				+ 0.5 * pc.getLevel();
 
 		double duration = 4;
 		double period = 0.1;
@@ -251,6 +252,7 @@ public class MageListener implements Listener {
 		};
 		channel.schedule();
 		pc.silence(duration + STANDARD_SILENCE_DURATION);
+		pc.disarm(duration);
 	}
 
 	private void useWhirlwind(PlayerCharacter pc) {

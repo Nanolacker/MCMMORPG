@@ -13,7 +13,7 @@ import com.mcmmorpg.impl.Quests;
 
 public class Highwayman extends AbstractHumanEnemy {
 
-	private static final double MAX_HEALTH = 50;
+	private static final double MAX_HEALTH = 125;
 	private static final double DAMAGE_AMOUNT = 7;
 	private static final int XP_REWARD = 10;
 	private static final int LEVEL = 5;
@@ -44,16 +44,16 @@ public class Highwayman extends AbstractHumanEnemy {
 		for (PlayerCharacter pc : nearbyPcs) {
 			Quests.CLEARING_THE_ROAD.getObjective(0).addProgress(pc, 1);
 		}
-		Items.THIEF_DAGGER.drop(getLocation(), 0.05);
-		Items.BRITTLE_WAND.drop(getLocation(), 0.05);
-		Items.HIDE_BOOTS.drop(location, 0.05);
-		Items.HIDE_HEADGEAR.drop(location, 0.05);
-		Items.HIDE_LEGGINGS.drop(location, 0.05);
-		Items.HIDE_TUNIC.drop(location, 0.05);
-		Items.TORN_HOOD.drop(location, 0.05);
-		Items.TORN_LEGGINGS.drop(location, 0.05);
-		Items.TORN_ROBES.drop(location, 0.05);
-		Items.TORN_SHOES.drop(location, 0.05);
+		Items.THIEF_DAGGER.drop(getLocation(), 0.02);
+		Items.BRITTLE_WAND.drop(getLocation(), 0.02);
+		Items.HIDE_BOOTS.drop(location, 0.02);
+		Items.HIDE_HEADGEAR.drop(location, 0.02);
+		Items.HIDE_LEGGINGS.drop(location, 0.02);
+		Items.HIDE_TUNIC.drop(location, 0.02);
+		Items.TORN_HOOD.drop(location, 0.02);
+		Items.TORN_LEGGINGS.drop(location, 0.02);
+		Items.TORN_ROBES.drop(location, 0.02);
+		Items.TORN_SHOES.drop(location, 0.02);
 		Items.POTION_OF_MINOR_HEALING.drop(location, 0.1);
 	}
 
