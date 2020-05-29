@@ -229,7 +229,7 @@ public final class TextPanel {
 			}
 		} else if (entityCount > lineCount) {
 			// remove entities
-			for (int i = entityCount; i > lineCount; i--) {
+			for (int i = entityCount - 1; i >= lineCount; i--) {
 				removeEntity(i);
 			}
 		}

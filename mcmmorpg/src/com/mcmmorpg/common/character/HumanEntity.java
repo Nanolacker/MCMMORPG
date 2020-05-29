@@ -39,7 +39,7 @@ import net.minecraft.server.v1_15_R1.WorldServer;
 public class HumanEntity {
 
 	private static final double RENDER_PERIOD = 1.0;
-	private static final double RENDER_RADIUS = 40.0;
+	private static final double RENDER_RADIUS = 35.0;
 
 	private static final List<HumanEntity> humanEntities = new ArrayList<>();
 

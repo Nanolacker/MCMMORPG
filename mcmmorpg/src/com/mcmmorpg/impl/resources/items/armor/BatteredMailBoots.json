@@ -1,0 +1,10 @@
+{
+	"name": "Battered Mail Boots",
+	"rarity": "UNCOMMON",
+	"icon": "CHAINMAIL_BOOTS",
+	"description": null,
+	"playerClass": "Fighter",
+	"level": 10,
+	"type": "FEET",
+	"protections": 12
+}

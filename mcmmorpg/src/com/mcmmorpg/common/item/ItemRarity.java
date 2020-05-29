@@ -18,10 +18,16 @@ public enum ItemRarity {
 		this.text = text;
 	}
 
+	/**
+	 * Returns the color that corresponds to this rarity.
+	 */
 	public ChatColor getColor() {
 		return color;
 	}
 
+	/**
+	 * Returns the name of this rarity in pascal case.
+	 */
 	@Override
 	public String toString() {
 		return text;

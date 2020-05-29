@@ -17,6 +17,9 @@ public class Weapon extends Item {
 
 	private transient PlayerClass playerClass0;
 
+	/**
+	 * Create a new Weapon. initialize() must be called after construction.
+	 */
 	public Weapon(String name, ItemRarity rarity, Material icon, String description, String playerClass, int level,
 			double baseDamage) {
 		super(name, rarity, icon, description);
@@ -47,14 +50,25 @@ public class Weapon extends Item {
 		return ItemFactory.createItemStack(rarity.getColor() + getName(), lore.toString(), getIcon());
 	}
 
+	/**
+	 * Returns the player class that can equip this weapon.
+	 */
 	public PlayerClass getPlayerClass() {
 		return playerClass0;
 	}
 
+	/**
+	 * Returns the minimum level required for a player character to equip this
+	 * weapon.
+	 */
 	public int getLevel() {
 		return level;
 	}
 
+	/**
+	 * Returns the base damage (i.e. before modifiers) of this weapon. This is used
+	 * for skill and basic attack damage calculations.
+	 */
 	public double getBaseDamage() {
 		return baseDamage;
 	}

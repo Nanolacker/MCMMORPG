@@ -102,7 +102,7 @@ public class FighterListener implements Listener {
 	}
 
 	private void useBash(PlayerCharacter pc) {
-		double damageAmount = 4 + 6 * bash.getUpgradeLevel(pc) + 1.5 * pc.getLevel();
+		double damageAmount = 2 * pc.getWeapon().getBaseDamage() * bash.getUpgradeLevel(pc) + pc.getLevel();
 		Location location = pc.getLocation();
 		Vector lookDirection = location.getDirection();
 		World world = location.getWorld();
@@ -131,14 +131,14 @@ public class FighterListener implements Listener {
 	}
 
 	private void useSelfHeal(PlayerCharacter pc) {
-		double healAmount = 10 * selfHeal.getUpgradeLevel(pc) + 2 * pc.getLevel();
+		double healAmount = pc.getMaxHealth() / 5 * selfHeal.getUpgradeLevel(pc);
 		pc.heal(healAmount, pc);
 		SELF_HEAL_NOISE.play(pc.getLocation());
 		pc.silence(STANDARD_SILENCE_DURATION);
 	}
 
 	private void useCyclone(PlayerCharacter pc) {
-		double damagePerHit = 2 * cyclone.getUpgradeLevel(pc) + 0.5 * pc.getLevel();
+		double damagePerHit = 0.5 * pc.getWeapon().getBaseDamage() * cyclone.getUpgradeLevel(pc) + 0.25 * pc.getLevel();
 		new RepeatingTask(0.1) {
 			int count = 0;
 
@@ -207,7 +207,8 @@ public class FighterListener implements Listener {
 		if (airbornePlayers.contains(player)) {
 			if (player.isOnGround()) {
 				PlayerCharacter pc = PlayerCharacter.forPlayer(player);
-				double overheadStrikeDamage = 10 * pc.getLevel() + 2 * pc.getLevel();
+				double overheadStrikeDamage = 5 * pc.getWeapon().getBaseDamage() * overheadStrike.getUpgradeLevel(pc)
+						+ 2 * pc.getLevel();
 				Location location = player.getLocation();
 				Collider hitbox = new Collider(location.clone().add(0, 1, 0), 6, 4, 6) {
 					@Override
@@ -230,7 +231,7 @@ public class FighterListener implements Listener {
 	}
 
 	private void useCharge(PlayerCharacter pc) {
-		double damageAmount = 5 * charge.getUpgradeLevel(pc) + 2 * pc.getLevel();
+		double damageAmount = pc.getWeapon().getBaseDamage() * charge.getUpgradeLevel(pc) + pc.getLevel();
 		Player player = pc.getPlayer();
 		Location location = player.getLocation();
 		Vector direction = location.getDirection();
@@ -255,7 +256,7 @@ public class FighterListener implements Listener {
 	}
 
 	private void useInspire(PlayerCharacter pc) {
-		double healAmount = 8 * inspire.getUpgradeLevel(pc) + 2 * pc.getLevel();
+		double healProportion = 0.15 * inspire.getUpgradeLevel(pc);
 		double size = 8;
 		Location location = pc.getLocation().add(0, 1, 0);
 		Collider hitbox = new Collider(location, size, 2, size) {
@@ -264,6 +265,7 @@ public class FighterListener implements Listener {
 				if (other instanceof CharacterCollider) {
 					AbstractCharacter character = ((CharacterCollider) other).getCharacter();
 					if (character.isFriendly(pc)) {
+						double healAmount = healProportion * character.getMaxHealth();
 						character.heal(healAmount, pc);
 					}
 				}

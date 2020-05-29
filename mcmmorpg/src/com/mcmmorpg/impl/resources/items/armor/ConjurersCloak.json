@@ -1,0 +1,10 @@
+{
+	"name": "Conjurer's Cloak",
+	"rarity": "UNCOMMON",
+	"icon": "LEATHER_CHESTPLATE",
+	"description": null,
+	"playerClass": "Mage",
+	"level": 10,
+	"type": "CHEST",
+	"protections": 12
+}

@@ -30,7 +30,7 @@ public class ItemListener implements Listener {
 
 	private static final Noise SWORD_HIT_NOISE = new Noise(Sound.ENTITY_ZOMBIE_ATTACK_IRON_DOOR);
 	private static final Noise STAFF_HIT_NOISE = new Noise(Sound.BLOCK_WOODEN_TRAPDOOR_OPEN);
-	private static final Noise USE_HEAL_POTION_NOISE = new Noise(Sound.BLOCK_LAVA_EXTINGUISH);
+	private static final Noise USE_POTION_NOISE = new Noise(Sound.ENTITY_GENERIC_DRINK);
 
 	@EventHandler
 	private void onUseWeapon(PlayerCharacterUseWeaponEvent event) {
@@ -72,6 +72,8 @@ public class ItemListener implements Listener {
 			useMageStaff(pc, weapon);
 		} else if (weapon == Items.SKELETAL_WAND) {
 			useMageWand(pc, weapon, Particle.SPELL_WITCH);
+		} else if (weapon == Items.BRITTLE_WAND) {
+			useMageWand(pc, weapon, Particle.CRIT);
 		}
 	}
 
@@ -125,11 +127,11 @@ public class ItemListener implements Listener {
 		if (consumable == Items.POTION_OF_MINOR_HEALING) {
 			useHealingPotion(pc, 25);
 		} else if (consumable == Items.POTION_OF_LESSER_HEALING) {
-			useHealingPotion(pc, 25);
+			useHealingPotion(pc, 50);
 		} else if (consumable == Items.POTION_OF_HEALING) {
-			useHealingPotion(pc, 25);
+			useHealingPotion(pc, 80);
 		} else if (consumable == Items.POTION_OF_GREATER_HEALING) {
-			useHealingPotion(pc, 25);
+			useHealingPotion(pc, 150);
 		} else if (consumable == Items.MELCHER_MEAD) {
 			useMelcherMead(pc);
 		}
@@ -138,7 +140,7 @@ public class ItemListener implements Listener {
 	private void useHealingPotion(PlayerCharacter pc, double healAmount) {
 		pc.heal(healAmount, pc);
 		pc.sendMessage(ChatColor.GRAY + "Recovered " + ChatColor.RED + (int) healAmount + " HP");
-		USE_HEAL_POTION_NOISE.play(pc);
+		USE_POTION_NOISE.play(pc);
 	}
 
 	private void useMelcherMead(PlayerCharacter pc) {

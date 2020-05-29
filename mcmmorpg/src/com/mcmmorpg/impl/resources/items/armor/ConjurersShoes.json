@@ -1,0 +1,10 @@
+{
+	"name": "Conjurer's Shoes",
+	"rarity": "UNCOMMON",
+	"icon": "LEATHER_BOOTS",
+	"description": null,
+	"playerClass": "Mage",
+	"level": 10,
+	"type": "FEET",
+	"protections": 8
+}

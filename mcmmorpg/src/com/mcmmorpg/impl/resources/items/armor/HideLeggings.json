@@ -1,0 +1,10 @@
+{
+	"name": "Hide Leggings",
+	"rarity": "COMMON",
+	"icon": "LEATHER_LEGGINGS",
+	"description": null,
+	"playerClass": "Fighter",
+	"level": 3,
+	"type": "LEGS",
+	"protections": 6
+}

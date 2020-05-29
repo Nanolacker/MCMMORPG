@@ -11,6 +11,10 @@ import org.bukkit.inventory.meta.ItemMeta;
 import com.mcmmorpg.common.event.EventManager;
 import com.mcmmorpg.common.utils.StringUtils;
 
+/**
+ * Provides means to easily create item stacks and register static interactables
+ * (i.e. "button" item stacks).
+ */
 public class ItemFactory {
 
 	static final List<ItemStack> staticInteractables = new ArrayList<>();
@@ -48,13 +52,16 @@ public class ItemFactory {
 	}
 
 	/**
-	 * An immovable item which calls a StaticInteractableEvent when interacted with
-	 * a right click or when clicked on with a right click.
+	 * Register an immovable item which calls a StaticInteractableEvent when
+	 * interacted with a right click or when clicked on with a right click.
 	 */
 	public static void registerStaticInteractable(ItemStack itemStack) {
 		staticInteractables.add(itemStack);
 	}
 
+	/**
+	 * Unregister a static interactable item stack.
+	 */
 	public static void unregisterStaticInteractable(ItemStack itemStack) {
 		staticInteractables.remove(itemStack);
 	}

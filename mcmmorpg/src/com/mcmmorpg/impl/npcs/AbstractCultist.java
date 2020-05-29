@@ -14,13 +14,14 @@ import com.mcmmorpg.common.character.PlayerCharacter;
 import com.mcmmorpg.common.event.EventManager;
 import com.mcmmorpg.common.ui.ProgressBar;
 import com.mcmmorpg.common.ui.ProgressBar.ProgressBarColor;
+import com.mcmmorpg.impl.Items;
 
 public abstract class AbstractCultist extends AbstractHumanEnemy {
 
 	private static final int XP_REWARD = 60;
 	private static final double RESPAWN_TIME = 60;
 	private static final int SPEED = 2;
-	private static final PotionEffect SLOW_EFFECT = new PotionEffect(PotionEffectType.SLOW, Integer.MAX_VALUE, 5,
+	protected static final PotionEffect SLOW_EFFECT = new PotionEffect(PotionEffectType.SLOW, Integer.MAX_VALUE, 5,
 			false);
 
 	private final String spellName;
@@ -73,7 +74,7 @@ public abstract class AbstractCultist extends AbstractHumanEnemy {
 
 	protected abstract void useSpell();
 
-	private void cancelSpell() {
+	protected void cancelSpell() {
 		ai.removePotionEffect(PotionEffectType.SLOW);
 		if (spellProgressBar != null) {
 			spellProgressBar.dispose();
@@ -98,6 +99,13 @@ public abstract class AbstractCultist extends AbstractHumanEnemy {
 	protected void onDeath() {
 		super.onDeath();
 		cancelSpell();
+		Location location = getLocation();
+		Items.CONJURERS_CLOAK.drop(location, 0.1);
+		Items.CONJURERS_HOOD.drop(location, 0.1);
+		Items.CONJURERS_LEGGINGS.drop(location, 0.1);
+		Items.CONJURERS_SHOES.drop(location, 0.1);
+		Items.POTION_OF_LESSER_HEALING.drop(location, 0.1);
+		Items.SKELETAL_WAND.drop(location, 0.05);
 	}
 
 	@Override

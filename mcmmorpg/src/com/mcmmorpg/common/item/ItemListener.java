@@ -38,6 +38,7 @@ import com.mcmmorpg.common.time.DelayedTask;
 class ItemListener implements Listener {
 
 	private static final Noise CLICK_NOISE = new Noise(Sound.BLOCK_LEVER_CLICK);
+	private static final Noise EQUIP_NOISE = new Noise(Sound.ITEM_ARMOR_EQUIP_CHAIN);
 
 	/**
 	 * Used to ensure that players only use weapons once when intended.
@@ -193,6 +194,7 @@ class ItemListener implements Listener {
 						inventory.setItem(0, clickedItemStack);
 						inventory.setItem(slot, currentWeaponItemStack);
 						pc.sendMessage(ChatColor.GRAY + "Equipped " + weapon);
+						EQUIP_NOISE.play(pc);
 					}
 				}
 				CLICK_NOISE.play(player);
@@ -205,6 +207,7 @@ class ItemListener implements Listener {
 					inventory.setItem(slot, null);
 					inventory.addItem(clickedItemStack);
 					pc.sendMessage(ChatColor.GRAY + "Unequipped " + armorItem);
+					EQUIP_NOISE.play(pc);
 				} else {
 					// equip
 					PlayerClass armorPlayerClass = armorItem.getPlayerClass();
@@ -238,6 +241,7 @@ class ItemListener implements Listener {
 						ItemStack currentArmorItemStack = inventory.getItem(armorSlot);
 						inventory.setItem(armorSlot, clickedItemStack);
 						pc.sendMessage(ChatColor.GRAY + "Equipped " + armorItem);
+						EQUIP_NOISE.play(pc);
 						inventory.setItem(slot, currentArmorItemStack);
 					}
 				}

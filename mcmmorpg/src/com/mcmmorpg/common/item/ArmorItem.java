@@ -7,7 +7,7 @@ import org.bukkit.inventory.ItemStack;
 import com.mcmmorpg.common.playerClass.PlayerClass;
 
 /**
- * An item that can be equipped to provide protections.
+ * An item that can be equipped by a player character to provide protections.
  */
 public class ArmorItem extends Item {
 
@@ -18,6 +18,9 @@ public class ArmorItem extends Item {
 
 	private transient PlayerClass playerClass0;
 
+	/**
+	 * Create a new armor item. initialize() must be called after construction.
+	 */
 	public ArmorItem(String name, ItemRarity rarity, Material icon, String description, String playerClass, int level,
 			ArmorType type, int protections) {
 		super(name, rarity, icon, description);
@@ -49,22 +52,39 @@ public class ArmorItem extends Item {
 		return ItemFactory.createItemStack(rarity.getColor() + getName(), lore.toString(), getIcon());
 	}
 
+	/**
+	 * Returns the player class that can equip this armor item.
+	 */
 	public PlayerClass getPlayerClass() {
 		return playerClass0;
 	}
 
+	/**
+	 * Returns the minimum level required for a player character to equip this armor
+	 * item.
+	 */
 	public int getLevel() {
 		return level;
 	}
 
+	/**
+	 * Returns the type or equipment slot of this armor item.
+	 */
 	public ArmorType getType() {
 		return type;
 	}
 
+	/**
+	 * Returns how many protections this armor item provides to player characters
+	 * who equip it.
+	 */
 	public double getProtections() {
 		return protections;
 	}
 
+	/**
+	 * A type, or equipment slot of an armor item.
+	 */
 	public static enum ArmorType {
 		FEET("Feet"), LEGS("Legs"), CHEST("Chest"), HEAD("Head");
 

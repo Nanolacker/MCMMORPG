@@ -1,0 +1,10 @@
+{
+	"name": "Hide Headgear",
+	"rarity": "COMMON",
+	"icon": "LEATHER_HELMET",
+	"description": null,
+	"playerClass": "Fighter",
+	"level": 3,
+	"type": "HEAD",
+	"protections": 4
+}

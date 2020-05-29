@@ -41,15 +41,22 @@ public class Thief extends AbstractHumanEnemy {
 		super.onDeath();
 		Location location = getLocation();
 		DEATH_NOISE.play(location);
-		int dropAmount = (int) (Math.random() * 3);
-		Items.FOOD_SUPPLIES.drop(location, dropAmount);
-		if (Math.random() > 0.8) {
-			Items.THIEF_DAGGER.drop(location, 1);
-		}
 		List<PlayerCharacter> nearbyPcs = PlayerCharacter.getNearbyPlayerCharacters(getLocation(), 25);
 		for (PlayerCharacter pc : nearbyPcs) {
 			Quests.SLAYING_THE_THIEVES.getObjective(0).addProgress(pc, 1);
 		}
+		int dropAmount = (int) (Math.random() * 3);
+		Items.FOOD_SUPPLIES.drop(location, dropAmount);
+		Items.THIEF_DAGGER.drop(getLocation(), 0.05);
+		Items.BRITTLE_WAND.drop(getLocation(), 0.05);
+		Items.HIDE_BOOTS.drop(location, 0.05);
+		Items.HIDE_HEADGEAR.drop(location, 0.05);
+		Items.HIDE_LEGGINGS.drop(location, 0.05);
+		Items.HIDE_TUNIC.drop(location, 0.05);
+		Items.TORN_HOOD.drop(location, 0.05);
+		Items.TORN_LEGGINGS.drop(location, 0.05);
+		Items.TORN_ROBES.drop(location, 0.05);
+		Items.TORN_SHOES.drop(location, 0.05);
 	}
 
 }

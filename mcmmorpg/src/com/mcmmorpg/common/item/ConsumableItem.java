@@ -4,10 +4,16 @@ import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
+/**
+ * An item that can be consumed for a one time use.
+ */
 public class ConsumableItem extends Item {
 
 	private final int level;
 
+	/**
+	 * Create a new consumable item. initialize() must be called after construction.
+	 */
 	public ConsumableItem(String name, ItemRarity rarity, Material icon, String description, int level) {
 		super(name, rarity, icon, description);
 		this.level = level;
@@ -28,6 +34,10 @@ public class ConsumableItem extends Item {
 
 	}
 
+	/**
+	 * Returns the minimum level required for a player character to use this
+	 * consumable item.
+	 */
 	public int getLevel() {
 		return level;
 	}

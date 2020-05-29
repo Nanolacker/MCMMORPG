@@ -99,6 +99,7 @@ public abstract class AbstractUndead extends NonPlayerCharacter {
 		if (vehicle != null) {
 			vehicle.remove();
 		}
+		entity.setInvulnerable(true);
 		movementSyncer.setEntity(entity);
 		movementSyncer.setEnabled(true);
 		entityMap.put(entity, this);
@@ -122,8 +123,6 @@ public abstract class AbstractUndead extends NonPlayerCharacter {
 	@Override
 	public void damage(double amount, Source source) {
 		super.damage(amount, source);
-		// for light up red effect
-		entity.damage(0);
 		HURT_NOISE.play(getLocation());
 	}
 

@@ -10,6 +10,7 @@ import com.mcmmorpg.common.character.PlayerCharacter.PlayerCharacterCollider;
 import com.mcmmorpg.common.event.PlayerCharacterLevelUpEvent;
 import com.mcmmorpg.common.physics.Collider;
 import com.mcmmorpg.impl.Quests;
+import com.mcmmorpg.impl.RespawnLocations;
 import com.mcmmorpg.impl.Soundtracks;
 import com.mcmmorpg.impl.Worlds;
 import com.mcmmorpg.impl.Zones;
@@ -33,7 +34,6 @@ import com.mcmmorpg.impl.npcs.TrainingDummy;
 
 public class MelcherListener implements Listener {
 
-	private static final Location PLAYER_CHARACTER_RESPAWN_LOCATION = new Location(Worlds.ELADRADOR, -1019, 70, 191);
 	private static final Location[] VILLAGER_LOCATIONS = { new Location(Worlds.ELADRADOR, -1167, 73, 273),
 			new Location(Worlds.ELADRADOR, -1153, 73, 269), new Location(Worlds.ELADRADOR, -1138, 73, 260),
 			new Location(Worlds.ELADRADOR, -1146, 73, 240), new Location(Worlds.ELADRADOR, -1130, 73, 242),
@@ -139,7 +139,7 @@ public class MelcherListener implements Listener {
 				if (other instanceof PlayerCharacterCollider) {
 					PlayerCharacter pc = ((PlayerCharacterCollider) other).getCharacter();
 					pc.setZone(Zones.MELCHER);
-					pc.setRespawnLocation(PLAYER_CHARACTER_RESPAWN_LOCATION);
+					pc.setRespawnLocation(RespawnLocations.MELCHER);
 					pc.getSoundTrackPlayer().setSoundtrack(Soundtracks.VILLAGE);
 				}
 			}

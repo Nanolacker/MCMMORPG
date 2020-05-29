@@ -1,0 +1,10 @@
+{
+	"name": "Conjurer's Leggings",
+	"rarity": "UNCOMMON",
+	"icon": "LEATHER_LEGGINGS",
+	"description": null,
+	"playerClass": "Mage",
+	"level": 10,
+	"type": "LEGS",
+	"protections": 10
+}

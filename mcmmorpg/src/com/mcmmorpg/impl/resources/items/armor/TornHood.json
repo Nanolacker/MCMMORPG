@@ -1,0 +1,10 @@
+{
+	"name": "Torn Hood",
+	"rarity": "COMMON",
+	"icon": "LEATHER_LEGGINGS",
+	"description": null,
+	"playerClass": "Mage",
+	"level": 3,
+	"type": "HEAD",
+	"protections": 2
+}

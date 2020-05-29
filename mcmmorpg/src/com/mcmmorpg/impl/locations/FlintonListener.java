@@ -6,6 +6,7 @@ import org.bukkit.event.Listener;
 import com.mcmmorpg.common.character.PlayerCharacter;
 import com.mcmmorpg.common.character.PlayerCharacter.PlayerCharacterCollider;
 import com.mcmmorpg.common.physics.Collider;
+import com.mcmmorpg.impl.RespawnLocations;
 import com.mcmmorpg.impl.Soundtracks;
 import com.mcmmorpg.impl.Worlds;
 import com.mcmmorpg.impl.Zones;
@@ -14,7 +15,6 @@ import com.mcmmorpg.impl.npcs.FlintonVillager;
 
 public class FlintonListener implements Listener {
 
-	private static final Location PLAYER_CHARACTER_RESPAWN_LOCATION = new Location(Worlds.ELADRADOR, 0, 0, 0);
 	private static final Location MAYOR_LOCATION = new Location(Worlds.ELADRADOR, 0, 0, 0);
 	private static final Location[] VILLAGER_LOCATIONS = {};
 
@@ -41,7 +41,7 @@ public class FlintonListener implements Listener {
 				if (other instanceof PlayerCharacterCollider) {
 					PlayerCharacter pc = ((PlayerCharacterCollider) other).getCharacter();
 					pc.setZone(Zones.ELADRADOR);
-					pc.setRespawnLocation(PLAYER_CHARACTER_RESPAWN_LOCATION);
+					pc.setRespawnLocation(RespawnLocations.FLINTON);
 					pc.getSoundTrackPlayer().setSoundtrack(Soundtracks.WILDNERNESS);
 				}
 			}

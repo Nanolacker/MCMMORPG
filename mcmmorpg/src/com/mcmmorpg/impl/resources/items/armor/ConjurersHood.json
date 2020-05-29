@@ -1,0 +1,10 @@
+{
+	"name": "Conjurer's Hood",
+	"rarity": "UNCOMMON",
+	"icon": "LEATHER_HELMET",
+	"description": null,
+	"playerClass": "Mage",
+	"level": 10,
+	"type": "HEAD",
+	"protections": 8
+}

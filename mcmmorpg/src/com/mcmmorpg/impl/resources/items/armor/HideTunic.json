@@ -1,0 +1,10 @@
+{
+	"name": "Hide Tunic",
+	"rarity": "COMMON",
+	"icon": "LEATHER_CHESTPLATE",
+	"description": null,
+	"playerClass": "Fighter",
+	"level": 3,
+	"type": "CHEST",
+	"protections": 8
+}

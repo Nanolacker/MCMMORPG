@@ -1,0 +1,10 @@
+{
+	"name": "Battered Mail Cuirass",
+	"rarity": "UNCOMMON",
+	"icon": "CHAINMAIL_CHESTPLATE",
+	"description": null,
+	"playerClass": "Fighter",
+	"level": 10,
+	"type": "CHEST",
+	"protections": 16
+}

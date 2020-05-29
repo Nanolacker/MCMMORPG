@@ -1,0 +1,10 @@
+{
+	"name": "Battered Mail Helmet",
+	"rarity": "UNCOMMON",
+	"icon": "CHAINMAIL_HELMET",
+	"description": null,
+	"playerClass": "Fighter",
+	"level": 10,
+	"type": "HEAD",
+	"protections": 12
+}

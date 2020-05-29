@@ -120,7 +120,7 @@ public class MageListener implements Listener {
 	}
 
 	private void useFireball(PlayerCharacter pc) {
-		double damageAmount = 10 * fireball.getUpgradeLevel(pc) + 5 * pc.getLevel();
+		double damageAmount = 4 * pc.getWeapon().getBaseDamage() * fireball.getUpgradeLevel(pc) + 3 * pc.getLevel();
 		double range = 15;
 		double hitSize = 0.85;
 		Location start = pc.getHandLocation().subtract(0, 1, 0);
@@ -192,7 +192,8 @@ public class MageListener implements Listener {
 	}
 
 	private void useIceBeam(PlayerCharacter pc) {
-		double damagePerTick = 2 * iceBeam.getUpgradeLevel(pc) + 0.5 * pc.getLevel();
+		double damagePerTick = 0.5 * pc.getWeapon().getBaseDamage() * iceBeam.getUpgradeLevel(pc) + 0.5 * pc.getLevel();
+
 		double duration = 4;
 		double period = 0.1;
 		double maxCount = duration / period;
@@ -253,7 +254,7 @@ public class MageListener implements Listener {
 	}
 
 	private void useWhirlwind(PlayerCharacter pc) {
-		double damagePerTick = 1.5 * whirlwind.getUpgradeLevel(pc) + 0.5 * pc.getLevel();
+		double damagePerTick = 0.75 * pc.getWeapon().getBaseDamage() * whirlwind.getUpgradeLevel(pc) + pc.getLevel();
 		Location targetTemp = pc.getTargetLocation(15);
 		Location location = pc.getLocation().add(0, 1.5, 0);
 		Ray ray = new Ray(location, location.getDirection(), 15);
@@ -331,7 +332,7 @@ public class MageListener implements Listener {
 	}
 
 	private void useEarthquake(PlayerCharacter pc) {
-		double damagePerTick = 2 * earthquake.getUpgradeLevel(pc) + 1 * pc.getLevel();
+		double damagePerTick = 0.5 * pc.getWeapon().getBaseDamage() * earthquake.getUpgradeLevel(pc) + pc.getLevel();
 		double size = 15;
 		int particleCount = 100;
 		Location center = pc.getLocation();
@@ -378,7 +379,7 @@ public class MageListener implements Listener {
 	}
 
 	private void useRestore(PlayerCharacter pc) {
-		double healAmount = restore.getUpgradeLevel(pc) * 10 + 4 * pc.getLevel();
+		double healProportion = 0.15 * restore.getUpgradeLevel(pc);
 		double size = 4;
 		int projectileParticleCount = 10;
 		int boxParticleCount = 75;
@@ -428,6 +429,7 @@ public class MageListener implements Listener {
 						if (other instanceof CharacterCollider) {
 							AbstractCharacter toHeal = ((CharacterCollider) other).getCharacter();
 							if (toHeal.isFriendly(pc)) {
+								double healAmount = healProportion * pc.getMaxHealth();
 								toHeal.heal(healAmount, pc);
 							}
 						}
@@ -449,7 +451,7 @@ public class MageListener implements Listener {
 	}
 
 	private void useShadowVoid(PlayerCharacter pc) {
-		double damageAmount = 15 * shadowVoid.getUpgradeLevel(pc) + 8 * pc.getLevel();
+		double damageAmount = 15 * pc.getWeapon().getBaseDamage() * shadowVoid.getUpgradeLevel(pc) + 8 * pc.getLevel();
 		double size = 10;
 		SHADOW_VOID_USE_NOISE.play(pc.getLocation());
 		Location targetTemp = pc.getTargetLocation(15);
