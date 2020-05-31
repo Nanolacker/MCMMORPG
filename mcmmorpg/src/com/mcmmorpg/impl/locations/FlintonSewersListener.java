@@ -188,30 +188,11 @@ public class FlintonSewersListener implements Listener {
 			new Location(Worlds.ELADRADOR, -211.706564, 43.000000, 41.520396, -186.792236f, 17.029551f),
 			new Location(Worlds.ELADRADOR, -213.347313, 43.000000, 74.206718, -287.927307f, -7.645914f),
 			new Location(Worlds.ELADRADOR, -361.319396, 43.000000, -4.471523, -0.179626f, 29.875282f), };
-	private static final Location[] STATIONARY_CULTIST_MAGE_LOCATIONS = {
-			new Location(Worlds.ELADRADOR, -385.216476, 42.500000, 68.305590, -187.783325f, 16.695179f),
-			new Location(Worlds.ELADRADOR, -385.573967, 42.500000, 35.926241, 74.076378f, 9.744384f),
-			new Location(Worlds.ELADRADOR, -372.263212, 42.500000, 10.284949, 45.630646f, 24.341114f),
-			new Location(Worlds.ELADRADOR, -380.237722, 42.500000, 84.873382, 51.538971f, 21.560778f),
-			new Location(Worlds.ELADRADOR, -348.133058, 42.500000, 83.911845, 300.673767f, 20.518160f),
-			new Location(Worlds.ELADRADOR, -325.539891, 42.500000, 36.405396, 15.690053f, 24.688639f),
-			new Location(Worlds.ELADRADOR, -340.238131, 42.500000, 22.388576, 209.270508f, 21.908289f),
-			new Location(Worlds.ELADRADOR, -330.456354, 42.500000, -4.005303, 337.165466f, 18.085308f),
-			new Location(Worlds.ELADRADOR, -190.426227, 42.500000, 67.504424, 135.943970f, 19.101574f),
-			new Location(Worlds.ELADRADOR, -236.540992, 42.500000, 63.484902, 198.501266f, 19.449089f),
-			new Location(Worlds.ELADRADOR, -191.074180, 42.500000, 14.909205, -332.193848f, 21.534338f),
-			new Location(Worlds.ELADRADOR, -205.955375, 42.500000, 13.295758, -156.338150f, 16.668768f),
-			new Location(Worlds.ELADRADOR, -153.141154, 42.500000, 7.852577, -113.590515f, 27.790085f),
-			new Location(Worlds.ELADRADOR, -123.563029, 42.500000, 24.542519, 67.826210f, 31.613058f),
-			new Location(Worlds.ELADRADOR, -126.914534, 42.500000, 63.758558, 143.590164f, 18.754025f),
-			new Location(Worlds.ELADRADOR, -154.922321, 42.500000, 64.466935, -118.161072f, 30.222908f),
-			new Location(Worlds.ELADRADOR, -158.110653, 42.500000, 109.588076, -210.554367f, 23.272047f), };
-	private static final Location[] CULTIST_MAGE_LOCATOINS = {
+	private static final Location[] NECROMANCER_LOCATIONS = {
 			new Location(Worlds.ELADRADOR, -408.327771, 42.000000, 56.875984, 154.889282f, 25.704796f),
 			new Location(Worlds.ELADRADOR, -407.245511, 42.000000, 49.336538, 155.236816f, 25.704796f),
 			new Location(Worlds.ELADRADOR, -364.974173, 43.000000, 64.404108, 181.571655f, 41.357449f),
-			new Location(Worlds.ELADRADOR, -360.449712, 43.000000, 64.460531, 181.571655f, 41.357449f) };
-	private static final Location[] CULTIST_SUMMONER_LOCATIONS = {
+			new Location(Worlds.ELADRADOR, -360.449712, 43.000000, 64.460531, 181.571655f, 41.357449f),
 			new Location(Worlds.ELADRADOR, -413.452912, 42.000000, 52.049572, 91.239502f, 39.953979f),
 			new Location(Worlds.ELADRADOR, -423.961213, 42.000000, 62.317555, 178.472473f, 77.836029f),
 			new Location(Worlds.ELADRADOR, -434.167149, 42.000000, 52.071448, 269.180481f, 60.111427f),
@@ -354,13 +335,7 @@ public class FlintonSewersListener implements Listener {
 		for (Location location : BANDIT_CHIEF_LOCATIONS) {
 			new FlintonSewersBanditChief(location).setAlive(true);
 		}
-		for (Location location : STATIONARY_CULTIST_MAGE_LOCATIONS) {
-			new FlintonSewersNecromancer(location).setAlive(true);
-		}
-		for (Location location : CULTIST_MAGE_LOCATOINS) {
-			new FlintonSewersNecromancer(location).setAlive(true);
-		}
-		for (Location location : CULTIST_SUMMONER_LOCATIONS) {
+		for (Location location : NECROMANCER_LOCATIONS) {
 			new FlintonSewersNecromancer(location).setAlive(true);
 		}
 		for (int i = 0; i < SACRIFICE_LOCATIONS.length; i++) {

@@ -21,6 +21,8 @@ public class MelcherMayor extends StaticHuman {
 	private static final String TEXTURE_DATA = "ewogICJ0aW1lc3RhbXAiIDogMTU4OTI0MTM4MzI3MSwKICAicHJvZmlsZUlkIiA6ICI0NDAzZGM1NDc1YmM0YjE1YTU0OGNmZGE2YjBlYjdkOSIsCiAgInByb2ZpbGVOYW1lIiA6ICJGbGF3Q3JhQm90MDEiLAogICJzaWduYXR1cmVSZXF1aXJlZCIgOiB0cnVlLAogICJ0ZXh0dXJlcyIgOiB7CiAgICAiU0tJTiIgOiB7CiAgICAgICJ1cmwiIDogImh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNDc3NWY1ZmNiMmJiYjI0YjBkMjVjYmQxM2Q5NDhiMTVlOGU5OWVkODAzOWY1YmJhOWQwNjI5MTNkNmQ3MzRiMSIKICAgIH0KICB9Cn0=";
 	private static final String TEXTURE_SIGNATURE = "i3HqwgnQIDowgQDnZoqQaOVa1FZ9U93wPI366jACqxh5+aRWR3ssmh5YD/WvmaBM3824590iA5Js9iT37uul/rDhujDstxg9gEhg7Ci4FSq8RJ/rpwqt04h2MrX/JU2ETzN4anxHAEj5C0+JULrn6Rh1IJq4zONYjNRkYNXmHIs4A4skMTGbepgnj8njGMTt7DWrsLK5d2kCRJMubwqcHlXcKXduwGYyh0OGAy4G/cbuj33fGi2w7yYssAYMrTefb6sP/e6Xo2W3QNxNZSwyye1UcKiE0RexPFSmb5LCXo1JTy63G9gnkT8MYXFVRNIK4PSF8WDuJrAJtxcBrIXAhnUW8lSe2RWfUsKhu4J3EoxgjH8UIW73do1x5AJWZEsJ6UORnley9pHHHwxDEQ6QL9Z1Eqx796cvX2wbrlFlqePEEa7owcoAl4T0aXl80t/Aqp6s/oOtEJrbYaij+KBeUtYJ4YaPWUqzxp2FF0Fptl+LG915qwb6EguCuteNe1t77BrGoi9B06/7yyf0pEKYMRb7lbForeHZGp79/lPUZ1dHJ0QC+5gUunOV8Kv37kfIylNTm0x04Y+Ovsok4D6FyVOTO2k+3VJgU+Uj2sZ6zwn3PZKO8JNpLGo2Yrt+DcvXlE95Y31XJ9uD4UWvYgPy3KtNhRs5Fm7ujmryX3N62xQ=";
 	private static final Noise SPEAK_NOISE = new Noise(Sound.ENTITY_VILLAGER_AMBIENT, 1, 0.75f);
+	private static final int REPORTING_FOR_DUTY_XP_REWARD = 50;
+	private static final int THWARTING_THE_THIEVES_XP_REWARD = 125;
 
 	private final InteractionSequence completeReportingForDutyInteraction;
 	private final InteractionSequence completeThwartingTheThievesInteraction;
@@ -56,6 +58,7 @@ public class MelcherMayor extends StaticHuman {
 					break;
 				case 6:
 					Quests.REPORTING_FOR_DUTY.getObjective(0).complete(pc);
+					pc.giveXp(REPORTING_FOR_DUTY_XP_REWARD);
 					Quests.THWARTING_THE_THIEVES.start(pc);
 					break;
 				}
@@ -87,6 +90,7 @@ public class MelcherMayor extends StaticHuman {
 					break;
 				case 6:
 					Quests.THWARTING_THE_THIEVES.getObjective(1).complete(pc);
+					pc.giveXp(THWARTING_THE_THIEVES_XP_REWARD);
 					Quests.CLEARING_THE_ROAD.start(pc);
 					break;
 				}

@@ -87,9 +87,19 @@ public class MelcherListener implements Listener {
 			new Location(Worlds.ELADRADOR, -1079, 65, 245), new Location(Worlds.ELADRADOR, -1079, 65, 241),
 			new Location(Worlds.ELADRADOR, -1074, 65, 244), new Location(Worlds.ELADRADOR, -1072, 65, 240) };
 	private static final Location TAVERN_KING_RAT_LOCATION = new Location(Worlds.ELADRADOR, -1072, 65, 242);
-	private static final Location[] THIEF_LOCATIONS = { new Location(Worlds.ELADRADOR, -1157, 74, 173),
-			new Location(Worlds.ELADRADOR, -1150, 79, 147), new Location(Worlds.ELADRADOR, -1043, 74, 115),
-			new Location(Worlds.ELADRADOR, 981, 75, 111), new Location(Worlds.ELADRADOR, -919, 74, 123) };
+	private static final Location[] THIEF_LOCATIONS = {
+			new Location(Worlds.ELADRADOR, -1156.153368, 79.000000, 143.764574, -2.819763f, 23.632837f),
+			new Location(Worlds.ELADRADOR, -1149.941193, 79.000000, 145.558699, -2.819763f, 23.632837f),
+			new Location(Worlds.ELADRADOR, -1144.558112, 79.000000, 145.438248, -2.819763f, 23.632837f),
+			new Location(Worlds.ELADRADOR, -1144.909828, 79.000000, 141.542111, -2.819763f, 23.632837f),
+			new Location(Worlds.ELADRADOR, -1148.892365, 79.000000, 139.875135, -248.131317f, 33.711540f),
+			new Location(Worlds.ELADRADOR, -1154.496256, 79.000000, 137.626322, -248.131317f, 33.711540f),
+			new Location(Worlds.ELADRADOR, -1142.560511, 79.000000, 137.792785, -19.501740f, 35.449249f),
+			new Location(Worlds.ELADRADOR, -1139.940007, 78.000000, 142.938132, -19.501740f, 35.449249f),
+			new Location(Worlds.ELADRADOR, -1180.917637, 74.000000, 155.156277, -348.569916f, 11.468884f),
+			new Location(Worlds.ELADRADOR, -1188.227450, 74.000000, 162.177680, -6.989624f, 15.986921f),
+			new Location(Worlds.ELADRADOR, -1118.575813, 76.000000, 155.300048, -15.678314f, 26.413179f),
+			new Location(Worlds.ELADRADOR, -1109.433998, 77.000000, 155.343152, -32.707916f, 26.760717f) };
 	private static final Location[] HIGHWAYMAN_LOCATIONS = { new Location(Worlds.ELADRADOR, -813, 72, 151),
 			new Location(Worlds.ELADRADOR, -785, 72, 158), new Location(Worlds.ELADRADOR, -756, 72, 147),
 			new Location(Worlds.ELADRADOR, -727, 71, 88), new Location(Worlds.ELADRADOR, -684, 65, 81),

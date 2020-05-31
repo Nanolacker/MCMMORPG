@@ -18,6 +18,7 @@ import org.bukkit.inventory.ItemStack;
 
 import com.mcmmorpg.common.character.PlayerCharacter;
 import com.mcmmorpg.common.sound.Noise;
+import com.mcmmorpg.common.time.DelayedTask;
 import com.mcmmorpg.common.time.RepeatingTask;
 
 /**
@@ -27,6 +28,7 @@ import com.mcmmorpg.common.time.RepeatingTask;
 class PlayerClassListener implements Listener {
 
 	private static final Noise CLICK_NOISE = new Noise(Sound.BLOCK_LEVER_CLICK);
+	private static final String USE_SKILL_TUTORIAL_TAG = "USE_SKILL_TUTORIAL";
 
 	PlayerClassListener() {
 		new RepeatingTask(0.1) {
@@ -241,6 +243,18 @@ class PlayerClassListener implements Listener {
 						if (itemStack == null) {
 							playerInventory.setItem(i, skillItemStack);
 							pc.sendMessage(ChatColor.GREEN + skill.getName() + ChatColor.GRAY + " added to hotbar");
+							if (!pc.hasTag(USE_SKILL_TUTORIAL_TAG)) {
+								final int key = i + 1;
+								new DelayedTask(1) {
+									@Override
+									protected void run() {
+										pc.sendMessage(ChatColor.GRAY + "[" + ChatColor.GREEN + "Tutorial"
+												+ ChatColor.GRAY + "]: " + ChatColor.WHITE + "To use " + ChatColor.GREEN
+												+ skill.getName() + ChatColor.WHITE + ", press the " + key + " key.");
+									}
+								}.schedule();
+								pc.addTag(USE_SKILL_TUTORIAL_TAG);
+							}
 							noRoom = false;
 							break;
 						}

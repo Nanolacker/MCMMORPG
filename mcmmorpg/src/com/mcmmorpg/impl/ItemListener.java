@@ -165,7 +165,7 @@ public class ItemListener implements Listener {
 
 	private void useGarlicBread(PlayerCharacter pc) {
 		EAT_NOISE.play(pc);
-		int healAmount = 18;
+		int healAmount = 15;
 		pc.heal(healAmount, pc);
 		pc.sendMessage(ChatColor.GRAY + "Recovered " + ChatColor.RED + (int) healAmount + " HP");
 

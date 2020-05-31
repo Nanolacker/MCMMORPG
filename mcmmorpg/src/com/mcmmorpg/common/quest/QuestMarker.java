@@ -6,6 +6,7 @@ import org.bukkit.Location;
 import com.mcmmorpg.common.character.PlayerCharacter;
 import com.mcmmorpg.common.character.PlayerCharacter.PlayerCharacterCollider;
 import com.mcmmorpg.common.physics.Collider;
+import com.mcmmorpg.common.time.DelayedTask;
 import com.mcmmorpg.common.ui.TextPanel;
 import com.mcmmorpg.common.utils.CardinalDirection;
 
@@ -16,6 +17,7 @@ public class QuestMarker {
 
 	private static final String TEXT = ChatColor.YELLOW + "!";
 	private static final double STANDARD_RADIUS = 50.0;
+	private static final String QUEST_MARKER_TUTORIAL_TAG = "QUEST_MARKER_TUTORIAL";
 
 	private TextPanel textPanel;
 	private Collider area;
@@ -35,6 +37,17 @@ public class QuestMarker {
 							ChatColor.YELLOW + "Quest marker " + ChatColor.GRAY + "located " + ChatColor.GREEN
 									+ direction + ChatColor.GRAY + " at " + ChatColor.GREEN + "(%.0f, %.0f, %.0f)",
 							location.getX(), location.getY(), location.getZ()));
+					if (!pc.hasTag(QUEST_MARKER_TUTORIAL_TAG)) {
+						new DelayedTask(1) {
+							@Override
+							protected void run() {
+								pc.sendMessage(ChatColor.GRAY + "[" + ChatColor.GREEN + "Tutorial" + ChatColor.GRAY
+										+ "]: " + ChatColor.WHITE
+										+ "Quest markers point you toward important locations for quests, usually quest givers.");
+							}
+						}.schedule();
+						pc.addTag(QUEST_MARKER_TUTORIAL_TAG);
+					}
 				}
 			}
 		};
