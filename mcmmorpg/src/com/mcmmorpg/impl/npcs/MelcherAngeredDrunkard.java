@@ -24,7 +24,7 @@ import com.mcmmorpg.impl.Quests;
 public class MelcherAngeredDrunkard extends AbstractHumanEnemy {
 
 	private static final int LEVEL = 2;
-	private static final double MAX_HEALTH = 50;
+	private static final double MAX_HEALTH = 80;
 	private static final double DAMAGE_AMOUNT = 5;
 	private static final int XP_REWARD = 25;
 	private static final double RESPAWN_TIME = 60;
@@ -97,7 +97,7 @@ public class MelcherAngeredDrunkard extends AbstractHumanEnemy {
 		DEATH_NOISE.play(location);
 		List<PlayerCharacter> nearbyPcs = PlayerCharacter.getNearbyPlayerCharacters(location, 25);
 		for (PlayerCharacter pc : nearbyPcs) {
-			Quests.CALMING_THE_TAVERN.getObjective(0).complete(pc);
+			Quests.BAR_FIGHT.getObjective(0).complete(pc);
 		}
 	}
 
@@ -113,7 +113,7 @@ public class MelcherAngeredDrunkard extends AbstractHumanEnemy {
 	}
 
 	protected void onInteract(PlayerCharacter pc) {
-		if (Quests.CALMING_THE_TAVERN.compareStatus(pc, QuestStatus.IN_PROGRESS) && !isEnraged()) {
+		if (Quests.BAR_FIGHT.compareStatus(pc, QuestStatus.IN_PROGRESS) && !isEnraged()) {
 			enrageInteraction.advance(pc);
 		} else {
 			say("Buzz off, would ya?", pc);

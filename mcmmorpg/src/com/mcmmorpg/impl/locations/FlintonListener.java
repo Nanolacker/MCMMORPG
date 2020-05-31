@@ -15,7 +15,8 @@ import com.mcmmorpg.impl.npcs.FlintonVillager;
 
 public class FlintonListener implements Listener {
 
-	private static final Location MAYOR_LOCATION = new Location(Worlds.ELADRADOR, 0, 0, 0);
+	private static final Location MAYOR_LOCATION = new Location(Worlds.ELADRADOR, -288.242576, 82.000000, 111.697212,
+			-88.275375f, 5.199878f);
 	private static final Location[] VILLAGER_LOCATIONS = {};
 
 	public FlintonListener() {

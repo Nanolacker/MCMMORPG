@@ -8,10 +8,12 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.block.Block;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
+import org.bukkit.event.entity.EntityPickupItemEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryDragEvent;
@@ -106,7 +108,7 @@ class ItemListener implements Listener {
 	}
 
 	@EventHandler
-	private void onThrowItem(PlayerDropItemEvent event) {
+	private void onDropItem(PlayerDropItemEvent event) {
 		org.bukkit.entity.Item itemEntity = event.getItemDrop();
 		ItemStack itemStack = itemEntity.getItemStack();
 		if (ItemFactory.staticInteractables.contains(itemStack)) {
@@ -126,6 +128,34 @@ class ItemListener implements Listener {
 			addPCToSet(falseAttackers, pc);
 			itemEntity.setCustomName(item.getRarity().getColor() + item.getName());
 			itemEntity.setCustomNameVisible(true);
+			int amount = itemStack.getAmount();
+			if (amount == 1) {
+				pc.sendMessage(ChatColor.GRAY + "Dropped " + item);
+			} else {
+				pc.sendMessage(ChatColor.GRAY + "Dropped " + item + ChatColor.GRAY + " (" + amount + ")");
+			}
+		}
+	}
+
+	@EventHandler
+	private void onPickupItem(EntityPickupItemEvent event) {
+		Entity entity = event.getEntity();
+		if (entity instanceof Player) {
+			PlayerCharacter pc = PlayerCharacter.forPlayer((Player) entity);
+			if (pc == null) {
+				return;
+			}
+			org.bukkit.entity.Item itemEntity = event.getItem();
+			ItemStack itemStack = itemEntity.getItemStack();
+			Item item = Item.forItemStack(itemStack);
+			if (item != null) {
+				int amount = itemStack.getAmount();
+				if (amount == 1) {
+					pc.sendMessage(ChatColor.GRAY + "Picked up " + item);
+				} else {
+					pc.sendMessage(ChatColor.GRAY + "Picked up " + item + ChatColor.GRAY + " (" + amount + ")");
+				}
+			}
 		}
 	}
 

@@ -4,28 +4,28 @@ import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.entity.EntityType;
 
-public class BulskanUndead extends AbstractUndead {
+public class FlintonSewersUndead extends AbstractUndead {
 
-	private static final int LEVEL = 16;
+	private static final int LEVEL = 10;
 	private static final double RESPAWN_TIME = 60;
 
-	public BulskanUndead(Location spawnLocation, boolean respawn) {
+	public FlintonSewersUndead(Location spawnLocation, boolean respawn) {
 		super(ChatColor.RED + "Undead", LEVEL, spawnLocation, respawn ? RESPAWN_TIME : -1, EntityType.HUSK);
 	}
 
 	@Override
 	protected double maxHealth() {
-		return 20;
+		return 75;
 	}
 
 	@Override
 	protected double damageAmount() {
-		return 5;
+		return 15;
 	}
 
 	@Override
 	protected int xpToGrantOnDeath() {
-		return 5;
+		return 20;
 	}
 
 }

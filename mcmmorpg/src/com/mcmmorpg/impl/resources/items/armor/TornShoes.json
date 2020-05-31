@@ -6,5 +6,5 @@
 	"playerClass": "Mage",
 	"level": 3,
 	"type": "FEET",
-	"protections": 2
+	"protections": 0.5
 }

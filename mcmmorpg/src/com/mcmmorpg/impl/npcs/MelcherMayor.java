@@ -23,7 +23,7 @@ public class MelcherMayor extends StaticHuman {
 	private static final Noise SPEAK_NOISE = new Noise(Sound.ENTITY_VILLAGER_AMBIENT, 1, 0.75f);
 
 	private final InteractionSequence completeReportingForDutyInteraction;
-	private final InteractionSequence completeSlayingTheThievesInteraction;
+	private final InteractionSequence completeThwartingTheThievesInteraction;
 
 	public MelcherMayor(Location location) {
 		super(ChatColor.GREEN + "Mayor of Melcher", LEVEL, location, TEXTURE_DATA, TEXTURE_SIGNATURE);
@@ -56,12 +56,12 @@ public class MelcherMayor extends StaticHuman {
 					break;
 				case 6:
 					Quests.REPORTING_FOR_DUTY.getObjective(0).complete(pc);
-					Quests.SLAYING_THE_THIEVES.start(pc);
+					Quests.THWARTING_THE_THIEVES.start(pc);
 					break;
 				}
 			}
 		};
-		completeSlayingTheThievesInteraction = new InteractionSequence(7) {
+		completeThwartingTheThievesInteraction = new InteractionSequence(7) {
 			@Override
 			protected void onAdvance(PlayerCharacter pc, int messageIndex) {
 				switch (messageIndex) {
@@ -86,7 +86,7 @@ public class MelcherMayor extends StaticHuman {
 							pc);
 					break;
 				case 6:
-					Quests.SLAYING_THE_THIEVES.getObjective(1).complete(pc);
+					Quests.THWARTING_THE_THIEVES.getObjective(1).complete(pc);
 					Quests.CLEARING_THE_ROAD.start(pc);
 					break;
 				}
@@ -98,9 +98,9 @@ public class MelcherMayor extends StaticHuman {
 	protected void onInteract(PlayerCharacter pc) {
 		if (Quests.REPORTING_FOR_DUTY.compareStatus(pc, QuestStatus.IN_PROGRESS)) {
 			completeReportingForDutyInteraction.advance(pc);
-		} else if (Quests.SLAYING_THE_THIEVES.compareStatus(pc, QuestStatus.IN_PROGRESS)) {
-			if (Quests.SLAYING_THE_THIEVES.getObjective(0).isComplete(pc)) {
-				completeSlayingTheThievesInteraction.advance(pc);
+		} else if (Quests.THWARTING_THE_THIEVES.compareStatus(pc, QuestStatus.IN_PROGRESS)) {
+			if (Quests.THWARTING_THE_THIEVES.getObjective(0).isComplete(pc)) {
+				completeThwartingTheThievesInteraction.advance(pc);
 			} else {
 				say("Please teach those thieves a lesson for us, adventurer.", pc);
 			}

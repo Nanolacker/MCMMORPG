@@ -12,7 +12,7 @@ import com.mcmmorpg.common.sound.Noise;
 import com.mcmmorpg.common.ui.InteractionSequence;
 import com.mcmmorpg.impl.Quests;
 
-public class GuardNadia extends StaticHuman {
+public class CaptainNadia extends StaticHuman {
 
 	private static final int LEVEL = 25;
 	private static final String TEXTURE_DATA = "ewogICJ0aW1lc3RhbXAiIDogMTU5MDUzMDcyMTIyOCwKICAicHJvZmlsZUlkIiA6ICI3MmNiMDYyMWU1MTA0MDdjOWRlMDA1OTRmNjAxNTIyZCIsCiAgInByb2ZpbGVOYW1lIiA6ICJNb3M5OTAiLAogICJzaWduYXR1cmVSZXF1aXJlZCIgOiB0cnVlLAogICJ0ZXh0dXJlcyIgOiB7CiAgICAiU0tJTiIgOiB7CiAgICAgICJ1cmwiIDogImh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMzYyODRkMTdmYWQ5NDhkMDhmNDU3OTNiOGY2YWE5YzcwNWFlZTQ0YTBlOTYxZWM4Zjg5MDE2NDY5MjczOTE3YSIKICAgIH0KICB9Cn0=";
@@ -22,17 +22,35 @@ public class GuardNadia extends StaticHuman {
 	private final InteractionSequence completeIntoTheSewersInteraction;
 	private final InteractionSequence completeCullingTheCultInteraction;
 
-	public GuardNadia(Location location) {
-		super(ChatColor.GREEN + "Guard Nadia", LEVEL, location, TEXTURE_DATA, TEXTURE_SIGNATURE);
+	public CaptainNadia(Location location) {
+		super(ChatColor.GREEN + "Captain Nadia", LEVEL, location, TEXTURE_DATA, TEXTURE_SIGNATURE);
 		QuestMarker.createMarker(location.clone().add(0, 2.25, 0));
-		completeIntoTheSewersInteraction = new InteractionSequence(2) {
+		completeIntoTheSewersInteraction = new InteractionSequence(7) {
 			@Override
 			protected void onAdvance(PlayerCharacter pc, int messageIndex) {
 				switch (messageIndex) {
 				case 0:
-					say("insert dialogue", pc);
+					say("The mayor sent you, eh? Let's hope you're as good as he thinks.", pc);
 					break;
 				case 1:
+					say("If you haven't noticed already, this place is chalk full of thick, magic sludge that dissolves anything it touches.",
+							pc);
+					break;
+				case 2:
+					say("I guess an unpredictable, filthy concoction is what happens when alchemical leftovers and human waste mix together.",
+							pc);
+					break;
+				case 3:
+					say("Anyway, seems that cult activity has involved summoning undead and sacrifices.", pc);
+					break;
+				case 4:
+					say("The bandits must be getting payed a hefty sum to be helping these freaks.", pc);
+					break;
+				case 5:
+					say("I need you to venture out and take care of the cultists. They've been deemed too dangerous to simply arrest.",
+							pc);
+					break;
+				case 6:
 					Quests.INTO_THE_SEWERS.getObjective(0).complete(pc);
 					Quests.CULLING_THE_CULT.start(pc);
 					break;
@@ -44,10 +62,26 @@ public class GuardNadia extends StaticHuman {
 			protected void onAdvance(PlayerCharacter pc, int messageIndex) {
 				switch (messageIndex) {
 				case 0:
-					say("insert dialogue", pc);
+					say("Good to see you made it back alive. Those gashes will make for some impressive scars.", pc);
 					break;
 				case 1:
+					say("... A god of death wannabe? That's what those fanatics were worshipping?", pc);
+					break;
+				case 2:
+					say("This is way worse than what we were expecting... This Xylphanos character sounds like a piece of work.",
+							pc);
+					break;
+				case 3:
+					say("Still, with that sort of power he is a serious threat. We must alert all corners of Eladrador to be especially vigilant.",
+							pc);
+					break;
+				case 4:
+					say("Report these findings back to mayor as soon as possible. My squadron will stay down here to scout out any remaining bandits.",
+							pc);
+					break;
+				case 5:
 					Quests.CULLING_THE_CULT.getObjective(4).complete(pc);
+					Quests.THREAT_LEVEL_GOD.start(pc);
 					break;
 				}
 			}

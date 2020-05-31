@@ -20,32 +20,50 @@ public class FlintonMayor extends StaticHuman {
 	private static final Noise SPEAK_NOISE = new Noise(Sound.ENTITY_VILLAGER_AMBIENT, 1, 0.75f);
 
 	private final InteractionSequence completeClearingTheRoadInteraction;
-	private final InteractionSequence startIntoTheSewersInteraction;
 
 	public FlintonMayor(Location location) {
 		super(ChatColor.GREEN + "Mayor of Flinton", LEVEL, location, TEXTURE_DATA, TEXTURE_SIGNATURE);
 		QuestMarker.createMarker(location.clone().add(0, 2.25, 0));
-		completeClearingTheRoadInteraction = new InteractionSequence(2) {
+		completeClearingTheRoadInteraction = new InteractionSequence(11) {
 			@Override
 			protected void onAdvance(PlayerCharacter pc, int interactionIndex) {
 				switch (interactionIndex) {
 				case 0:
-					say("Insert dialogue", pc);
+					say("Welcome, adventurer. You look rather battered.", pc);
 					break;
 				case 1:
+					say("You've cleared the paths to Melcher of the highwaymen? In that case you have Flinton's sincerest thanks.",
+							pc);
+					break;
+				case 2:
+					say("Unfortunately, the thieving filth runs deeper than the road.", pc);
+					break;
+				case 3:
+					say("We've received reports from guards that bandits have begun establishing hideouts in the sewers directly below us.",
+							pc);
+					break;
+				case 4:
+					say("The reports suggest that they seem to be aiding a mysterious cult.", pc);
+					break;
+				case 5:
+					say("We've sent in other guards to survey the area further but with little success.", pc);
+					break;
+				case 6:
+					say("We could really use someone skilled like you to investigate the situation further.", pc);
+					break;
+				case 7:
+					say("A small guard's post has been set up in the sewers. Go there and speak with Captain Nadia for further instructions.",
+							pc);
+					break;
+				case 8:
+					say("For the safety of Flinton, we cannot allow the cult's activities to go unmonitored any longer.",
+							pc);
+					break;
+				case 9:
+					say("Be careful, adventurer. We don't know what we're up against yet.", pc);
+					break;
+				case 10:
 					Quests.CLEARING_THE_ROAD.getObjective(1).complete(pc);
-					break;
-				}
-			}
-		};
-		startIntoTheSewersInteraction = new InteractionSequence(2) {
-			@Override
-			protected void onAdvance(PlayerCharacter pc, int interactionIndex) {
-				switch (interactionIndex) {
-				case 0:
-					say("Insert dialogue", pc);
-					break;
-				case 1:
 					Quests.INTO_THE_SEWERS.start(pc);
 					break;
 				}
@@ -61,15 +79,11 @@ public class FlintonMayor extends StaticHuman {
 
 	@Override
 	protected void onInteract(PlayerCharacter pc) {
-		if (Quests.CLEARING_THE_ROAD.compareStatus(pc, QuestStatus.IN_PROGRESS)) {
-			if (Quests.CLEARING_THE_ROAD.getObjective(0).isComplete(pc)) {
-				completeClearingTheRoadInteraction.advance(pc);
-			} else {
-				say("Go slay highwaymen.", pc);
-			}
-		} else if (Quests.CLEARING_THE_ROAD.compareStatus(pc, QuestStatus.COMPLETED)
-				&& Quests.INTO_THE_SEWERS.compareStatus(pc, QuestStatus.NOT_STARTED)) {
-			startIntoTheSewersInteraction.advance(pc);
+		if (Quests.CLEARING_THE_ROAD.compareStatus(pc, QuestStatus.IN_PROGRESS)
+				&& Quests.CLEARING_THE_ROAD.getObjective(0).isComplete(pc)) {
+			completeClearingTheRoadInteraction.advance(pc);
+		} else {
+			say("Welcome to Flinton.", pc);
 		}
 	}
 

@@ -96,8 +96,10 @@ public final class PlayerCharacter extends AbstractCharacter {
 	private final PlayerCharacterSoundtrackPlayer soundtrackPlayer;
 	private CharacterCollider hitbox;
 	private final MovementSynchronizer movementSyncer;
+	private DelayedTask undisarmTask;
+	private DelayedTask unsilenceTask;
 	private boolean isDisarmed;
-	private transient boolean isSilenced;
+	private boolean isSilenced;
 
 	static {
 		pcs = new ArrayList<>();
@@ -159,6 +161,8 @@ public final class PlayerCharacter extends AbstractCharacter {
 			PlayerCharacterLevelUpEvent event = new PlayerCharacterLevelUpEvent(this, 1);
 			EventManager.callEvent(event);
 		}
+		undisarmTask = null;
+		unsilenceTask = null;
 		isDisarmed = false;
 		isSilenced = false;
 	}
@@ -820,13 +824,18 @@ public final class PlayerCharacter extends AbstractCharacter {
 	 * Prevent this player character from using weapons for the duration specified.
 	 */
 	public void disarm(double duration) {
+		if (undisarmTask != null) {
+			undisarmTask.cancel();
+		}
 		isDisarmed = true;
-		new DelayedTask(duration) {
+		undisarmTask = new DelayedTask(duration) {
 			@Override
 			protected void run() {
 				isDisarmed = false;
+				undisarmTask = null;
 			}
-		}.schedule();
+		};
+		undisarmTask.schedule();
 	}
 
 	/**
@@ -841,13 +850,18 @@ public final class PlayerCharacter extends AbstractCharacter {
 	 * duration specified.
 	 */
 	public void silence(double duration) {
+		if (unsilenceTask != null) {
+			unsilenceTask.cancel();
+		}
 		isSilenced = true;
-		new DelayedTask(duration) {
+		unsilenceTask = new DelayedTask(duration) {
 			@Override
 			protected void run() {
 				isSilenced = false;
+				unsilenceTask = null;
 			}
-		}.schedule();
+		};
+		unsilenceTask.schedule();
 	}
 
 	/**

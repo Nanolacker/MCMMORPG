@@ -44,7 +44,7 @@ public class ArmorItem extends Item {
 		lore.append(rarity.getColor() + rarity.toString() + " Item\n");
 		lore.append(ChatColor.GOLD + playerClass + " Armor\n");
 		lore.append("Level " + level + "\n");
-		lore.append((int) protections + " Protections\n\n");
+		lore.append(protections + " Protections\n\n");
 		if (description != null) {
 			lore.append(ChatColor.RESET + description + "\n\n");
 		}

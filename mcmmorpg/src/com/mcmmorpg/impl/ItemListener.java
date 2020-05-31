@@ -31,6 +31,7 @@ public class ItemListener implements Listener {
 	private static final Noise SWORD_HIT_NOISE = new Noise(Sound.ENTITY_ZOMBIE_ATTACK_IRON_DOOR);
 	private static final Noise STAFF_HIT_NOISE = new Noise(Sound.BLOCK_WOODEN_TRAPDOOR_OPEN);
 	private static final Noise USE_POTION_NOISE = new Noise(Sound.ENTITY_GENERIC_DRINK);
+	private static final Noise EAT_NOISE = new Noise(Sound.ENTITY_GENERIC_EAT);
 
 	@EventHandler
 	private void onUseWeapon(PlayerCharacterUseWeaponEvent event) {
@@ -134,6 +135,10 @@ public class ItemListener implements Listener {
 			useHealingPotion(pc, 150);
 		} else if (consumable == Items.MELCHER_MEAD) {
 			useMelcherMead(pc);
+		} else if (consumable == Items.STALE_BREAD) {
+			useStaleBread(pc);
+		} else if (consumable == Items.GARLIC_BREAD) {
+			useGarlicBread(pc);
 		}
 	}
 
@@ -149,6 +154,21 @@ public class ItemListener implements Listener {
 		PotionEffect drunkness = new PotionEffect(PotionEffectType.CONFUSION, MathUtils.secondsToTicks(15), 1);
 		player.addPotionEffect(drunkness);
 		pc.sendMessage(ChatColor.GRAY + "You fill dizzy.");
+	}
+
+	private void useStaleBread(PlayerCharacter pc) {
+		EAT_NOISE.play(pc);
+		int healAmount = 10;
+		pc.heal(healAmount, pc);
+		pc.sendMessage(ChatColor.GRAY + "Recovered " + ChatColor.RED + (int) healAmount + " HP");
+	}
+
+	private void useGarlicBread(PlayerCharacter pc) {
+		EAT_NOISE.play(pc);
+		int healAmount = 18;
+		pc.heal(healAmount, pc);
+		pc.sendMessage(ChatColor.GRAY + "Recovered " + ChatColor.RED + (int) healAmount + " HP");
+
 	}
 
 }

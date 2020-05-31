@@ -109,7 +109,7 @@ public abstract class AbstractHumanEnemy extends NonPlayerCharacter {
 		aiSyncer.setEnabled(true);
 		aiMap.put(ai, this);
 	}
- 
+
 	@Override
 	protected void despawn() {
 		super.despawn();
@@ -137,7 +137,7 @@ public abstract class AbstractHumanEnemy extends NonPlayerCharacter {
 	@Override
 	protected void onDeath() {
 		super.onDeath();
-		PlayerCharacter.distributeXp(getLocation(), 50, xpReward);
+		PlayerCharacter.distributeXp(getLocation(), 25, xpReward);
 		hitbox.setActive(false);
 		entity.setVisible(false);
 		ai.remove();

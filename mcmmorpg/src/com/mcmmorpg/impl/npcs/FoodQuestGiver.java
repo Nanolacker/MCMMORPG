@@ -29,7 +29,7 @@ public class FoodQuestGiver extends StaticHuman {
 			@Override
 			protected void onAdvance(PlayerCharacter pc, int messageIndex) {
 				if (messageIndex == 2) {
-					Quests.RECOVERING_THE_FOOD.start(pc);
+					Quests.FOOD_DELIVERY.start(pc);
 				} else {
 					SPEAK_NOISE.play(pc);
 				}
@@ -40,8 +40,8 @@ public class FoodQuestGiver extends StaticHuman {
 			@Override
 			protected void onAdvance(PlayerCharacter pc, int messageIndex) {
 				if (messageIndex == 1) {
-					Quests.RECOVERING_THE_FOOD.getObjective(0).complete(pc);
-					pc.removeItem(Items.FOOD_SUPPLIES, 15);
+					Quests.FOOD_DELIVERY.getObjective(0).complete(pc);
+					pc.removeItem(Items.STOLEN_FOOD, 15);
 				} else {
 					SPEAK_NOISE.play(pc);
 				}
@@ -51,19 +51,19 @@ public class FoodQuestGiver extends StaticHuman {
 
 	@Override
 	protected void onInteract(PlayerCharacter pc) {
-		if (Quests.SLAYING_THE_THIEVES.compareStatus(pc, QuestStatus.NOT_STARTED)) {
+		if (Quests.THWARTING_THE_THIEVES.compareStatus(pc, QuestStatus.NOT_STARTED)) {
 			say("Please speak with " + ChatColor.GRAY + "[" + ChatColor.GREEN + "Combat Trainer" + ChatColor.GRAY + "]"
 					+ ChatColor.WHITE + " before speaking with me.", pc);
 		} else {
-			if (Quests.RECOVERING_THE_FOOD.compareStatus(pc, QuestStatus.NOT_STARTED)) {
+			if (Quests.FOOD_DELIVERY.compareStatus(pc, QuestStatus.NOT_STARTED)) {
 				sequence1.advance(pc);
-			} else if (Quests.RECOVERING_THE_FOOD.compareStatus(pc, QuestStatus.IN_PROGRESS)) {
-				if (pc.getItemCount(Items.FOOD_SUPPLIES) >= 15) {
+			} else if (Quests.FOOD_DELIVERY.compareStatus(pc, QuestStatus.IN_PROGRESS)) {
+				if (pc.getItemCount(Items.STOLEN_FOOD) >= 15) {
 					sequence2.advance(pc);
 				} else {
 					say("Go get those food supplies!", pc);
 				}
-			} else if (Quests.RECOVERING_THE_FOOD.compareStatus(pc, QuestStatus.COMPLETED)) {
+			} else if (Quests.FOOD_DELIVERY.compareStatus(pc, QuestStatus.COMPLETED)) {
 				say("Thanks to you, our children will have full bellies.", pc);
 			}
 		}

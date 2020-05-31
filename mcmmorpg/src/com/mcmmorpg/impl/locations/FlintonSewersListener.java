@@ -33,19 +33,17 @@ import com.mcmmorpg.impl.Worlds;
 import com.mcmmorpg.impl.Zones;
 import com.mcmmorpg.impl.npcs.Adventurer;
 import com.mcmmorpg.impl.npcs.ColossalGelatinousCube;
-import com.mcmmorpg.impl.npcs.CultistMage;
-import com.mcmmorpg.impl.npcs.CultistSummoner;
 import com.mcmmorpg.impl.npcs.FlintonSewersAlchemist;
 import com.mcmmorpg.impl.npcs.FlintonSewersBandit;
 import com.mcmmorpg.impl.npcs.FlintonSewersBanditChief;
 import com.mcmmorpg.impl.npcs.FlintonSewersCultSacrifice;
+import com.mcmmorpg.impl.npcs.FlintonSewersNecromancer;
 import com.mcmmorpg.impl.npcs.FlintonSewersRat;
 import com.mcmmorpg.impl.npcs.FlintonSewersXylphanos;
 import com.mcmmorpg.impl.npcs.GelatinousCube;
-import com.mcmmorpg.impl.npcs.GuardNadia;
+import com.mcmmorpg.impl.npcs.CaptainNadia;
 import com.mcmmorpg.impl.npcs.GuardThomas;
 import com.mcmmorpg.impl.npcs.SmallGelatinousCube;
-import com.mcmmorpg.impl.npcs.StationaryCultistMage;
 
 public class FlintonSewersListener implements Listener {
 
@@ -334,7 +332,7 @@ public class FlintonSewersListener implements Listener {
 
 	private void spawnNpcs() {
 		new FlintonSewersAlchemist(ALCHEMIST_LOCATION).setAlive(true);
-		new GuardNadia(GUARD_NADIA_LOCATION).setAlive(true);
+		new CaptainNadia(GUARD_NADIA_LOCATION).setAlive(true);
 		new GuardThomas(GUARD_THOMAS_LOCATION).setAlive(true);
 		for (int i = 0; i < ADVENTURER_LOCATIONS.length; i++) {
 			Location location = ADVENTURER_LOCATIONS[i];
@@ -357,13 +355,13 @@ public class FlintonSewersListener implements Listener {
 			new FlintonSewersBanditChief(location).setAlive(true);
 		}
 		for (Location location : STATIONARY_CULTIST_MAGE_LOCATIONS) {
-			new StationaryCultistMage(location).setAlive(true);
+			new FlintonSewersNecromancer(location).setAlive(true);
 		}
 		for (Location location : CULTIST_MAGE_LOCATOINS) {
-			new CultistMage(location).setAlive(true);
+			new FlintonSewersNecromancer(location).setAlive(true);
 		}
 		for (Location location : CULTIST_SUMMONER_LOCATIONS) {
-			new CultistSummoner(location).setAlive(true);
+			new FlintonSewersNecromancer(location).setAlive(true);
 		}
 		for (int i = 0; i < SACRIFICE_LOCATIONS.length; i++) {
 			Location location = SACRIFICE_LOCATIONS[i];

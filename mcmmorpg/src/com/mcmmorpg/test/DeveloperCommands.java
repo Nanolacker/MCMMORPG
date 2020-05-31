@@ -36,6 +36,7 @@ public class DeveloperCommands {
 
 		LOCATION_MAP.put("Melcher", new Location(Worlds.ELADRADOR, -1019, 70, 191));
 		LOCATION_MAP.put("Flinton Sewers", new Location(Worlds.ELADRADOR, -270, 42.5, 78));
+		LOCATION_MAP.put("Flinton", new Location(Worlds.ELADRADOR, -284, 82, 111));
 
 		Command printLocation = new Command("printlocation") {
 			@Override

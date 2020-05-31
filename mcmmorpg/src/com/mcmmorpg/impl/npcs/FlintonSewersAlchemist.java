@@ -26,26 +26,47 @@ public class FlintonSewersAlchemist extends StaticHuman {
 	public FlintonSewersAlchemist(Location location) {
 		super(ChatColor.GREEN + "Alchemist", LEVEL, location, TEXTURE_DATA, TEXTURE_SIGNATURE);
 		QuestMarker.createMarker(location.clone().add(0, 2.25, 0));
-		startSamplingSludge = new InteractionSequence(2) {
+		startSamplingSludge = new InteractionSequence(7) {
 			@Override
 			protected void onAdvance(PlayerCharacter pc, int interactionIndex) {
 				switch (interactionIndex) {
 				case 0:
-					say("Insert dialogue.", pc);
+					say("Don't you find sludge so interesting? It has many peculiar properties.", pc);
 					break;
 				case 1:
+					say("Dissolves bones, sears flesh, and makes adorable sludge monsters!", pc);
+					break;
+				case 2:
+					say("Er, perhaps you don't find the gelatinous cubes very cute.", pc);
+					break;
+				case 3:
+					say("Regardless, I think it's absolutely fascinating. I would love to get samples to study, but alas, I am a scientist, not a fighter.",
+							pc);
+					break;
+				case 4:
+					say("You, however, seem to have some fight in you. I can tell.", pc);
+					break;
+				case 5:
+					say("So how 'bout it? Get me some sludge samples and I'll reward you handsomely.", pc);
+					break;
+				case 6:
 					Quests.SAMPLING_SLUDGE.start(pc);
+					break;
 				}
 			}
 		};
-		completeSamplingSludge = new InteractionSequence(2) {
+		completeSamplingSludge = new InteractionSequence(3) {
 			@Override
 			protected void onAdvance(PlayerCharacter pc, int interactionIndex) {
 				switch (interactionIndex) {
 				case 0:
-					say("Insert dialogue.", pc);
+					say("By golly, you've done it! The last few I asked never made it back, haha!", pc);
 					break;
 				case 1:
+					say("As promised, here's your reward! Don't mind the stickiness. Everything gets sticky down here.",
+							pc);
+					break;
+				case 2:
 					pc.removeItem(Items.SLUDGE, 25);
 					pc.removeItem(Items.COLOSSAL_SLUDGE, 2);
 					Quests.SAMPLING_SLUDGE.getObjective(2).complete(pc);
@@ -62,7 +83,7 @@ public class FlintonSewersAlchemist extends StaticHuman {
 			if (pc.getItemCount(Items.SLUDGE) >= 25 && pc.getItemCount(Items.COLOSSAL_SLUDGE) >= 2) {
 				completeSamplingSludge.advance(pc);
 			} else {
-				say("Get me sludge.", pc);
+				say("Come on now, I need way more sludge than that!", pc);
 			}
 		} else {
 			say("Well met.", pc);

@@ -25,7 +25,7 @@ public class ConsumableItem extends Item {
 		String description = getDescription();
 		StringBuilder lore = new StringBuilder();
 		lore.append(rarity.getColor() + rarity.toString() + " Item\n");
-		lore.append(ChatColor.GOLD + "Level " + level + "\n");
+		lore.append(ChatColor.GOLD + "Level " + level + "\n\n");
 		if (description != null) {
 			lore.append(ChatColor.RESET + description + "\n\n");
 		}

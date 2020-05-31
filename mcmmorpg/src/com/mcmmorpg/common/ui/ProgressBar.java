@@ -226,6 +226,7 @@ public class ProgressBar {
 	 * does finish.
 	 */
 	public final void dispose() {
+		this.rate = 0;
 		if (textPanel != null) {
 			textPanel.setVisible(false);
 		}
@@ -246,10 +247,9 @@ public class ProgressBar {
 	 */
 	public static enum ProgressBarColor {
 
-		BLUE(ChatColor.BLUE, BarColor.BLUE), GREEN(ChatColor.GREEN, BarColor.GREEN),
-		PINK(ChatColor.LIGHT_PURPLE, BarColor.PINK), PURPLE(ChatColor.DARK_PURPLE, BarColor.PURPLE),
-		RED(ChatColor.RED, BarColor.RED), WHITE(ChatColor.WHITE, BarColor.WHITE),
-		YELLOW(ChatColor.YELLOW, BarColor.YELLOW);
+		BLUE(ChatColor.BLUE, BarColor.BLUE), GREEN(ChatColor.GREEN, BarColor.GREEN), PINK(ChatColor.LIGHT_PURPLE,
+				BarColor.PINK), PURPLE(ChatColor.DARK_PURPLE, BarColor.PURPLE), RED(ChatColor.RED, BarColor.RED), WHITE(
+						ChatColor.WHITE, BarColor.WHITE), YELLOW(ChatColor.YELLOW, BarColor.YELLOW);
 
 		private final ChatColor chatColor;
 		private final BarColor barColor;

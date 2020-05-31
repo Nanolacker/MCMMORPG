@@ -1,62 +1,69 @@
 package com.mcmmorpg.impl.npcs;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
-import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
-import org.bukkit.event.entity.EntityTargetEvent;
+import org.bukkit.entity.Zombie;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 import com.mcmmorpg.common.character.AbstractCharacter;
 import com.mcmmorpg.common.character.PlayerCharacter;
-import com.mcmmorpg.common.event.EventManager;
+import com.mcmmorpg.common.time.RepeatingTask;
 import com.mcmmorpg.common.ui.ProgressBar;
 import com.mcmmorpg.common.ui.ProgressBar.ProgressBarColor;
-import com.mcmmorpg.impl.Items;
 
 public abstract class AbstractCultist extends AbstractHumanEnemy {
 
-	private static final int XP_REWARD = 60;
 	private static final double RESPAWN_TIME = 60;
 	private static final int SPEED = 2;
 	protected static final PotionEffect SLOW_EFFECT = new PotionEffect(PotionEffectType.SLOW, Integer.MAX_VALUE, 5,
 			false);
 
-	private final String spellName;
-	private final double spellChannelDuration;
+	private static final List<AbstractCultist> cultists = new ArrayList<>();
+
+	protected String spellName;
+	protected double spellChannelDuration;
 	protected ProgressBar spellProgressBar;
 
 	static {
-		Listener listener = new Listener() {
-			@EventHandler
-			private void onTarget(EntityTargetEvent event) {
-				Entity targeter = event.getEntity();
-				if (aiMap.containsKey(targeter)) {
-					AbstractHumanEnemy human = aiMap.get(targeter);
-					if (human instanceof AbstractCultist) {
-						AbstractCultist cultist = (AbstractCultist) human;
-						Entity target = event.getTarget();
-						if (target == null) {
+		RepeatingTask aggroTask = new RepeatingTask(1) {
+			@Override
+			protected void run() {
+				for (int i = 0; i < cultists.size(); i++) {
+					AbstractCultist cultist = cultists.get(i);
+					if (!cultist.isSpawned()) {
+						continue;
+					}
+					Zombie ai = cultist.ai;
+					Entity target = ai.getTarget();
+					if (target == null || !ai.hasLineOfSight(target)) {
+						if (cultist.isChannellingSpell()) {
 							cultist.cancelSpell();
-						} else {
-							if (target instanceof Player) {
-								cultist.chargeSpell();
-							}
+						}
+					} else {
+						if (!cultist.isChannellingSpell()) {
+							cultist.chargeSpell();
 						}
 					}
 				}
 			}
 		};
-		EventManager.registerEvents(listener);
+		aggroTask.schedule();
 	}
 
-	public AbstractCultist(String name, int level, Location spawnLocation, double maxHealth, String textureData,
-			String textureSignature, String spellName, double spellChannelDuration) {
-		super(name, level, spawnLocation, maxHealth, 0, XP_REWARD, RESPAWN_TIME, SPEED, textureData, textureSignature);
+	public AbstractCultist(String name, int level, Location spawnLocation, double maxHealth, int xpReward,
+			String textureData, String textureSignature, String spellName, double spellChannelDuration) {
+		super(name, level, spawnLocation, maxHealth, 0, xpReward, RESPAWN_TIME, SPEED, textureData, textureSignature);
 		this.spellName = spellName;
 		this.spellChannelDuration = spellChannelDuration;
+		cultists.add(this);
+	}
+
+	private final boolean isChannellingSpell() {
+		return spellProgressBar != null && spellProgressBar.getRate() != 0;
 	}
 
 	protected void chargeSpell() {
@@ -72,14 +79,14 @@ public abstract class AbstractCultist extends AbstractHumanEnemy {
 		spellProgressBar.display(getLocation().add(0, 2.75, 0));
 	}
 
-	protected abstract void useSpell();
-
 	protected void cancelSpell() {
 		ai.removePotionEffect(PotionEffectType.SLOW);
 		if (spellProgressBar != null) {
 			spellProgressBar.dispose();
 		}
 	}
+
+	protected abstract void useSpell();
 
 	@Override
 	public void setLocation(Location location) {
@@ -99,13 +106,6 @@ public abstract class AbstractCultist extends AbstractHumanEnemy {
 	protected void onDeath() {
 		super.onDeath();
 		cancelSpell();
-		Location location = getLocation();
-		Items.CONJURERS_CLOAK.drop(location, 0.05);
-		Items.CONJURERS_HOOD.drop(location, 0.05);
-		Items.CONJURERS_LEGGINGS.drop(location, 0.05);
-		Items.CONJURERS_SHOES.drop(location, 0.05);
-		Items.POTION_OF_LESSER_HEALING.drop(location, 0.05);
-		Items.SKELETAL_WAND.drop(location, 0.05);
 	}
 
 	@Override

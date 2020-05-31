@@ -36,7 +36,7 @@ public class Items {
 	public static final ArmorItem CONJURERS_LEGGINGS = (ArmorItem) Item.forName("Conjurer's Leggings");
 	public static final ArmorItem CONJURERS_SHOES = (ArmorItem) Item.forName("Conjurer's Shoes");
 
-	public static final Item FOOD_SUPPLIES = Item.forName("Food Supplies");
+	public static final Item STOLEN_FOOD = Item.forName("Stolen Food");
 	public static final Item BOAR_FLANK = Item.forName("Boar Flank");
 	public static final Item SLUDGE = Item.forName("Sludge");
 	public static final Item COLOSSAL_SLUDGE = Item.forName("Colossal Sludge");
@@ -44,6 +44,8 @@ public class Items {
 	public static final Item NORTH_SEWERS_KEY = Item.forName("North Sewers Key");
 	public static final Item EAST_SEWERS_KEY = Item.forName("East Sewers Key");
 
+	public static final ConsumableItem STALE_BREAD = (ConsumableItem) Item.forName("Stale Bread");
+	public static final ConsumableItem GARLIC_BREAD = (ConsumableItem) Item.forName("Garlic Bread");
 	/**
 	 * Level 5
 	 */

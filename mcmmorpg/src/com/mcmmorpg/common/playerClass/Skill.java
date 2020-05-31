@@ -287,13 +287,13 @@ public final class Skill {
 	}
 
 	void use(PlayerCharacter pc) {
-		PlayerCharacterUseSkillEvent event = new PlayerCharacterUseSkillEvent(pc, this);
-		EventManager.callEvent(event);
-		pc.setCurrentMana(pc.getCurrentMana() - manaCost);
-		cooldown(pc, cooldown);
 		CLICK_NOISE.play(pc);
 		pc.sendMessage(ChatColor.GRAY + "Used " + ChatColor.GREEN + name + " " + ChatColor.GRAY + "(" + ChatColor.AQUA
 				+ -(int) Math.ceil(manaCost) + " MP" + ChatColor.GRAY + ")");
+		pc.setCurrentMana(pc.getCurrentMana() - manaCost);
+		cooldown(pc, cooldown);
+		PlayerCharacterUseSkillEvent event = new PlayerCharacterUseSkillEvent(pc, this);
+		EventManager.callEvent(event);
 	}
 
 }

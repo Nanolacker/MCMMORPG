@@ -1,0 +1,10 @@
+{
+	"name": "Food Delivery",
+	"level": 1,
+	"objectives": [
+		{
+			"goal": 1,
+			"description": "Return 10 §7[Stolen Food§7]§r to §7[§aFarmer§7]§f at §a(-1166, 73, 246)"
+		}
+	]
+}

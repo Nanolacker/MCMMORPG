@@ -6,5 +6,5 @@
 	"playerClass": "Fighter",
 	"level": 3,
 	"type": "CHEST",
-	"protections": 8
+	"protections": 1.25
 }

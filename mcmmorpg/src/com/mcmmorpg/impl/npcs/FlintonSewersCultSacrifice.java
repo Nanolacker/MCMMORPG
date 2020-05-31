@@ -17,7 +17,7 @@ public class FlintonSewersCultSacrifice extends AbstractFriendlyHuman {
 	private static final String FEMALE_TEXTURE_SIGNATURE = "NS1n+aFDINUCULJ7cB8XKea2KPlQRI8YqjKEElFHebXS3iD+2qXGYsRoh4vwErjypj7NAhfqO7eNb0ZiYHhKgAzH/y1JcrjLOuPN8mdxhBNWUM6SY0pND49OCp2JW3gMEShD7GY0zJ4gyb7Az+XcH8cocLqFlHVuBVyKa5PWFvrKZPj8hZOyQUntFxOi4r6JyABEV9FhN4fn89xwVqMIpxMU7T3hznhL+pthobgJWAXSkZy9DFELqRtBNXO9yj7qsl5ukWOarYBsQoGU6ZvNdv7rhZ1uW7gqI+PnlpixtK//twuEgW+2uvrO3NQj8qrN6SElM1tbZQJ+f7AvDESM+tScYDO6lPeOi5vqswmCSexfe6vuAb1NRRTXIPTRMdeKFluLYYSpgRt0aT03wzvZWKfKp59S1m5pk/uKGV9wTG491fnqytINho28hrPWjHbRt7Cu89aoGhkpVgLERGXajlCcIPlu8Y7otnVHUSoA8RVhbficO5LOMM3uLc3ikfbmtjpcpmV2rqIY4+aej1tn15eM4q1pyTRQSNcYfoblL3IsPEQUPfGX4CHu9sbiZCIHgnZlOO106h//Ekbs1BV+moTTAVPSrbxm/oCLVBF8uQnJC22Z33Z9TR9S6FizaB38CV24JWJhrL74WGNFh6e74MpHTYDrgAfwWDgG+S0Dv40=";
 	private static final String[] DIALOGUE_OPTIONS = { "Help me!", "Hey, up here!", "Let me down!",
 			"I don't want to die!" };
-	private static final double DIALOGUE_PERIOD = 8;
+	private static final double DIALOGUE_PERIOD = 12;
 
 	private static final List<FlintonSewersCultSacrifice> sacrifices = new ArrayList<>();
 
