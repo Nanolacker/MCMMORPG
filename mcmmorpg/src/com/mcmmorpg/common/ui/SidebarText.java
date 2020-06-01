@@ -54,6 +54,7 @@ public class SidebarText {
 		for (int i = 0; i < lines.size(); i++) {
 			String line = lines.get(i);
 			while (usedLines.contains(line)) {
+				// scoreboards don't display duplicate lines
 				line = ChatColor.RESET + line;
 			}
 			usedLines.add(line);

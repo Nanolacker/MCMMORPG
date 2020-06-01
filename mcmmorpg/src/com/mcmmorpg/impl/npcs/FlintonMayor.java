@@ -20,6 +20,7 @@ public class FlintonMayor extends StaticHuman {
 	private static final Noise SPEAK_NOISE = new Noise(Sound.ENTITY_VILLAGER_AMBIENT, 1, 0.75f);
 
 	private final InteractionSequence completeClearingTheRoadInteraction;
+	private final InteractionSequence completeThreatLevelGodInteraction;
 
 	public FlintonMayor(Location location) {
 		super(ChatColor.GREEN + "Mayor of Flinton", LEVEL, location, TEXTURE_DATA, TEXTURE_SIGNATURE);
@@ -69,6 +70,23 @@ public class FlintonMayor extends StaticHuman {
 				}
 			}
 		};
+		completeThreatLevelGodInteraction = new InteractionSequence(3) {
+			@Override
+			protected void onAdvance(PlayerCharacter pc, int interactionIndex) {
+				switch (interactionIndex) {
+				case 0:
+					say("", pc);
+					break;
+				case 1:
+					Quests.THREAT_LEVEL_GOD.getObjective(0).complete(pc);
+					break;
+				case 2:
+					pc.sendMessage(ChatColor.GRAY
+							+ "Thank you for finishing the demo! More content will be added in the future.");
+					break;
+				}
+			}
+		};
 	}
 
 	@Override
@@ -82,6 +100,8 @@ public class FlintonMayor extends StaticHuman {
 		if (Quests.CLEARING_THE_ROAD.compareStatus(pc, QuestStatus.IN_PROGRESS)
 				&& Quests.CLEARING_THE_ROAD.getObjective(0).isComplete(pc)) {
 			completeClearingTheRoadInteraction.advance(pc);
+		} else if (Quests.THREAT_LEVEL_GOD.compareStatus(pc, QuestStatus.IN_PROGRESS)) {
+			completeThreatLevelGodInteraction.advance(pc);
 		} else {
 			say("Welcome to Flinton.", pc);
 		}
