@@ -25,7 +25,7 @@ import com.mcmmorpg.common.ui.CommandManager;
 import com.mcmmorpg.common.utils.CardinalDirection;
 import com.mcmmorpg.common.utils.Debug;
 import com.mcmmorpg.common.utils.IOUtils;
-import com.mcmmorpg.impl.Worlds;
+import com.mcmmorpg.impl.RespawnLocations;
 
 public class DeveloperCommands {
 
@@ -34,9 +34,10 @@ public class DeveloperCommands {
 	public static void registerDeveloperCommands() {
 		Debug.log("Registering developer commands");
 
-		LOCATION_MAP.put("Melcher", new Location(Worlds.ELADRADOR, -1019, 70, 191));
-		LOCATION_MAP.put("Flinton Sewers", new Location(Worlds.ELADRADOR, -270, 42.5, 78));
-		LOCATION_MAP.put("Flinton", new Location(Worlds.ELADRADOR, -284, 82, 111));
+		LOCATION_MAP.put("Melcher", RespawnLocations.MELCHER);
+		LOCATION_MAP.put("Broodmother", RespawnLocations.BROODMOTHER_LAIR);
+		LOCATION_MAP.put("Flinton Sewers", RespawnLocations.FLINTON_SEWERS);
+		LOCATION_MAP.put("Flinton", RespawnLocations.FLINTON);
 
 		Command printLocation = new Command("printlocation") {
 			@Override

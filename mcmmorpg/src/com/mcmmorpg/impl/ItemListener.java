@@ -46,7 +46,7 @@ public class ItemListener implements Listener {
 	}
 
 	private void useFighterWeapon(PlayerCharacter pc, Weapon weapon) {
-		double damage = weapon.getBaseDamage() + 2 * pc.getLevel();
+		double damage = weapon.getBaseDamage() * (1 + 0.2 * pc.getLevel());
 		Location start = pc.getLocation().add(0, 1.5, 0);
 		Vector direction = start.getDirection();
 		Location particleLocation = start.clone().add(direction.clone().multiply(2));
@@ -79,7 +79,7 @@ public class ItemListener implements Listener {
 	}
 
 	private void useMageStaff(PlayerCharacter pc, Weapon weapon) {
-		double damage = weapon.getBaseDamage() + pc.getLevel();
+		double damage = weapon.getBaseDamage() * (1 + 0.2 * pc.getLevel());
 		Location start = pc.getLocation().add(0, 1.5, 0);
 		Vector direction = start.getDirection();
 		Location particleLocation = start.clone().add(direction.clone().multiply(2));

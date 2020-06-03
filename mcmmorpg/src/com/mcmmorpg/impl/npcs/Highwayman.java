@@ -13,7 +13,7 @@ import com.mcmmorpg.impl.Quests;
 
 public class Highwayman extends AbstractHumanEnemy {
 
-	private static final double MAX_HEALTH = 125;
+	private static final double MAX_HEALTH = 150;
 	private static final double DAMAGE_AMOUNT = 7;
 	private static final int XP_REWARD = 10;
 	private static final int LEVEL = 5;

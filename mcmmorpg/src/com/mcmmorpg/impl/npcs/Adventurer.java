@@ -3,7 +3,6 @@ package com.mcmmorpg.impl.npcs;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Sound;
-import com.mcmmorpg.common.character.AbstractCharacter;
 import com.mcmmorpg.common.character.PlayerCharacter;
 import com.mcmmorpg.common.sound.Noise;
 
@@ -36,12 +35,12 @@ public class Adventurer extends StaticHuman {
 	}
 
 	@Override
-	public void say(String dialogue, AbstractCharacter recipient) {
+	public void say(String dialogue, PlayerCharacter recipient) {
 		super.say(dialogue, recipient);
 		if (male) {
-			MALE_SPEAK_NOISE.play((PlayerCharacter) recipient);
+			MALE_SPEAK_NOISE.play(recipient);
 		} else {
-			FEMALE_SPEAK_NOISE.play((PlayerCharacter) recipient);
+			FEMALE_SPEAK_NOISE.play(recipient);
 		}
 	}
 

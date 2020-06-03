@@ -5,13 +5,11 @@ import javax.annotation.OverridingMethodsMustInvokeSuper;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 
-import com.mcmmorpg.common.character.PlayerCharacter.PlayerCharacterCollider;
 import com.mcmmorpg.common.event.CharacterDamageEvent;
 import com.mcmmorpg.common.event.CharacterDeathEvent;
 import com.mcmmorpg.common.event.CharacterHealEvent;
 import com.mcmmorpg.common.event.CharacterKillEvent;
 import com.mcmmorpg.common.event.EventManager;
-import com.mcmmorpg.common.physics.Collider;
 import com.mcmmorpg.common.ui.TextPanel;
 import com.mcmmorpg.common.utils.MathUtils;
 
@@ -32,6 +30,7 @@ public abstract class AbstractCharacter implements Source {
 	private double maxHealth;
 	private double height;
 	private final TextPanel nameplate;
+	private final TextPanel healthBar;
 
 	/**
 	 * Constructs a character initialized with max health. By default, the character
@@ -47,9 +46,13 @@ public abstract class AbstractCharacter implements Source {
 		// Assume humanoid height.
 		this.height = 2;
 		Location nameplateLocation = getNameplateLocation();
-		this.nameplate = new TextPanel(nameplateLocation);
+		this.nameplate = new TextPanel(nameplateLocation, name);
 		this.nameplate.setLineLength(25);
+		Location healthBarLocation = getHealthBarLocation();
+		this.healthBar = new TextPanel(healthBarLocation);
+		this.healthBar.setLineLength(25);
 		updateNameplateText();
+		updateHealthBarText();
 	}
 
 	/**
@@ -107,6 +110,7 @@ public abstract class AbstractCharacter implements Source {
 		// clone for safety
 		this.location = location.clone();
 		updateNameplateLocation();
+		updateHealthBarLocation();
 	}
 
 	/**
@@ -134,7 +138,7 @@ public abstract class AbstractCharacter implements Source {
 			this.currentHealth = maxHealth;
 			onLive();
 		}
-		updateNameplateText();
+		updateHealthBarText();
 	}
 
 	/**
@@ -159,9 +163,12 @@ public abstract class AbstractCharacter implements Source {
 		if (currentHealth == 0.0) {
 			setAlive(false);
 		}
-		updateNameplateText();
+		updateHealthBarText();
 	}
 
+	/**
+	 * Deals damage to this character from the specified source.
+	 */
 	@OverridingMethodsMustInvokeSuper
 	public void damage(double amount, Source source) {
 		if (!alive) {
@@ -177,6 +184,9 @@ public abstract class AbstractCharacter implements Source {
 		}
 	}
 
+	/**
+	 * Heals this character from the specified source.
+	 */
 	@OverridingMethodsMustInvokeSuper
 	public void heal(double amount, Source source) {
 		// Don't heal negative amount.
@@ -201,7 +211,7 @@ public abstract class AbstractCharacter implements Source {
 	@OverridingMethodsMustInvokeSuper
 	public void setMaxHealth(double maxHealth) {
 		this.maxHealth = maxHealth;
-		updateNameplateText();
+		updateHealthBarText();
 	}
 
 	/**
@@ -223,6 +233,7 @@ public abstract class AbstractCharacter implements Source {
 		CharacterDeathEvent event = new CharacterDeathEvent(this);
 		EventManager.callEvent(event);
 		setNameplateVisible(false);
+		setHealthBarVisible(false);
 	}
 
 	/**
@@ -238,16 +249,23 @@ public abstract class AbstractCharacter implements Source {
 	public final void setHeight(double height) {
 		this.height = height;
 		updateNameplateLocation();
+		updateHealthBarLocation();
 	}
 
 	/**
 	 * Determines the text to be displayed on this character's nameplate.
 	 */
 	private final String nameplateText() {
+		return ChatColor.GRAY + "[" + ChatColor.GOLD + "Lv. " + level + ChatColor.GRAY + "] " + ChatColor.RESET + name;
+
+	}
+
+	/**
+	 * Determines the text to be displayed on this character's health bar.
+	 */
+	private final String healthBarText() {
 		int numBars = 20;
 		StringBuilder text = new StringBuilder();
-		text.append(ChatColor.GRAY + "[" + ChatColor.GOLD + "Lv. " + level + ChatColor.GRAY + "] " + ChatColor.RESET
-				+ name + '\n');
 		text.append(ChatColor.GRAY + "[");
 		double currentToMaxHealthRatio = currentHealth / maxHealth;
 		int numRedBars = (int) Math.ceil(numBars * currentToMaxHealthRatio);
@@ -271,11 +289,26 @@ public abstract class AbstractCharacter implements Source {
 	}
 
 	/**
+	 * Uses this character's height to determine the placement of its health bar.
+	 */
+	private final Location getHealthBarLocation() {
+		return getLocation().add(0, height - 0.25, 0);
+	}
+
+	/**
 	 * Ensures that this character's nameplate is positioned correctly.
 	 */
 	private final void updateNameplateLocation() {
 		Location nameplateLocation = getNameplateLocation();
 		nameplate.setLocation(nameplateLocation);
+	}
+
+	/**
+	 * Ensures that this character's health bar is positioned correctly.
+	 */
+	private final void updateHealthBarLocation() {
+		Location healthBarLocation = getHealthBarLocation();
+		healthBar.setLocation(healthBarLocation);
 	}
 
 	/**
@@ -287,10 +320,25 @@ public abstract class AbstractCharacter implements Source {
 	}
 
 	/**
+	 * Ensures that this character's health bar is displaying text correctly.
+	 */
+	private final void updateHealthBarText() {
+		String healthBarText = healthBarText();
+		healthBar.setText(healthBarText);
+	}
+
+	/**
 	 * Sets whether this character's nameplate is visible.
 	 */
 	public final void setNameplateVisible(boolean visible) {
 		nameplate.setVisible(visible);
+	}
+
+	/**
+	 * Sets whether this character's health bar is visible.
+	 */
+	public final void setHealthBarVisible(boolean visible) {
+		healthBar.setVisible(visible);
 	}
 
 	/**
@@ -335,11 +383,9 @@ public abstract class AbstractCharacter implements Source {
 	 * Speaks to the specified recipient.
 	 */
 	@OverridingMethodsMustInvokeSuper
-	public void say(String dialogue, AbstractCharacter recipient) {
-		if (recipient instanceof PlayerCharacter) {
-			String formattedDialogue = formatDialogue(dialogue);
-			((PlayerCharacter) recipient).sendMessage(formattedDialogue);
-		}
+	public void say(String dialogue, PlayerCharacter recipient) {
+		String formattedDialogue = formatDialogue(dialogue);
+		recipient.sendMessage(formattedDialogue);
 	}
 
 	/**
@@ -347,17 +393,8 @@ public abstract class AbstractCharacter implements Source {
 	 */
 	@OverridingMethodsMustInvokeSuper
 	public void say(String dialogue, double radius) {
-		double diameter = radius * 2;
-		Collider area = new Collider(location, diameter, diameter, diameter);
-		area.setActive(true);
-		Collider[] colliders = area.getCollidingColliders();
-		for (Collider collider : colliders) {
-			if (collider instanceof PlayerCharacterCollider) {
-				PlayerCharacter pc = ((PlayerCharacterCollider) collider).getCharacter();
-				say(dialogue, pc);
-			}
-		}
-		area.setActive(false);
+		String formattedDialogue = formatDialogue(dialogue);
+		PlayerCharacter.sendMessageToAllNearby(formattedDialogue, getLocation(), radius);
 	}
 
 }

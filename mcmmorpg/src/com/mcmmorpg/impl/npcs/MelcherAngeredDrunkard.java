@@ -107,9 +107,9 @@ public class MelcherAngeredDrunkard extends AbstractHumanEnemy {
 	}
 
 	@Override
-	public void say(String dialogue, AbstractCharacter recipient) {
+	public void say(String dialogue, PlayerCharacter recipient) {
 		super.say(dialogue, recipient);
-		SPEAK_NOISE.play((PlayerCharacter) recipient);
+		SPEAK_NOISE.play(recipient);
 	}
 
 	protected void onInteract(PlayerCharacter pc) {

@@ -70,7 +70,12 @@ public final class PlayerCharacter extends AbstractCharacter {
 	private static final int[] XP_REQS = { 100, 150, 225, 325, 450, 600, 775, 975, 1200, 1450, 1725, 2025, 2350, 2700,
 			3075, 3475, 3900, 4350, 4825 };
 	private static final int MAX_XP = determineMaxXp();
+	private static final Noise HURT_NOISE = new Noise(Sound.ENTITY_PLAYER_HURT);
 	private static final Noise DEATH_NOISE = new Noise(Sound.ENTITY_WITHER_SPAWN);
+	/**
+	 * Made higher than 2 so that health bar text is displayed above nampelate.
+	 */
+	private static final double HEIGHT = 2.3;
 	private static final double MAX_DISPLACEMENT_WITHOUT_TELEPORT = 5.0;
 	private static final double INTERACT_RANGE = 4.0;
 	private static final double SPEAK_RADIUS = 25.0;
@@ -118,6 +123,7 @@ public final class PlayerCharacter extends AbstractCharacter {
 			Quest[] completedQuests, PlayerCharacterQuestData[] questData, PlayerSkillData[] skillData,
 			ItemStack[] inventoryContents, String[] tags) {
 		super(ChatColor.GREEN + player.getName(), xpToLevel(xp), location);
+		super.setHeight(HEIGHT);
 		this.player = player;
 		this.playerClass = playerClass;
 		this.zone = zone;
@@ -144,6 +150,11 @@ public final class PlayerCharacter extends AbstractCharacter {
 		movementSyncer.setEnabled(true);
 		hitbox.setActive(true);
 
+		undisarmTask = null;
+		unsilenceTask = null;
+		isDisarmed = false;
+		isSilenced = false;
+
 		active = true;
 		setAlive(true);
 		super.setCurrentHealth(currentHealth);
@@ -155,16 +166,13 @@ public final class PlayerCharacter extends AbstractCharacter {
 		updateXpDisplay();
 		updateHealthDisplay();
 		updateManaDisplay();
+		setHealthBarVisible(true);
 
 		if (fresh) {
 			setSkillUpgradePoints(1);
 			PlayerCharacterLevelUpEvent event = new PlayerCharacterLevelUpEvent(this, 1);
 			EventManager.callEvent(event);
 		}
-		undisarmTask = null;
-		unsilenceTask = null;
-		isDisarmed = false;
-		isSilenced = false;
 	}
 
 	/**
@@ -653,8 +661,7 @@ public final class PlayerCharacter extends AbstractCharacter {
 	public void damage(double amount, Source source) {
 		amount = getMitigatedDamage(amount, getProtections());
 		super.damage(amount, source);
-		// for effect
-		player.damage(0.01);
+		HURT_NOISE.play(getLocation());
 	}
 
 	/**
@@ -871,10 +878,12 @@ public final class PlayerCharacter extends AbstractCharacter {
 	protected void onDeath() {
 		super.onDeath();
 		hitbox.setActive(false);
+		setHealthBarVisible(false);
 		disarm(4);
 		silence(4);
 		TitleText deathMessage = new TitleText(ChatColor.RED + "YOU DIED", null);
 		deathMessage.apply(player);
+		sendMessageToAllNearby(formatName() + ChatColor.GRAY + " died", getLocation(), 25);
 		PotionEffect veilEffect = new PotionEffect(PotionEffectType.BLINDNESS, 80, 1);
 		PotionEffect invisibiltyEffect = new PotionEffect(PotionEffectType.INVISIBILITY, 40, 1);
 		PotionEffect slownessEffect = new PotionEffect(PotionEffectType.SLOW, 40, 5);
@@ -890,6 +899,7 @@ public final class PlayerCharacter extends AbstractCharacter {
 				player.teleport(respawnLocation);
 				setAlive(true);
 				hitbox.setActive(true);
+				setHealthBarVisible(true);
 			}
 		}.schedule();
 	}
@@ -938,6 +948,23 @@ public final class PlayerCharacter extends AbstractCharacter {
 	 */
 	public void sendMessage(String message) {
 		player.sendMessage(message);
+	}
+
+	/**
+	 * Sends the specified message to player characters nearby the location.
+	 */
+	public static void sendMessageToAllNearby(String message, Location location, double radius) {
+		double diameter = radius * 2;
+		Collider area = new Collider(location, diameter, diameter, diameter);
+		area.setActive(true);
+		Collider[] colliders = area.getCollidingColliders();
+		for (Collider collider : colliders) {
+			if (collider instanceof PlayerCharacterCollider) {
+				PlayerCharacter pc = ((PlayerCharacterCollider) collider).getCharacter();
+				pc.sendMessage(message);
+			}
+		}
+		area.setActive(false);
 	}
 
 	/**
@@ -1031,6 +1058,7 @@ public final class PlayerCharacter extends AbstractCharacter {
 	public void remove() {
 		active = false;
 		hitbox.setActive(false);
+		setHealthBarVisible(false);
 		soundtrackPlayer.setSoundtrack(null);
 		movementSyncer.setEnabled(false);
 		pcs.remove(this);

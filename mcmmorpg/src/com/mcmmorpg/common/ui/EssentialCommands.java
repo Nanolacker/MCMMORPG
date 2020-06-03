@@ -18,7 +18,7 @@ public class EssentialCommands {
 				sender.sendMessage(ChatColor.GRAY + "Help feature coming soon.");
 			}
 		};
-		Command killMe = new Command("killMe") {
+		Command killMe = new Command("kill") {
 			@Override
 			protected void execute(CommandSender sender, String[] args) {
 				if (sender instanceof Player) {

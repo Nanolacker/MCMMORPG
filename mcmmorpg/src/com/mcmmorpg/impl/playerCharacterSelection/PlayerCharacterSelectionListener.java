@@ -77,7 +77,7 @@ public class PlayerCharacterSelectionListener implements Listener {
 				ChatColor.GRAY + "Open the character deletion menu", Material.BARRIER);
 		GO_BACK_ITEM_STACK = ItemFactory.createItemStack(ChatColor.RED + "Go back", null, Material.BARRIER);
 
-		OPEN_MENU_ITEM_STACK = ItemFactory.createItemStack(ChatColor.YELLOW + "Menu", null, Material.COMPASS);
+		OPEN_MENU_ITEM_STACK = ItemFactory.createItemStack(ChatColor.YELLOW + "Menu", null, Material.DIAMOND);
 		ItemFactory.registerStaticInteractable(OPEN_MENU_ITEM_STACK);
 		OPEN_QUEST_LOG_ITEM_STACK = ItemFactory.createItemStack(ChatColor.YELLOW + "Quest Log",
 				ChatColor.GRAY + "View and track your status on quests", Material.BOOK);

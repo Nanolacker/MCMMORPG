@@ -33,8 +33,8 @@ import com.mcmmorpg.common.utils.BukkitUtils;
 public abstract class AbstractSpider extends NonPlayerCharacter {
 
 	private static final double RESPAWN_TIME = 60;
-	private static final Noise HURT_NOISE = new Noise(Sound.ENTITY_SPIDER_HURT, 1f, 0.5f);
-	private static final Noise DEATH_NOISE = new Noise(Sound.ENTITY_SPIDER_HURT, 1f, 0.5f);
+	private static final Noise HURT_NOISE = new Noise(Sound.ENTITY_SPIDER_HURT);
+	private static final Noise DEATH_NOISE = new Noise(Sound.ENTITY_SPIDER_HURT);
 
 	private static final Map<Spider, AbstractSpider> entityMap = new HashMap<>();
 
@@ -85,7 +85,7 @@ public abstract class AbstractSpider extends NonPlayerCharacter {
 		this.xpReward = xpReward;
 		hitbox = new CharacterCollider(this, spawnLocation, lengthX, lengthY, lengthZ);
 		movementSyncer = new MovementSynchronizer(this, MovementSynchronizerMode.CHARACTER_FOLLOWS_ENTITY);
-		surroundings = new Collider(spawnLocation, 30, 6, 30) {
+		surroundings = new Collider(spawnLocation, 25, 25, 25) {
 			@Override
 			protected void onCollisionEnter(Collider other) {
 				if (other instanceof PlayerCharacterCollider) {
@@ -143,7 +143,7 @@ public abstract class AbstractSpider extends NonPlayerCharacter {
 	public void setLocation(Location location) {
 		super.setLocation(location);
 		hitbox.setCenter(location.clone().add(0, 0.5, 0));
-		surroundings.setCenter(location.clone().add(0, 2, 0));
+		surroundings.setCenter(location.clone());
 	}
 
 	@Override

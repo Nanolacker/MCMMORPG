@@ -20,7 +20,7 @@ public class Broodmother extends AbstractSpider {
 	private static final int SPEED = 2;
 	private static final double MAX_HEALTH = 300;
 	private static final double DAMAGE_AMOUNT = 12;
-	private static final int XP_REWARD = 250;
+	private static final int XP_REWARD = 100;
 	private final BossBar bossBar;
 
 	public Broodmother(Location spawnLocation) {

@@ -89,6 +89,7 @@ public abstract class NonPlayerCharacter extends AbstractCharacter {
 	protected void spawn() {
 		isSpawned = true;
 		setNameplateVisible(true);
+		setHealthBarVisible(true);
 		NonPlayerCharacterSpawnEvent event = new NonPlayerCharacterSpawnEvent(this);
 		EventManager.callEvent(event);
 	}
@@ -102,6 +103,7 @@ public abstract class NonPlayerCharacter extends AbstractCharacter {
 	protected void despawn() {
 		isSpawned = false;
 		setNameplateVisible(false);
+		setHealthBarVisible(false);
 		NonPlayerCharacterDespawnEvent event = new NonPlayerCharacterDespawnEvent(this);
 		EventManager.callEvent(event);
 	}

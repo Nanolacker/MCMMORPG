@@ -4,7 +4,6 @@ import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Sound;
 
-import com.mcmmorpg.common.character.AbstractCharacter;
 import com.mcmmorpg.common.character.PlayerCharacter;
 import com.mcmmorpg.common.quest.QuestMarker;
 import com.mcmmorpg.common.quest.QuestStatus;
@@ -91,9 +90,9 @@ public class FlintonSewersAlchemist extends StaticHuman {
 	}
 
 	@Override
-	public void say(String dialogue, AbstractCharacter recipient) {
+	public void say(String dialogue, PlayerCharacter recipient) {
 		super.say(dialogue, recipient);
-		SPEAK_NOISE.play((PlayerCharacter) recipient);
+		SPEAK_NOISE.play(recipient);
 	}
 
 }

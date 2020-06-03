@@ -4,7 +4,6 @@ import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Sound;
 
-import com.mcmmorpg.common.character.AbstractCharacter;
 import com.mcmmorpg.common.character.PlayerCharacter;
 import com.mcmmorpg.common.playerClass.PlayerClass;
 import com.mcmmorpg.common.quest.QuestMarker;
@@ -50,7 +49,8 @@ public class GuardJames extends StaticHuman {
 					say("Ehem. You have a weapon. Why don't you take care of them?", pc);
 					break;
 				case 5:
-					say("I'll stay here where it's safe-er, to fend off any bandits. Yes, bandits. Not spiders.", pc);
+					say("I'll stay here where it's safe-er, to fend off any highwaymen. Yes, highwaymen. Not spiders.",
+							pc);
 					break;
 				case 6:
 					Quests.ARACHNOPHOBIA.start(pc);
@@ -63,10 +63,10 @@ public class GuardJames extends StaticHuman {
 			protected void onAdvance(PlayerCharacter pc, int messageIndex) {
 				switch (messageIndex) {
 				case 0:
-					say("Thank you for your help, traveller. You've truly made my day.", pc);
+					say("You did it? The brood mother as well?", pc);
 					break;
 				case 1:
-					say("You did it? The brood mother as well?", pc);
+					say("Thank you for your help, traveller. You've truly made my day.", pc);
 					break;
 				case 2:
 					say("Dear gods, thank you so much. Now I can finally sleep without a candle lit.", pc);
@@ -106,9 +106,9 @@ public class GuardJames extends StaticHuman {
 	}
 
 	@Override
-	public void say(String dialogue, AbstractCharacter recipient) {
+	public void say(String dialogue, PlayerCharacter recipient) {
 		super.say(dialogue, recipient);
-		SPEAK_NOISE.play((PlayerCharacter) recipient);
+		SPEAK_NOISE.play(recipient);
 	}
 
 }

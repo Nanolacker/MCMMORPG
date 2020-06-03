@@ -373,7 +373,7 @@ public class MageListener implements Listener {
 	}
 
 	private void useRestore(PlayerCharacter pc) {
-		double healProportion = 0.15 * restore.getUpgradeLevel(pc);
+		double healProportion = 0.1 + 0.1 * restore.getUpgradeLevel(pc);
 		double size = 4;
 		int projectileParticleCount = 10;
 		int boxParticleCount = 75;

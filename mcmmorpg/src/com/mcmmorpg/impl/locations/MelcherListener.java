@@ -15,12 +15,8 @@ import com.mcmmorpg.impl.Soundtracks;
 import com.mcmmorpg.impl.Worlds;
 import com.mcmmorpg.impl.Zones;
 import com.mcmmorpg.impl.npcs.Adventurer;
-import com.mcmmorpg.impl.npcs.Broodmother;
 import com.mcmmorpg.impl.npcs.Chicken;
-import com.mcmmorpg.impl.npcs.ForestSpider;
 import com.mcmmorpg.impl.npcs.Guard;
-import com.mcmmorpg.impl.npcs.GuardJames;
-import com.mcmmorpg.impl.npcs.Highwayman;
 import com.mcmmorpg.impl.npcs.Horse;
 import com.mcmmorpg.impl.npcs.MelcherAngeredDrunkard;
 import com.mcmmorpg.impl.npcs.MelcherBartender;
@@ -82,13 +78,7 @@ public class MelcherListener implements Listener {
 			new Location(Worlds.ELADRADOR, -1126.663995, 72.937500, 253.256357, 178.649048f, 23.980371f),
 			new Location(Worlds.ELADRADOR, -1120.104211, 73.000000, 250.863035, 239.816299f, 13.554127f),
 			new Location(Worlds.ELADRADOR, -878.337963, 72.000000, 164.330094, -2.471985f, 26.413113f),
-			new Location(Worlds.ELADRADOR, -823.522638, 72.000000, 153.239366, -181.107422f, 67.770515f),
-			new Location(Worlds.ELADRADOR, -756.885689, 72.000000, 121.383997, -75.107544f, 41.704929f),
-			new Location(Worlds.ELADRADOR, -649.650656, 64.000000, 79.879587, -353.435791f, 41.009830f),
-			new Location(Worlds.ELADRADOR, -651.847714, 67.000000, 38.008869, -150.176498f, 21.199955f),
-			new Location(Worlds.ELADRADOR, -585.913308, 74.000000, -77.914642, -6.642093f, 30.236000f),
-			new Location(Worlds.ELADRADOR, -469.161661, 73.000000, -103.509018, -291.626099f, 46.570435f),
-			new Location(Worlds.ELADRADOR, -404.779515, 82.000000, -11.314008, -280.852203f, 22.242554f) };
+			new Location(Worlds.ELADRADOR, -823.522638, 72.000000, 153.239366, -181.107422f, 67.770515f) };
 	private static final Location[] CHICKEN_LOCATIONS = { new Location(Worlds.ELADRADOR, -1167, 73, 243),
 			new Location(Worlds.ELADRADOR, -1167, 73, 242), new Location(Worlds.ELADRADOR, -1167, 73, 241) };
 	private static final Location[] HORSE_LOCATIONS = { new Location(Worlds.ELADRADOR, -1158, 73, 239),
@@ -111,66 +101,10 @@ public class MelcherListener implements Listener {
 			new Location(Worlds.ELADRADOR, -1188.227450, 74.000000, 162.177680, -6.989624f, 15.986921f),
 			new Location(Worlds.ELADRADOR, -1118.575813, 76.000000, 155.300048, -15.678314f, 26.413179f),
 			new Location(Worlds.ELADRADOR, -1109.433998, 77.000000, 155.343152, -32.707916f, 26.760717f) };
-	private static final Location[] HIGHWAYMAN_LOCATIONS = { new Location(Worlds.ELADRADOR, -756, 72, 147),
-			new Location(Worlds.ELADRADOR, -727, 71, 88), new Location(Worlds.ELADRADOR, -684, 65, 81),
-			new Location(Worlds.ELADRADOR, -680.297733, 64.000000, 74.673399, 317.667206f, 17.724596f),
-			new Location(Worlds.ELADRADOR, -727.586013, 71.062500, 94.653988, 137.292496f, 16.682007f),
-			new Location(Worlds.ELADRADOR, -731.999106, 71.062500, 95.228533, 155.364761f, 15.291833f),
-			new Location(Worlds.ELADRADOR, -630.226817, 67.000000, 66.887372, 199.503250f, 22.242643f),
-			new Location(Worlds.ELADRADOR, -646.951926, 68.000000, 26.681379, 147.024582f, 21.895102f),
-			new Location(Worlds.ELADRADOR, -637.849987, 71.000000, -34.146066, 210.971893f, 20.504936f),
-			new Location(Worlds.ELADRADOR, -570.910808, 75.000000, -79.454968, 230.434174f, 22.590183f),
-			new Location(Worlds.ELADRADOR, -516.452902, 74.000000, -113.060670, 318.361694f, 24.675428f),
-			new Location(Worlds.ELADRADOR, -465.374197, 73.000000, -84.707907, 334.695587f, 36.491856f),
-			new Location(Worlds.ELADRADOR, -427.140385, 78.000000, -32.814684, 336.085419f, 23.980362f), };
-	private static final Location[] FOREST_SPIDER_LOCATIONS = {
-			new Location(Worlds.ELADRADOR, -763.000000, 72.000000, 155.000000),
-			new Location(Worlds.ELADRADOR, -750.000000, 72.000000, 100.000000),
-			new Location(Worlds.ELADRADOR, -715.000000, 70.000000, 90.000000),
-			new Location(Worlds.ELADRADOR, -630.000000, 66.000000, 74.000000),
-			new Location(Worlds.ELADRADOR, -626.000000, 68.000000, 41.000000),
-			new Location(Worlds.ELADRADOR, -656.000000, 68.000000, 13.000000),
-			new Location(Worlds.ELADRADOR, -646.000000, 70.000000, -22.000000),
-			new Location(Worlds.ELADRADOR, -622.000000, 73.000000, -45.000000),
-			new Location(Worlds.ELADRADOR, -599.626059, 75.000000, -68.358134, 240.513687f, 21.895067f),
-			new Location(Worlds.ELADRADOR, -545.113880, 75.000000, -106.429543, 231.825058f, 11.816359f),
-			new Location(Worlds.ELADRADOR, -456.903532, 72.000000, -62.710678, 329.483612f, 15.291774f),
-			new Location(Worlds.ELADRADOR, -813.256476, 74.000000, -93.550042, 5.561591f, 25.718084f),
-			new Location(Worlds.ELADRADOR, -819.643090, 74.000000, -91.068068, 5.561591f, 25.718084f),
-			new Location(Worlds.ELADRADOR, -822.335181, 74.000000, -86.354005, 5.561591f, 25.718084f),
-			new Location(Worlds.ELADRADOR, -823.469786, 74.000000, -80.915253, 5.561591f, 25.718084f),
-			new Location(Worlds.ELADRADOR, -828.272300, 74.000000, -85.618514, 160.565094f, 20.157419f),
-			new Location(Worlds.ELADRADOR, -826.661654, 74.000000, -92.967181, 203.312759f, 19.114796f),
-			new Location(Worlds.ELADRADOR, -822.018759, 74.000000, -100.451275, 226.598053f, 19.809881f),
-			new Location(Worlds.ELADRADOR, -814.411626, 74.000000, -99.851284, 287.417755f, 28.150875f),
-			new Location(Worlds.ELADRADOR, -668.392343, 65.000000, 30.213392, 89.679626f, 19.809883f),
-			new Location(Worlds.ELADRADOR, -679.518897, 64.000000, 38.589283, 89.679626f, 19.809883f),
-			new Location(Worlds.ELADRADOR, -688.146605, 65.000000, 30.011950, 117.482971f, 16.682007f),
-			new Location(Worlds.ELADRADOR, -703.465234, 67.000000, 22.065936, 131.037064f, 25.370546f),
-			new Location(Worlds.ELADRADOR, -707.048418, 69.000000, 4.114079, 133.817444f, 24.327919f),
-			new Location(Worlds.ELADRADOR, -725.442575, 72.000000, -8.344703, 143.200882f, 33.711548f),
-			new Location(Worlds.ELADRADOR, -731.580913, 74.000000, -19.842024, 119.915619f, 24.327930f),
-			new Location(Worlds.ELADRADOR, -747.299626, 77.000000, -34.634385, 125.128838f, 33.711559f),
-			new Location(Worlds.ELADRADOR, -763.939928, 78.000000, -45.860363, 144.591141f, 31.973850f),
-			new Location(Worlds.ELADRADOR, -776.522285, 78.000000, -62.876873, 144.591141f, 31.973850f),
-			new Location(Worlds.ELADRADOR, -807.730458, 75.000000, -76.742250, 133.122330f, 34.059101f),
-			new Location(Worlds.ELADRADOR, -820.681832, 62.000000, -117.208008, 351.377838f, 26.399847f),
-			new Location(Worlds.ELADRADOR, -821.692052, 62.000000, -121.906648, 181.430283f, 35.088398f),
-			new Location(Worlds.ELADRADOR, -819.905641, 62.000000, -126.486904, 343.384521f, 16.668697f),
-			new Location(Worlds.ELADRADOR, -821.175368, 69.062500, -102.003955, 189.076080f, 62.891785f),
-			new Location(Worlds.ELADRADOR, -837.956110, 69.062500, -126.201293, 273.876038f, 24.314703f),
-			new Location(Worlds.ELADRADOR, -823.745960, 63.062500, -110.309364, 197.121582f, 21.186844f),
-			new Location(Worlds.ELADRADOR, -825.661351, 61.062500, -129.120002, 306.597290f, 22.577007f),
-			new Location(Worlds.ELADRADOR, -807.805341, 61.437500, -123.851920, 68.931091f, 4.852366f),
-			new Location(Worlds.ELADRADOR, -811.313284, 74.000000, -81.733326, 336.833496f, 19.449106f), };
-	private static final Location BROODMOTHER_LOCATION = new Location(Worlds.ELADRADOR, -811.832828, 62.000000,
-			-123.009372, 79.294250f, 10.760525f);
-	private static final Location GUARD_JAMES_LOCATION = new Location(Worlds.ELADRADOR, -643.730402, 68.000000,
-			22.268770, 82.717430f, 74.708183f);
 
 	public MelcherListener() {
 		setBounds();
-		setUpNpcs();
+		spawnNpcs();
 	}
 
 	private void setBounds() {
@@ -199,7 +133,7 @@ public class MelcherListener implements Listener {
 		exitBounds.setActive(true);
 	}
 
-	private void setUpNpcs() {
+	private void spawnNpcs() {
 		for (int i = 0; i < VILLAGER_LOCATIONS.length; i++) {
 			Location location = VILLAGER_LOCATIONS[i];
 			boolean male = i % 2 == 0;
@@ -238,14 +172,6 @@ public class MelcherListener implements Listener {
 		for (Location location : THIEF_LOCATIONS) {
 			new Thief(location).setAlive(true);
 		}
-		for (Location location : HIGHWAYMAN_LOCATIONS) {
-			new Highwayman(location).setAlive(true);
-		}
-		for (Location location : FOREST_SPIDER_LOCATIONS) {
-			new ForestSpider(location).setAlive(true);
-		}
-		new Broodmother(BROODMOTHER_LOCATION).setAlive(true);
-		new GuardJames(GUARD_JAMES_LOCATION).setAlive(true);
 	}
 
 	@EventHandler

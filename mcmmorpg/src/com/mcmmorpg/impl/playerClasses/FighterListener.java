@@ -132,7 +132,7 @@ public class FighterListener implements Listener {
 	}
 
 	private void useSelfHeal(PlayerCharacter pc) {
-		double healAmount = pc.getMaxHealth() / 5 * selfHeal.getUpgradeLevel(pc);
+		double healAmount = pc.getMaxHealth() * (0.2 + 0.1 * selfHeal.getUpgradeLevel(pc));
 		pc.heal(healAmount, pc);
 		pc.sendMessage(ChatColor.GRAY + "Recovered " + ChatColor.RED + (int) healAmount + " HP");
 		SELF_HEAL_NOISE.play(pc.getLocation());
@@ -258,7 +258,7 @@ public class FighterListener implements Listener {
 	}
 
 	private void useInspire(PlayerCharacter pc) {
-		double healProportion = 0.15 * inspire.getUpgradeLevel(pc);
+		double healProportion = 0.1 + 0.1 * inspire.getUpgradeLevel(pc);
 		double size = 8;
 		Location location = pc.getLocation().add(0, 1, 0);
 		Collider hitbox = new Collider(location, size, 2, size) {

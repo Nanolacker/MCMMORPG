@@ -53,7 +53,7 @@
 			"name": "Restore",
 			"description": "Shoot a ball of light that heals allies on impact",
 			"manaCost": 15,
-			"cooldown": 10,
+			"cooldown": 25,
 			"minimumLevel": 13,
 			"prerequisiteSkill": "Whirlwind",
 			"maximumUpgradeLevel": 4,
