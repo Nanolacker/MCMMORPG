@@ -398,7 +398,7 @@ public class PlayerCharacterSelectionListener implements Listener {
 
 	static File getCharacterSaveFile(Player player, int characterSlot) {
 		File playerFolder = new File(PLAYER_CHARACTER_DATA_DIRECTORY, player.getName());
-		File characterSaveFile = new File(playerFolder, "characterSlot" + characterSlot + ".json");
+		File characterSaveFile = new File(playerFolder, "Character" + characterSlot + ".json");
 		return characterSaveFile;
 	}
 

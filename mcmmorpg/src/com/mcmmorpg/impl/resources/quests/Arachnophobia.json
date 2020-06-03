@@ -8,11 +8,11 @@
 		},
 		{
 			"goal": 1,
-			"description": "Slay the §7[§cBroodmother§7]§f at §a(x, y, z)"
+			"description": "Slay the §7[§cBroodmother§7]§f at §a(-812, 62, -123)"
 		},
 		{
 			"goal": 1,
-			"description": "Return to §7[§aGuard James§7]§f at §a(x, y, z)§f when done"
+			"description": "Return to §7[§aGuard James§7]§f at §a(-644, 68, 23)§f when done"
 		}
 	]
 }

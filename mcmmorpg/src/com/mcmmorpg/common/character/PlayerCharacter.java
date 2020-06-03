@@ -870,7 +870,7 @@ public final class PlayerCharacter extends AbstractCharacter {
 	@Override
 	protected void onDeath() {
 		super.onDeath();
-		// hitbox.setActive(false);
+		hitbox.setActive(false);
 		disarm(4);
 		silence(4);
 		TitleText deathMessage = new TitleText(ChatColor.RED + "YOU DIED", null);
@@ -1116,7 +1116,7 @@ public final class PlayerCharacter extends AbstractCharacter {
 		@EventHandler
 		private void onDamage(EntityDamageEvent event) {
 			// Screw it. Let's just put it here for all entities.
-			event.setDamage(0);
+			event.setCancelled(true);
 		}
 
 		@EventHandler

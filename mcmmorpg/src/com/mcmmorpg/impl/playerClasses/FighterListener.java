@@ -3,6 +3,7 @@ package com.mcmmorpg.impl.playerClasses;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
@@ -26,14 +27,12 @@ import com.mcmmorpg.common.time.DelayedTask;
 import com.mcmmorpg.common.time.RepeatingTask;
 import com.mcmmorpg.impl.PlayerClasses;
 
-import net.md_5.bungee.api.ChatColor;
-
 public class FighterListener implements Listener {
 
 	private static final double[] MAX_HEALTH = { 25.0, 33.0, 43.0, 55.0, 69.0, 85.0, 103.0, 123.0, 145.0, 169.0, 195.0,
 			223.0, 253.0, 285.0, 319.0, 355.0, 393.0, 433.0, 475.0, 519.0 };
-	private static final double[] HEALTH_REGEN_RATE = { 0.5, 0.6, 0.7, 0.8, 0.9, 1.0, 1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 1.7,
-			1.8, 1.9, 2, 2.1, 2.2, 2.3, 2.4, };
+	private static final double[] HEALTH_REGEN_RATE = { 1, 1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 1.7, 1.8, 1.9, 2, 2.1, 2.2,
+			2.3, 2.4, 2.5, 2.7, 2.8, 2.9, 3 };
 	private static final double[] MAX_MANA = { 10.0, 12.0, 14.0, 16.0, 18.0, 20.0, 22.0, 24.0, 26.0, 28.0, 30.0, 32.0,
 			34.0, 36.0, 38.0, 40.0, 42.0, 44.0, 46.0, 48.0 };
 	private static final double[] MANA_REGEN_RATE = { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 };

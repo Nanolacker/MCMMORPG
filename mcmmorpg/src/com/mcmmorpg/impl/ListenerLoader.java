@@ -18,8 +18,8 @@ public class ListenerLoader {
 		EventManager.registerEvents(new MageListener());
 
 		EventManager.registerEvents(new MelcherListener());
-		EventManager.registerEvents(new FlintonSewersListener());
 		EventManager.registerEvents(new FlintonListener());
+		EventManager.registerEvents(new FlintonSewersListener());
 	}
 
 }

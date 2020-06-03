@@ -35,8 +35,8 @@ public class MageListener implements Listener {
 
 	private static final double[] MAX_HEALTH = { 20.0, 25.0, 31.0, 38.0, 46.0, 55.0, 65.0, 76.0, 88.0, 101.0, 115.0,
 			130.0, 146.0, 163.0, 181.0, 200.0, 220.0, 241.0, 263.0, 286.0 };
-	private static final double[] HEALTH_REGEN_RATE = { 0.5, 0.6, 0.7, 0.8, 0.9, 1.0, 1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 1.7,
-			1.8, 1.9, 2, 2.1, 2.2, 2.3, 2.4, };
+	private static final double[] HEALTH_REGEN_RATE = { 1, 1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 1.7, 1.8, 1.9, 2, 2.1, 2.2,
+			2.3, 2.4, 2.5, 2.7, 2.8, 2.9, 3 };
 	private static final double[] MAX_MANA = { 15.0, 19.0, 23.0, 27.0, 31.0, 35.0, 39.0, 43.0, 47.0, 51.0, 55.0, 59.0,
 			63.0, 67.0, 71.0, 75.0, 79.0, 83.0, 87.0, 91.0 };
 	private static final double[] MANA_REGEN_RATE = { 2.0, 2.5, 3.0, 3.5, 4.0, 4.5, 5.0, 5.5, 6.0, 6.5, 7.0, 7.5, 8.0,
@@ -87,14 +87,6 @@ public class MageListener implements Listener {
 		pc.setMaxMana(maxMana);
 		pc.setCurrentMana(maxMana);
 		pc.setManaRegenRate(manaRegenRate);
-		if (level == 1) {
-			pc.setMaxHealth(25);
-			pc.setCurrentHealth(25);
-			pc.setHealthRegenRate(0.2);
-			pc.setMaxMana(15);
-			pc.setCurrentMana(15);
-			pc.setManaRegenRate(1);
-		}
 	}
 
 	@EventHandler

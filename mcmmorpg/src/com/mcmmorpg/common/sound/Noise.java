@@ -69,4 +69,12 @@ public class Noise {
 		player.playSound(source, type, SoundCategory.MASTER, volume, pitch);
 	}
 
+	/**
+	 * Play this noise to strictly the specified player character from the specified
+	 * source.
+	 */
+	public void play(PlayerCharacter pc, Location location) {
+		play(pc.getPlayer(), location);
+	}
+
 }
