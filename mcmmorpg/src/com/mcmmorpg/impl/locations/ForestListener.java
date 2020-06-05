@@ -5,7 +5,10 @@ import org.bukkit.event.Listener;
 
 import com.mcmmorpg.common.character.PlayerCharacter;
 import com.mcmmorpg.common.character.PlayerCharacter.PlayerCharacterCollider;
+import com.mcmmorpg.common.item.Item;
+import com.mcmmorpg.common.item.LootChest;
 import com.mcmmorpg.common.physics.Collider;
+import com.mcmmorpg.impl.Items;
 import com.mcmmorpg.impl.RespawnLocations;
 import com.mcmmorpg.impl.Soundtracks;
 import com.mcmmorpg.impl.Worlds;
@@ -18,11 +21,11 @@ import com.mcmmorpg.impl.npcs.Highwayman;
 
 public class ForestListener implements Listener {
 
+	private static final double LOOT_CHEST_RESPAWN_TIME = 60;
 	private static final Location[] ADVENTURER_LOCATIONS = {
 			new Location(Worlds.ELADRADOR, -756.885689, 72.000000, 121.383997, -75.107544f, 41.704929f),
 			new Location(Worlds.ELADRADOR, -649.650656, 64.000000, 79.879587, -353.435791f, 41.009830f),
 			new Location(Worlds.ELADRADOR, -651.847714, 67.000000, 38.008869, -150.176498f, 21.199955f),
-			new Location(Worlds.ELADRADOR, -585.913308, 73.000000, -77.914642, -6.642093f, 30.236000f),
 			new Location(Worlds.ELADRADOR, -469.161661, 73.000000, -103.509018, -291.626099f, 46.570435f),
 			new Location(Worlds.ELADRADOR, -404.779515, 82.000000, -11.314008, -280.852203f, 22.242554f) };
 	private static final Location[] HIGHWAYMAN_LOCATIONS = { new Location(Worlds.ELADRADOR, -756, 72, 147),
@@ -36,7 +39,16 @@ public class ForestListener implements Listener {
 			new Location(Worlds.ELADRADOR, -570.910808, 75.000000, -79.454968, 230.434174f, 22.590183f),
 			new Location(Worlds.ELADRADOR, -516.452902, 74.000000, -113.060670, 318.361694f, 24.675428f),
 			new Location(Worlds.ELADRADOR, -465.374197, 73.000000, -84.707907, 334.695587f, 36.491856f),
-			new Location(Worlds.ELADRADOR, -427.140385, 78.000000, -32.814684, 336.085419f, 23.980362f), };
+			new Location(Worlds.ELADRADOR, -427.140385, 78.000000, -32.814684, 336.085419f, 23.980362f),
+			new Location(Worlds.ELADRADOR, -596.675401, 74.000000, -77.495592, 18.078186f, 14.235965f),
+			new Location(Worlds.ELADRADOR, -604.684367, 75.062500, -79.492789, 18.773926f, 19.449081f),
+			new Location(Worlds.ELADRADOR, -608.780557, 75.000000, -87.723093, 334.289001f, 25.704823f),
+			new Location(Worlds.ELADRADOR, -597.679685, 74.000000, -82.694009, 14.603943f, 35.435978f),
+			new Location(Worlds.ELADRADOR, -576.986391, 75.000000, -87.578919, 351.667786f, 42.386822f),
+			new Location(Worlds.ELADRADOR, -574.679453, 75.062500, -92.631863, 17.734009f, 39.258965f),
+			new Location(Worlds.ELADRADOR, -501.727386, 73.062500, -122.186359, -277.840179f, 34.767361f),
+			new Location(Worlds.ELADRADOR, -507.477083, 73.000000, -120.535543, -277.840179f, 34.767361f),
+			new Location(Worlds.ELADRADOR, -503.269467, 73.062500, -124.977532, 38.074974f, 35.809978f) };
 	private static final Location[] FOREST_SPIDER_LOCATIONS = {
 			new Location(Worlds.ELADRADOR, -763.000000, 72.000000, 155.000000),
 			new Location(Worlds.ELADRADOR, -750.000000, 72.000000, 100.000000),
@@ -119,26 +131,19 @@ public class ForestListener implements Listener {
 			-123.009372, 79.294250f, 10.760525f);
 	private static final Location GUARD_JAMES_LOCATION = new Location(Worlds.ELADRADOR, -643.730402, 68.000000,
 			22.268770, 82.717430f, 74.708183f);
+	private static final Location[] LOOT_CHEST_LOCATIONS = { new Location(Worlds.ELADRADOR, -808, 70, 161, 0, 0),
+			new Location(Worlds.ELADRADOR, -725, 71, 94, 180, 0), new Location(Worlds.ELADRADOR, -813, 62, -120, 90, 0),
+			new Location(Worlds.ELADRADOR, -621, 67, 65, 90, 0), new Location(Worlds.ELADRADOR, -584, 74, -79, 0, 0),
+			new Location(Worlds.ELADRADOR, -500, 73, -118, 0, 0) };
+	private static final Item[][] LOOT_CHEST_CONTENTS = { { Items.POTION_OF_MINOR_HEALING, Items.HIDE_BOOTS },
+			{ Items.STALE_BREAD, Items.STALE_BREAD, Items.THIEF_DAGGER }, { Items.POTION_OF_MINOR_HEALING },
+			{ Items.POTION_OF_MINOR_HEALING }, { Items.BRITTLE_WAND, Items.TORN_SHOES, Items.STALE_BREAD },
+			{ Items.STALE_BREAD, Items.STALE_BREAD } };
 
 	public ForestListener() {
-		spawnNpcs();
 		setBroodmotherLairBounds();
-	}
-
-	private void spawnNpcs() {
-		for (int i = 0; i < ADVENTURER_LOCATIONS.length; i++) {
-			Location location = ADVENTURER_LOCATIONS[i];
-			boolean male = i % 2 == 0;
-			new Adventurer(location, male).setAlive(true);
-		}
-		for (Location location : HIGHWAYMAN_LOCATIONS) {
-			new Highwayman(location).setAlive(true);
-		}
-		for (Location location : FOREST_SPIDER_LOCATIONS) {
-			new ForestSpider(location).setAlive(true);
-		}
-		new Broodmother(BROODMOTHER_LOCATION).setAlive(true);
-		new GuardJames(GUARD_JAMES_LOCATION).setAlive(true);
+		spawnNpcs();
+		spawnLootChests();
 	}
 
 	private void setBroodmotherLairBounds() {
@@ -165,6 +170,30 @@ public class ForestListener implements Listener {
 			}
 		};
 		exitBounds.setActive(true);
+	}
+
+	private void spawnNpcs() {
+		for (int i = 0; i < ADVENTURER_LOCATIONS.length; i++) {
+			Location location = ADVENTURER_LOCATIONS[i];
+			boolean male = i % 2 == 0;
+			new Adventurer(location, male).setAlive(true);
+		}
+		for (Location location : HIGHWAYMAN_LOCATIONS) {
+			new Highwayman(location).setAlive(true);
+		}
+		for (Location location : FOREST_SPIDER_LOCATIONS) {
+			new ForestSpider(location).setAlive(true);
+		}
+		new Broodmother(BROODMOTHER_LOCATION).setAlive(true);
+		new GuardJames(GUARD_JAMES_LOCATION).setAlive(true);
+	}
+
+	private void spawnLootChests() {
+		for (int i = 0; i < LOOT_CHEST_LOCATIONS.length; i++) {
+			Location location = LOOT_CHEST_LOCATIONS[i];
+			Item[] contents = LOOT_CHEST_CONTENTS[i];
+			LootChest.spawnLootChest(location, LOOT_CHEST_RESPAWN_TIME, contents);
+		}
 	}
 
 }

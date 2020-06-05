@@ -41,6 +41,8 @@ class ItemListener implements Listener {
 
 	private static final Noise CLICK_NOISE = new Noise(Sound.BLOCK_LEVER_CLICK);
 	private static final Noise EQUIP_NOISE = new Noise(Sound.ITEM_ARMOR_EQUIP_CHAIN);
+	private static final Noise LOOT_CHEST_OPEN_NOISE = new Noise(Sound.BLOCK_CHEST_OPEN);
+	private static final Noise LOOT_CHEST_CLOSE_NOISE = new Noise(Sound.BLOCK_CHEST_CLOSE);
 
 	/**
 	 * Used to ensure that players only use weapons once when intended.
@@ -314,9 +316,7 @@ class ItemListener implements Listener {
 
 	private void handlePlayerCharacterUseConsumable(PlayerCharacter pc, ConsumableItem consumable,
 			ItemStack itemStack) {
-		if (pc.isSilenced()) {
-			// do nothing
-		} else if (pc.getLevel() < consumable.getLevel()) {
+		if (pc.getLevel() < consumable.getLevel()) {
 			pc.sendMessage(ChatColor.GRAY + "Your level is too low to use this item");
 		} else {
 			itemStack.setAmount(itemStack.getAmount() - 1);
@@ -348,6 +348,7 @@ class ItemListener implements Listener {
 			return;
 		}
 		chest.open(pc);
+		LOOT_CHEST_OPEN_NOISE.play(location);
 		chest.remove();
 		EventManager.callEvent(new PlayerCharacterOpenLootChestEvent(pc, chest));
 	}
@@ -369,10 +370,13 @@ class ItemListener implements Listener {
 			Player player = (Player) event.getWhoClicked();
 			PlayerCharacter pc = PlayerCharacter.forPlayer(player);
 			// pc should never be null
-			pc.getPlayer().getInventory().addItem(itemStack);
+			Item item = Item.forItemStack(itemStack);
+			pc.giveItem(item);
+			CLICK_NOISE.play(pc);
 			boolean empty = inventoryIsEmpty(clickedInventory);
 			if (empty) {
 				player.closeInventory();
+				LOOT_CHEST_CLOSE_NOISE.play(player);
 			}
 		}
 	}
@@ -392,6 +396,8 @@ class ItemListener implements Listener {
 		Inventory inventory = event.getInventory();
 		if (LootChest.inventories.contains(inventory)) {
 			LootChest.inventories.remove(inventory);
+			Player player = (Player) event.getPlayer();
+			LOOT_CHEST_CLOSE_NOISE.play(player);
 		}
 	}
 

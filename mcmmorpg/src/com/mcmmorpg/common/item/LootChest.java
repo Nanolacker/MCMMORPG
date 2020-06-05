@@ -133,6 +133,13 @@ public class LootChest {
 	}
 
 	/**
+	 * Returns the direction this loot chest is facing.
+	 */
+	public CardinalDirection getDirection() {
+		return direction;
+	}
+
+	/**
 	 * Returns the item contents of this loot chest.
 	 */
 	public Item[] getContents() {

@@ -47,6 +47,7 @@ import com.mcmmorpg.impl.npcs.SmallGelatinousCube;
 
 public class FlintonSewersListener implements Listener {
 
+	private static final double LOOT_CHEST_RESPAWN_TIME = 60;
 	private static final double SLUDGE_TICK_DAMAGE = 2;
 	private static final Noise SLUDGE_DAMAGE_NOISE = new Noise(Sound.ITEM_BUCKET_FILL);
 	private static final int MAX_SMALL_GELATINOUS_CUBE_COUNT_PER_PLAYER_CHARACTER = 5;
@@ -235,7 +236,7 @@ public class FlintonSewersListener implements Listener {
 		setUpSludge();
 		spawnNpcs();
 		setUpPortcullises();
-		placeLootChests();
+		spawnLootChests();
 	}
 
 	private void setBounds() {
@@ -355,11 +356,11 @@ public class FlintonSewersListener implements Listener {
 		new FlintonSewersPortcullis(northPortcullisLocation, false, Items.NORTH_SEWERS_KEY);
 	}
 
-	private void placeLootChests() {
+	private void spawnLootChests() {
 		for (int i = 0; i < LOOT_CHEST_LOCATIONS.length; i++) {
 			Location location = LOOT_CHEST_LOCATIONS[i];
 			Item[] contents = LOOT_CHEST_CONTENTS[i];
-			LootChest.spawnLootChest(location, 5, contents);
+			LootChest.spawnLootChest(location, LOOT_CHEST_RESPAWN_TIME, contents);
 		}
 	}
 

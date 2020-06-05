@@ -26,7 +26,7 @@ import com.mcmmorpg.impl.npcs.MelcherMayor;
 import com.mcmmorpg.impl.npcs.MelcherTavernKingRat;
 import com.mcmmorpg.impl.npcs.MelcherTavernRat;
 import com.mcmmorpg.impl.npcs.MelcherVillager;
-import com.mcmmorpg.impl.npcs.Thief;
+import com.mcmmorpg.impl.npcs.MelcherThief;
 import com.mcmmorpg.impl.npcs.TrainingDummy;
 
 public class MelcherListener implements Listener {
@@ -170,7 +170,7 @@ public class MelcherListener implements Listener {
 		}
 		new MelcherTavernKingRat(TAVERN_KING_RAT_LOCATION).setAlive(true);
 		for (Location location : THIEF_LOCATIONS) {
-			new Thief(location).setAlive(true);
+			new MelcherThief(location).setAlive(true);
 		}
 	}
 

@@ -54,7 +54,8 @@ public class Highwayman extends AbstractHumanEnemy {
 		Items.TORN_LEGGINGS.drop(location, 0.02);
 		Items.TORN_ROBES.drop(location, 0.02);
 		Items.TORN_SHOES.drop(location, 0.02);
-		Items.POTION_OF_MINOR_HEALING.drop(location, 0.1);
+		Items.STALE_BREAD.drop(location, 0.2);
+		Items.POTION_OF_MINOR_HEALING.drop(location, 0.05);
 	}
 
 }

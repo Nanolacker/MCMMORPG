@@ -12,7 +12,7 @@ import com.mcmmorpg.common.sound.Noise;
 import com.mcmmorpg.impl.Items;
 import com.mcmmorpg.impl.Quests;
 
-public class Thief extends AbstractHumanEnemy {
+public class MelcherThief extends AbstractHumanEnemy {
 
 	private static final int LEVEL = 2;
 	private static final double MAX_HEALTH = 30;
@@ -25,7 +25,7 @@ public class Thief extends AbstractHumanEnemy {
 	protected static final Noise HURT_NOISE = new Noise(Sound.ENTITY_PILLAGER_HURT);
 	protected static final Noise DEATH_NOISE = new Noise(Sound.ENTITY_PILLAGER_DEATH);
 
-	public Thief(Location spawnLocation) {
+	public MelcherThief(Location spawnLocation) {
 		super(ChatColor.RED + "Thief", LEVEL, spawnLocation, MAX_HEALTH, DAMAGE_AMOUNT, XP_REWARD, RESPAWN_TIME, SPEED,
 				TEXTURE_DATA, TEXTURE_SIGNATURE);
 	}
@@ -45,8 +45,8 @@ public class Thief extends AbstractHumanEnemy {
 		for (PlayerCharacter pc : nearbyPcs) {
 			Quests.THWARTING_THE_THIEVES.getObjective(0).addProgress(pc, 1);
 		}
-		int dropAmount = (int) (Math.random() * 3);
-		Items.STOLEN_FOOD.drop(location, dropAmount);
+		int stolenFoodDropAmount = (int) (Math.random() * 3);
+		Items.STOLEN_FOOD.drop(location, stolenFoodDropAmount);
 		Items.THIEF_DAGGER.drop(getLocation(), 0.02);
 		Items.BRITTLE_WAND.drop(getLocation(), 0.02);
 		Items.HIDE_BOOTS.drop(location, 0.02);
@@ -57,6 +57,7 @@ public class Thief extends AbstractHumanEnemy {
 		Items.TORN_LEGGINGS.drop(location, 0.02);
 		Items.TORN_ROBES.drop(location, 0.02);
 		Items.TORN_SHOES.drop(location, 0.02);
+		Items.STALE_BREAD.drop(location, 0.2);
 	}
 
 }

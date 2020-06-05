@@ -112,7 +112,7 @@ public class MageListener implements Listener {
 	}
 
 	private void useFireball(PlayerCharacter pc) {
-		double damageAmount = 3 * pc.getWeapon().getBaseDamage() * fireball.getUpgradeLevel(pc) + 3 * pc.getLevel();
+		double damageAmount = 5 * pc.getWeapon().getBaseDamage() * fireball.getUpgradeLevel(pc) + 3 * pc.getLevel();
 		double range = 15;
 		double hitSize = 0.85;
 		Location start = pc.getHandLocation().subtract(0, 1, 0);
@@ -184,7 +184,7 @@ public class MageListener implements Listener {
 	}
 
 	private void useIceBeam(PlayerCharacter pc) {
-		double damagePerTick = 0.75 * pc.getWeapon().getBaseDamage() * iceBeam.getUpgradeLevel(pc)
+		double damagePerTick = 1.25 * pc.getWeapon().getBaseDamage() * iceBeam.getUpgradeLevel(pc)
 				+ 0.5 * pc.getLevel();
 
 		double duration = 4;
@@ -248,7 +248,7 @@ public class MageListener implements Listener {
 	}
 
 	private void useWhirlwind(PlayerCharacter pc) {
-		double damagePerTick = 0.75 * pc.getWeapon().getBaseDamage() * whirlwind.getUpgradeLevel(pc) + pc.getLevel();
+		double damagePerTick = 1.25 * pc.getWeapon().getBaseDamage() * whirlwind.getUpgradeLevel(pc) + pc.getLevel();
 		Location targetTemp = pc.getTargetLocation(15);
 		Location location = pc.getLocation().add(0, 1.5, 0);
 		Ray ray = new Ray(location, location.getDirection(), 15);
@@ -326,7 +326,7 @@ public class MageListener implements Listener {
 	}
 
 	private void useEarthquake(PlayerCharacter pc) {
-		double damagePerTick = 0.5 * pc.getWeapon().getBaseDamage() * earthquake.getUpgradeLevel(pc) + pc.getLevel();
+		double damagePerTick = 0.75 * pc.getWeapon().getBaseDamage() * earthquake.getUpgradeLevel(pc) + pc.getLevel();
 		double size = 15;
 		int particleCount = 100;
 		Location center = pc.getLocation();
@@ -373,7 +373,7 @@ public class MageListener implements Listener {
 	}
 
 	private void useRestore(PlayerCharacter pc) {
-		double healProportion = 0.1 + 0.1 * restore.getUpgradeLevel(pc);
+		double healProportion = 0.15 + 0.075 * restore.getUpgradeLevel(pc);
 		double size = 4;
 		int projectileParticleCount = 10;
 		int boxParticleCount = 75;
