@@ -180,7 +180,7 @@ public final class Skill {
 	private ItemStack createHotbarItemStack() {
 		StringBuilder lore = new StringBuilder();
 		lore.append(ChatColor.GOLD + playerClass.getName() + " Skill");
-		lore.append(ChatColor.AQUA + "\nCost: " + (int) Math.ceil(manaCost));
+		lore.append(ChatColor.AQUA + "\nMana Cost: " + (int) Math.ceil(manaCost));
 		lore.append(ChatColor.YELLOW + "\nCooldown: " + (int) Math.ceil(cooldown));
 		lore.append(ChatColor.WHITE + "\n\n" + description);
 		ItemStack itemStack = ItemFactory.createItemStack(ChatColor.GREEN + name, lore.toString(), icon);
@@ -195,7 +195,7 @@ public final class Skill {
 		Material material = unlocked ? icon : LOCKED_MATERIAL;
 		StringBuilder lore = new StringBuilder();
 		lore.append(ChatColor.GOLD + "Upgraded " + upgradeLevel + "/" + maximumUpgradeLevel);
-		lore.append(ChatColor.AQUA + "\nCost: " + (int) Math.ceil(manaCost));
+		lore.append(ChatColor.AQUA + "\nMana Cost: " + (int) Math.ceil(manaCost));
 		lore.append(ChatColor.YELLOW + "\nCooldown: " + (int) Math.ceil(cooldown));
 		lore.append(ChatColor.WHITE + "\n\n" + description);
 
