@@ -1000,6 +1000,9 @@ public final class PlayerCharacter extends AbstractCharacter {
 		Inventory inventory = player.getInventory();
 		ItemStack[] contents = inventory.getContents();
 		for (ItemStack content : contents) {
+			if (content == null) {
+				continue;
+			}
 			ItemStack unitContent = content.clone();
 			unitContent.setAmount(1);
 			if (itemStack.equals(unitContent)) {

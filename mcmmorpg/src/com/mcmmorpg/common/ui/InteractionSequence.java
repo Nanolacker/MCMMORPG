@@ -19,7 +19,7 @@ import com.mcmmorpg.common.time.DelayedTask;
  */
 public abstract class InteractionSequence {
 
-	private static final double DEFAULT_PERIOD = 3;
+	private static final double DEFAULT_PERIOD = 4.5;
 
 	private static final HashMap<PlayerCharacter, List<InteractionSequence>> playingSequencesMap = new HashMap<>();
 

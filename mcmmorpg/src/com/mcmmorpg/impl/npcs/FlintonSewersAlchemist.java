@@ -79,7 +79,7 @@ public class FlintonSewersAlchemist extends StaticHuman {
 		if (Quests.SAMPLING_SLUDGE.compareStatus(pc, QuestStatus.NOT_STARTED)) {
 			startSamplingSludge.advance(pc);
 		} else if (Quests.SAMPLING_SLUDGE.compareStatus(pc, QuestStatus.IN_PROGRESS)) {
-			if (pc.getItemCount(Items.SLUDGE) >= 25 && pc.getItemCount(Items.COLOSSAL_SLUDGE) >= 2) {
+			if (pc.getItemCount(Items.SLUDGE) >= 25 && pc.getItemCount(Items.COLOSSAL_SLUDGE) >= 1) {
 				completeSamplingSludge.advance(pc);
 			} else {
 				say("Come on now, I need way more sludge than that!", pc);

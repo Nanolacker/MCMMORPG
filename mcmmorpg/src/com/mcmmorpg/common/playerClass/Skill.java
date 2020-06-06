@@ -214,9 +214,9 @@ public final class Skill {
 		}
 
 		if (!isUnavailable) {
-			lore.append(ChatColor.GRAY + "\n");
+			lore.append(ChatColor.GREEN + "\n");
 			if (unlocked) {
-				lore.append(ChatColor.GRAY + "\nClick to add to hotbar");
+				lore.append("\nClick to add to hotbar");
 				if (upgradeLevel < maximumUpgradeLevel) {
 					lore.append("\nShift-click to upgrade (1 skill point)");
 				}

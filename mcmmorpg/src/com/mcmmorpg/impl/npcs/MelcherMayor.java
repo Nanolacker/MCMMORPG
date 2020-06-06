@@ -34,7 +34,7 @@ public class MelcherMayor extends StaticHuman {
 			protected void onAdvance(PlayerCharacter pc, int messageIndex) {
 				switch (messageIndex) {
 				case 0:
-					say("Greetings adventurere!", pc);
+					say("Greetings adventurer!", pc);
 					break;
 				case 1:
 					say("You must have recently arrived by ship! Welcome to the land of Eladrador!", pc);

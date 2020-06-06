@@ -30,7 +30,6 @@ import com.mcmmorpg.common.character.PlayerCharacter;
 import com.mcmmorpg.common.character.PlayerCharacter.PlayerCharacterCollider;
 import com.mcmmorpg.common.character.Source;
 import com.mcmmorpg.common.event.EventManager;
-import com.mcmmorpg.common.item.LootChest;
 import com.mcmmorpg.common.physics.Collider;
 import com.mcmmorpg.common.sound.Noise;
 import com.mcmmorpg.common.time.DelayedTask;
@@ -263,7 +262,6 @@ public class ColossalGelatinousCube extends NonPlayerCharacter {
 		}
 		DEATH_NOISE.play(location);
 		location.getWorld().spawnParticle(Particle.CLOUD, location, 10);
-		LootChest.spawnLootChest(location);
 		DelayedTask respawnTask = new DelayedTask(RESPAWN_TIME) {
 			@Override
 			protected void run() {
