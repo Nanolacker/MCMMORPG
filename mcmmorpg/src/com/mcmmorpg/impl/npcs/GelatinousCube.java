@@ -55,6 +55,7 @@ public class GelatinousCube extends NonPlayerCharacter {
 	private static final double WIDTH = 2.9;
 	private static final int SLOWNESS = 2;
 	private static final double RESPAWN_TIME = 60;
+	private static final double DISARM_DURATION = 1;
 	private static final Noise HURT_NOISE = new Noise(Sound.ENTITY_SLIME_DEATH);
 	private static final Noise DEATH_NOISE = new Noise(Sound.ENTITY_SLIME_DEATH);
 	private static final Noise ACID_SPRAY_NOISE = new Noise(Sound.BLOCK_LAVA_EXTINGUISH);
@@ -68,6 +69,7 @@ public class GelatinousCube extends NonPlayerCharacter {
 	private ProgressBar acidSprayProgressBar;
 	private boolean canUseAcidSpray;
 	private boolean respawning;
+	private boolean canAttack;
 
 	static {
 		Listener listener = new Listener() {
@@ -78,9 +80,12 @@ public class GelatinousCube extends NonPlayerCharacter {
 				if (entityMap.containsKey(damager)) {
 					if (damaged instanceof Player) {
 						GelatinousCube gelatinousCube = entityMap.get(damager);
-						Player player = (Player) damaged;
-						PlayerCharacter pc = PlayerCharacter.forPlayer(player);
-						pc.damage(BASIC_ATTACK_DAMAGE, gelatinousCube);
+						if (gelatinousCube.canAttack) {
+							Player player = (Player) damaged;
+							PlayerCharacter pc = PlayerCharacter.forPlayer(player);
+							pc.damage(BASIC_ATTACK_DAMAGE, gelatinousCube);
+							gelatinousCube.disarm();
+						}
 					}
 				} else if (entityMap.containsKey(damaged)) {
 					DelayedTask cancelKnockback = new DelayedTask(0.1) {
@@ -126,6 +131,7 @@ public class GelatinousCube extends NonPlayerCharacter {
 		movementSyncer = new MovementSynchronizer(this, MovementSynchronizerMode.CHARACTER_FOLLOWS_ENTITY);
 		canUseAcidSpray = true;
 		respawning = true;
+		canAttack = true;
 	}
 
 	@Override
@@ -166,6 +172,16 @@ public class GelatinousCube extends NonPlayerCharacter {
 		// for light up red effect
 		entity.damage(0);
 		HURT_NOISE.play(getLocation());
+	}
+
+	private void disarm() {
+		canAttack = false;
+		new DelayedTask(DISARM_DURATION) {
+			@Override
+			protected void run() {
+				canAttack = true;
+			}
+		}.schedule();
 	}
 
 	private void chargeAcidSpray() {

@@ -41,6 +41,7 @@ public class SmallGelatinousCube extends NonPlayerCharacter {
 	private static final double WIDTH = 1.2;
 	private static final Noise HURT_NOISE = new Noise(Sound.ENTITY_SLIME_DEATH);
 	private static final Noise DEATH_NOISE = new Noise(Sound.ENTITY_SLIME_DEATH);
+	private static final double DISARM_DURATION = 1;
 
 	private static final Map<Slime, SmallGelatinousCube> entityMap = new HashMap<>();
 
@@ -49,6 +50,7 @@ public class SmallGelatinousCube extends NonPlayerCharacter {
 	private final MovementSynchronizer movementSyncer;
 	private final PlayerCharacter cause;
 	private Slime entity;
+	private boolean canAttack;
 
 	static {
 		Listener listener = new Listener() {
@@ -59,9 +61,12 @@ public class SmallGelatinousCube extends NonPlayerCharacter {
 				if (entityMap.containsKey(damager)) {
 					if (damaged instanceof Player) {
 						SmallGelatinousCube gelatinousCube = entityMap.get(damager);
-						Player player = (Player) damaged;
-						PlayerCharacter pc = PlayerCharacter.forPlayer(player);
-						pc.damage(BASIC_ATTACK_DAMAGE, gelatinousCube);
+						if (gelatinousCube.canAttack) {
+							Player player = (Player) damaged;
+							PlayerCharacter pc = PlayerCharacter.forPlayer(player);
+							pc.damage(BASIC_ATTACK_DAMAGE, gelatinousCube);
+							gelatinousCube.disarm();
+						}
 					}
 				} else if (entityMap.containsKey(damaged)) {
 					DelayedTask cancelKnockback = new DelayedTask(0.1) {
@@ -87,6 +92,7 @@ public class SmallGelatinousCube extends NonPlayerCharacter {
 		this.cause = cause;
 		int count = FlintonSewersListener.smallGelatinousCubeCounts.get(cause) + 1;
 		FlintonSewersListener.smallGelatinousCubeCounts.put(cause, count);
+		canAttack = true;
 	}
 
 	@Override
@@ -120,9 +126,17 @@ public class SmallGelatinousCube extends NonPlayerCharacter {
 	@Override
 	public void damage(double amount, Source source) {
 		super.damage(amount, source);
-		// for light up red effect
-		entity.damage(0);
 		HURT_NOISE.play(getLocation());
+	}
+
+	private void disarm() {
+		canAttack = false;
+		new DelayedTask(DISARM_DURATION) {
+			@Override
+			protected void run() {
+				canAttack = true;
+			}
+		}.schedule();
 	}
 
 	@Override

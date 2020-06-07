@@ -5,21 +5,21 @@ import java.util.List;
 import java.util.Set;
 
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.Objective;
 import org.bukkit.scoreboard.Score;
 import org.bukkit.scoreboard.Scoreboard;
-import org.bukkit.scoreboard.ScoreboardManager;
 
 import com.mcmmorpg.common.utils.StringUtils;
-
-import net.md_5.bungee.api.ChatColor;
 
 /**
  * Uses scoreboards to display text on a player's sidebar.
  */
 public class SidebarText {
+
+	private static final Set<Player> players = new HashSet<>();
 
 	private String title;
 	private String text;
@@ -36,15 +36,15 @@ public class SidebarText {
 	 * Applies sidebar text to the specified player.
 	 */
 	public void apply(Player player) {
-		Scoreboard scoreboard = player.getScoreboard();
-		if (scoreboard == null) {
-			ScoreboardManager scoreboardManager = Bukkit.getScoreboardManager();
-			scoreboard = scoreboardManager.getNewScoreboard();
+		Scoreboard scoreboard;
+		if (!players.contains(player)) {
+			scoreboard = Bukkit.getScoreboardManager().getNewScoreboard();
+			player.setScoreboard(scoreboard);
+			players.add(player);
 		} else {
+			scoreboard = player.getScoreboard();
 			Objective objective = scoreboard.getObjective("objective");
-			if (objective != null) {
-				objective.unregister();
-			}
+			objective.unregister();
 		}
 		Objective objective = scoreboard.registerNewObjective("objective", "dummy", title);
 		objective.setDisplaySlot(DisplaySlot.SIDEBAR);

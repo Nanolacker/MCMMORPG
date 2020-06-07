@@ -59,6 +59,7 @@ public class ColossalGelatinousCube extends NonPlayerCharacter {
 	private static final Noise HURT_NOISE = new Noise(Sound.ENTITY_SLIME_DEATH);
 	private static final Noise DEATH_NOISE = new Noise(Sound.ENTITY_SLIME_DEATH);
 	private static final Noise SPLIT_SPRAY_NOISE = new Noise(Sound.BLOCK_LAVA_EXTINGUISH);
+	private static final double DISARM_DURATION = 1;
 
 	private final Location spawnLocation;
 	private final CharacterCollider hitbox;
@@ -69,6 +70,7 @@ public class ColossalGelatinousCube extends NonPlayerCharacter {
 	private ProgressBar splitProgressBar;
 	private boolean canUseSplit;
 	private int childCount;
+	private boolean canAttack;
 
 	public ColossalGelatinousCube(Location spawnLocation) {
 		super(ChatColor.RED + "Colossal Gelatinous Cube", LEVEL, spawnLocation);
@@ -101,6 +103,9 @@ public class ColossalGelatinousCube extends NonPlayerCharacter {
 		Listener listener = new Listener() {
 			@EventHandler
 			private void onHit(EntityDamageByEntityEvent event) {
+				if (!canAttack) {
+					return;
+				}
 				Entity damager = event.getDamager();
 				Entity damaged = event.getEntity();
 				if (damager == ColossalGelatinousCube.this.entity) {
@@ -108,6 +113,7 @@ public class ColossalGelatinousCube extends NonPlayerCharacter {
 						Player player = (Player) damaged;
 						PlayerCharacter pc = PlayerCharacter.forPlayer(player);
 						pc.damage(BASIC_ATTACK_DAMAGE, ColossalGelatinousCube.this);
+						disarm();
 					}
 				} else if (damaged == ColossalGelatinousCube.this.entity) {
 					DelayedTask cancelKnockback = new DelayedTask(0.1) {
@@ -138,6 +144,7 @@ public class ColossalGelatinousCube extends NonPlayerCharacter {
 			}
 		};
 		useSplitTask.schedule();
+		canAttack = true;
 	}
 
 	@Override
@@ -186,9 +193,17 @@ public class ColossalGelatinousCube extends NonPlayerCharacter {
 	@Override
 	public void damage(double amount, Source source) {
 		super.damage(amount, source);
-		// for light up red effect
-		entity.damage(0);
 		HURT_NOISE.play(getLocation());
+	}
+
+	private void disarm() {
+		canAttack = false;
+		new DelayedTask(DISARM_DURATION) {
+			@Override
+			protected void run() {
+				canAttack = true;
+			}
+		}.schedule();
 	}
 
 	private void chargeSplit() {

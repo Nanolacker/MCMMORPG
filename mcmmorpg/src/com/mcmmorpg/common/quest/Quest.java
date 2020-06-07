@@ -163,7 +163,7 @@ public class Quest {
 			} else {
 				progressText = ChatColor.GREEN + "";
 			}
-			progressText += "-" + progress + "/" + goal;
+			progressText += "- " + progress + "/" + goal;
 			objectiveLines += progressText + " " + ChatColor.WHITE + objective.getDescription() + "\n";
 		}
 		return objectiveLines;

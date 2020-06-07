@@ -235,7 +235,7 @@ class PlayerClassListener implements Listener {
 					}
 				}
 				if (alreadyOnHotbar) {
-					pc.sendMessage(ChatColor.GREEN + skill.getName() + ChatColor.GRAY + " is already on  your hotbar");
+					pc.sendMessage(ChatColor.GREEN + skill.getName() + ChatColor.GRAY + " is already on your hotbar");
 				} else {
 					boolean noRoom = true;
 					for (int i = 1; i < 9; i++) {

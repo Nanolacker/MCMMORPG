@@ -32,28 +32,30 @@ import com.mcmmorpg.impl.Worlds;
 public class FlintonSewersXylphanos extends AbstractCultist {
 
 	private static final int LEVEL = 15;
-	private static final double MAX_HEALTH = 1000;
+	private static final double MAX_HEALTH = 2500;
 	private static final int XP_REWARD = 150;
 	private static final String TEXTURE_DATA = "ewogICJ0aW1lc3RhbXAiIDogMTU4OTk5NzQ4MDk3NCwKICAicHJvZmlsZUlkIiA6ICI0NDAzZGM1NDc1YmM0YjE1YTU0OGNmZGE2YjBlYjdkOSIsCiAgInByb2ZpbGVOYW1lIiA6ICJGbGF3Q3JhQm90MDEiLAogICJzaWduYXR1cmVSZXF1aXJlZCIgOiB0cnVlLAogICJ0ZXh0dXJlcyIgOiB7CiAgICAiU0tJTiIgOiB7CiAgICAgICJ1cmwiIDogImh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYTVkNTg3NjhmYjJlNDMyN2I4NWVkMDAxODY0NmUxYTBlNGIzYzhiYmIwY2ViZDAyYWM2YzI5NjBjYjQzNzNkYiIKICAgIH0KICB9Cn0=";
 	private static final String TEXTURE_SIGNATURE = "vRomneBuiAl7MB+6+kpoS/a42CIISA6sdBNoJMgOyoDuu7jA/h+mZRlScAtIRbn897BIeowRRIfCZlOcgb51saLk0ELIKkOV83nh9KyimTNSjP99t7BxCC+Rf/TQUdzTuLwC1S4GdF1KZ7NDfMlOuyslCgRl5YEo03Czcr9zk5Ff92gCGzksuLMiwuill+pPFeMFxZ2BT6tQ9ysJ7Ev+PP+c4fwGJ/JRRKsYxjGx/VkVCk/LnnQEL40DvQC30ztHpN7QuvMfpnpa37OZMsy8MdKgdVTw0O+PWWSMU4AdYHIQTKjDsdpr8tnygi1t9TmIEXaLQzrQhtvlyf9O2+xdh49EXDU56DD9TNYb9/K12QRQK1O2z2NGed1Ve/UwrVSHv829+YVrr820g0KI47pJRlZDE2mbL4FKrGGdkp28YsCfyvk+czNPwFvKA8vqj5Cg8l7K7MNe4HjQ5JH+kZFE78D/NhlUntRIj7abNC8jMuoOlnmiwYkaZqixuSQa9Of9OwmRijnPfmX+ArUgvLDYCAtPG8wdVdduEqRdzuL2sZqr54KCkixPl1V/xlpAscZLh1g7cOjohn4qcoGx9xxyrsIixjsFhwOUreuXND331/qUhqjNPEflEYnSaUa801xygT3IMmNQzfP+gLEHGLfe5A9bOfP2vTSD3Wn/+DDYg24=";
 	private static final String FIELD_OF_DEATH = "Field of Death";
-	private static final double FIELD_OF_DEATH_CHANNEL_DURATION = 5;
-	private static final double FIELD_OF_DEATH_CHARGE_DURATION = 4;
+	private static final double FIELD_OF_DEATH_CHANNEL_DURATION = 4;
 	private static final double FIELD_OF_DEATH_WIDTH = 15;
 	private static final double FIELD_OF_DEATH_HEIGHT = 1;
-	private static final double FIELD_OF_DEATH_DAMAGE = 150;
+	private static final double FIELD_OF_DEATH_DAMAGE = 50;
 	private static final Particle FIELD_OF_DEATH_PARTICLE = Particle.SPELL_WITCH;
 	private static final Noise FIELD_OF_DEATH_CHANNEL_NOISE = new Noise(Sound.BLOCK_PORTAL_TRIGGER);
 	private static final Noise FIELD_OF_DEATH_EXPLODE_NOISE = new Noise(Sound.ENTITY_WITHER_HURT);
 	private static final Noise TELEPORT_NOISE = new Noise(Sound.ENTITY_WITHER_HURT);
 	private static final double TELEPORT_SPEED = 10;
-	private String[] BATTLE_DIALOGUE_OPTIONS = { "You think vermin like you can stop me?" };
+	private static final String[] BATTLE_DIALOGUE_OPTIONS = { "You think vermin like you can stop me?" };
 	private static final double DIALOGUE_PERIOD = 10;
 
 	private final Collider surroundings;
 	private final BossBar bossBar;
 	private final InteractionSequence completeBattleInteraction;
 	private boolean passive;
+	private final TextPanel fieldOfDeathTextPanel;
+	private final RepeatingTask fieldOfDeathParticleTask;
+	private Location targetLocation;
 
 	public FlintonSewersXylphanos(Location spawnLocation) {
 		super(ChatColor.RED + "Xylphanos", LEVEL, spawnLocation, MAX_HEALTH, XP_REWARD, TEXTURE_DATA, TEXTURE_SIGNATURE,
@@ -138,6 +140,22 @@ public class FlintonSewersXylphanos extends AbstractCultist {
 			}
 		};
 		dialogueTask.schedule();
+		fieldOfDeathTextPanel = new TextPanel(spawnLocation, "Field of Death");
+		fieldOfDeathParticleTask = new RepeatingTask(0.5) {
+			int count = 0;
+
+			@Override
+			public void schedule() {
+				super.schedule();
+				count = 0;
+			}
+
+			@Override
+			protected void run() {
+				createFieldOfDeathParticleEffect(targetLocation, count);
+				count++;
+			}
+		};
 	}
 
 	@Override
@@ -170,7 +188,7 @@ public class FlintonSewersXylphanos extends AbstractCultist {
 			return;
 		}
 		super.damage(amount, source);
-		if (Math.random() > 0.6) {
+		if (Math.random() < 0.4) {
 			TELEPORT_NOISE.play(getLocation());
 			Vector velocity = new Vector(Math.random() - 0.5, 0, Math.random() - 0.5);
 			velocity.multiply(TELEPORT_SPEED);
@@ -213,18 +231,19 @@ public class FlintonSewersXylphanos extends AbstractCultist {
 		for (Player player : players) {
 			spellProgressBar.display(player);
 		}
+
+		Entity target = ai.getTarget();
+		targetLocation = target.getLocation();
+		fieldOfDeathTextPanel.setLocation(targetLocation.clone().add(0, 2, 0));
+		fieldOfDeathTextPanel.setVisible(true);
+		FIELD_OF_DEATH_CHANNEL_NOISE.play(targetLocation);
+		fieldOfDeathParticleTask.schedule();
 	}
 
 	protected void useSpell() {
-		useFieldOfDeath();
-	}
-
-	private void useFieldOfDeath() {
-		Entity target = ai.getTarget();
-		Location targetLocation = target.getLocation();
-		TextPanel text = new TextPanel(targetLocation.clone().add(0, 2, 0), "Field of Death");
-		text.setVisible(true);
-		FIELD_OF_DEATH_CHANNEL_NOISE.play(targetLocation);
+		fieldOfDeathParticleTask.cancel();
+		fieldOfDeathTextPanel.setVisible(false);
+		FIELD_OF_DEATH_EXPLODE_NOISE.play(targetLocation);
 		Collider hitbox = new Collider(targetLocation.add(0, FIELD_OF_DEATH_HEIGHT / 2, 0), FIELD_OF_DEATH_WIDTH,
 				FIELD_OF_DEATH_HEIGHT, FIELD_OF_DEATH_WIDTH) {
 			@Override
@@ -237,24 +256,17 @@ public class FlintonSewersXylphanos extends AbstractCultist {
 				}
 			}
 		};
-		double period = 0.5;
-		new RepeatingTask(period) {
-			int count = 0;
+		hitbox.setActive(true);
+		hitbox.setActive(false);
+	}
 
-			@Override
-			protected void run() {
-				if (count * period >= FIELD_OF_DEATH_CHARGE_DURATION) {
-					FIELD_OF_DEATH_EXPLODE_NOISE.play(targetLocation);
-					hitbox.setActive(true);
-					hitbox.setActive(false);
-					text.setVisible(false);
-					cancel();
-					return;
-				}
-				createFieldOfDeathParticleEffect(targetLocation, count);
-				count++;
-			}
-		}.schedule();
+	@Override
+	protected void cancelSpell() {
+		super.cancelSpell();
+		if (fieldOfDeathParticleTask.isScheduled()) {
+			fieldOfDeathParticleTask.cancel();
+		}
+		fieldOfDeathTextPanel.setVisible(false);
 	}
 
 	private void createFieldOfDeathParticleEffect(Location location, int particleDensity) {

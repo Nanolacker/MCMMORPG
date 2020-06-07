@@ -48,13 +48,12 @@ import com.mcmmorpg.impl.npcs.SmallGelatinousCube;
 public class FlintonSewersListener implements Listener {
 
 	private static final double LOOT_CHEST_RESPAWN_TIME = 60;
-	private static final double SLUDGE_TICK_DAMAGE = 2;
+	private static final double SLUDGE_TICK_DAMAGE = 15;
 	private static final Noise SLUDGE_DAMAGE_NOISE = new Noise(Sound.ITEM_BUCKET_FILL);
 	private static final int MAX_SMALL_GELATINOUS_CUBE_COUNT_PER_PLAYER_CHARACTER = 5;
 	private static final PotionEffect SLUDGE_SLOW_EFFECT = new PotionEffect(PotionEffectType.SLOW,
 			MathUtils.secondsToTicks(2), 3);
 	private static final TitleText ENTER_TEXT = new TitleText(ChatColor.GRAY + "Flinton Sewers", null);
-	private static final Noise ENTER_NOISE = new Noise(Sound.ENTITY_WITHER_SPAWN);
 	private static final Location ENTRANCE_LOCATION_1 = new Location(Worlds.ELADRADOR, 0, 0, 0);
 	private static final Location ENTRANCE_LOCATION_2 = new Location(Worlds.ELADRADOR, 0, 0, 0);
 	private static final Location ALCHEMIST_LOCATION = new Location(Worlds.ELADRADOR, -274, 42.5, 79, 180, 0);
@@ -249,7 +248,6 @@ public class FlintonSewersListener implements Listener {
 					pc.setRespawnLocation(RespawnLocations.FLINTON_SEWERS);
 					pc.getSoundTrackPlayer().setSoundtrack(Soundtracks.DUNGEON);
 					ENTER_TEXT.apply(pc);
-					ENTER_NOISE.play(pc);
 					smallGelatinousCubeCounts.put(pc, 0);
 				}
 			}
@@ -273,7 +271,7 @@ public class FlintonSewersListener implements Listener {
 			@Override
 			protected void run() {
 				boolean spawnOoze = count == 10;
-				boolean playSludgeSound = count % 5 == 0;
+				boolean damage = count % 5 == 0;
 				if (spawnOoze) {
 					count = 0;
 				}
@@ -289,13 +287,13 @@ public class FlintonSewersListener implements Listener {
 							Location floorLocation = location.clone().subtract(0, 1, 0);
 							Block blockBelow = world.getBlockAt(floorLocation);
 							if (blockBelow.getType() == Material.LIME_STAINED_GLASS) {
-								pc.damage(SLUDGE_TICK_DAMAGE, sludge);
 								Player player = pc.getPlayer();
 								player.addPotionEffect(SLUDGE_SLOW_EFFECT);
 								Vector velocity = player.getVelocity();
 								velocity.setY(-1);
 								player.setVelocity(velocity);
-								if (playSludgeSound) {
+								if (damage) {
+									pc.damage(SLUDGE_TICK_DAMAGE, sludge);
 									SLUDGE_DAMAGE_NOISE.play(floorLocation);
 								}
 								if (spawnOoze && smallGelatinousCubeCounts
