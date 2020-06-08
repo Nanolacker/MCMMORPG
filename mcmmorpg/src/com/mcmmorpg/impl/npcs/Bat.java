@@ -26,7 +26,7 @@ import com.mcmmorpg.common.character.Source;
 import com.mcmmorpg.common.event.EventManager;
 import com.mcmmorpg.common.sound.Noise;
 import com.mcmmorpg.common.time.DelayedTask;
-import com.mcmmorpg.common.utils.BukkitUtils;
+import com.mcmmorpg.common.util.BukkitUtility;
 
 public class Bat extends NonPlayerCharacter {
 
@@ -81,9 +81,9 @@ public class Bat extends NonPlayerCharacter {
 		setLocation(spawnLocation);
 		super.spawn();
 		hitbox.setActive(true);
-		entity = (org.bukkit.entity.Bat) BukkitUtils.spawnNonpersistentEntity(spawnLocation, EntityType.BAT);
+		entity = (org.bukkit.entity.Bat) BukkitUtility.spawnNonpersistentEntity(spawnLocation, EntityType.BAT);
 		entity.setInvulnerable(true);
-		ai = (Vex) BukkitUtils.spawnNonpersistentEntity(spawnLocation, EntityType.VEX);
+		ai = (Vex) BukkitUtility.spawnNonpersistentEntity(spawnLocation, EntityType.VEX);
 		ai.setSilent(true);
 		ai.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, Integer.MAX_VALUE, 1));
 		ai.setRemoveWhenFarAway(false);

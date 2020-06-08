@@ -7,7 +7,7 @@ import com.mcmmorpg.common.character.PlayerCharacter;
 import com.mcmmorpg.common.event.EventManager;
 import com.mcmmorpg.common.event.QuestObjectiveChangeProgressEvent;
 import com.mcmmorpg.common.sound.Noise;
-import com.mcmmorpg.common.utils.MathUtils;
+import com.mcmmorpg.common.util.MathUtility;
 
 /**
  * Represents a single task for a player character to complete. These are the
@@ -92,7 +92,7 @@ public class QuestObjective {
 			return;
 		}
 		int previousProgress = getProgress(pc);
-		progress = (int) MathUtils.clamp(progress, 0, goal);
+		progress = (int) MathUtility.clamp(progress, 0, goal);
 		if (progress == previousProgress) {
 			return;
 		}

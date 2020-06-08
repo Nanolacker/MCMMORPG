@@ -18,8 +18,8 @@ import com.mcmmorpg.common.character.Source;
 import com.mcmmorpg.common.quest.QuestStatus;
 import com.mcmmorpg.common.sound.Noise;
 import com.mcmmorpg.common.ui.InteractionSequence;
-import com.mcmmorpg.common.utils.BukkitUtils;
-import com.mcmmorpg.impl.Quests;
+import com.mcmmorpg.common.util.BukkitUtility;
+import com.mcmmorpg.impl.constants.Quests;
 
 public class MelcherAngeredDrunkard extends AbstractHumanEnemy {
 
@@ -133,7 +133,7 @@ public class MelcherAngeredDrunkard extends AbstractHumanEnemy {
 			setName(ChatColor.RED + "Angered Drunkard");
 		} else {
 			setName(ChatColor.YELLOW + "Angered Drunkard");
-			passiveAi = (Cow) BukkitUtils.spawnNonpersistentEntity(spawnLocation, EntityType.COW);
+			passiveAi = (Cow) BukkitUtility.spawnNonpersistentEntity(spawnLocation, EntityType.COW);
 			passiveAi.addPotionEffect(INVISIBILITY);
 			passiveAi.setSilent(true);
 			passiveAi.setCollidable(false);

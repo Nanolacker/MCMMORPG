@@ -24,8 +24,8 @@ import com.mcmmorpg.common.character.PlayerCharacter;
 import com.mcmmorpg.common.time.DelayedTask;
 import com.mcmmorpg.common.time.RepeatingTask;
 import com.mcmmorpg.common.ui.TextPanel;
-import com.mcmmorpg.common.utils.BukkitUtils;
-import com.mcmmorpg.common.utils.CardinalDirection;
+import com.mcmmorpg.common.util.BukkitUtility;
+import com.mcmmorpg.common.util.CardinalDirection;
 
 /**
  * Place chests that player characters can loot.
@@ -175,7 +175,7 @@ public class LootChest {
 
 	private void spawn() {
 		isSpawned = true;
-		trueLocation = BukkitUtils.nearestEmptyBlockLocation(targetLocation);
+		trueLocation = BukkitUtility.nearestEmptyBlockLocation(targetLocation);
 		text.setLocation(trueLocation.clone().add(0.5, 1, 0.5));
 		text.setVisible(true);
 		Block block = trueLocation.getBlock();

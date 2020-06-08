@@ -8,7 +8,7 @@ import com.mcmmorpg.common.character.PlayerCharacter.PlayerCharacterCollider;
 import com.mcmmorpg.common.physics.Collider;
 import com.mcmmorpg.common.time.DelayedTask;
 import com.mcmmorpg.common.ui.TextPanel;
-import com.mcmmorpg.common.utils.CardinalDirection;
+import com.mcmmorpg.common.util.CardinalDirection;
 
 /**
  * A marker that guides player characters toward quest-related locations.

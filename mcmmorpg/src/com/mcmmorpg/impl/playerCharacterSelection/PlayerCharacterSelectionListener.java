@@ -29,10 +29,10 @@ import com.mcmmorpg.common.persistence.PersistentPlayerCharacterDataContainer;
 import com.mcmmorpg.common.playerClass.PlayerClass;
 import com.mcmmorpg.common.sound.Noise;
 import com.mcmmorpg.common.ui.TextPanel;
-import com.mcmmorpg.common.utils.IOUtils;
-import com.mcmmorpg.impl.Items;
-import com.mcmmorpg.impl.PlayerClasses;
-import com.mcmmorpg.impl.Worlds;
+import com.mcmmorpg.common.util.IOUtility;
+import com.mcmmorpg.impl.constants.Items;
+import com.mcmmorpg.impl.constants.PlayerClasses;
+import com.mcmmorpg.impl.constants.Worlds;
 import com.mcmmorpg.impl.playerCharacterSelection.PlayerCharacterSelectionProfile.Menu;
 
 public class PlayerCharacterSelectionListener implements Listener {
@@ -65,7 +65,7 @@ public class PlayerCharacterSelectionListener implements Listener {
 	private Map<Player, PlayerCharacterSelectionProfile> profileMap = new HashMap<>();
 
 	static {
-		PLAYER_CHARACTER_DATA_DIRECTORY = new File(IOUtils.getDataFolder(), "playerSaveData");
+		PLAYER_CHARACTER_DATA_DIRECTORY = new File(IOUtility.getDataFolder(), "playerSaveData");
 		if (!PLAYER_CHARACTER_DATA_DIRECTORY.exists()) {
 			PLAYER_CHARACTER_DATA_DIRECTORY.mkdir();
 		}
@@ -381,7 +381,7 @@ public class PlayerCharacterSelectionListener implements Listener {
 
 	private void createNewCharacter(Player player, PlayerClass playerClass, int characterSlot) {
 		File characterSaveFile = getCharacterSaveFile(player, characterSlot);
-		IOUtils.createFile(characterSaveFile);
+		IOUtility.createFile(characterSaveFile);
 		Weapon startWeapon;
 		String playerClassName = playerClass.getName();
 		if (playerClassName.equals("Fighter")) {
@@ -393,7 +393,7 @@ public class PlayerCharacterSelectionListener implements Listener {
 		}
 		PersistentPlayerCharacterDataContainer data = PersistentPlayerCharacterDataContainer.createFreshSaveData(player,
 				playerClass, STARTING_ZONE, STARTING_LOCATION, startWeapon);
-		IOUtils.writeJson(characterSaveFile, data);
+		IOUtility.writeJson(characterSaveFile, data);
 	}
 
 	static File getCharacterSaveFile(Player player, int characterSlot) {
@@ -438,7 +438,7 @@ public class PlayerCharacterSelectionListener implements Listener {
 		int characterSlot = profile.getCurrentCharacterSlot();
 		PersistentPlayerCharacterDataContainer data = PersistentPlayerCharacterDataContainer.createSaveData(pc);
 		File saveFile = getCharacterSaveFile(player, characterSlot);
-		IOUtils.writeJson(saveFile, data);
+		IOUtility.writeJson(saveFile, data);
 	}
 
 	@EventHandler

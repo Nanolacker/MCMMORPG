@@ -5,7 +5,7 @@ import java.io.File;
 import org.bukkit.entity.Player;
 
 import com.mcmmorpg.common.persistence.PersistentPlayerCharacterDataContainer;
-import com.mcmmorpg.common.utils.IOUtils;
+import com.mcmmorpg.common.util.IOUtility;
 
 class PlayerCharacterSelectionProfile {
 
@@ -34,7 +34,7 @@ class PlayerCharacterSelectionProfile {
 	private PersistentPlayerCharacterDataContainer fetchCharacterDataFromFile(int characterSlot) {
 		File characterSaveFile = PlayerCharacterSelectionListener.getCharacterSaveFile(player, characterSlot);
 		if (characterSaveFile.exists()) {
-			return IOUtils.readJson(characterSaveFile, PersistentPlayerCharacterDataContainer.class);
+			return IOUtility.readJson(characterSaveFile, PersistentPlayerCharacterDataContainer.class);
 		} else {
 			return null;
 		}

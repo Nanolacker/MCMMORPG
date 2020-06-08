@@ -11,8 +11,8 @@ import org.bukkit.boss.BossBar;
 import org.bukkit.entity.EntityType;
 
 import com.mcmmorpg.common.character.PlayerCharacter;
-import com.mcmmorpg.common.utils.MathUtils;
-import com.mcmmorpg.impl.Quests;
+import com.mcmmorpg.common.util.MathUtility;
+import com.mcmmorpg.impl.constants.Quests;
 
 public class Broodmother extends AbstractSpider {
 
@@ -32,7 +32,7 @@ public class Broodmother extends AbstractSpider {
 	@Override
 	public void setCurrentHealth(double currentHealth) {
 		super.setCurrentHealth(currentHealth);
-		double progress = MathUtils.clamp(currentHealth / getMaxHealth(), 0.0, 1.0);
+		double progress = MathUtility.clamp(currentHealth / getMaxHealth(), 0.0, 1.0);
 		bossBar.setProgress(progress);
 	}
 

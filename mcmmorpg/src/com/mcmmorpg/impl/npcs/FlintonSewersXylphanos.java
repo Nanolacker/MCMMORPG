@@ -25,9 +25,9 @@ import com.mcmmorpg.common.time.DelayedTask;
 import com.mcmmorpg.common.time.RepeatingTask;
 import com.mcmmorpg.common.ui.InteractionSequence;
 import com.mcmmorpg.common.ui.TextPanel;
-import com.mcmmorpg.common.utils.MathUtils;
-import com.mcmmorpg.impl.Quests;
-import com.mcmmorpg.impl.Worlds;
+import com.mcmmorpg.common.util.MathUtility;
+import com.mcmmorpg.impl.constants.Quests;
+import com.mcmmorpg.impl.constants.Worlds;
 
 public class FlintonSewersXylphanos extends AbstractCultist {
 
@@ -167,7 +167,7 @@ public class FlintonSewersXylphanos extends AbstractCultist {
 	@Override
 	public void setCurrentHealth(double currentHealth) {
 		super.setCurrentHealth(currentHealth);
-		double progress = MathUtils.clamp(currentHealth / getMaxHealth(), 0.0, 1.0);
+		double progress = MathUtility.clamp(currentHealth / getMaxHealth(), 0.0, 1.0);
 		bossBar.setProgress(progress);
 	}
 

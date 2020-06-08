@@ -28,8 +28,8 @@ import com.mcmmorpg.common.character.Source;
 import com.mcmmorpg.common.event.EventManager;
 import com.mcmmorpg.common.sound.Noise;
 import com.mcmmorpg.common.time.DelayedTask;
-import com.mcmmorpg.common.utils.BukkitUtils;
-import com.mcmmorpg.impl.Items;
+import com.mcmmorpg.common.util.BukkitUtility;
+import com.mcmmorpg.impl.constants.Items;
 
 public class WildBoar extends NonPlayerCharacter {
 
@@ -97,12 +97,12 @@ public class WildBoar extends NonPlayerCharacter {
 		setLocation(spawnLocation);
 		super.spawn();
 		hitbox.setActive(true);
-		entity = (Pig) BukkitUtils.spawnNonpersistentEntity(spawnLocation, EntityType.PIG);
+		entity = (Pig) BukkitUtility.spawnNonpersistentEntity(spawnLocation, EntityType.PIG);
 		entity.setAdult();
 		entity.setInvulnerable(true);
 		entity.setSilent(true);
 		entity.setRemoveWhenFarAway(false);
-		ai = (PolarBear) BukkitUtils.spawnNonpersistentEntity(spawnLocation, EntityType.POLAR_BEAR);
+		ai = (PolarBear) BukkitUtility.spawnNonpersistentEntity(spawnLocation, EntityType.POLAR_BEAR);
 		ai.setAdult();
 		ai.setCollidable(false);
 		ai.setInvulnerable(true);

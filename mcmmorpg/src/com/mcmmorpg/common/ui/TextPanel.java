@@ -9,7 +9,7 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 
 import com.mcmmorpg.common.time.RepeatingTask;
-import com.mcmmorpg.common.utils.StringUtils;
+import com.mcmmorpg.common.util.StringUtility;
 
 import net.minecraft.server.v1_15_R1.EntityArmorStand;
 import net.minecraft.server.v1_15_R1.World;
@@ -54,7 +54,7 @@ public final class TextPanel {
 		this.visible = false;
 		spawned = false;
 		this.location = location;
-		lineLength = StringUtils.STANDARD_LINE_LENGTH;
+		lineLength = StringUtility.STANDARD_LINE_LENGTH;
 		setText(text);
 		entities = new ArrayList<>();
 	}
@@ -182,7 +182,7 @@ public final class TextPanel {
 	}
 
 	private void setText0() {
-		lines = StringUtils.lineSplit(text, lineLength);
+		lines = StringUtility.lineSplit(text, lineLength);
 		int lineCount = lines.size();
 		if (visible) {
 			resize(lineCount);

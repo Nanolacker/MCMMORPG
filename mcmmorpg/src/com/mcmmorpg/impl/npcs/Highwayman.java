@@ -8,8 +8,8 @@ import org.bukkit.Sound;
 import com.mcmmorpg.common.character.PlayerCharacter;
 import com.mcmmorpg.common.character.Source;
 import com.mcmmorpg.common.sound.Noise;
-import com.mcmmorpg.impl.Items;
-import com.mcmmorpg.impl.Quests;
+import com.mcmmorpg.impl.constants.Items;
+import com.mcmmorpg.impl.constants.Quests;
 
 public class Highwayman extends AbstractHumanEnemy {
 

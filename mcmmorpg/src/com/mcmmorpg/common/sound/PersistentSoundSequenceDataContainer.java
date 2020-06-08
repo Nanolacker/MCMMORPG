@@ -2,7 +2,7 @@ package com.mcmmorpg.common.sound;
 
 import org.bukkit.Sound;
 
-import com.mcmmorpg.common.utils.StringUtils;
+import com.mcmmorpg.common.util.StringUtility;
 
 /**
  * This can be used to store sound sequences in a file. Refer to the example
@@ -44,7 +44,7 @@ public class PersistentSoundSequenceDataContainer {
 		}
 
 		private float getPitch() {
-			if (StringUtils.isNumeric(pitch)) {
+			if (StringUtility.isNumeric(pitch)) {
 				return Float.parseFloat(pitch);
 			} else {
 				return MusicNote.valueOf(pitch).getPitch();

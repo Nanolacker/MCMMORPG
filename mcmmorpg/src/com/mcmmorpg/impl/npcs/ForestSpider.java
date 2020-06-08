@@ -7,7 +7,7 @@ import org.bukkit.Location;
 import org.bukkit.entity.EntityType;
 
 import com.mcmmorpg.common.character.PlayerCharacter;
-import com.mcmmorpg.impl.Quests;
+import com.mcmmorpg.impl.constants.Quests;
 
 public class ForestSpider extends AbstractSpider {
 

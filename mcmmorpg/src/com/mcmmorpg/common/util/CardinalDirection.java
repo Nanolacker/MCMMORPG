@@ -1,4 +1,4 @@
-package com.mcmmorpg.common.utils;
+package com.mcmmorpg.common.util;
 
 import org.bukkit.util.Vector;
 

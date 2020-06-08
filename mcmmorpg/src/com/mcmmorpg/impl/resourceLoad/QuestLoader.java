@@ -1,9 +1,9 @@
-package com.mcmmorpg.impl;
+package com.mcmmorpg.impl.resourceLoad;
 
 import java.io.File;
 
 import com.mcmmorpg.common.quest.Quest;
-import com.mcmmorpg.common.utils.IOUtils;
+import com.mcmmorpg.common.util.IOUtility;
 
 /**
  * Loads quest from the plugin's data folder. Assumes that there is a directory
@@ -13,10 +13,10 @@ import com.mcmmorpg.common.utils.IOUtils;
 public class QuestLoader {
 
 	public static void loadQuests() {
-		File questFolder = new File(IOUtils.getDataFolder(), "resources/quests");
+		File questFolder = new File(IOUtility.getDataFolder(), "resources/quests");
 		File[] questFiles = questFolder.listFiles();
 		for (File questFile : questFiles) {
-			Quest quest = IOUtils.readJson(questFile, Quest.class);
+			Quest quest = IOUtility.readJson(questFile, Quest.class);
 			quest.initialize();
 		}
 	}

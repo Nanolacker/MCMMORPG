@@ -4,7 +4,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.scheduler.BukkitScheduler;
 
 import com.mcmmorpg.common.MMORPGPlugin;
-import com.mcmmorpg.common.utils.MathUtils;
+import com.mcmmorpg.common.util.MathUtility;
 
 /**
  * A task that will repeat with a specified period.
@@ -25,7 +25,7 @@ public abstract class RepeatingTask extends CommonTask {
 		BukkitScheduler scheduler = Bukkit.getScheduler();
 		MMORPGPlugin plugin = MMORPGPlugin.getPlugin(MMORPGPlugin.class);
 		Runnable runnable = () -> run();
-		long periodTicks = MathUtils.secondsToTicks(periodSeconds);
+		long periodTicks = MathUtility.secondsToTicks(periodSeconds);
 		int bukkitTaskID = scheduler.scheduleSyncRepeatingTask(plugin, runnable, 0L, periodTicks);
 		setBukkitTaskID(bukkitTaskID);
 	}

@@ -13,8 +13,8 @@ import org.bukkit.entity.Player;
 
 import com.mcmmorpg.common.character.PlayerCharacter;
 import com.mcmmorpg.common.time.RepeatingTask;
-import com.mcmmorpg.common.utils.MathUtils;
-import com.mcmmorpg.common.utils.StringUtils;
+import com.mcmmorpg.common.util.MathUtility;
+import com.mcmmorpg.common.util.StringUtility;
 
 /**
  * A progress bar. Override onComplete() to add completion behavior. Be sure to
@@ -118,7 +118,7 @@ public class ProgressBar {
 	 * Sets the progress of this progress bar from 0-1.
 	 */
 	public final void setProgress(double progress) {
-		this.progress = MathUtils.clamp(progress, 0, 1);
+		this.progress = MathUtility.clamp(progress, 0, 1);
 		if (this.progress == 1) {
 			onComplete();
 			dispose();
@@ -211,8 +211,8 @@ public class ProgressBar {
 		text.append(ChatColor.GRAY + "[");
 		int numColoredPipes = (int) (progress * TEXT_PANEL_PIPE_COUNT);
 		int numGrayPipes = TEXT_PANEL_PIPE_COUNT - numColoredPipes;
-		text.append(color.chatColor + StringUtils.repeat("|", numColoredPipes));
-		text.append(ChatColor.GRAY + StringUtils.repeat("|", numGrayPipes));
+		text.append(color.chatColor + StringUtility.repeat("|", numColoredPipes));
+		text.append(ChatColor.GRAY + StringUtility.repeat("|", numGrayPipes));
 		text.append(ChatColor.GRAY + "]");
 		textPanel.setText(text.toString());
 	}

@@ -5,7 +5,7 @@ import org.bukkit.Location;
 import org.bukkit.Sound;
 import com.mcmmorpg.common.character.Source;
 import com.mcmmorpg.common.sound.Noise;
-import com.mcmmorpg.impl.Items;
+import com.mcmmorpg.impl.constants.Items;
 
 public class FlintonSewersBanditChief extends AbstractHumanEnemy {
 

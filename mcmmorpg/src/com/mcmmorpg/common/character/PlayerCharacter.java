@@ -54,8 +54,8 @@ import com.mcmmorpg.common.time.RepeatingTask;
 import com.mcmmorpg.common.ui.ActionBarText;
 import com.mcmmorpg.common.ui.SidebarText;
 import com.mcmmorpg.common.ui.TitleText;
-import com.mcmmorpg.common.utils.CardinalDirection;
-import com.mcmmorpg.common.utils.MathUtils;
+import com.mcmmorpg.common.util.CardinalDirection;
+import com.mcmmorpg.common.util.MathUtility;
 
 /**
  * Represents a player character.
@@ -471,7 +471,7 @@ public final class PlayerCharacter extends AbstractCharacter {
 			return;
 		}
 		this.xp += xp;
-		this.xp = (int) MathUtils.clamp(this.xp, 0, MAX_XP);
+		this.xp = (int) MathUtility.clamp(this.xp, 0, MAX_XP);
 		sendMessage(ChatColor.GREEN + "+" + xp + " XP!");
 		checkForLevelUp();
 		updateXpDisplay();
@@ -634,7 +634,7 @@ public final class PlayerCharacter extends AbstractCharacter {
 	 * Sets this player character's current mana.
 	 */
 	public void setCurrentMana(double currentMana) {
-		currentMana = MathUtils.clamp(currentMana, 0, maxMana);
+		currentMana = MathUtility.clamp(currentMana, 0, maxMana);
 		this.currentMana = currentMana;
 		updateActionBar();
 		updateManaDisplay();

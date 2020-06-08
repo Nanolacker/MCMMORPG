@@ -28,7 +28,7 @@ import com.mcmmorpg.common.event.EventManager;
 import com.mcmmorpg.common.physics.Collider;
 import com.mcmmorpg.common.sound.Noise;
 import com.mcmmorpg.common.time.DelayedTask;
-import com.mcmmorpg.common.utils.BukkitUtils;
+import com.mcmmorpg.common.util.BukkitUtility;
 
 public abstract class AbstractSpider extends NonPlayerCharacter {
 
@@ -109,7 +109,7 @@ public abstract class AbstractSpider extends NonPlayerCharacter {
 		setLocation(spawnLocation);
 		super.spawn();
 		hitbox.setActive(true);
-		entity = (Spider) BukkitUtils.spawnNonpersistentEntity(spawnLocation, entityType);
+		entity = (Spider) BukkitUtility.spawnNonpersistentEntity(spawnLocation, entityType);
 		entity.setSilent(true);
 		entity.setRemoveWhenFarAway(false);
 		@SuppressWarnings("deprecation")

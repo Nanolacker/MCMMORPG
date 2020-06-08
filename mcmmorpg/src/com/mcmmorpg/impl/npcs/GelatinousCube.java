@@ -34,9 +34,9 @@ import com.mcmmorpg.common.time.DelayedTask;
 import com.mcmmorpg.common.time.RepeatingTask;
 import com.mcmmorpg.common.ui.ProgressBar;
 import com.mcmmorpg.common.ui.ProgressBar.ProgressBarColor;
-import com.mcmmorpg.common.utils.BukkitUtils;
-import com.mcmmorpg.impl.Items;
-import com.mcmmorpg.impl.Quests;
+import com.mcmmorpg.common.util.BukkitUtility;
+import com.mcmmorpg.impl.constants.Items;
+import com.mcmmorpg.impl.constants.Quests;
 
 public class GelatinousCube extends NonPlayerCharacter {
 
@@ -139,7 +139,7 @@ public class GelatinousCube extends NonPlayerCharacter {
 		setLocation(spawnLocation);
 		super.spawn();
 		hitbox.setActive(true);
-		entity = (Slime) BukkitUtils.spawnNonpersistentEntity(spawnLocation, EntityType.SLIME);
+		entity = (Slime) BukkitUtility.spawnNonpersistentEntity(spawnLocation, EntityType.SLIME);
 		entity.setSize(SIZE);
 		entity.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, Integer.MAX_VALUE, SLOWNESS));
 		entity.setRemoveWhenFarAway(false);

@@ -11,7 +11,7 @@ import com.mcmmorpg.common.event.CharacterHealEvent;
 import com.mcmmorpg.common.event.CharacterKillEvent;
 import com.mcmmorpg.common.event.EventManager;
 import com.mcmmorpg.common.ui.TextPanel;
-import com.mcmmorpg.common.utils.MathUtils;
+import com.mcmmorpg.common.util.MathUtility;
 
 /**
  * Represents an in-game character, which could be a player character or a
@@ -158,7 +158,7 @@ public abstract class AbstractCharacter implements Source {
 	 */
 	@OverridingMethodsMustInvokeSuper
 	public void setCurrentHealth(double currentHealth) {
-		currentHealth = MathUtils.clamp(currentHealth, 0.0, maxHealth);
+		currentHealth = MathUtility.clamp(currentHealth, 0.0, maxHealth);
 		this.currentHealth = currentHealth;
 		if (currentHealth == 0.0) {
 			setAlive(false);

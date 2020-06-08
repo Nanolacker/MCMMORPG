@@ -25,12 +25,12 @@ import com.mcmmorpg.common.sound.Noise;
 import com.mcmmorpg.common.time.RepeatingTask;
 import com.mcmmorpg.common.ui.TextPanel;
 import com.mcmmorpg.common.ui.TitleText;
-import com.mcmmorpg.common.utils.MathUtils;
-import com.mcmmorpg.impl.Items;
-import com.mcmmorpg.impl.RespawnLocations;
-import com.mcmmorpg.impl.Soundtracks;
-import com.mcmmorpg.impl.Worlds;
-import com.mcmmorpg.impl.Zones;
+import com.mcmmorpg.common.util.MathUtility;
+import com.mcmmorpg.impl.constants.Items;
+import com.mcmmorpg.impl.constants.RespawnLocations;
+import com.mcmmorpg.impl.constants.Soundtracks;
+import com.mcmmorpg.impl.constants.Worlds;
+import com.mcmmorpg.impl.constants.Zones;
 import com.mcmmorpg.impl.npcs.Adventurer;
 import com.mcmmorpg.impl.npcs.ColossalGelatinousCube;
 import com.mcmmorpg.impl.npcs.FlintonSewersAlchemist;
@@ -52,7 +52,7 @@ public class FlintonSewersListener implements Listener {
 	private static final Noise SLUDGE_DAMAGE_NOISE = new Noise(Sound.ITEM_BUCKET_FILL);
 	private static final int MAX_SMALL_GELATINOUS_CUBE_COUNT_PER_PLAYER_CHARACTER = 5;
 	private static final PotionEffect SLUDGE_SLOW_EFFECT = new PotionEffect(PotionEffectType.SLOW,
-			MathUtils.secondsToTicks(2), 3);
+			MathUtility.secondsToTicks(2), 3);
 	private static final TitleText ENTER_TEXT = new TitleText(ChatColor.GRAY + "Flinton Sewers", null);
 	private static final Location ENTRANCE_LOCATION_1 = new Location(Worlds.ELADRADOR, 0, 0, 0);
 	private static final Location ENTRANCE_LOCATION_2 = new Location(Worlds.ELADRADOR, 0, 0, 0);

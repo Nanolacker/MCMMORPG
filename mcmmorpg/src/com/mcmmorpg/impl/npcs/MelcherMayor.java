@@ -9,7 +9,7 @@ import com.mcmmorpg.common.quest.QuestMarker;
 import com.mcmmorpg.common.quest.QuestStatus;
 import com.mcmmorpg.common.sound.Noise;
 import com.mcmmorpg.common.ui.InteractionSequence;
-import com.mcmmorpg.impl.Quests;
+import com.mcmmorpg.impl.constants.Quests;
 
 /**
  * Quest-giver in Melcher.

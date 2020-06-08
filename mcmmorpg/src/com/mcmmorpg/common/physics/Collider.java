@@ -9,7 +9,7 @@ import org.bukkit.World;
 import org.bukkit.util.BoundingBox;
 
 import com.mcmmorpg.common.time.RepeatingTask;
-import com.mcmmorpg.common.utils.MathUtils;
+import com.mcmmorpg.common.util.MathUtility;
 
 /**
  * Represents an axis-aligned box collider.
@@ -474,8 +474,8 @@ public class Collider {
 		double x = point.getX();
 		double y = point.getY();
 		double z = point.getZ();
-		return world.equals(this.world) && MathUtils.isBetween(x, xMin, true, xMax, true)
-				&& MathUtils.isBetween(y, yMin, true, yMax, true) && MathUtils.isBetween(z, zMin, true, zMax, true);
+		return world.equals(this.world) && MathUtility.isBetween(x, xMin, true, xMax, true)
+				&& MathUtility.isBetween(y, yMin, true, yMax, true) && MathUtility.isBetween(z, zMin, true, zMax, true);
 	}
 
 	/**

@@ -1,8 +1,8 @@
-package com.mcmmorpg.common.utils;
+package com.mcmmorpg.common.util;
 
-public class MathUtils {
+public class MathUtility {
 
-	private MathUtils() {
+	private MathUtility() {
 	}
 
 	/**

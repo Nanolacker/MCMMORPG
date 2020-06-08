@@ -9,8 +9,8 @@ import com.mcmmorpg.common.character.PlayerCharacter;
 import com.mcmmorpg.common.character.PlayerCharacter.PlayerCharacterCollider;
 import com.mcmmorpg.common.physics.Collider;
 import com.mcmmorpg.common.time.RepeatingTask;
-import com.mcmmorpg.impl.Quests;
-import com.mcmmorpg.impl.Worlds;
+import com.mcmmorpg.impl.constants.Quests;
+import com.mcmmorpg.impl.constants.Worlds;
 
 public class MelcherTavernRat extends Rat {
 

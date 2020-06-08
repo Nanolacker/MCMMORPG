@@ -9,7 +9,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import com.mcmmorpg.common.event.EventManager;
-import com.mcmmorpg.common.utils.StringUtils;
+import com.mcmmorpg.common.util.StringUtility;
 
 /**
  * Provides means to easily create item stacks and register static interactables
@@ -30,7 +30,7 @@ public class ItemFactory {
 	 * Convenience method for creating item stacks.
 	 */
 	public static ItemStack createItemStack(String name, String lore, Material material) {
-		List<String> loreAsList = StringUtils.lineSplit(lore);
+		List<String> loreAsList = StringUtility.lineSplit(lore);
 		return createItemStack0(name, loreAsList, material);
 	}
 

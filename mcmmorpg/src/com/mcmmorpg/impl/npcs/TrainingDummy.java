@@ -12,7 +12,7 @@ import com.mcmmorpg.common.character.PlayerCharacter;
 import com.mcmmorpg.common.character.Source;
 import com.mcmmorpg.common.sound.Noise;
 import com.mcmmorpg.common.time.DelayedTask;
-import com.mcmmorpg.common.utils.BukkitUtils;
+import com.mcmmorpg.common.util.BukkitUtility;
 
 public class TrainingDummy extends NonPlayerCharacter {
 
@@ -33,7 +33,7 @@ public class TrainingDummy extends NonPlayerCharacter {
 	protected void spawn() {
 		super.spawn();
 		Location location = getLocation();
-		entity = (ArmorStand) BukkitUtils.spawnNonpersistentEntity(location, EntityType.ARMOR_STAND);
+		entity = (ArmorStand) BukkitUtility.spawnNonpersistentEntity(location, EntityType.ARMOR_STAND);
 		hitbox.setActive(true);
 	}
 

@@ -22,10 +22,10 @@ import com.mcmmorpg.common.quest.QuestObjective;
 import com.mcmmorpg.common.time.DelayedTask;
 import com.mcmmorpg.common.ui.Command;
 import com.mcmmorpg.common.ui.CommandManager;
-import com.mcmmorpg.common.utils.CardinalDirection;
-import com.mcmmorpg.common.utils.Debug;
-import com.mcmmorpg.common.utils.IOUtils;
-import com.mcmmorpg.impl.RespawnLocations;
+import com.mcmmorpg.common.util.CardinalDirection;
+import com.mcmmorpg.common.util.Debug;
+import com.mcmmorpg.common.util.IOUtility;
+import com.mcmmorpg.impl.constants.RespawnLocations;
 
 public class DeveloperCommands {
 
@@ -128,7 +128,7 @@ public class DeveloperCommands {
 				Location location = player.getLocation();
 				File file = new File("C:/Users/conno/Desktop/Locations.txt");
 				if (!file.exists()) {
-					IOUtils.createFile(file);
+					IOUtility.createFile(file);
 				}
 
 				try {

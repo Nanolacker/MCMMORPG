@@ -10,7 +10,7 @@ import org.bukkit.potion.PotionEffectType;
 import com.mcmmorpg.common.character.HumanEntity;
 import com.mcmmorpg.common.character.MovementSynchronizer;
 import com.mcmmorpg.common.character.MovementSynchronizer.MovementSynchronizerMode;
-import com.mcmmorpg.common.utils.BukkitUtils;
+import com.mcmmorpg.common.util.BukkitUtility;
 import com.mcmmorpg.common.character.NonPlayerCharacter;
 import com.mcmmorpg.common.character.PlayerCharacter;
 import com.mcmmorpg.common.character.PlayerCharacterInteractionCollider;
@@ -46,7 +46,7 @@ public abstract class AbstractFriendlyHuman extends NonPlayerCharacter {
 		super.spawn();
 		interactionCollider.setActive(true);
 		entity.setVisible(true);
-		ai = (Cow) BukkitUtils.spawnNonpersistentEntity(spawnLocation, EntityType.COW);
+		ai = (Cow) BukkitUtility.spawnNonpersistentEntity(spawnLocation, EntityType.COW);
 		ai.addPotionEffect(INVISIBILITY);
 		ai.setSilent(true);
 		ai.setCollidable(false);

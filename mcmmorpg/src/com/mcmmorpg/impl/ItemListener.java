@@ -22,7 +22,9 @@ import com.mcmmorpg.common.physics.Ray;
 import com.mcmmorpg.common.physics.Raycast;
 import com.mcmmorpg.common.playerClass.PlayerClass;
 import com.mcmmorpg.common.sound.Noise;
-import com.mcmmorpg.common.utils.MathUtils;
+import com.mcmmorpg.common.util.MathUtility;
+import com.mcmmorpg.impl.constants.Items;
+import com.mcmmorpg.impl.constants.PlayerClasses;
 
 import net.md_5.bungee.api.ChatColor;
 
@@ -151,7 +153,7 @@ public class ItemListener implements Listener {
 	private void useMelcherMead(PlayerCharacter pc) {
 		Player player = pc.getPlayer();
 		USE_POTION_NOISE.play(pc);
-		PotionEffect drunkness = new PotionEffect(PotionEffectType.CONFUSION, MathUtils.secondsToTicks(15), 1);
+		PotionEffect drunkness = new PotionEffect(PotionEffectType.CONFUSION, MathUtility.secondsToTicks(15), 1);
 		player.addPotionEffect(drunkness);
 		pc.sendMessage(ChatColor.GRAY + "You fill dizzy.");
 	}

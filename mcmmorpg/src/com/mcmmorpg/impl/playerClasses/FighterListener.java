@@ -25,7 +25,7 @@ import com.mcmmorpg.common.playerClass.Skill;
 import com.mcmmorpg.common.sound.Noise;
 import com.mcmmorpg.common.time.DelayedTask;
 import com.mcmmorpg.common.time.RepeatingTask;
-import com.mcmmorpg.impl.PlayerClasses;
+import com.mcmmorpg.impl.constants.PlayerClasses;
 
 public class FighterListener implements Listener {
 

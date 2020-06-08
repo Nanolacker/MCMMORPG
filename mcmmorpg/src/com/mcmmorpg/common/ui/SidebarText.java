@@ -12,7 +12,7 @@ import org.bukkit.scoreboard.Objective;
 import org.bukkit.scoreboard.Score;
 import org.bukkit.scoreboard.Scoreboard;
 
-import com.mcmmorpg.common.utils.StringUtils;
+import com.mcmmorpg.common.util.StringUtility;
 
 /**
  * Uses scoreboards to display text on a player's sidebar.
@@ -49,7 +49,7 @@ public class SidebarText {
 		Objective objective = scoreboard.registerNewObjective("objective", "dummy", title);
 		objective.setDisplaySlot(DisplaySlot.SIDEBAR);
 
-		List<String> lines = StringUtils.lineSplit(text);
+		List<String> lines = StringUtility.lineSplit(text);
 		Set<String> usedLines = new HashSet<>();
 		for (int i = 0; i < lines.size(); i++) {
 			String line = lines.get(i);

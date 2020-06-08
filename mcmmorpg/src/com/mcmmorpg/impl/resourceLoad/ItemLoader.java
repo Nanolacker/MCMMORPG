@@ -1,4 +1,4 @@
-package com.mcmmorpg.impl;
+package com.mcmmorpg.impl.resourceLoad;
 
 import java.io.File;
 
@@ -6,12 +6,12 @@ import com.mcmmorpg.common.item.ArmorItem;
 import com.mcmmorpg.common.item.ConsumableItem;
 import com.mcmmorpg.common.item.Item;
 import com.mcmmorpg.common.item.Weapon;
-import com.mcmmorpg.common.utils.IOUtils;
+import com.mcmmorpg.common.util.IOUtility;
 
 public class ItemLoader {
 
 	public static void loadItems() {
-		File baseItemsFolder = new File(IOUtils.getDataFolder(), "resources/items");
+		File baseItemsFolder = new File(IOUtility.getDataFolder(), "resources/items");
 
 		File miscellaneousItemsFolder = new File(baseItemsFolder, "miscellaneous");
 		File consumablesFolder = new File(baseItemsFolder, "consumables");
@@ -19,22 +19,22 @@ public class ItemLoader {
 		File weaponsFolder = new File(baseItemsFolder, "weapons");
 		File[] miscellaneousItemFiles = miscellaneousItemsFolder.listFiles();
 		for (File file : miscellaneousItemFiles) {
-			Item item = IOUtils.readJson(file, Item.class);
+			Item item = IOUtility.readJson(file, Item.class);
 			item.initialize();
 		}
 		File[] consumablesFiles = consumablesFolder.listFiles();
 		for (File file : consumablesFiles) {
-			ConsumableItem consumable = IOUtils.readJson(file, ConsumableItem.class);
+			ConsumableItem consumable = IOUtility.readJson(file, ConsumableItem.class);
 			consumable.initialize();
 		}
 		File[] armorFiles = armorFolder.listFiles();
 		for (File file : armorFiles) {
-			ArmorItem armor = IOUtils.readJson(file, ArmorItem.class);
+			ArmorItem armor = IOUtility.readJson(file, ArmorItem.class);
 			armor.initialize();
 		}
 		File[] weaponFiles = weaponsFolder.listFiles();
 		for (File file : weaponFiles) {
-			Weapon weapon = IOUtils.readJson(file, Weapon.class);
+			Weapon weapon = IOUtility.readJson(file, Weapon.class);
 			weapon.initialize();
 		}
 	}

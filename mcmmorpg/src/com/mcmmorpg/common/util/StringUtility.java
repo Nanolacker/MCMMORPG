@@ -1,18 +1,18 @@
-package com.mcmmorpg.common.utils;
+package com.mcmmorpg.common.util;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import org.bukkit.ChatColor;
 
-public class StringUtils {
+public class StringUtility {
 
 	/**
 	 * The ideal amount of characters per line to display in the lore of an item.
 	 */
 	public static final int STANDARD_LINE_LENGTH = 18;
 
-	private StringUtils() {
+	private StringUtility() {
 	}
 
 	public static String repeat(String s, int n) {

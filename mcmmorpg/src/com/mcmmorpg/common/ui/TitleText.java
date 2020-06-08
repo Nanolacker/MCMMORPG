@@ -3,7 +3,7 @@ package com.mcmmorpg.common.ui;
 import org.bukkit.entity.Player;
 
 import com.mcmmorpg.common.character.PlayerCharacter;
-import com.mcmmorpg.common.utils.MathUtils;
+import com.mcmmorpg.common.util.MathUtility;
 
 /**
  * Allows text to be displayed to a player in the center of their view in big
@@ -23,9 +23,9 @@ public class TitleText {
 	public TitleText(String title, String subtitle, double fadeInSeconds, double staySeconds, double fadeOutSeconds) {
 		this.title = title;
 		this.subtitle = subtitle;
-		this.fadeInTicks = MathUtils.secondsToTicks(fadeInSeconds);
-		this.stayTicks = MathUtils.secondsToTicks(staySeconds);
-		this.fadeOutTicks = MathUtils.secondsToTicks(fadeOutSeconds);
+		this.fadeInTicks = MathUtility.secondsToTicks(fadeInSeconds);
+		this.stayTicks = MathUtility.secondsToTicks(staySeconds);
+		this.fadeOutTicks = MathUtility.secondsToTicks(fadeOutSeconds);
 	}
 
 	/**

@@ -6,7 +6,7 @@ import org.bukkit.entity.EntityType;
 
 import com.mcmmorpg.common.character.MovementSynchronizer;
 import com.mcmmorpg.common.character.MovementSynchronizer.MovementSynchronizerMode;
-import com.mcmmorpg.common.utils.BukkitUtils;
+import com.mcmmorpg.common.util.BukkitUtility;
 import com.mcmmorpg.common.character.NonPlayerCharacter;
 
 public class Chicken extends NonPlayerCharacter {
@@ -26,7 +26,7 @@ public class Chicken extends NonPlayerCharacter {
 	protected void spawn() {
 		setLocation(spawnLocation);
 		super.spawn();
-		entity = (org.bukkit.entity.Chicken) BukkitUtils.spawnNonpersistentEntity(spawnLocation, EntityType.CHICKEN);
+		entity = (org.bukkit.entity.Chicken) BukkitUtility.spawnNonpersistentEntity(spawnLocation, EntityType.CHICKEN);
 		entity.setInvulnerable(true);
 		entity.setAdult();
 		entity.setRemoveWhenFarAway(false);

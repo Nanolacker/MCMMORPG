@@ -1,4 +1,4 @@
-package com.mcmmorpg.common.utils;
+package com.mcmmorpg.common.util;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -7,22 +7,23 @@ import java.io.PrintStream;
 import java.nio.file.Files;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.mcmmorpg.common.MMORPGPlugin;
 
 /**
  * Useful utilities for file processing and JSON parsing.
  */
-public class IOUtils {
+public class IOUtility {
 
-	private static final Gson gson = new Gson();
+	private static final Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
-	private IOUtils() {
+	private IOUtility() {
 		// no instances
 	}
 
 	/**
 	 * Returns an object constructed from the JSON found in the specified file.
-	 * Throws an exception if the file does not exist. THIS CANNOT PASS THE
+	 * Throws an exception if the file does not exist. THIS CANNOT PARSE THE
 	 * CHARACTER '?'!
 	 */
 	public static <T> T readJson(File file, Class<? extends T> clazz) {
@@ -48,7 +49,7 @@ public class IOUtils {
 
 	/**
 	 * Writes the specified object to the file in JSON format. Throws an exception
-	 * if the file does not exist. THIS CANNOT PASS THE CHARACTER '?'!
+	 * if the file does not exist. THIS CANNOT PARSE THE CHARACTER '?'!
 	 */
 	public static void writeJson(File file, Object obj) {
 		String json = toJson(obj);

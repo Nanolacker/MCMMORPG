@@ -25,7 +25,7 @@ import com.mcmmorpg.common.character.PlayerCharacter;
 import com.mcmmorpg.common.character.Source;
 import com.mcmmorpg.common.event.EventManager;
 import com.mcmmorpg.common.time.DelayedTask;
-import com.mcmmorpg.common.utils.BukkitUtils;
+import com.mcmmorpg.common.util.BukkitUtility;
 
 public abstract class AbstractHumanEnemy extends NonPlayerCharacter {
 
@@ -92,7 +92,7 @@ public abstract class AbstractHumanEnemy extends NonPlayerCharacter {
 		super.spawn();
 		hitbox.setActive(true);
 		entity.setVisible(true);
-		ai = (Zombie) BukkitUtils.spawnNonpersistentEntity(spawnLocation, EntityType.ZOMBIE);
+		ai = (Zombie) BukkitUtility.spawnNonpersistentEntity(spawnLocation, EntityType.ZOMBIE);
 		ai.setBaby(false);
 		ai.setSilent(true);
 		ai.addPotionEffect(INVISIBILITY);

@@ -1,10 +1,10 @@
-package com.mcmmorpg.impl;
+package com.mcmmorpg.impl.constants;
 
 import java.io.File;
 
 import com.mcmmorpg.common.sound.PersistentSoundSequenceDataContainer;
 import com.mcmmorpg.common.sound.SoundSequence;
-import com.mcmmorpg.common.utils.IOUtils;
+import com.mcmmorpg.common.util.IOUtility;
 
 /**
  * Provides easy access to the soundtracks of the game.
@@ -16,16 +16,16 @@ public class Soundtracks {
 	public static final SoundSequence DUNGEON;
 
 	static {
-		File soundtrackFolder = new File(IOUtils.getDataFolder(), "resources/soundtracks");
+		File soundtrackFolder = new File(IOUtility.getDataFolder(), "resources/soundtracks");
 
 		File villageFile = new File(soundtrackFolder, "Village.json");
-		VILLAGE = IOUtils.readJson(villageFile, PersistentSoundSequenceDataContainer.class).toSoundSequence();
+		VILLAGE = IOUtility.readJson(villageFile, PersistentSoundSequenceDataContainer.class).toSoundSequence();
 
 		File wildernessFile = new File(soundtrackFolder, "Wilderness.json");
-		WILDNERNESS = IOUtils.readJson(wildernessFile, PersistentSoundSequenceDataContainer.class).toSoundSequence();
+		WILDNERNESS = IOUtility.readJson(wildernessFile, PersistentSoundSequenceDataContainer.class).toSoundSequence();
 
 		File dungeonFile = new File(soundtrackFolder, "Dungeon.json");
-		DUNGEON = IOUtils.readJson(dungeonFile, PersistentSoundSequenceDataContainer.class).toSoundSequence();
+		DUNGEON = IOUtility.readJson(dungeonFile, PersistentSoundSequenceDataContainer.class).toSoundSequence();
 	}
 
 }

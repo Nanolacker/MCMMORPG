@@ -1,4 +1,4 @@
-package com.mcmmorpg.impl;
+package com.mcmmorpg.impl.constants;
 
 import org.bukkit.Location;
 

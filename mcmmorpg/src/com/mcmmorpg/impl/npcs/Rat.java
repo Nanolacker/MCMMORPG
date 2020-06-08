@@ -23,7 +23,7 @@ import com.mcmmorpg.common.character.Source;
 import com.mcmmorpg.common.event.EventManager;
 import com.mcmmorpg.common.sound.Noise;
 import com.mcmmorpg.common.time.DelayedTask;
-import com.mcmmorpg.common.utils.BukkitUtils;
+import com.mcmmorpg.common.util.BukkitUtility;
 
 public class Rat extends NonPlayerCharacter {
 
@@ -94,7 +94,7 @@ public class Rat extends NonPlayerCharacter {
 		setLocation(spawnLocation);
 		super.spawn();
 		hitbox.setActive(true);
-		entity = (Silverfish) BukkitUtils.spawnNonpersistentEntity(spawnLocation, EntityType.SILVERFISH);
+		entity = (Silverfish) BukkitUtility.spawnNonpersistentEntity(spawnLocation, EntityType.SILVERFISH);
 		entity.setSilent(true);
 		entity.setInvulnerable(true);
 		entity.setRemoveWhenFarAway(false);

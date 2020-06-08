@@ -1,4 +1,4 @@
-package com.mcmmorpg.common.utils;
+package com.mcmmorpg.common.util;
 
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -7,7 +7,7 @@ import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 
-public class BukkitUtils {
+public class BukkitUtility {
 
 	/**
 	 * Preferred method of spawning Bukkit entities, as this method prevents entity
