@@ -4,7 +4,7 @@
 	"objectives": [
 		{
 			"goal": 1,
-			"description": "Report your discovery of Xylphanos with §7[§aMayor of Flinton§7]§f at §a(x, y, z)"
+			"description": "Report your discovery of Xylphanos with §7[§aMayor of Flinton§7]§r at §a(x, y, z)"
 		}
 	]
 }

@@ -41,7 +41,7 @@ public class MageListener implements Listener {
 			63.0, 67.0, 71.0, 75.0, 79.0, 83.0, 87.0, 91.0 };
 	private static final double[] MANA_REGEN_RATE = { 2.0, 2.5, 3.0, 3.5, 4.0, 4.5, 5.0, 5.5, 6.0, 6.5, 7.0, 7.5, 8.0,
 			8.5, 9.0, 9.5, 10.0, 10.5, 11.0, 11.5 };
-	public static final double STANDARD_SILENCE_DURATION = 2;
+	public static final double STANDARD_SILENCE_DURATION = 1;
 
 	private static final Noise FIREBALL_CONJURE_NOISE = new Noise(Sound.ENTITY_ZOMBIE_VILLAGER_CURE);
 	private static final Noise FIREBALL_EXPLODE_1_NOISE = new Noise(Sound.ENTITY_GENERIC_EXPLODE);
@@ -243,7 +243,7 @@ public class MageListener implements Listener {
 			}
 		};
 		channel.schedule();
-		pc.silence(duration + STANDARD_SILENCE_DURATION);
+		pc.silence(duration);
 		pc.disarm(duration);
 	}
 

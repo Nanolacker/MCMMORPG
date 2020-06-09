@@ -12,7 +12,7 @@
 		},
 		{
 			"goal": 1,
-			"description": "Return to §7[§aGuard Thomas§7]§f"
+			"description": "Return to §7[§aGuard Thomas§7]§r at §a(x, y, z)"
 		}
 	]
 }

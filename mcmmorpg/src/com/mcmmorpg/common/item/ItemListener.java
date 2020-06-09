@@ -122,19 +122,20 @@ class ItemListener implements Listener {
 			itemEntity.remove();
 		} else {
 			Player player = event.getPlayer();
+			PlayerCharacter pc = PlayerCharacter.forPlayer(player);
+			addPCToSet(falseAttackers, pc);
 			if (player.getInventory().getItem(0) == null) {
 				// when the player tries to throw their weapon
 				event.setCancelled(true);
-			}
-			PlayerCharacter pc = PlayerCharacter.forPlayer(player);
-			addPCToSet(falseAttackers, pc);
-			itemEntity.setCustomName(item.getRarity().getColor() + item.getName());
-			itemEntity.setCustomNameVisible(true);
-			int amount = itemStack.getAmount();
-			if (amount == 1) {
-				pc.sendMessage(ChatColor.GRAY + "Dropped " + item);
 			} else {
-				pc.sendMessage(ChatColor.GRAY + "Dropped " + item + ChatColor.GRAY + " (" + amount + ")");
+				itemEntity.setCustomName(item.getRarity().getColor() + item.getName());
+				itemEntity.setCustomNameVisible(true);
+				int amount = itemStack.getAmount();
+				if (amount == 1) {
+					pc.sendMessage(ChatColor.GRAY + "Dropped " + item);
+				} else {
+					pc.sendMessage(ChatColor.GRAY + "Dropped " + item + ChatColor.GRAY + " (" + amount + ")");
+				}
 			}
 		}
 	}

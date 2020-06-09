@@ -4,7 +4,7 @@
 	"objectives": [
 		{
 			"goal": 5,
-			"description": "Slay 5 §7[§cRat§7]"
+			"description": "Slay 5 §7[§cRat§7]§r in the tavern cellar"
 		},
 		{
 			"goal": 1,
@@ -12,7 +12,7 @@
 		},
 		{
 			"goal": 1,
-			"description": "Return to the §7[§aBartender§7]§f"
+			"description": "Return to the §7[§aBartender§7]§r at §a(-1086, 70, 242)"
 		}
 	]
 }

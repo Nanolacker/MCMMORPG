@@ -4,11 +4,11 @@
 	"objectives": [
 		{
 			"goal": 20,
-			"description": "Slay 20 §7[§cHighwayman§7]"
+			"description": "Slay 20 §7[§cHighwayman§7]§r east of §aMelcher"
 		},
 		{
 			"goal": 1,
-			"description": "Speak with §7[§aMayor of Flinton§7]§f at §a(x, y, z) when done"
+			"description": "Speak with §7[§aMayor of Flinton§7]§r at §a(x, y, z) when done"
 		}
 	]
 }

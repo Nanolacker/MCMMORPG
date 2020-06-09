@@ -48,7 +48,7 @@ import com.mcmmorpg.impl.npcs.SmallGelatinousCube;
 public class FlintonSewersListener implements Listener {
 
 	private static final double LOOT_CHEST_RESPAWN_TIME = 60;
-	private static final double SLUDGE_TICK_DAMAGE = 15;
+	private static final double SLUDGE_TICK_DAMAGE = 20;
 	private static final Noise SLUDGE_DAMAGE_NOISE = new Noise(Sound.ITEM_BUCKET_FILL);
 	private static final int MAX_SMALL_GELATINOUS_CUBE_COUNT_PER_PLAYER_CHARACTER = 5;
 	private static final PotionEffect SLUDGE_SLOW_EFFECT = new PotionEffect(PotionEffectType.SLOW,

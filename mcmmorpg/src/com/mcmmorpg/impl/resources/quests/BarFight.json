@@ -4,11 +4,11 @@
 	"objectives": [
 		{
 			"goal": 1,
-			"description": "Speak with the §7[§eAngered Drunkard§7]"
+			"description": "Speak with the §7[§eAngered Drunkard§7]§r at §a(-1074, 70, 243)"
 		},
 		{
 			"goal": 1,
-			"description": "Return to the §7[§aBartender§7]§f"
+			"description": "Return to the §7[§aBartender§7]§r at §a(-1086, 70, 242)"
 		}
 	]
 }
