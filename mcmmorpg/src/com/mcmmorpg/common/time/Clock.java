@@ -1,11 +1,14 @@
 package com.mcmmorpg.common.time;
 
-public class GameClock {
+/**
+ * Keeps track of the time.
+ */
+public class Clock {
 
 	private static boolean started;
 	private static long startTimeMilis;
 
-	private GameClock() {
+	private Clock() {
 		// no instances
 	}
 

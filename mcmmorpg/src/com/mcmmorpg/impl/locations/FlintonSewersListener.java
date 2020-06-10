@@ -27,6 +27,7 @@ import com.mcmmorpg.common.ui.TextPanel;
 import com.mcmmorpg.common.ui.TitleText;
 import com.mcmmorpg.common.util.MathUtility;
 import com.mcmmorpg.impl.constants.Items;
+import com.mcmmorpg.impl.constants.Quests;
 import com.mcmmorpg.impl.constants.RespawnLocations;
 import com.mcmmorpg.impl.constants.Soundtracks;
 import com.mcmmorpg.impl.constants.Worlds;
@@ -248,6 +249,7 @@ public class FlintonSewersListener implements Listener {
 					pc.setRespawnLocation(RespawnLocations.FLINTON_SEWERS);
 					pc.getSoundTrackPlayer().setSoundtrack(Soundtracks.DUNGEON);
 					ENTER_TEXT.apply(pc);
+					Quests.INTO_THE_SEWERS.getObjective(0).complete(pc);
 					smallGelatinousCubeCounts.put(pc, 0);
 				}
 			}

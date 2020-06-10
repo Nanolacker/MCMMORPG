@@ -10,7 +10,7 @@ import org.bukkit.entity.Player;
 import com.mcmmorpg.common.character.PlayerCharacter;
 import com.mcmmorpg.common.sound.SoundSequence.SoundSequenceNode;
 import com.mcmmorpg.common.time.DelayedTask;
-import com.mcmmorpg.common.time.GameClock;
+import com.mcmmorpg.common.time.Clock;
 
 /**
  * Plays a sound sequence ambiently or to a specific player.
@@ -108,7 +108,7 @@ public class SoundSequencePlayer {
 	 * Returns how many seconds into the sequence has played.
 	 */
 	public double getCurrentTime() {
-		return timeStamp + GameClock.getTime() - startTime;
+		return timeStamp + Clock.getTime() - startTime;
 	}
 
 	/**
@@ -129,7 +129,7 @@ public class SoundSequencePlayer {
 			stop();
 		}
 		isPlaying = true;
-		startTime = GameClock.getTime();
+		startTime = Clock.getTime();
 
 		List<SoundSequenceNode> nodes = sequence.getNodes();
 		for (SoundSequenceNode node : nodes) {
