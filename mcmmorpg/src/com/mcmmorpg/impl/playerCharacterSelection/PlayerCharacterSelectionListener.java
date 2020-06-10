@@ -145,7 +145,7 @@ public class PlayerCharacterSelectionListener implements Listener {
 
 		Location credits3Location = new Location(Worlds.CHARACTER_SELECTION, 4, 3, -5);
 		TextPanel credits3 = new TextPanel(credits3Location, ChatColor.GREEN + "" + ChatColor.UNDERLINE
-				+ "Texture Artist/Tester\n\n" + ChatColor.RESET + "" + ChatColor.YELLOW + "Daniel Reinholdtsen");
+				+ "UI Texture Artist/Tester\n\n" + ChatColor.RESET + "" + ChatColor.YELLOW + "Daniel Reinholdtsen");
 		credits2.setLineLength(25);
 
 		title.setVisible(true);
