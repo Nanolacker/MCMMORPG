@@ -133,20 +133,26 @@ public class PlayerCharacterSelectionListener implements Listener {
 		TextPanel creditsTitle = new TextPanel(creditsTitleLocation,
 				ChatColor.GREEN + "" + ChatColor.UNDERLINE + "Credits");
 
-		Location credits1Location = new Location(Worlds.CHARACTER_SELECTION, -3, 3, -5);
+		Location credits1Location = new Location(Worlds.CHARACTER_SELECTION, -4, 3, -5);
 		TextPanel credits1 = new TextPanel(credits1Location, ChatColor.GREEN + "" + ChatColor.UNDERLINE
 				+ "Designer/Programmer\n\n" + ChatColor.RESET + "" + ChatColor.YELLOW + "Connor Reinholdtsen");
 		credits1.setLineLength(25);
 
-		Location credits2Location = new Location(Worlds.CHARACTER_SELECTION, 3, 3, -5);
+		Location credits2Location = new Location(Worlds.CHARACTER_SELECTION, 0, 3, -5);
 		TextPanel credits2 = new TextPanel(credits2Location, ChatColor.GREEN + "" + ChatColor.UNDERLINE
-				+ "Builder/Writer\n\n" + ChatColor.RESET + "" + ChatColor.YELLOW + "Amy George");
+				+ "Builder/Writer/Skin Artist\n\n" + ChatColor.RESET + "" + ChatColor.YELLOW + "Amy George");
+		credits2.setLineLength(25);
+
+		Location credits3Location = new Location(Worlds.CHARACTER_SELECTION, 4, 3, -5);
+		TextPanel credits3 = new TextPanel(credits3Location, ChatColor.GREEN + "" + ChatColor.UNDERLINE
+				+ "Texture Artist/Tester\n\n" + ChatColor.RESET + "" + ChatColor.YELLOW + "Daniel Reinholdtsen");
 		credits2.setLineLength(25);
 
 		title.setVisible(true);
 		creditsTitle.setVisible(true);
 		credits1.setVisible(true);
 		credits2.setVisible(true);
+		credits3.setVisible(true);
 	}
 
 	private void sendToCharacterSelection(Player player) {

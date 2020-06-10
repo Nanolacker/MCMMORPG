@@ -34,6 +34,8 @@ public class ItemListener implements Listener {
 
 	private static final Noise SWORD_HIT_NOISE = new Noise(Sound.ENTITY_ZOMBIE_ATTACK_IRON_DOOR);
 	private static final Noise STAFF_HIT_NOISE = new Noise(Sound.BLOCK_WOODEN_TRAPDOOR_OPEN);
+	private static final Noise WAND_FIRE_NOISE = new Noise(Sound.ENTITY_BLAZE_SHOOT, 0.6f, 1.4f);
+	private static final Noise WAND_HIT_NOISE = new Noise(Sound.BLOCK_LAVA_EXTINGUISH, 1, 1.25f);
 	private static final Noise USE_POTION_NOISE = new Noise(Sound.ENTITY_GENERIC_DRINK);
 	private static final Noise EAT_NOISE = new Noise(Sound.ENTITY_GENERIC_EAT);
 
@@ -118,23 +120,30 @@ public class ItemListener implements Listener {
 	 * Handles the use of a mage wand weapon.
 	 */
 	private void useMageWand(PlayerCharacter pc, Weapon weapon, Particle particleEffect) {
-		double damageAmount = weapon.getBaseDamage() + pc.getLevel();
+		double damageAmount = (weapon.getBaseDamage() + pc.getLevel()) * 0.75;
 		double maxDistance = 15;
+		Location crosshair = pc.getLocation().add(0, 1.5, 0);
+		Ray hitDetection = new Ray(crosshair, crosshair.getDirection(), 15);
+		Raycast raycast = new Raycast(hitDetection);
+		Collider[] hits = raycast.getHits();
 		Location start = pc.getHandLocation();
 		Location end = start.clone().add(start.getDirection().multiply(maxDistance));
-		Ray ray = new Ray(start, end);
-		ray.draw(particleEffect, 1);
-		Raycast raycast = new Raycast(ray);
-		Collider[] hits = raycast.getHits();
 		for (Collider hit : hits) {
 			if (hit instanceof CharacterCollider) {
 				AbstractCharacter character = ((CharacterCollider) hit).getCharacter();
 				if (!character.isFriendly(pc)) {
 					character.damage(damageAmount, pc);
+					Location hitLocation = hit.getCenter();
+					WAND_HIT_NOISE.play(hitLocation);
+					end = hitLocation;
+					break;
 				}
 			}
 		}
-		pc.disarm(1);
+		Ray beam = new Ray(start, end);
+		beam.draw(particleEffect, 1);
+		WAND_FIRE_NOISE.play(start);
+		pc.disarm(0.75);
 	}
 
 	/**

@@ -11,7 +11,9 @@ import com.mcmmorpg.impl.constants.Soundtracks;
 import com.mcmmorpg.impl.constants.Worlds;
 import com.mcmmorpg.impl.constants.Zones;
 import com.mcmmorpg.impl.npcs.FlintonMayor;
+import com.mcmmorpg.impl.npcs.FlintonMerchant;
 import com.mcmmorpg.impl.npcs.FlintonVillager;
+import com.mcmmorpg.impl.npcs.MasterAlchemist;
 
 /**
  * Listener for the village of Flinton that also sets the bounds of the area and
@@ -70,6 +72,12 @@ public class FlintonListener implements Listener {
 			new Location(Worlds.ELADRADOR, -315.295353, 82.000000, 71.438926, 140.433197f, 18.767221f),
 			new Location(Worlds.ELADRADOR, -319.419474, 82.000000, 91.477909, 173.075363f, 55.606640f),
 			new Location(Worlds.ELADRADOR, -321.318478, 82.000000, 85.637658, 181.068665f, 41.357441f) };
+	private static final Location[] MERCHANT_LOCATIONS = {
+			new Location(Worlds.ELADRADOR, -209.104309, 78.937500, 137.034206, 91.403458f, -1.055886f),
+			new Location(Worlds.ELADRADOR, -219.871375, 78.937500, 146.733869, -180.721329f, -0.013262f),
+			new Location(Worlds.ELADRADOR, -229.979696, 79.000000, 137.000931, -91.055534f, -0.708349f) };
+	private static final Location MASTER_ALCHEMIST_LOCATION = new Location(Worlds.ELADRADOR, -318.561556, 82.000000,
+			127.499268, 269.345947f, 1.029392f);
 
 	public FlintonListener() {
 		setBounds();
@@ -81,7 +89,7 @@ public class FlintonListener implements Listener {
 	 * village.
 	 */
 	private void setBounds() {
-		Collider entranceBounds = new Collider(Worlds.ELADRADOR, -401, 30, -10, -135, 120, 194) {
+		Collider entranceBounds = new Collider(Worlds.ELADRADOR, -401, 65, -10, -135, 120, 194) {
 			@Override
 			protected void onCollisionEnter(Collider other) {
 				if (other instanceof PlayerCharacterCollider) {
@@ -92,14 +100,17 @@ public class FlintonListener implements Listener {
 			}
 		};
 		entranceBounds.setActive(true);
-		Collider exitBounds = new Collider(Worlds.ELADRADOR, -406, 25, -15, -130, 125, 199) {
+		Collider exitBounds = new Collider(Worlds.ELADRADOR, -406, 60, -15, -130, 125, 199) {
 			@Override
 			protected void onCollisionExit(Collider other) {
 				if (other instanceof PlayerCharacterCollider) {
 					PlayerCharacter pc = ((PlayerCharacterCollider) other).getCharacter();
-					pc.setZone(Zones.ELADRADOR);
-					pc.setRespawnLocation(RespawnLocations.FLINTON);
-					pc.getSoundTrackPlayer().setSoundtrack(Soundtracks.WILDNERNESS);
+					// check if they are in Flinton Sewers
+					if (pc.getLocation().getY() > 65) {
+						pc.setZone(Zones.ELADRADOR);
+						pc.setRespawnLocation(RespawnLocations.FLINTON);
+						pc.getSoundTrackPlayer().setSoundtrack(Soundtracks.WILDNERNESS);
+					}
 				}
 			}
 		};
@@ -116,6 +127,11 @@ public class FlintonListener implements Listener {
 			boolean male = i % 2 == 0;
 			new FlintonVillager(location, male).setAlive(true);
 		}
+		for (int i = 0; i < 3; i++) {
+			Location location = MERCHANT_LOCATIONS[i];
+			new FlintonMerchant(location, i).setAlive(true);
+		}
+		new MasterAlchemist(MASTER_ALCHEMIST_LOCATION).setAlive(true);
 	}
 
 }

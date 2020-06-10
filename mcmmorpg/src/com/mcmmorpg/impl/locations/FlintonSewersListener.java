@@ -59,8 +59,7 @@ public class FlintonSewersListener implements Listener {
 	private static final PotionEffect SLUDGE_SLOW_EFFECT = new PotionEffect(PotionEffectType.SLOW,
 			MathUtility.secondsToTicks(2), 3);
 	private static final TitleText ENTER_TEXT = new TitleText(ChatColor.GRAY + "Flinton Sewers", null);
-	private static final Location ENTRANCE_LOCATION_1 = new Location(Worlds.ELADRADOR, 0, 0, 0);
-	private static final Location ENTRANCE_LOCATION_2 = new Location(Worlds.ELADRADOR, 0, 0, 0);
+	private static final Location ENTRANCE_LOCATION = new Location(Worlds.ELADRADOR, -269.5, 80, 79.5);
 	private static final Location ALCHEMIST_LOCATION = new Location(Worlds.ELADRADOR, -274, 42.5, 79, 180, 0);
 	private static final Location GUARD_NADIA_LOCATION = new Location(Worlds.ELADRADOR, -288.655881, 43.000000,
 			24.776586, 341.285797f, 49.350960f);
@@ -232,7 +231,6 @@ public class FlintonSewersListener implements Listener {
 
 	public static final Map<PlayerCharacter, Integer> smallGelatinousCubeCounts = new HashMap<>();
 
-	private Source sludge;
 	private Collider innerBounds;
 
 	public FlintonSewersListener() {
@@ -260,12 +258,11 @@ public class FlintonSewersListener implements Listener {
 		};
 		innerBounds.setActive(true);
 
-		new TextPanel(ENTRANCE_LOCATION_1, ChatColor.GRAY + "Sewer Entrance").setVisible(true);
-		new TextPanel(ENTRANCE_LOCATION_2, ChatColor.GRAY + "Flinton Sewers").setVisible(true);
+		new TextPanel(ENTRANCE_LOCATION, ChatColor.GRAY + "Flinton Sewer Entrance").setVisible(true);
 	}
 
 	private void setUpSludge() {
-		sludge = new Source() {
+		Source sludge = new Source() {
 			@Override
 			public String getName() {
 				return ChatColor.RED + "Sludge";

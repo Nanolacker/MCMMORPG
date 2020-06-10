@@ -334,6 +334,9 @@ public final class PlayerCharacter extends AbstractCharacter {
 	 * Sets the zone this player character is currently in.
 	 */
 	public void setZone(String zone) {
+		if (!active) {
+			return;
+		}
 		if (zone.equals(this.zone)) {
 			return;
 		} else {

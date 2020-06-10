@@ -1,7 +1,11 @@
 package com.mcmmorpg.common;
 
 import java.util.Collection;
+import java.util.List;
+
 import org.bukkit.Bukkit;
+import org.bukkit.World;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -21,6 +25,7 @@ public abstract class MMORPGPlugin extends JavaPlugin {
 	@Override
 	public final void onEnable() {
 		isInitialized = false;
+		removeAllEntities();
 		EssentialCommands.registerEssentialCommands();
 		Clock.start();
 		NonPlayerCharacter.startNPCSpawner();
@@ -35,6 +40,19 @@ public abstract class MMORPGPlugin extends JavaPlugin {
 		kickAllPlayers();
 		NonPlayerCharacter.despawnAll();
 		LootChest.removeAll();
+	}
+
+	/**
+	 * Remove all spawned entities for cleanup.
+	 */
+	private static void removeAllEntities() {
+		List<World> worlds = Bukkit.getWorlds();
+		for (World world : worlds) {
+			List<Entity> entities = world.getEntities();
+			for (Entity entity : entities) {
+				entity.remove();
+			}
+		}
 	}
 
 	/**

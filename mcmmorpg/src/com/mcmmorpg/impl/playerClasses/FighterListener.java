@@ -46,7 +46,8 @@ public class FighterListener implements Listener {
 	private static final Noise SELF_HEAL_NOISE = new Noise(Sound.BLOCK_LAVA_EXTINGUISH);
 	private static final Noise CYCLONE_HIT_NOISE = new Noise(Sound.ENTITY_ZOMBIE_ATTACK_IRON_DOOR);
 	private static final Noise CHARGE_HIT_NOISE = new Noise(Sound.ENTITY_ZOMBIE_ATTACK_IRON_DOOR);
-	private static final Noise INSPIRE_NOISE = new Noise(Sound.BLOCK_LAVA_EXTINGUISH);
+	private static final Noise INSPIRE_USE_NOISE = new Noise(Sound.BLOCK_ENCHANTMENT_TABLE_USE);
+	private static final Noise INSPIRE_HEAL_NOISE = new Noise(Sound.BLOCK_LAVA_EXTINGUISH);
 
 	private final Skill bash;
 	private final Skill selfHeal;
@@ -272,6 +273,7 @@ public class FighterListener implements Listener {
 					if (character.isFriendly(pc)) {
 						double healAmount = healProportion * character.getMaxHealth();
 						character.heal(healAmount, pc);
+						INSPIRE_HEAL_NOISE.play(character.getLocation());
 					}
 				}
 			}
@@ -285,7 +287,7 @@ public class FighterListener implements Listener {
 			Location particleLocation = location.clone().add(xOffset, yOffset, zOffset);
 			world.spawnParticle(Particle.VILLAGER_HAPPY, particleLocation, 1);
 		}
-		INSPIRE_NOISE.play(location);
+		INSPIRE_USE_NOISE.play(location);
 		hitbox.setActive(true);
 		hitbox.setActive(false);
 		pc.silence(STANDARD_SILENCE_DURATION);

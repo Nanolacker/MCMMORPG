@@ -11,6 +11,7 @@ import org.bukkit.potion.PotionEffectType;
 
 import com.mcmmorpg.common.character.AbstractCharacter;
 import com.mcmmorpg.common.character.PlayerCharacter;
+import com.mcmmorpg.common.time.DelayedTask;
 import com.mcmmorpg.common.time.RepeatingTask;
 import com.mcmmorpg.common.ui.ProgressBar;
 import com.mcmmorpg.common.ui.ProgressBar.ProgressBarColor;
@@ -18,6 +19,7 @@ import com.mcmmorpg.common.ui.ProgressBar.ProgressBarColor;
 public abstract class AbstractCultist extends AbstractHumanEnemy {
 
 	private static final double RESPAWN_TIME = 60;
+	private static final double SPELL_RECHARGE_TIME = 1;
 	private static final int SPEED = 2;
 	protected static final PotionEffect SLOW_EFFECT = new PotionEffect(PotionEffectType.SLOW, Integer.MAX_VALUE, 5,
 			false);
@@ -26,6 +28,7 @@ public abstract class AbstractCultist extends AbstractHumanEnemy {
 
 	protected String spellName;
 	protected double spellChannelDuration;
+	protected boolean spellIsRecharging;
 	protected ProgressBar spellProgressBar;
 
 	static {
@@ -44,7 +47,7 @@ public abstract class AbstractCultist extends AbstractHumanEnemy {
 							cultist.cancelSpell();
 						}
 					} else {
-						if (!cultist.isChannellingSpell()) {
+						if (!cultist.isChannellingSpell() && !cultist.spellIsRecharging) {
 							cultist.chargeSpell();
 						}
 					}
@@ -59,6 +62,7 @@ public abstract class AbstractCultist extends AbstractHumanEnemy {
 		super(name, level, spawnLocation, maxHealth, 0, xpReward, RESPAWN_TIME, SPEED, textureData, textureSignature);
 		this.spellName = spellName;
 		this.spellChannelDuration = spellChannelDuration;
+		this.spellIsRecharging = false;
 		cultists.add(this);
 	}
 
@@ -72,7 +76,13 @@ public abstract class AbstractCultist extends AbstractHumanEnemy {
 			@Override
 			protected void onComplete() {
 				useSpell();
-				chargeSpell();
+				spellIsRecharging = true;
+				new DelayedTask(SPELL_RECHARGE_TIME) {
+					@Override
+					protected void run() {
+						spellIsRecharging = false;
+					}
+				}.schedule();
 			}
 		};
 		spellProgressBar.setRate(1 / spellChannelDuration);

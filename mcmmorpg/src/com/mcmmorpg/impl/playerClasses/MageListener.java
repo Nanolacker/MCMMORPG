@@ -54,6 +54,8 @@ public class MageListener implements Listener {
 	private static final Noise WHIRLWIND_AMBIENT_NOISE = new Noise(Sound.ENTITY_WITHER_DEATH);
 	private static final Noise WHIRLWIND_SPEED_NOISE = new Noise(Sound.ENTITY_WITHER_SHOOT, 1, 2);
 	private static final Noise EARTHQUAKE_NOISE = new Noise(Sound.BLOCK_GRAVEL_FALL, 1, 0.5f);
+	private static final Noise RESTORE_USE_NOISE = new Noise(Sound.BLOCK_ENCHANTMENT_TABLE_USE);
+	private static final Noise RESTORE_HEAL_NOISE = new Noise(Sound.BLOCK_LAVA_EXTINGUISH);
 	private static final Noise SHADOW_VOID_USE_NOISE = new Noise(Sound.BLOCK_PORTAL_TRIGGER);
 	private static final Noise SHADOW_VOID_EXPLODE_NOISE = new Noise(Sound.ENTITY_WITHER_HURT);
 
@@ -380,6 +382,7 @@ public class MageListener implements Listener {
 		int projectileParticleCount = 10;
 		int boxParticleCount = 75;
 		Location start = pc.getHandLocation();
+		RESTORE_USE_NOISE.play(start);
 		Vector velocity = start.getDirection().multiply(4);
 		Location end = pc.getTargetLocation(15);
 		double maxDistance = start.distance(end);
@@ -409,6 +412,7 @@ public class MageListener implements Listener {
 				if (hit instanceof CharacterCollider) {
 					AbstractCharacter hitCharacter = ((CharacterCollider) hit).getCharacter();
 					if (hitCharacter != pc && hitCharacter.isFriendly(pc)) {
+						RESTORE_HEAL_NOISE.play(hitCharacter.getLocation());
 						remove();
 					}
 				}
