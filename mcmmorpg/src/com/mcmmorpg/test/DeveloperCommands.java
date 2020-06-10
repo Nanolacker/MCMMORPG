@@ -27,10 +27,16 @@ import com.mcmmorpg.common.util.Debug;
 import com.mcmmorpg.common.util.IOUtility;
 import com.mcmmorpg.impl.constants.RespawnLocations;
 
+/**
+ * Class for registering commands useful for development.
+ */
 public class DeveloperCommands {
 
 	private static final Map<String, Location> LOCATION_MAP = new HashMap<>();
 
+	/**
+	 * Registers commands useful for development.
+	 */
 	public static void registerDeveloperCommands() {
 		Debug.log("Registering developer commands");
 
@@ -191,7 +197,7 @@ public class DeveloperCommands {
 				pc.setLocation(location);
 			}
 		};
-
+		
 		CommandManager.registerCommand(printLocation);
 		CommandManager.registerCommand(heal);
 		CommandManager.registerCommand(restoreMana);

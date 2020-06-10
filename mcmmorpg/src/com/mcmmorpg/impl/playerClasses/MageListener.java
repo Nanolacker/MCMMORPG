@@ -31,6 +31,9 @@ import com.mcmmorpg.common.time.RepeatingTask;
 import com.mcmmorpg.common.util.BukkitUtility;
 import com.mcmmorpg.impl.constants.PlayerClasses;
 
+/**
+ * Class for registering events for the mage player class.
+ */
 public class MageListener implements Listener {
 
 	private static final double[] MAX_HEALTH = { 20.0, 25.0, 31.0, 38.0, 46.0, 55.0, 65.0, 76.0, 88.0, 101.0, 115.0,
@@ -119,7 +122,7 @@ public class MageListener implements Listener {
 		Vector lookDirection = start.getDirection();
 		start.add(lookDirection).add(0, 1, 0);
 		FIREBALL_CONJURE_NOISE.play(start);
-		Vector velocity = lookDirection.multiply(8);
+		Vector velocity = lookDirection.multiply(10);
 		// ensure we don't shoot through walls
 		Location end = pc.getTargetLocation(range);
 		double maxDistance = start.distance(end);
@@ -186,7 +189,6 @@ public class MageListener implements Listener {
 	private void useIceBeam(PlayerCharacter pc) {
 		double damagePerTick = 1.25 * pc.getWeapon().getBaseDamage() * iceBeam.getUpgradeLevel(pc)
 				+ 0.5 * pc.getLevel();
-
 		double duration = 4;
 		double period = 0.1;
 		double maxCount = duration / period;

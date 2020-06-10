@@ -36,7 +36,7 @@ public class FlintonSewersBandit extends AbstractHumanEnemy {
 		super.onDeath();
 		Location location = getLocation();
 		DEATH_NOISE.play(location);
-		Items.BATTERED_MAIL_BOOTS.drop(location, 0.04);
+		Items.BATTERED_MAIL_HELMET.drop(location, 0.04);
 		Items.BATTERED_MAIL_CUIRASS.drop(location, 0.04);
 		Items.BATTERED_MAIL_GREAVES.drop(location, 0.04);
 		Items.BATTERED_MAIL_BOOTS.drop(location, 0.04);

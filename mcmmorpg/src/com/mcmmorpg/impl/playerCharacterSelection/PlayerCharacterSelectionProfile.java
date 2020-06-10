@@ -7,6 +7,9 @@ import org.bukkit.entity.Player;
 import com.mcmmorpg.common.persistence.PersistentPlayerCharacterDataContainer;
 import com.mcmmorpg.common.util.IOUtility;
 
+/**
+ * Stores data regarding player character selection for an individual player.
+ */
 class PlayerCharacterSelectionProfile {
 
 	private final Player player;

@@ -8,8 +8,16 @@ import com.mcmmorpg.common.item.Item;
 import com.mcmmorpg.common.item.Weapon;
 import com.mcmmorpg.common.util.IOUtility;
 
+/**
+ * Class for loading items from the plugin's data folder. The listeners for the
+ * items are handled elsewhere.
+ */
 public class ItemLoader {
 
+	/**
+	 * Loads items from the plugin's data folder. The listeners for the items are
+	 * handled elsewhere.
+	 */
 	public static void loadItems() {
 		File baseItemsFolder = new File(IOUtility.getDataFolder(), "resources/items");
 

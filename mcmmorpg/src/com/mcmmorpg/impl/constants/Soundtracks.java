@@ -7,14 +7,27 @@ import com.mcmmorpg.common.sound.SoundSequence;
 import com.mcmmorpg.common.util.IOUtility;
 
 /**
- * Provides easy access to the soundtracks of the game.
+ * Contains references to all soundtracks that are loaded from the plugin's data
+ * folder for convenience.
  */
 public class Soundtracks {
 
+	/**
+	 * The soundtrack to play when player characters are in villages.
+	 */
 	public static final SoundSequence VILLAGE;
+	/**
+	 * The soundtrack to play when player characters are in the wilderness.
+	 */
 	public static final SoundSequence WILDNERNESS;
+	/**
+	 * The soundtrack to play when player characters are in dungeons.
+	 */
 	public static final SoundSequence DUNGEON;
 
+	/*
+	 * Load soundtracks from the plugin's data folder.
+	 */
 	static {
 		File soundtrackFolder = new File(IOUtility.getDataFolder(), "resources/soundtracks");
 

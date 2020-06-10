@@ -16,9 +16,8 @@ public class FlintonVillager extends AbstractFriendlyHuman {
 	private static final Noise MALE_SPEAK_NOISE = new Noise(Sound.ENTITY_VILLAGER_AMBIENT, 1, 0.75f);
 	private static final Noise FEMALE_SPEAK_NOISE = new Noise(Sound.ENTITY_VILLAGER_AMBIENT, 1, 1.25f);
 	private static final String[] DIALOGUE_OPTIONS = { "Greetings, adventurer.", "How's it going?", "What do you need?",
-			"Can I help you?", "I hear a cult has been dwelling in the sewers beneath us.", "Welcome to Flinton.",
-			"How do you do?" };
-
+			"Can I help you?", "I hear a cult has been dwelling in the sewers beneath this village.",
+			"Welcome to Flinton.", "How do you do?" };
 	private final boolean male;
 
 	public FlintonVillager(Location location, boolean male) {

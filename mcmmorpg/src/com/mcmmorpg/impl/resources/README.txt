@@ -1,1 +1,0 @@
-Copy and paste this folder into this plugin's data folder.

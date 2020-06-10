@@ -1,11 +1,7 @@
 package com.mcmmorpg.common;
 
 import java.util.Collection;
-import java.util.List;
-
 import org.bukkit.Bukkit;
-import org.bukkit.World;
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -25,7 +21,6 @@ public abstract class MMORPGPlugin extends JavaPlugin {
 	@Override
 	public final void onEnable() {
 		isInitialized = false;
-		removeAllEntities();
 		EssentialCommands.registerEssentialCommands();
 		Clock.start();
 		NonPlayerCharacter.startNPCSpawner();
@@ -42,16 +37,10 @@ public abstract class MMORPGPlugin extends JavaPlugin {
 		LootChest.removeAll();
 	}
 
-	private static void removeAllEntities() {
-		List<World> worlds = Bukkit.getWorlds();
-		for (World world : worlds) {
-			List<Entity> entities = world.getEntities();
-			for (Entity entity : entities) {
-				entity.remove();
-			}
-		}
-	}
-
+	/**
+	 * Removes all players from the server so that it can properly shut down. This
+	 * is mostly only important for development.
+	 */
 	private void kickAllPlayers() {
 		Collection<? extends Player> players = Bukkit.getOnlinePlayers();
 		for (Player player : players) {

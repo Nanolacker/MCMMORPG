@@ -35,6 +35,10 @@ import com.mcmmorpg.impl.constants.PlayerClasses;
 import com.mcmmorpg.impl.constants.Worlds;
 import com.mcmmorpg.impl.playerCharacterSelection.PlayerCharacterSelectionProfile.Menu;
 
+/**
+ * Registers events for players to select their player characters in player
+ * selection.
+ */
 public class PlayerCharacterSelectionListener implements Listener {
 
 	private static final File PLAYER_CHARACTER_DATA_DIRECTORY;

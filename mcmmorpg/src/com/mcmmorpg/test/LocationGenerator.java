@@ -4,6 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
+/**
+ * Simple program for generating formatted location code from inputted
+ * coordinates.
+ */
 public class LocationGenerator {
 
 	public static void main(String[] args) {

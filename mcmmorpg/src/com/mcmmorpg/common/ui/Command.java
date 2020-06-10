@@ -5,7 +5,8 @@ import org.bukkit.command.defaults.BukkitCommand;
 
 /**
  * Represents a command that can be created at runtime and dispatched by command
- * senders.
+ * senders. Commands must be registered with the command manager before being
+ * used.
  */
 public abstract class Command {
 
@@ -38,6 +39,10 @@ public abstract class Command {
 	 */
 	protected abstract void execute(CommandSender sender, String[] args);
 
+	/**
+	 * Used for internal registration of commands, so that commands don't have to be
+	 * inconveniently listed in the plugin.yml file.
+	 */
 	private static class BukkitCommand0 extends BukkitCommand {
 
 		private final Command command;

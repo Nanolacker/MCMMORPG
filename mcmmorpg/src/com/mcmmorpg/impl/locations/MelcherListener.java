@@ -21,7 +21,7 @@ import com.mcmmorpg.impl.npcs.Horse;
 import com.mcmmorpg.impl.npcs.MelcherAngeredDrunkard;
 import com.mcmmorpg.impl.npcs.MelcherBartender;
 import com.mcmmorpg.impl.npcs.MelcherFarmer;
-import com.mcmmorpg.impl.npcs.MelcherLumberjack;
+import com.mcmmorpg.impl.npcs.Lumberjack;
 import com.mcmmorpg.impl.npcs.MelcherMayor;
 import com.mcmmorpg.impl.npcs.MelcherTavernKingRat;
 import com.mcmmorpg.impl.npcs.MelcherTavernRat;
@@ -29,6 +29,10 @@ import com.mcmmorpg.impl.npcs.MelcherVillager;
 import com.mcmmorpg.impl.npcs.MelcherThief;
 import com.mcmmorpg.impl.npcs.TrainingDummy;
 
+/**
+ * Listener for the village of Melcher that also sets the bounds of the area and
+ * spawns NPCs.
+ */
 public class MelcherListener implements Listener {
 
 	private static final Location[] VILLAGER_LOCATIONS = { new Location(Worlds.ELADRADOR, -1167, 73, 273),
@@ -140,7 +144,7 @@ public class MelcherListener implements Listener {
 			new MelcherVillager(location, male).setAlive(true);
 		}
 		for (Location location : LUMBERJACK_LOCATIONS) {
-			new MelcherLumberjack(location).setAlive(true);
+			new Lumberjack(location).setAlive(true);
 		}
 		for (int i = 0; i < GUARD_LOCATIONS.length; i++) {
 			Location location = GUARD_LOCATIONS[i];

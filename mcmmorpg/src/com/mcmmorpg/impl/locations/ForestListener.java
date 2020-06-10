@@ -19,6 +19,10 @@ import com.mcmmorpg.impl.npcs.ForestSpider;
 import com.mcmmorpg.impl.npcs.GuardJames;
 import com.mcmmorpg.impl.npcs.Highwayman;
 
+/**
+ * Listener for the forest east of Melcher and west of Flinton that also spawns
+ * NPCs.
+ */
 public class ForestListener implements Listener {
 
 	private static final double LOOT_CHEST_RESPAWN_TIME = 60;

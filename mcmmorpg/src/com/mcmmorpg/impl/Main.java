@@ -7,6 +7,9 @@ import com.mcmmorpg.impl.resourceLoad.PlayerClassLoader;
 import com.mcmmorpg.impl.resourceLoad.QuestLoader;
 import com.mcmmorpg.test.DeveloperCommands;
 
+/**
+ * Main class of the implementation of MCMMORPG.
+ */
 public class Main extends MMORPGPlugin {
 
 	@Override
@@ -14,6 +17,10 @@ public class Main extends MMORPGPlugin {
 		load();
 	}
 
+	/**
+	 * Loads resources from this plugin's data folder, registers events, and
+	 * registers commands.
+	 */
 	private void load() {
 		QuestLoader.loadQuests();
 		PlayerClassLoader.loadClasses();

@@ -6,12 +6,13 @@ import com.mcmmorpg.common.quest.Quest;
 import com.mcmmorpg.common.util.IOUtility;
 
 /**
- * Loads quest from the plugin's data folder. Assumes that there is a directory
- * named "quests", which contains files of quests in JSON format, in the data
- * folder.
+ * Class for loading quests from the plugin's data folder.
  */
 public class QuestLoader {
 
+	/**
+	 * Loads quests from the plugin's data folder.
+	 */
 	public static void loadQuests() {
 		File questFolder = new File(IOUtility.getDataFolder(), "resources/quests");
 		File[] questFiles = questFolder.listFiles();

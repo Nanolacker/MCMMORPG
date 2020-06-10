@@ -27,6 +27,9 @@ import com.mcmmorpg.common.time.DelayedTask;
 import com.mcmmorpg.common.time.RepeatingTask;
 import com.mcmmorpg.impl.constants.PlayerClasses;
 
+/**
+ * Class for registering events for the fighter player class.
+ */
 public class FighterListener implements Listener {
 
 	private static final double[] MAX_HEALTH = { 25.0, 33.0, 43.0, 55.0, 69.0, 85.0, 103.0, 123.0, 145.0, 169.0, 195.0,

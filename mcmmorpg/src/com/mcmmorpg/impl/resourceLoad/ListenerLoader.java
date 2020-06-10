@@ -10,8 +10,14 @@ import com.mcmmorpg.impl.playerCharacterSelection.PlayerCharacterSelectionListen
 import com.mcmmorpg.impl.playerClasses.FighterListener;
 import com.mcmmorpg.impl.playerClasses.MageListener;
 
+/**
+ * Class for registering events for the plugin.
+ */
 public class ListenerLoader {
 
+	/**
+	 * Registers events for the plugin.
+	 */
 	public static void loadListeners() {
 		EventManager.registerEvents(new PlayerCharacterSelectionListener());
 		EventManager.registerEvents(new ItemListener());

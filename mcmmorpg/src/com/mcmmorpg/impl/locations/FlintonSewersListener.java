@@ -46,6 +46,10 @@ import com.mcmmorpg.impl.npcs.CaptainNadia;
 import com.mcmmorpg.impl.npcs.GuardThomas;
 import com.mcmmorpg.impl.npcs.SmallGelatinousCube;
 
+/**
+ * Listener for the Flinton Sewers dungeon that also sets the bounds of the area
+ * and spawns NPCs.
+ */
 public class FlintonSewersListener implements Listener {
 
 	private static final double LOOT_CHEST_RESPAWN_TIME = 60;
