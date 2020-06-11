@@ -119,15 +119,16 @@ public class PlayerCharacterSelectionListener implements Listener {
 	}
 
 	public PlayerCharacterSelectionListener() {
-		setUpTextPanels();
+		createTextPanels();
 	}
 
-	private void setUpTextPanels() {
-		Location titleLocation = new Location(Worlds.CHARACTER_SELECTION, 0, 3, 5);
+	private void createTextPanels() {
+		Location titleLocation = new Location(Worlds.CHARACTER_SELECTION, 0, 3.5, 5);
 		TextPanel title = new TextPanel(titleLocation,
 				ChatColor.GREEN + "Welcome to MCMMORPG!\n\n" + ChatColor.WHITE + "Please ensure that "
 						+ ChatColor.YELLOW + "Particles" + ChatColor.WHITE + " in " + ChatColor.YELLOW
-						+ "Video Settings..." + ChatColor.WHITE + " is set to " + ChatColor.YELLOW + "All");
+						+ "Video Settings..." + ChatColor.WHITE + " is set to " + ChatColor.YELLOW + "All"
+						+ ChatColor.WHITE + "\n\nPlaying in a party is strongly recommended.");
 
 		Location creditsTitleLocation = new Location(Worlds.CHARACTER_SELECTION, 0, 4, -5);
 		TextPanel creditsTitle = new TextPanel(creditsTitleLocation,

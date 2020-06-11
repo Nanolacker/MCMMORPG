@@ -44,14 +44,14 @@ import com.mcmmorpg.impl.constants.Quests;
 public class ColossalGelatinousCube extends NonPlayerCharacter {
 
 	private static final int LEVEL = 11;
-	private static final int MAX_HEALTH = 1000;
-	private static final int XP = 20;
-	private static final double BASIC_ATTACK_DAMAGE = 4;
+	private static final int MAX_HEALTH = 1500;
+	private static final int XP_REWARD = 200;
+	private static final double BASIC_ATTACK_DAMAGE = 10;
 	private static final double SPLIT_CHANNEL_RATE = 0.25;
 	private static final double SPLIT_COOLDOWN = 15;
 	private static final double SPLIT_TRIGGER_RADIUS_SQUARED = 400;
 	private static final int MAX_PRE_SPLIT_CHILD_COUNT = 2;
-	private static final int SIZE = 12;
+	private static final int ENTITY_SIZE = 12;
 	private static final double HEIGHT = 8;
 	private static final double WIDTH = 7;
 	private static final int SLOWNESS = 4;
@@ -167,7 +167,7 @@ public class ColossalGelatinousCube extends NonPlayerCharacter {
 		hitbox.setActive(true);
 		surroundings.setActive(true);
 		entity = (Slime) BukkitUtility.spawnNonpersistentEntity(spawnLocation, EntityType.SLIME);
-		entity.setSize(SIZE);
+		entity.setSize(ENTITY_SIZE);
 		entity.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, Integer.MAX_VALUE, SLOWNESS));
 		entity.setRemoveWhenFarAway(false);
 		movementSyncer.setEntity(entity);
@@ -292,7 +292,7 @@ public class ColossalGelatinousCube extends NonPlayerCharacter {
 			protected void onCollisionEnter(Collider other) {
 				if (other instanceof PlayerCharacterCollider) {
 					PlayerCharacter pc = ((PlayerCharacterCollider) other).getCharacter();
-					pc.giveXp(XP);
+					pc.giveXp(XP_REWARD);
 				}
 			}
 		};

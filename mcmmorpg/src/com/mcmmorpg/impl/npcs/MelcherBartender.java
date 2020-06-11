@@ -90,12 +90,12 @@ public class MelcherBartender extends StaticHuman {
 					say("I'd ask you to patch up the wall, but you'd probably manage to blow it up somehow.", pc);
 					break;
 				case 2:
-					say("Here's your drink. Now put that darned weapon of yours away.", pc);
+					say("Here, have a drink. Now put that darned weapon of yours away.", pc);
 					break;
 				case 3:
 					Quests.PEST_CONTROL.getObjective(2).complete(pc);
-					pc.giveItem(Items.MELCHER_MEAD, 3);
 					pc.giveXp(PEST_CONTROL_XP);
+					pc.giveItem(Items.MELCHER_MEAD, 3);
 					break;
 				}
 			}

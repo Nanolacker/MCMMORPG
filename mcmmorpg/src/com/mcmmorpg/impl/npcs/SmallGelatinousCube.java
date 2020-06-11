@@ -33,10 +33,10 @@ import com.mcmmorpg.impl.locations.FlintonSewersListener;
 public class SmallGelatinousCube extends NonPlayerCharacter {
 
 	private static final int LEVEL = 8;
-	private static final int MAX_HEALTH = 50;
-	private static final int XP_REWARD = 5;
-	private static final double BASIC_ATTACK_DAMAGE = 4;
-	private static final int SIZE = 2;
+	private static final int MAX_HEALTH = 75;
+	private static final int XP_REWARD = 10;
+	private static final double BASIC_ATTACK_DAMAGE = 5;
+	private static final int ENTITY_SIZE = 2;
 	private static final double HEIGHT = 1.2;
 	private static final double WIDTH = 1.2;
 	private static final Noise HURT_NOISE = new Noise(Sound.ENTITY_SLIME_DEATH);
@@ -101,7 +101,7 @@ public class SmallGelatinousCube extends NonPlayerCharacter {
 		super.spawn();
 		hitbox.setActive(true);
 		entity = (Slime) BukkitUtility.spawnNonpersistentEntity(spawnLocation, EntityType.SLIME);
-		entity.setSize(SIZE);
+		entity.setSize(ENTITY_SIZE);
 		entity.setRemoveWhenFarAway(false);
 		movementSyncer.setEntity(entity);
 		movementSyncer.setEnabled(true);

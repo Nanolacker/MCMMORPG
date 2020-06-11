@@ -42,15 +42,15 @@ public class GelatinousCube extends NonPlayerCharacter {
 
 	private static final int LEVEL = 9;
 	private static final int MAX_HEALTH = 150;
-	private static final int XP_REWARD = 20;
+	private static final int XP_REWARD = 30;
 	private static final double BASIC_ATTACK_DAMAGE = 8;
-	private static final double ACID_SPRAY_DAMAGE = 10;
+	private static final double ACID_SPRAY_DAMAGE = 30;
 	private static final double ACID_SPRAY_CHANNEL_RATE = 0.35;
 	private static final double ACID_SPRAY_COOLDOWN = 15;
 	private static final double ACID_SPRAY_TRIGGER_RADIUS_SQUARED = 36;
 	private static final double ACID_SPRAY_DAMAGE_WIDTH = 10;
 	private static final double ACID_SPRAY_DAMAGE_HEIGHT = 2;
-	private static final int SIZE = 5;
+	private static final int ENTITY_SIZE = 5;
 	private static final double HEIGHT = 3.5;
 	private static final double WIDTH = 2.9;
 	private static final int SLOWNESS = 2;
@@ -140,7 +140,7 @@ public class GelatinousCube extends NonPlayerCharacter {
 		super.spawn();
 		hitbox.setActive(true);
 		entity = (Slime) BukkitUtility.spawnNonpersistentEntity(spawnLocation, EntityType.SLIME);
-		entity.setSize(SIZE);
+		entity.setSize(ENTITY_SIZE);
 		entity.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, Integer.MAX_VALUE, SLOWNESS));
 		entity.setRemoveWhenFarAway(false);
 		movementSyncer.setEntity(entity);

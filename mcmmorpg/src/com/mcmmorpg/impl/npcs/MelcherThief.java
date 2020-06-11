@@ -15,8 +15,8 @@ import com.mcmmorpg.impl.constants.Quests;
 public class MelcherThief extends AbstractHumanEnemy {
 
 	private static final int LEVEL = 2;
-	private static final double MAX_HEALTH = 30;
-	private static final double DAMAGE_AMOUNT = 4;
+	private static final double MAX_HEALTH = 40;
+	private static final double DAMAGE_AMOUNT = 2;
 	private static final int XP_REWARD = 5;
 	private static final double RESPAWN_TIME = 60;
 	private static final int SPEED = 2;
@@ -45,7 +45,7 @@ public class MelcherThief extends AbstractHumanEnemy {
 		for (PlayerCharacter pc : nearbyPcs) {
 			Quests.THWARTING_THE_THIEVES.getObjective(0).addProgress(pc, 1);
 		}
-		int stolenFoodDropAmount = (int) (Math.random() * 3);
+		int stolenFoodDropAmount = (int) (Math.random() * 4);
 		Items.STOLEN_FOOD.drop(location, stolenFoodDropAmount);
 		Items.THIEF_DAGGER.drop(getLocation(), 0.02);
 		Items.BRITTLE_WAND.drop(getLocation(), 0.02);

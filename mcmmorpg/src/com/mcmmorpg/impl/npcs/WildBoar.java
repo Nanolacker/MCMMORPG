@@ -37,7 +37,7 @@ public class WildBoar extends NonPlayerCharacter {
 	private static final int LEVEL = 10;
 	private static final double MAX_HEALTH = 500;
 	private static final double DAMAGE_AMOUNT = 15;
-	private static final int XP_REWARD = 20;
+	private static final int XP_REWARD = 60;
 	private static final double RESPAWN_TIME = 60;
 	private static final Noise DAMAGE_NOISE = new Noise(Sound.ENTITY_PIG_HURT, 1, 0.5f);
 	private static final Noise DEATH_NOISE = new Noise(Sound.ENTITY_PIG_DEATH, 1, 0.5f);
