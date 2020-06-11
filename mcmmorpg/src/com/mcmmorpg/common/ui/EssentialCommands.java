@@ -15,7 +15,9 @@ public class EssentialCommands {
 		Command help = new Command("help") {
 			@Override
 			protected void execute(CommandSender sender, String[] args) {
-				sender.sendMessage(ChatColor.GRAY + "Help feature coming soon.");
+				sender.sendMessage(ChatColor.GRAY + "Commands");
+				sender.sendMessage(ChatColor.GRAY + "-" + ChatColor.YELLOW + "kill" + ChatColor.GRAY
+						+ ": kill yourself if you get stuck");
 			}
 		};
 		Command killMe = new Command("kill") {

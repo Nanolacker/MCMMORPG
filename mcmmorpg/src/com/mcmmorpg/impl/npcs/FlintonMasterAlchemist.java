@@ -62,8 +62,10 @@ public class FlintonMasterAlchemist extends StaticHuman {
 					say("Have some health potions as thanks.", pc);
 					break;
 				case 2:
+					pc.removeItem(Items.BOAR_TUSK, 15);
 					Quests.BOARS_GALORE.getObjective(1).complete(pc);
 					pc.giveXp(BOARS_GALORE_XP_REWARD);
+					pc.giveItem(Items.POTION_OF_LESSER_HEALING, 3);
 					break;
 				}
 			}
@@ -75,7 +77,7 @@ public class FlintonMasterAlchemist extends StaticHuman {
 		if (Quests.BOARS_GALORE.compareStatus(pc, QuestStatus.NOT_STARTED)) {
 			startBoarsGaloreInteraction.advance(pc);
 		} else if (Quests.BOARS_GALORE.compareStatus(pc, QuestStatus.IN_PROGRESS)) {
-			if (Quests.BOARS_GALORE.getObjective(0).isComplete(pc) && pc.getItemCount(Items.BOAR_TUSK) >= 20) {
+			if (Quests.BOARS_GALORE.getObjective(0).isComplete(pc) && pc.getItemCount(Items.BOAR_TUSK) >= 15) {
 				completeBoarsGaloreInteraction.advance(pc);
 			} else {
 				say("Off you go now!", pc);

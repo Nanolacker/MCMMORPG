@@ -190,7 +190,7 @@ public class ItemListener implements Listener {
 		USE_POTION_NOISE.play(pc);
 		PotionEffect drunkness = new PotionEffect(PotionEffectType.CONFUSION, MathUtility.secondsToTicks(15), 1);
 		player.addPotionEffect(drunkness);
-		pc.sendMessage(ChatColor.GRAY + "You fill dizzy.");
+		pc.sendMessage(ChatColor.GRAY + "You feel dizzy.");
 	}
 
 	/**

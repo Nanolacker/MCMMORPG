@@ -49,6 +49,7 @@ import com.mcmmorpg.common.quest.Quest;
 import com.mcmmorpg.common.quest.QuestLog;
 import com.mcmmorpg.common.sound.Noise;
 import com.mcmmorpg.common.sound.PlayerCharacterSoundtrackPlayer;
+import com.mcmmorpg.common.time.Clock;
 import com.mcmmorpg.common.time.DelayedTask;
 import com.mcmmorpg.common.time.RepeatingTask;
 import com.mcmmorpg.common.ui.ActionBarText;
@@ -98,6 +99,12 @@ public final class PlayerCharacter extends AbstractCharacter {
 	private final PlayerCharacterQuestManager questStatusManager;
 	private final PlayerSkillManager skillStatusManager;
 	private final List<String> tags;
+	/**
+	 * The total play time accumulated on this player character before the current
+	 * play session.
+	 */
+	private final double initialPlayTime;
+	private final double playSessionStartTime;
 	private final PlayerCharacterSoundtrackPlayer soundtrackPlayer;
 	private CharacterCollider hitbox;
 	private final MovementSynchronizer movementSyncer;
@@ -121,7 +128,7 @@ public final class PlayerCharacter extends AbstractCharacter {
 			Location respawnLocation, int xp, int skillUpgradePoints, int currency, double maxHealth,
 			double currentHealth, double healthRegenRate, double maxMana, double currentMana, double manaRegenRate,
 			Quest[] completedQuests, PlayerCharacterQuestData[] questData, PlayerSkillData[] skillData,
-			ItemStack[] inventoryContents, String[] tags) {
+			ItemStack[] inventoryContents, String[] tags, double playTime) {
 		super(ChatColor.GREEN + player.getName(), xpToLevel(xp), location);
 		super.setHeight(HEIGHT);
 		this.player = player;
@@ -141,6 +148,9 @@ public final class PlayerCharacter extends AbstractCharacter {
 		this.skillStatusManager.init();
 		player.getInventory().setContents(inventoryContents);
 		this.tags = new ArrayList<>(Arrays.asList(tags));
+		this.initialPlayTime = playTime;
+		this.playSessionStartTime = Clock.getTime();
+
 		soundtrackPlayer = new PlayerCharacterSoundtrackPlayer(this);
 		this.hitbox = new PlayerCharacterCollider(this);
 		player.teleport(getLocation());
@@ -271,10 +281,12 @@ public final class PlayerCharacter extends AbstractCharacter {
 		PlayerSkillData[] skillStatuses = saveData.getSkillData();
 		ItemStack[] inventoryContents = saveData.getInventoryContents();
 		String[] tags = saveData.getTags();
+		double playTime = saveData.getTotalPlayTime();
 
 		PlayerCharacter pc = new PlayerCharacter(player, fresh, playerClass, zone, location, respawnLocation, xp,
 				skillUpgradePoints, currency, maxHealth, currentHealth, healthRegenRate, maxMana, currentMana,
-				manaRegenRate, saveData.getCompletedQuests(), questStatuses, skillStatuses, inventoryContents, tags);
+				manaRegenRate, saveData.getCompletedQuests(), questStatuses, skillStatuses, inventoryContents, tags,
+				playTime);
 		PlayerCharacterRegisterEvent event = new PlayerCharacterRegisterEvent(pc);
 		EventManager.callEvent(event);
 		return pc;
@@ -823,6 +835,14 @@ public final class PlayerCharacter extends AbstractCharacter {
 	}
 
 	/**
+	 * Returns the total play time on this player character in seconds.
+	 */
+	public double getTotalPlayTime() {
+		double currentTime = Clock.getTime();
+		return initialPlayTime + currentTime - playSessionStartTime;
+	}
+
+	/**
 	 * Returns whether this player character is disarmed (unable to use basic
 	 * attacks).
 	 */
@@ -1017,7 +1037,7 @@ public final class PlayerCharacter extends AbstractCharacter {
 				}
 			}
 		}
-		sendMessage(ChatColor.GRAY + "Removed " + (amount > 1 ? amount + " " : "") + item + ChatColor.GRAY + "!");
+		sendMessage(ChatColor.GRAY + "Removed " + (amount > 1 ? amount + " " : "") + item);
 	}
 
 	/**

@@ -189,7 +189,7 @@ public class MageListener implements Listener {
 	}
 
 	private void useIceBeam(PlayerCharacter pc) {
-		double damagePerTick = 1.25 * pc.getWeapon().getBaseDamage() * iceBeam.getUpgradeLevel(pc)
+		double damagePerTick = 0.25 * pc.getWeapon().getBaseDamage() * iceBeam.getUpgradeLevel(pc)
 				+ 0.5 * pc.getLevel();
 		double duration = 4;
 		double period = 0.1;

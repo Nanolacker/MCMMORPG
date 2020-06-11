@@ -28,11 +28,13 @@ import com.mcmmorpg.common.item.Weapon;
 import com.mcmmorpg.common.persistence.PersistentPlayerCharacterDataContainer;
 import com.mcmmorpg.common.playerClass.PlayerClass;
 import com.mcmmorpg.common.sound.Noise;
+import com.mcmmorpg.common.time.DelayedTask;
 import com.mcmmorpg.common.ui.TextPanel;
 import com.mcmmorpg.common.util.IOUtility;
 import com.mcmmorpg.impl.constants.Items;
 import com.mcmmorpg.impl.constants.PlayerClasses;
 import com.mcmmorpg.impl.constants.Worlds;
+import com.mcmmorpg.impl.constants.Zones;
 import com.mcmmorpg.impl.playerCharacterSelection.PlayerCharacterSelectionProfile.Menu;
 
 /**
@@ -65,6 +67,8 @@ public class PlayerCharacterSelectionListener implements Listener {
 	private static final Noise CHARACTER_TRANSITION_NOISE = new Noise(Sound.ENTITY_ZOMBIE_VILLAGER_CONVERTED);
 	private static final Noise CHARACTER_DELETION_NOISE = new Noise(Sound.ENTITY_ZOMBIE_VILLAGER_CONVERTED);
 	private static final Noise SELECT_CHARACTER_NOISE = new Noise(Sound.BLOCK_PORTAL_TRAVEL, 0.2f, 1);
+
+	private static final String OPEN_MENU_TUTORIAL_TAG = "OPEN_MENU_TUTORIAL";
 
 	private Map<Player, PlayerCharacterSelectionProfile> profileMap = new HashMap<>();
 
@@ -113,7 +117,7 @@ public class PlayerCharacterSelectionListener implements Listener {
 				ChatColor.GRAY + "No, do not delete this character", Material.BARRIER);
 		DELETE_CONFIRM_INVENTORY.setItem(2, confirmItemStack);
 		DELETE_CONFIRM_INVENTORY.setItem(6, cancelItemStack);
-		STARTING_ZONE = ChatColor.GREEN + "Melcher";
+		STARTING_ZONE = Zones.MELCHER;
 		STARTING_LOCATION = new Location(Worlds.ELADRADOR, -1179, 72, 260, -90, 0);
 		INVISIBILITY = new PotionEffect(PotionEffectType.INVISIBILITY, Integer.MAX_VALUE, 1);
 	}
@@ -146,7 +150,7 @@ public class PlayerCharacterSelectionListener implements Listener {
 
 		Location credits3Location = new Location(Worlds.CHARACTER_SELECTION, 4, 3, -5);
 		TextPanel credits3 = new TextPanel(credits3Location, ChatColor.GREEN + "" + ChatColor.UNDERLINE
-				+ "UI Textures\n\n" + ChatColor.RESET + "" + ChatColor.YELLOW + "Daniel Reinholdtsen");
+				+ "HUD Textures\n\n" + ChatColor.RESET + "" + ChatColor.YELLOW + "Daniel Reinholdtsen");
 		credits2.setLineLength(25);
 
 		title.setVisible(true);
@@ -262,8 +266,12 @@ public class PlayerCharacterSelectionListener implements Listener {
 			PlayerClass playerClass = data.getPlayerClass();
 			Material material = materialForPlayerClass(playerClass);
 			int level = PlayerCharacter.xpToLevel(data.getXP());
+			double playTimeSeconds = data.getTotalPlayTime();
+			int playTimeHours = (int) (playTimeSeconds / 3600);
+			int playTimeMinutes = (int) (playTimeSeconds / 60 - playTimeHours * 60);
 			String lore = ChatColor.GOLD + "Level " + level + " " + playerClass.getName() + "\n" + data.getZone()
-					+ ChatColor.GRAY + "\n\nClick to play this character";
+					+ ChatColor.GRAY + "\nPlay time: " + playTimeHours + "H " + playTimeMinutes
+					+ "M\n\nClick to play this character";
 			itemStack = ItemFactory.createItemStack(title, lore, material);
 		}
 		itemStack.setAmount(characterSlot);
@@ -438,9 +446,21 @@ public class PlayerCharacterSelectionListener implements Listener {
 		player.sendMessage(ChatColor.GRAY + "Logging in...");
 		Inventory inventory = player.getInventory();
 		inventory.clear();
-		PlayerCharacter.registerPlayerCharacter(player, data);
+		PlayerCharacter pc = PlayerCharacter.registerPlayerCharacter(player, data);
 		player.removePotionEffect(PotionEffectType.INVISIBILITY);
 		inventory.setItem(8, OPEN_MENU_ITEM_STACK);
+		if (!pc.hasTag(OPEN_MENU_TUTORIAL_TAG)) {
+			new DelayedTask(5) {
+				@Override
+				protected void run() {
+					pc.sendMessage(ChatColor.GRAY + "[" + ChatColor.GREEN + "Tutorial" + ChatColor.GRAY + "]: "
+							+ ChatColor.WHITE + "To open your " + ChatColor.YELLOW + "Menu" + ChatColor.WHITE
+							+ ", press 9 or click the " + ChatColor.YELLOW + "Menu" + ChatColor.WHITE
+							+ " icon in your inventory.");
+				}
+			}.schedule();
+			pc.addTag(OPEN_MENU_TUTORIAL_TAG);
+		}
 	}
 
 	private void savePlayerCharacter(PlayerCharacter pc) {

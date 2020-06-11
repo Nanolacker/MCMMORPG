@@ -149,7 +149,7 @@ public class WildBoar extends NonPlayerCharacter {
 			Quests.BOARS_GALORE.getObjective(0).addProgress(pc, 1);
 		}
 		int boarFlankAmount = (int) (Math.random() * 2);
-		int tuskAmount = (int) (Math.random() * 3);
+		int tuskAmount = (int) (Math.random() * 4);
 		Items.BOAR_FLANK.drop(location, boarFlankAmount);
 		Items.BOAR_TUSK.drop(location, tuskAmount);
 		DelayedTask respawn = new DelayedTask(RESPAWN_TIME) {

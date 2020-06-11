@@ -36,12 +36,13 @@ public class PersistentPlayerCharacterDataContainer {
 	private final PlayerSkillData[] skillData;
 	private final PersistentInventory inventory;
 	private final String[] tags;
+	private final double totalPlayTime;
 
 	private PersistentPlayerCharacterDataContainer(boolean fresh, PlayerClass playerClass, String zone,
 			Location location, Location respawnLocation, int xp, int skillUpgradePoints, int currency, double maxHealth,
 			double currentHealth, double healthRegenRate, double maxMana, double currentMana, double manaRegenRate,
 			List<Quest> completedQuests, PlayerCharacterQuestData[] questData, PlayerSkillData[] skillData,
-			ItemStack[] inventoryContents, String[] tags) {
+			ItemStack[] inventoryContents, String[] tags, double totalPlayTime) {
 		this.fresh = fresh;
 		this.playerClassName = playerClass.getName();
 		this.zone = zone;
@@ -64,6 +65,7 @@ public class PersistentPlayerCharacterDataContainer {
 		this.skillData = skillData;
 		this.inventory = new PersistentInventory(inventoryContents);
 		this.tags = tags;
+		this.totalPlayTime = totalPlayTime;
 	}
 
 	/**
@@ -89,9 +91,10 @@ public class PersistentPlayerCharacterDataContainer {
 		PlayerSkillData[] skillData = pc.getSkillManager().getAllSkillData();
 		ItemStack[] inventoryContents = pc.getPlayer().getInventory().getContents();
 		String[] tags = pc.getTags();
+		double totalPlayTime = pc.getTotalPlayTime();
 		return new PersistentPlayerCharacterDataContainer(false, playerClass, zone, location, respawnLocation, xp,
 				skillUpgradePoints, currency, maxHealth, currentHealth, healthRegenRate, maxMana, currentMana,
-				manaRegenRate, completedQuests, allQuestData, skillData, inventoryContents, tags);
+				manaRegenRate, completedQuests, allQuestData, skillData, inventoryContents, tags, totalPlayTime);
 	}
 
 	/**
@@ -113,9 +116,10 @@ public class PersistentPlayerCharacterDataContainer {
 		PlayerSkillData[] skillData = {};
 		ItemStack[] inventoryContents = { startWeapon.getItemStack() };
 		String[] tags = {};
+		double totalPlayTime = 0;
 		return new PersistentPlayerCharacterDataContainer(true, playerClass, startZone, startLocation, respawnLocation,
 				xp, skillUpgradePoints, currency, maxHealth, currentHealth, healthRegenRate, maxMana, currentMana,
-				manaRegenRate, new ArrayList<>(), questData, skillData, inventoryContents, tags);
+				manaRegenRate, new ArrayList<>(), questData, skillData, inventoryContents, tags, totalPlayTime);
 	}
 
 	/**
@@ -199,6 +203,10 @@ public class PersistentPlayerCharacterDataContainer {
 
 	public String[] getTags() {
 		return tags;
+	}
+
+	public double getTotalPlayTime() {
+		return totalPlayTime;
 	}
 
 }
