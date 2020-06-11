@@ -1,11 +1,16 @@
 package com.mcmmorpg.impl.npcs;
 
+import java.util.List;
+
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Sound;
+
+import com.mcmmorpg.common.character.PlayerCharacter;
 import com.mcmmorpg.common.character.Source;
 import com.mcmmorpg.common.sound.Noise;
 import com.mcmmorpg.impl.constants.Items;
+import com.mcmmorpg.impl.constants.Quests;
 
 public class FlintonSewersBandit extends AbstractHumanEnemy {
 
@@ -36,6 +41,10 @@ public class FlintonSewersBandit extends AbstractHumanEnemy {
 		super.onDeath();
 		Location location = getLocation();
 		DEATH_NOISE.play(location);
+		List<PlayerCharacter> nearbyPcs = PlayerCharacter.getNearbyPlayerCharacters(location, 25);
+		for (PlayerCharacter pc : nearbyPcs) {
+			Quests.DRIVING_OUT_THE_BANDITS.getObjective(0).addProgress(pc, 1);
+		}
 		Items.BATTERED_MAIL_HELMET.drop(location, 0.04);
 		Items.BATTERED_MAIL_CUIRASS.drop(location, 0.04);
 		Items.BATTERED_MAIL_GREAVES.drop(location, 0.04);

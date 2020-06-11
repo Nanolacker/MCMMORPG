@@ -37,7 +37,7 @@ public class FlintonSewersNecromancer extends AbstractCultist {
 	private static final String FIREBALL = "Fireball";
 	private static final double SUMMON_UNDEAD_CHANNEL_DURATION = 8;
 	private static final double FIREBALL_DAMAGE_AMOUNT = 10;
-	private static final double FIREBALL_CHANNEL_DURATION = 6;
+	private static final double FIREBALL_CHANNEL_DURATION = 4;
 
 	private FlintonSewersUndead spawnedUndead;
 

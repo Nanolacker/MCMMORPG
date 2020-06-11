@@ -8,11 +8,11 @@
 		},
 		{
 			"goal": 1,
-			"description": "Defeat §7[§cXylphanos§7]§r at §a(x, y, z)"
+			"description": "Defeat §7[§cXylphanos§7]§r at §a(-423, 42, 52)"
 		},
 		{
 			"goal": 1,
-			"description": "Return to §7[§aCaptain Nadia§7]§r at §a(x, y, z)"
+			"description": "Return to §7[§aCaptain Nadia§7]§r at §a(-288, 43, 25)"
 		}
 	]
 }

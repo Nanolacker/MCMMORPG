@@ -16,7 +16,7 @@
 		{
 			"name": "Ice Beam",
 			"description": "Channel a line of ice shards at enemies in front of you",
-			"manaCost": 5,
+			"manaCost": 10,
 			"cooldown": 10,
 			"minimumLevel": 2,
 			"prerequisiteSkill": null,
@@ -28,8 +28,8 @@
 		{
 			"name": "Whirlwind",
 			"description": "Summon a whirlwind that damages enemies and boosts allies' movement speed",
-			"manaCost": 15,
-			"cooldown": 10,
+			"manaCost": 20,
+			"cooldown": 15,
 			"minimumLevel": 7,
 			"prerequisiteSkill": null,
 			"maximumUpgradeLevel": 3,
@@ -40,7 +40,7 @@
 		{
 			"name": "Earthquake",
 			"description": "Make the earth rumble, damaging enemies around you",
-			"manaCost": 15,
+			"manaCost": 20,
 			"cooldown": 10,
 			"minimumLevel": 7,
 			"prerequisiteSkill": "Ice Beam",
@@ -52,7 +52,7 @@
 		{
 			"name": "Restore",
 			"description": "Shoot a ball of light that heals allies on impact",
-			"manaCost": 15,
+			"manaCost": 40,
 			"cooldown": 25,
 			"minimumLevel": 13,
 			"prerequisiteSkill": "Whirlwind",
@@ -64,7 +64,7 @@
 		{
 			"name": "Shadow Void",
 			"description": "Summon a pool of darkness that consumes enemies after a short duration",
-			"manaCost": 15,
+			"manaCost": 30,
 			"cooldown": 15,
 			"minimumLevel": 13,
 			"prerequisiteSkill": "Earthquake",

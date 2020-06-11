@@ -11,6 +11,9 @@ import java.util.Set;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Sound;
+import org.bukkit.craftbukkit.v1_15_R1.entity.CraftArmorStand;
+import org.bukkit.entity.ArmorStand;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -73,10 +76,7 @@ public final class PlayerCharacter extends AbstractCharacter {
 	private static final int MAX_XP = determineMaxXp();
 	private static final Noise HURT_NOISE = new Noise(Sound.ENTITY_PLAYER_HURT);
 	private static final Noise DEATH_NOISE = new Noise(Sound.ENTITY_WITHER_SPAWN);
-	/**
-	 * Made higher than 2 so that health bar text is displayed above nampelate.
-	 */
-	private static final double HEIGHT = 2.3;
+	private static final double HEIGHT = 2;
 	private static final double MAX_DISPLACEMENT_WITHOUT_TELEPORT = 5.0;
 	private static final double INTERACT_RANGE = 4.0;
 	private static final double SPEAK_RADIUS = 25.0;
@@ -176,6 +176,8 @@ public final class PlayerCharacter extends AbstractCharacter {
 		updateXpDisplay();
 		updateHealthDisplay();
 		updateManaDisplay();
+		hidePlayerNameplate();
+		setNameplateVisible(true);
 		setHealthBarVisible(true);
 
 		if (fresh) {
@@ -451,6 +453,20 @@ public final class PlayerCharacter extends AbstractCharacter {
 		double proportion = currentMana / maxMana;
 		int foodLevel = (int) Math.ceil(proportion * 20);
 		player.setFoodLevel(foodLevel);
+	}
+
+	private void hidePlayerNameplate() {
+		// adding an armor stand passenger to a player hides their nameplate
+		Location location = getLocation();
+		ArmorStand passenger = (ArmorStand) location.getWorld().spawnEntity(location, EntityType.ARMOR_STAND);
+		((CraftArmorStand) passenger).getHandle().setInvisible(true);
+		player.addPassenger(passenger);
+	}
+
+	private void unhidePlayerNameplate() {
+		ArmorStand passenger = (ArmorStand) player.getPassengers().get(0);
+		player.removePassenger(passenger);
+		passenger.remove();
 	}
 
 	/**
@@ -901,6 +917,7 @@ public final class PlayerCharacter extends AbstractCharacter {
 	protected void onDeath() {
 		super.onDeath();
 		hitbox.setActive(false);
+		setNameplateVisible(false);
 		setHealthBarVisible(false);
 		disarm(4);
 		silence(4);
@@ -922,6 +939,7 @@ public final class PlayerCharacter extends AbstractCharacter {
 				player.teleport(respawnLocation);
 				setAlive(true);
 				hitbox.setActive(true);
+				setNameplateVisible(true);
 				setHealthBarVisible(true);
 			}
 		}.schedule();
@@ -1019,10 +1037,13 @@ public final class PlayerCharacter extends AbstractCharacter {
 		if (amount == 0) {
 			return;
 		}
+		int removedAmount = 0;
 		ItemStack itemStack = item.getItemStack();
 		Inventory inventory = player.getInventory();
 		ItemStack[] contents = inventory.getContents();
-		for (ItemStack content : contents) {
+		for (int i = 1; i < contents.length; i++) {
+			// skip weapon item stack
+			ItemStack content = contents[i];
 			if (content == null) {
 				continue;
 			}
@@ -1031,13 +1052,16 @@ public final class PlayerCharacter extends AbstractCharacter {
 			if (itemStack.equals(unitContent)) {
 				int reduction = Math.min(amount, content.getAmount());
 				amount -= reduction;
+				removedAmount += reduction;
 				content.setAmount(content.getAmount() - reduction);
 				if (amount == 0) {
 					break;
 				}
 			}
 		}
-		sendMessage(ChatColor.GRAY + "Removed " + (amount > 1 ? amount + " " : "") + item);
+		if (removedAmount > 0) {
+			sendMessage(ChatColor.GRAY + "Removed " + (removedAmount == 1 ? "" : removedAmount + " ") + item);
+		}
 	}
 
 	/**
@@ -1084,7 +1108,9 @@ public final class PlayerCharacter extends AbstractCharacter {
 	public void remove() {
 		active = false;
 		hitbox.setActive(false);
+		setNameplateVisible(false);
 		setHealthBarVisible(false);
+		unhidePlayerNameplate();
 		soundtrackPlayer.setSoundtrack(null);
 		movementSyncer.setEnabled(false);
 		pcs.remove(this);

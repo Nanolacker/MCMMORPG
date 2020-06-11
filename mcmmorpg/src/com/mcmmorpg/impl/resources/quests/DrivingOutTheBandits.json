@@ -1,10 +1,10 @@
 {
-	"name": "Driving out the Bandits",
+	"name": "Driving Out the Bandits",
 	"level": 8,
 	"objectives": [
 		{
-			"goal": 15,
-			"description": "Slay 15 §7[§cBandit§7]"
+			"goal": 10,
+			"description": "Slay 10 §7[§cBandit§7]"
 		},
 		{
 			"goal": 3,

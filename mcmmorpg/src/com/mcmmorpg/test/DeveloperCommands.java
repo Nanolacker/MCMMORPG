@@ -25,6 +25,7 @@ import com.mcmmorpg.common.ui.CommandManager;
 import com.mcmmorpg.common.util.CardinalDirection;
 import com.mcmmorpg.common.util.Debug;
 import com.mcmmorpg.common.util.IOUtility;
+import com.mcmmorpg.common.util.StringUtility;
 import com.mcmmorpg.impl.constants.RespawnLocations;
 
 /**
@@ -119,12 +120,47 @@ public class DeveloperCommands {
 			protected void execute(CommandSender sender, String[] args) {
 				Player player = (Player) sender;
 				PlayerCharacter pc = PlayerCharacter.forPlayer(player);
+				String sAmount = args[args.length - 1];
+				boolean lastTokenIsNumeric = StringUtility.isNumeric(sAmount);
+				int amount;
+				int lastItemTokenIndex;
+				if (lastTokenIsNumeric) {
+					amount = Integer.parseInt(sAmount);
+					lastItemTokenIndex = args.length - 2;
+				} else {
+					amount = 1;
+					lastItemTokenIndex = args.length - 1;
+				}
 				String itemName = args[0];
-				for (int i = 1; i < args.length; i++) {
+				for (int i = 1; i <= lastItemTokenIndex; i++) {
 					itemName += " " + args[i];
 				}
 				Item item = Item.forName(itemName);
-				pc.giveItem(item);
+				pc.giveItem(item, amount);
+			}
+		};
+		Command removeItem = new Command("removeitem") {
+			@Override
+			protected void execute(CommandSender sender, String[] args) {
+				Player player = (Player) sender;
+				PlayerCharacter pc = PlayerCharacter.forPlayer(player);
+				String sAmount = args[args.length - 1];
+				boolean lastTokenIsNumeric = StringUtility.isNumeric(sAmount);
+				int amount;
+				int lastItemTokenIndex;
+				if (lastTokenIsNumeric) {
+					amount = Integer.parseInt(sAmount);
+					lastItemTokenIndex = args.length - 2;
+				} else {
+					amount = 1;
+					lastItemTokenIndex = args.length - 1;
+				}
+				String itemName = args[0];
+				for (int i = 1; i <= lastItemTokenIndex; i++) {
+					itemName += " " + args[i];
+				}
+				Item item = Item.forName(itemName);
+				pc.removeItem(item, amount);
 			}
 		};
 		Command saveLocation = new Command("savelocation") {
@@ -197,7 +233,7 @@ public class DeveloperCommands {
 				pc.setLocation(location);
 			}
 		};
-		
+
 		CommandManager.registerCommand(printLocation);
 		CommandManager.registerCommand(heal);
 		CommandManager.registerCommand(restoreMana);
@@ -205,6 +241,7 @@ public class DeveloperCommands {
 		CommandManager.registerCommand(startQuest);
 		CommandManager.registerCommand(completeQuest);
 		CommandManager.registerCommand(giveItem);
+		CommandManager.registerCommand(removeItem);
 		CommandManager.registerCommand(saveLocation);
 		CommandManager.registerCommand(direction);
 		CommandManager.registerCommand(removeEntities);

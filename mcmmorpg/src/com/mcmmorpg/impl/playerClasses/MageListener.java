@@ -31,6 +31,8 @@ import com.mcmmorpg.common.time.RepeatingTask;
 import com.mcmmorpg.common.util.BukkitUtility;
 import com.mcmmorpg.impl.constants.PlayerClasses;
 
+import net.md_5.bungee.api.ChatColor;
+
 /**
  * Class for registering events for the mage player class.
  */
@@ -42,8 +44,8 @@ public class MageListener implements Listener {
 			2.3, 2.4, 2.5, 2.7, 2.8, 2.9, 3 };
 	private static final double[] MAX_MANA = { 15.0, 19.0, 23.0, 27.0, 31.0, 35.0, 39.0, 43.0, 47.0, 51.0, 55.0, 59.0,
 			63.0, 67.0, 71.0, 75.0, 79.0, 83.0, 87.0, 91.0 };
-	private static final double[] MANA_REGEN_RATE = { 2.0, 2.5, 3.0, 3.5, 4.0, 4.5, 5.0, 5.5, 6.0, 6.5, 7.0, 7.5, 8.0,
-			8.5, 9.0, 9.5, 10.0, 10.5, 11.0, 11.5 };
+	private static final double[] MANA_REGEN_RATE = { 2.0, 2.1, 2.2, 2.3, 2.4, 2.5, 2.6, 2.7, 2.8, 2.9, 3, 3.1, 3.2,
+			3.3, 3.4, 3.5, 3.6, 3.7, 3.8, 3.9 };
 	public static final double STANDARD_SILENCE_DURATION = 1;
 
 	private static final Noise FIREBALL_CONJURE_NOISE = new Noise(Sound.ENTITY_ZOMBIE_VILLAGER_CURE);
@@ -52,7 +54,7 @@ public class MageListener implements Listener {
 	private static final Noise ICE_BEAM_CHANNEL_NOISE = new Noise(Sound.ENTITY_GENERIC_DRINK, 0.25f, 2f);
 	private static final Noise ICE_BEAM_HIT_NOISE = new Noise(Sound.BLOCK_GLASS_BREAK);
 	private static final Noise WHIRLWIND_AMBIENT_NOISE = new Noise(Sound.ENTITY_WITHER_DEATH);
-	private static final Noise WHIRLWIND_SPEED_NOISE = new Noise(Sound.ENTITY_WITHER_SHOOT, 1, 2);
+	private static final Noise WHIRLWIND_HIT_NOISE = new Noise(Sound.ENTITY_WITHER_SHOOT, 1, 2);
 	private static final Noise EARTHQUAKE_NOISE = new Noise(Sound.BLOCK_GRAVEL_FALL, 1, 0.5f);
 	private static final Noise RESTORE_USE_NOISE = new Noise(Sound.BLOCK_ENCHANTMENT_TABLE_USE);
 	private static final Noise RESTORE_HEAL_NOISE = new Noise(Sound.BLOCK_LAVA_EXTINGUISH);
@@ -189,7 +191,7 @@ public class MageListener implements Listener {
 	}
 
 	private void useIceBeam(PlayerCharacter pc) {
-		double damagePerTick = 0.25 * pc.getWeapon().getBaseDamage() * iceBeam.getUpgradeLevel(pc)
+		double damagePerTick = 0.75 * pc.getWeapon().getBaseDamage() * iceBeam.getUpgradeLevel(pc)
 				+ 0.5 * pc.getLevel();
 		double duration = 4;
 		double period = 0.1;
@@ -252,7 +254,8 @@ public class MageListener implements Listener {
 	}
 
 	private void useWhirlwind(PlayerCharacter pc) {
-		double damagePerTick = 1.25 * pc.getWeapon().getBaseDamage() * whirlwind.getUpgradeLevel(pc) + pc.getLevel();
+		double damagePerTick = 0.75 * pc.getWeapon().getBaseDamage() * whirlwind.getUpgradeLevel(pc)
+				+ 0.25 * pc.getLevel();
 		Location targetTemp = pc.getTargetLocation(15);
 		Location location = pc.getLocation().add(0, 1.5, 0);
 		Ray ray = new Ray(location, location.getDirection(), 15);
@@ -272,7 +275,7 @@ public class MageListener implements Listener {
 			}
 		}
 		final Location target = targetTemp;
-		Collider hitbox = new Collider(targetTemp.clone().add(0, 2, 0), 3, 5, 3) {
+		Collider hitbox = new Collider(targetTemp.clone().add(0, 2, 0), 4, 5, 4) {
 			@Override
 			protected void onCollisionEnter(Collider other) {
 				if (other instanceof CharacterCollider) {
@@ -282,7 +285,7 @@ public class MageListener implements Listener {
 							int speedAmplifier = whirlwind.getUpgradeLevel(pc);
 							PotionEffect speed = new PotionEffect(PotionEffectType.SPEED, 8 * 20, speedAmplifier);
 							((PlayerCharacter) pc).getPlayer().addPotionEffect(speed);
-							WHIRLWIND_SPEED_NOISE.play(target);
+							WHIRLWIND_HIT_NOISE.play(target);
 						}
 					}
 				}
@@ -302,6 +305,7 @@ public class MageListener implements Listener {
 						AbstractCharacter character = ((CharacterCollider) collider).getCharacter();
 						if (!character.isFriendly(pc)) {
 							character.damage(damagePerTick, pc);
+							WHIRLWIND_HIT_NOISE.play(character.getLocation());
 						}
 					}
 				}
@@ -319,18 +323,19 @@ public class MageListener implements Listener {
 	private void drawWhirlwind(Location location) {
 		double height = 0;
 		double radius = 0.5;
-		for (double t = 0; t < 50; t += 0.05) {
+		for (double t = 0; t < 50; t += 0.4) {
 			double x = radius * Math.cos(t);
 			double z = radius * Math.sin(t);
 			Location particleLocation = location.clone().add(x, height, z);
 			particleLocation.getWorld().spawnParticle(Particle.CLOUD, particleLocation, 0);
-			height += 0.005;
-			radius += 0.0025;
+			height += 0.04;
+			radius += 0.016;
 		}
 	}
 
 	private void useEarthquake(PlayerCharacter pc) {
-		double damagePerTick = 0.75 * pc.getWeapon().getBaseDamage() * earthquake.getUpgradeLevel(pc) + pc.getLevel();
+		double damagePerTick = 0.75 * pc.getWeapon().getBaseDamage() * earthquake.getUpgradeLevel(pc)
+				+ 0.25 * pc.getLevel();
 		double size = 15;
 		int particleCount = 100;
 		Location center = pc.getLocation();
@@ -380,7 +385,7 @@ public class MageListener implements Listener {
 		double healProportion = 0.15 + 0.075 * restore.getUpgradeLevel(pc);
 		double size = 4;
 		int projectileParticleCount = 10;
-		int boxParticleCount = 75;
+		int boxParticleCount = 100;
 		Location start = pc.getHandLocation();
 		RESTORE_USE_NOISE.play(start);
 		Vector velocity = start.getDirection().multiply(4);
@@ -408,11 +413,10 @@ public class MageListener implements Listener {
 				if (hasHitTarget) {
 					return;
 				}
-				hasHitTarget = true;
 				if (hit instanceof CharacterCollider) {
 					AbstractCharacter hitCharacter = ((CharacterCollider) hit).getCharacter();
 					if (hitCharacter != pc && hitCharacter.isFriendly(pc)) {
-						RESTORE_HEAL_NOISE.play(hitCharacter.getLocation());
+						hasHitTarget = true;
 						remove();
 					}
 				}
@@ -422,15 +426,25 @@ public class MageListener implements Listener {
 			public void remove() {
 				super.remove();
 				Location location = getLocation();
-				new Noise(Sound.BLOCK_LAVA_EXTINGUISH).play(location);
 				Collider hitbox = new Collider(location.clone().add(0, 1, 0), size, size, size) {
 					@Override
 					protected void onCollisionEnter(Collider other) {
 						if (other instanceof CharacterCollider) {
 							AbstractCharacter toHeal = ((CharacterCollider) other).getCharacter();
 							if (toHeal.isFriendly(pc)) {
-								double healAmount = healProportion * pc.getMaxHealth();
+								double healAmount = healProportion * toHeal.getMaxHealth();
 								toHeal.heal(healAmount, pc);
+								if (toHeal instanceof PlayerCharacter) {
+									if (toHeal == pc) {
+										pc.sendMessage(ChatColor.GRAY + "Recovered " + ChatColor.RED + (int) healAmount
+												+ " HP");
+									} else {
+										((PlayerCharacter) toHeal).sendMessage(
+												ChatColor.GREEN + pc.getName() + ChatColor.GRAY + " healed you for "
+														+ ChatColor.RED + (int) healAmount + " HP");
+									}
+								}
+								RESTORE_HEAL_NOISE.play(location);
 							}
 						}
 					}

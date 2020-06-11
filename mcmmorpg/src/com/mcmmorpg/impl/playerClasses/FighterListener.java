@@ -38,7 +38,8 @@ public class FighterListener implements Listener {
 			2.3, 2.4, 2.5, 2.7, 2.8, 2.9, 3 };
 	private static final double[] MAX_MANA = { 10.0, 12.0, 14.0, 16.0, 18.0, 20.0, 22.0, 24.0, 26.0, 28.0, 30.0, 32.0,
 			34.0, 36.0, 38.0, 40.0, 42.0, 44.0, 46.0, 48.0 };
-	private static final double[] MANA_REGEN_RATE = { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 };
+	private static final double[] MANA_REGEN_RATE = { 1, 1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 1.7, 1.8, 1.9, 2, 2.1, 2.2, 2.3,
+			2.4, 2.5, 2.6, 2.7, 2.8, 2.9 };
 	private static final double STANDARD_SILENCE_DURATION = 1;
 
 	private static final Noise WOOSH_NOISE = new Noise(Sound.ENTITY_WITHER_SHOOT, 0.7f, 2);
@@ -275,6 +276,16 @@ public class FighterListener implements Listener {
 						double healAmount = healProportion * character.getMaxHealth();
 						character.heal(healAmount, pc);
 						INSPIRE_HEAL_NOISE.play(character.getLocation());
+						if (character instanceof PlayerCharacter) {
+							if (character == pc) {
+								pc.sendMessage(
+										ChatColor.GRAY + "Recovered " + ChatColor.RED + (int) healAmount + " HP");
+							} else {
+								((PlayerCharacter) character)
+										.sendMessage(ChatColor.GREEN + pc.getName() + ChatColor.GRAY
+												+ " healed you for " + ChatColor.RED + (int) healAmount + " HP");
+							}
+						}
 					}
 				}
 			}
