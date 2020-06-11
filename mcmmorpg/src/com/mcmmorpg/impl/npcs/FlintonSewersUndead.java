@@ -15,7 +15,7 @@ public class FlintonSewersUndead extends AbstractUndead {
 
 	@Override
 	protected double maxHealth() {
-		return 75;
+		return 200;
 	}
 
 	@Override

@@ -1,4 +1,4 @@
-package com.mcmmorpg.impl.resourceLoad;
+package com.mcmmorpg.impl.load;
 
 import java.io.File;
 

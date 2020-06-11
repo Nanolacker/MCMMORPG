@@ -32,7 +32,7 @@ import com.mcmmorpg.impl.locations.FlintonSewersListener;
 
 public class SmallGelatinousCube extends NonPlayerCharacter {
 
-	private static final int LEVEL = 11;
+	private static final int LEVEL = 8;
 	private static final int MAX_HEALTH = 50;
 	private static final int XP_REWARD = 5;
 	private static final double BASIC_ATTACK_DAMAGE = 4;

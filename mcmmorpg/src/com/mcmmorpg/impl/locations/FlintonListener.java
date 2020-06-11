@@ -13,7 +13,10 @@ import com.mcmmorpg.impl.constants.Zones;
 import com.mcmmorpg.impl.npcs.FlintonMayor;
 import com.mcmmorpg.impl.npcs.FlintonMerchant;
 import com.mcmmorpg.impl.npcs.FlintonVillager;
-import com.mcmmorpg.impl.npcs.MasterAlchemist;
+import com.mcmmorpg.impl.npcs.Guard;
+import com.mcmmorpg.impl.npcs.Lumberjack;
+import com.mcmmorpg.impl.npcs.FlintonAlchemistAssistant;
+import com.mcmmorpg.impl.npcs.FlintonMasterAlchemist;
 
 /**
  * Listener for the village of Flinton that also sets the bounds of the area and
@@ -78,6 +81,25 @@ public class FlintonListener implements Listener {
 			new Location(Worlds.ELADRADOR, -229.979696, 79.000000, 137.000931, -91.055534f, -0.708349f) };
 	private static final Location MASTER_ALCHEMIST_LOCATION = new Location(Worlds.ELADRADOR, -318.561556, 82.000000,
 			127.499268, 269.345947f, 1.029392f);
+	private static final Location[] ALCHEMIST_ASSISTANT_LOCATIONS = {
+			new Location(Worlds.ELADRADOR, -322.556284, 82.000000, 136.691917, 0.942230f, 42.039326f),
+			new Location(Worlds.ELADRADOR, -327.503884, 82.000000, 129.795435, 179.578735f, 31.960625f),
+			new Location(Worlds.ELADRADOR, -321.131807, 82.000000, 120.345122, 269.243530f, 27.442583f) };
+	private static final Location[] LUMBERJACK_LOCATIONS = {
+			new Location(Worlds.ELADRADOR, -360.410651, 82.000000, 46.208603, 241.252609f, -2.446069f),
+			new Location(Worlds.ELADRADOR, -353.479706, 82.000000, 54.090225, 237.082169f, 3.114591f),
+			new Location(Worlds.ELADRADOR, -380.441142, 82.000000, 29.466044, 179.042770f, 11.108040f),
+			new Location(Worlds.ELADRADOR, -376.669086, 82.000000, 51.514032, -112.197029f, 0.681785f) };
+	private static final Location[] GUARD_LOCATIONS = {
+			new Location(Worlds.ELADRADOR, -159.944872, 69.000000, 58.919989, 167.011627f, 22.937960f),
+			new Location(Worlds.ELADRADOR, -169.988064, 74.000000, 115.427090, -25.526318f, 20.852716f),
+			new Location(Worlds.ELADRADOR, -211.908622, 79.000000, 123.071219, 235.824875f, 21.200245f),
+			new Location(Worlds.ELADRADOR, -284.457028, 82.000000, 112.982324, -6.759010f, 15.292019f),
+			new Location(Worlds.ELADRADOR, -303.933672, 82.000000, 161.089479, -44.641068f, 19.810062f),
+			new Location(Worlds.ELADRADOR, -296.876659, 82.000000, 77.345879, -260.116486f, 22.937943f),
+			new Location(Worlds.ELADRADOR, -324.087068, 82.000000, 85.608782, -69.664360f, 2.432992f),
+			new Location(Worlds.ELADRADOR, -389.047747, 82.000000, 6.156181, -277.840942f, 17.377245f),
+			new Location(Worlds.ELADRADOR, -394.365479, 82.000000, 3.015291, -277.840942f, 17.377245f) };
 
 	public FlintonListener() {
 		setBounds();
@@ -131,7 +153,18 @@ public class FlintonListener implements Listener {
 			Location location = MERCHANT_LOCATIONS[i];
 			new FlintonMerchant(location, i).setAlive(true);
 		}
-		new MasterAlchemist(MASTER_ALCHEMIST_LOCATION).setAlive(true);
+		new FlintonMasterAlchemist(MASTER_ALCHEMIST_LOCATION).setAlive(true);
+		for (Location location : ALCHEMIST_ASSISTANT_LOCATIONS) {
+			new FlintonAlchemistAssistant(location).setAlive(true);
+		}
+		for (Location location : LUMBERJACK_LOCATIONS) {
+			new Lumberjack(location).setAlive(true);
+		}
+		for (int i = 0; i < GUARD_LOCATIONS.length; i++) {
+			Location location = GUARD_LOCATIONS[i];
+			boolean male = i % 2 == 0;
+			new Guard(location, male).setAlive(true);
+		}
 	}
 
 }

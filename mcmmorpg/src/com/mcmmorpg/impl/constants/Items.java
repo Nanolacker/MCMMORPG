@@ -133,7 +133,7 @@ public class Items {
 	/**
 	 * Quest item dropped by wild boars.
 	 */
-	public static final Item BOAR_FLANK = Item.forName("Boar Flank");
+	public static final Item BOAR_TUSK = Item.forName("Boar Tusk");
 
 	/**
 	 * Key required to open the west portcullis in Flinton Sewers.
@@ -179,5 +179,9 @@ public class Items {
 	 * Consumable that makes player characters drunk.
 	 */
 	public static final ConsumableItem MELCHER_MEAD = (ConsumableItem) Item.forName("Melcher Mead");
+	/**
+	 * Food item dropped by wild boars.
+	 */
+	public static final ConsumableItem BOAR_FLANK = (ConsumableItem) Item.forName("Boar Flank");
 
 }

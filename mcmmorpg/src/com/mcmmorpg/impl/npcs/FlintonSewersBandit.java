@@ -9,10 +9,10 @@ import com.mcmmorpg.impl.constants.Items;
 
 public class FlintonSewersBandit extends AbstractHumanEnemy {
 
-	private static final double MAX_HEALTH = 30;
-	private static final double DAMAGE_AMOUNT = 5;
+	private static final int LEVEL = 9;
+	private static final double MAX_HEALTH = 200;
+	private static final double DAMAGE_AMOUNT = 10;
 	private static final int XP_REWARD = 10;
-	private static final int LEVEL = 11;
 	private static final double RESPAWN_TIME = 60;
 	private static final int SPEED = 2;
 	private static final String TEXTURE_DATA = "ewogICJ0aW1lc3RhbXAiIDogMTU5MDI4ODE5ODY1MSwKICAicHJvZmlsZUlkIiA6ICI0NDAzZGM1NDc1YmM0YjE1YTU0OGNmZGE2YjBlYjdkOSIsCiAgInByb2ZpbGVOYW1lIiA6ICJGbGF3Q3JhQm90MDEiLAogICJzaWduYXR1cmVSZXF1aXJlZCIgOiB0cnVlLAogICJ0ZXh0dXJlcyIgOiB7CiAgICAiU0tJTiIgOiB7CiAgICAgICJ1cmwiIDogImh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYzg0YmY0Nzk4NTQ2MDdiNmFhM2I0ZjIyOGE4MjJiNzk4ZmUzMTg2Yjg2MWQzNDZlYTYwODdiZjFkYWRmNzQ1YyIKICAgIH0KICB9Cn0=";

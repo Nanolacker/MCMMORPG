@@ -1,0 +1,14 @@
+{
+	"name": "Boars Galore",
+	"level": 10,
+	"objectives": [
+		{
+			"goal": 20,
+			"description": "Slay 20 §7[§eWild Boar§7]§r at §a(-66, 69, 4)"
+		},
+		{
+			"goal": 1,
+			"description": "Return 20 §7[Boar Flank§7]§r to §7[§aMaster Alchemist§7]§f at §a(-319, 82, 127)"
+		}
+	]
+}

@@ -60,7 +60,7 @@ public class ItemListener implements Listener {
 		Vector direction = start.getDirection();
 		Location particleLocation = start.clone().add(direction.clone().multiply(2));
 		particleLocation.getWorld().spawnParticle(Particle.SWEEP_ATTACK, particleLocation, 0);
-		Ray ray = new Ray(start, direction, 5);
+		Ray ray = new Ray(start, direction, 3);
 		Raycast raycast = new Raycast(ray, CharacterCollider.class);
 		Collider[] hits = raycast.getHits();
 		boolean missed = true;
@@ -99,7 +99,7 @@ public class ItemListener implements Listener {
 		Vector direction = start.getDirection();
 		Location particleLocation = start.clone().add(direction.clone().multiply(2));
 		particleLocation.getWorld().spawnParticle(Particle.SWEEP_ATTACK, particleLocation, 0);
-		Ray ray = new Ray(start, direction, 5);
+		Ray ray = new Ray(start, direction, 3);
 		Raycast raycast = new Raycast(ray, CharacterCollider.class);
 		Collider[] hits = raycast.getHits();
 		boolean missed = true;
@@ -120,7 +120,7 @@ public class ItemListener implements Listener {
 	 * Handles the use of a mage wand weapon.
 	 */
 	private void useMageWand(PlayerCharacter pc, Weapon weapon, Particle particleEffect) {
-		double damageAmount = (weapon.getBaseDamage() + pc.getLevel()) * 0.75;
+		double damageAmount = (weapon.getBaseDamage() + pc.getLevel());
 		double maxDistance = 15;
 		Location crosshair = pc.getLocation().add(0, 1.5, 0);
 		Ray hitDetection = new Ray(crosshair, crosshair.getDirection(), 15);
@@ -143,7 +143,7 @@ public class ItemListener implements Listener {
 		Ray beam = new Ray(start, end);
 		beam.draw(particleEffect, 1);
 		WAND_FIRE_NOISE.play(start);
-		pc.disarm(0.75);
+		pc.disarm(0.5);
 	}
 
 	/**
@@ -167,6 +167,8 @@ public class ItemListener implements Listener {
 			useStaleBread(pc);
 		} else if (consumable == Items.GARLIC_BREAD) {
 			useGarlicBread(pc);
+		} else if (consumable == Items.BOAR_FLANK) {
+			useBoarFlank(pc);
 		}
 	}
 
@@ -211,7 +213,16 @@ public class ItemListener implements Listener {
 		int healAmount = 15;
 		pc.heal(healAmount, pc);
 		pc.sendMessage(ChatColor.GRAY + "Recovered " + ChatColor.RED + (int) healAmount + " HP");
-
 	}
 
+	/**
+	 * Handles the comsumption of boar flank, healing the player character a small
+	 * amount.
+	 */
+	private void useBoarFlank(PlayerCharacter pc) {
+		EAT_NOISE.play(pc);
+		int healAmount = 30;
+		pc.heal(healAmount, pc);
+		pc.sendMessage(ChatColor.GRAY + "Recovered " + ChatColor.RED + (int) healAmount + " HP");
+	}
 }

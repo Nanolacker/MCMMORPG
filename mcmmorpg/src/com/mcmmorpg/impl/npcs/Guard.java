@@ -14,6 +14,8 @@ public class Guard extends StaticHuman {
 	private static final String MALE_TEXTURE_SIGNATURE = "EQ6XD3XObm5Z5zkTRPsFQXKeNiKngeQz19trIYkzYqfPPvXH6xOWyIkH9GT3tKqTNYNIs3kybg1ISu+rXkEgWznF1T9cHR8ylwtD/X99szXpbDWsOVI+WPVewgkflefsHxSwgGeIc7wXPcZF4xXuHppiJ06MOhzG8tHOfKGFmC22bwwo+kEY/+wxbYuZqCNvchzKwJZVoQFj9rxDoIaAz6BhQHfTo+dw/GnjU5E8FHk1LM61VU8mcjSiaSglPa8D1J18NSfYOz8VtkfgA87loJsxTsiupT8Ca7+ej2VsvYPETkH4kwOqo7Jr08cavwJhh1HY9OaVfhHFVM7SCpYbeYlDWfzgvRBbfENcrudUXFkJ3YuF/bhDtQK5PSYfltVanSglHYlF8iNnOa0iO5ar3/D0GuJZmjVmVpUbvlYQ9uawYTfSGIO+kjKj//qewW7EYp2x6C+qlN/JqmUw7j7Jz+IN5VfcORS0ByQnZPDI1xGI4jr3jbLRPlm6YesywDv3BceT6PAfNWygRl/Rf8MaWYdXWdz6gJsEyDZsPU6xNrOAVPxVM1I5lMdr77S9AU9mTADlK3Li+/cScEspKbpeEaKIeqbKNEcCZe9zKV3UCFcV1rYJfPBB+vagrC6xO1nHc1C9rJXP4vdNMIhoabvFIx4lM5cCadoGMhtuVIjkQO4=";
 	private static final String FEMALE_TEXTURE_DATA = "ewogICJ0aW1lc3RhbXAiIDogMTU5MDUzMDcyMTIyOCwKICAicHJvZmlsZUlkIiA6ICI3MmNiMDYyMWU1MTA0MDdjOWRlMDA1OTRmNjAxNTIyZCIsCiAgInByb2ZpbGVOYW1lIiA6ICJNb3M5OTAiLAogICJzaWduYXR1cmVSZXF1aXJlZCIgOiB0cnVlLAogICJ0ZXh0dXJlcyIgOiB7CiAgICAiU0tJTiIgOiB7CiAgICAgICJ1cmwiIDogImh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMzYyODRkMTdmYWQ5NDhkMDhmNDU3OTNiOGY2YWE5YzcwNWFlZTQ0YTBlOTYxZWM4Zjg5MDE2NDY5MjczOTE3YSIKICAgIH0KICB9Cn0=";
 	private static final String FEMALE_TEXTURE_SIGNATURE = "DHPMPxP88LtjQEOkNbemcVnOWd/piuGjpB9lKnr1KwsT+S+d9+UPeISSgZFVunVduwbmT2NnU+AuUfiBxm4MwT8j9wad/9ZtBT/JKII1DTzLyaFW7K0nSwefpuiK2VMjyQ1AXszHS8UuFVhTNd9QfRmSJpaVldh0l/o00xpI8C8N4A/eMU5P6mtQm3DSisZY3AfvpvfXBzE6tvBR4ivZ2wGSQtTBK8tbowWs1ahf8hsAINE6FAHM/BwTVnqCKBUYcBXFOaq/6EI0IMHPwXPa2prOiQxDWaQsPb4WE4WKuT1qxrFfixCe2i5B4h3QuLYVNcjgnj3UFpbcO1disBcmOQP97EcelzOShzWUs3gDgnWpKZc5VBI3fexSKI7fBcUz64RBed45k9dN2f/BFbEhrbEdn//UqHHr/eT3kD24+/n2N6ZHjfGJ9ONY0e/UFW+GGbbhjZ22HDyNe8NEstAuWZvBwqeYCqzd8wal53zqsqhq75o8Shyc9GQ2eCNV/PFmQksk7NUkIrjU3bj3lL+fpWfuFQYCYatOndQ8oOHbTlZMTcRqNp/hUNVMkDmZGz0azuFTUQsU3F0ly5IwThvXPwGvWbSG1ysxfx4ig9UnDQeF908EFEq8eNJWUtdXTGX7ZSrrxE6tvA1oTWZWh6UJXI1t/T++W7mUXfPb6a2AHQw=";
+	private static final String[] DIALOGUE_OPTIONS = { "I'm on duty right now.", "I'm here to protect.",
+			"I'm a bit busy right now." };
 	private static final Noise MALE_SPEAK_NOISE = new Noise(Sound.ENTITY_VILLAGER_AMBIENT, 1, 0.75f);
 	private static final Noise FEMALE_SPEAK_NOISE = new Noise(Sound.ENTITY_VILLAGER_AMBIENT, 1, 1.25f);
 
@@ -27,7 +29,9 @@ public class Guard extends StaticHuman {
 
 	@Override
 	protected void onInteract(PlayerCharacter pc) {
-		say("Greetings.", pc);
+		int i = (int) (Math.random() * DIALOGUE_OPTIONS.length);
+		String dialogue = DIALOGUE_OPTIONS[i];
+		say(dialogue, pc);
 	}
 
 	@Override

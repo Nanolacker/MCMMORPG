@@ -1,6 +1,7 @@
 package com.mcmmorpg.impl.npcs;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.bukkit.ChatColor;
@@ -17,7 +18,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
-import org.bukkit.util.Vector;
 
 import com.mcmmorpg.common.character.CharacterCollider;
 import com.mcmmorpg.common.character.MovementSynchronizer;
@@ -30,9 +30,14 @@ import com.mcmmorpg.common.sound.Noise;
 import com.mcmmorpg.common.time.DelayedTask;
 import com.mcmmorpg.common.util.BukkitUtility;
 import com.mcmmorpg.impl.constants.Items;
+import com.mcmmorpg.impl.constants.Quests;
 
 public class WildBoar extends NonPlayerCharacter {
 
+	private static final int LEVEL = 10;
+	private static final double MAX_HEALTH = 500;
+	private static final double DAMAGE_AMOUNT = 15;
+	private static final int XP_REWARD = 20;
 	private static final double RESPAWN_TIME = 60;
 	private static final Noise DAMAGE_NOISE = new Noise(Sound.ENTITY_PIG_HURT, 1, 0.5f);
 	private static final Noise DEATH_NOISE = new Noise(Sound.ENTITY_PIG_DEATH, 1, 0.5f);
@@ -59,37 +64,21 @@ public class WildBoar extends NonPlayerCharacter {
 						if (pc == null) {
 							return;
 						}
-						pc.damage(boar.damageAmount(), boar);
+						pc.damage(DAMAGE_AMOUNT, boar);
 					}
-				} else if (aiMap.containsKey(damaged)) {
-					DelayedTask cancelKnockback = new DelayedTask(0.1) {
-						@Override
-						protected void run() {
-							damaged.setVelocity(new Vector());
-						}
-					};
-					cancelKnockback.schedule();
 				}
 			}
 		};
 		EventManager.registerEvents(listener);
 	}
 
-	public WildBoar(int level, Location spawnLocation) {
-		super(ChatColor.YELLOW + "Wild Boar", level, spawnLocation);
-		super.setMaxHealth(maxHealth());
-		super.setHeight(1);
+	public WildBoar(Location spawnLocation) {
+		super(ChatColor.YELLOW + "Wild Boar", LEVEL, spawnLocation);
+		super.setMaxHealth(MAX_HEALTH);
+		super.setHeight(1.25);
 		this.spawnLocation = spawnLocation;
 		hitbox = new CharacterCollider(this, spawnLocation.clone().add(0, 0.5, 0), 2, 1, 2);
 		aiSyncer = new MovementSynchronizer(this, MovementSynchronizerMode.CHARACTER_FOLLOWS_ENTITY);
-	}
-
-	private double maxHealth() {
-		return 10 + 2 * getLevel();
-	}
-
-	private double damageAmount() {
-		return getLevel() * 2;
 	}
 
 	@Override
@@ -112,6 +101,7 @@ public class WildBoar extends NonPlayerCharacter {
 		ai.setRemoveWhenFarAway(false);
 		aiSyncer.setEntity(ai);
 		aiSyncer.setEnabled(true);
+		aiMap.put(ai, this);
 	}
 
 	@Override
@@ -121,13 +111,16 @@ public class WildBoar extends NonPlayerCharacter {
 		aiSyncer.setEnabled(false);
 		entity.remove();
 		ai.remove();
+		aiMap.remove(ai);
 	}
 
 	@Override
 	public void setLocation(Location location) {
 		super.setLocation(location);
 		hitbox.setCenter(location.clone().add(0, 0.5, 0));
-		entity.teleport(location);
+		if (isSpawned()) {
+			entity.teleport(location);
+		}
 	}
 
 	@Override
@@ -150,8 +143,15 @@ public class WildBoar extends NonPlayerCharacter {
 		Location location = getLocation();
 		DEATH_NOISE.play(location);
 		location.getWorld().spawnParticle(Particle.CLOUD, location, 10);
-		PlayerCharacter.distributeXp(location, 25, getXpToGrant());
-		Items.BOAR_FLANK.drop(location, 1);
+		PlayerCharacter.distributeXp(location, 25, XP_REWARD);
+		List<PlayerCharacter> nearbyPcs = PlayerCharacter.getNearbyPlayerCharacters(location, 25);
+		for (PlayerCharacter pc : nearbyPcs) {
+			Quests.BOARS_GALORE.getObjective(0).addProgress(pc, 1);
+		}
+		int boarFlankAmount = (int) (Math.random() * 2);
+		int tuskAmount = (int) (Math.random() * 3);
+		Items.BOAR_FLANK.drop(location, boarFlankAmount);
+		Items.BOAR_TUSK.drop(location, tuskAmount);
 		DelayedTask respawn = new DelayedTask(RESPAWN_TIME) {
 			@Override
 			protected void run() {
@@ -159,10 +159,6 @@ public class WildBoar extends NonPlayerCharacter {
 			}
 		};
 		respawn.schedule();
-	}
-
-	private int getXpToGrant() {
-		return 5 + getLevel() * 2;
 	}
 
 }

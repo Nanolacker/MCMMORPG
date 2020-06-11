@@ -28,7 +28,12 @@ public class Lumberjack extends StaticHuman {
 		int i = (int) (Math.random() * DIALOGUE_OPTIONS.length);
 		String dialogue = DIALOGUE_OPTIONS[i];
 		say(dialogue, pc);
-		SPEAK_NOISE.play(pc);
+	}
+
+	@Override
+	public void say(String dialogue, PlayerCharacter recipient) {
+		super.say(dialogue, recipient);
+		SPEAK_NOISE.play(recipient);
 	}
 
 }

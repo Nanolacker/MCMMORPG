@@ -63,5 +63,10 @@ public class Quests {
 	 * Xylphanos.
 	 */
 	public static final Quest THREAT_LEVEL_GOD = Quest.forName("Threat Level God");
+	/**
+	 * Quest that has the player collect boar tusk for the master alchemist in
+	 * Flinton.
+	 */
+	public static final Quest BOARS_GALORE = Quest.forName("Boars Galore");
 
 }

@@ -117,14 +117,14 @@ public class MageListener implements Listener {
 	}
 
 	private void useFireball(PlayerCharacter pc) {
-		double damageAmount = 5 * pc.getWeapon().getBaseDamage() * fireball.getUpgradeLevel(pc) + 3 * pc.getLevel();
+		double damageAmount = 4 * pc.getWeapon().getBaseDamage() * fireball.getUpgradeLevel(pc) + 3 * pc.getLevel();
 		double range = 15;
 		double hitSize = 0.85;
 		Location start = pc.getHandLocation().subtract(0, 1, 0);
 		Vector lookDirection = start.getDirection();
 		start.add(lookDirection).add(0, 1, 0);
 		FIREBALL_CONJURE_NOISE.play(start);
-		Vector velocity = lookDirection.multiply(10);
+		Vector velocity = lookDirection.multiply(10.5);
 		// ensure we don't shoot through walls
 		Location end = pc.getTargetLocation(range);
 		double maxDistance = start.distance(end);

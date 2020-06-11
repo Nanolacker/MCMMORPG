@@ -1,10 +1,10 @@
 package com.mcmmorpg.impl;
 
 import com.mcmmorpg.common.MMORPGPlugin;
-import com.mcmmorpg.impl.resourceLoad.ItemLoader;
-import com.mcmmorpg.impl.resourceLoad.ListenerLoader;
-import com.mcmmorpg.impl.resourceLoad.PlayerClassLoader;
-import com.mcmmorpg.impl.resourceLoad.QuestLoader;
+import com.mcmmorpg.impl.load.ItemLoader;
+import com.mcmmorpg.impl.load.ListenerLoader;
+import com.mcmmorpg.impl.load.PlayerClassLoader;
+import com.mcmmorpg.impl.load.QuestLoader;
 import com.mcmmorpg.test.DeveloperCommands;
 
 /**

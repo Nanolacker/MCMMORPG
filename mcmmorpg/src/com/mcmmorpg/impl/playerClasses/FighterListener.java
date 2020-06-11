@@ -144,7 +144,8 @@ public class FighterListener implements Listener {
 	}
 
 	private void useCyclone(PlayerCharacter pc) {
-		double damagePerHit = 0.5 * pc.getWeapon().getBaseDamage() * cyclone.getUpgradeLevel(pc) + 0.25 * pc.getLevel();
+		double damagePerHit = 0.75 * pc.getWeapon().getBaseDamage() * cyclone.getUpgradeLevel(pc)
+				+ 0.25 * pc.getLevel();
 		new RepeatingTask(0.1) {
 			int count = 0;
 
