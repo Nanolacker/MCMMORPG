@@ -17,8 +17,7 @@ public class Main extends MMORPGPlugin {
 	}
 
 	/**
-	 * Loads resources from this plugin's data folder, registers events, and
-	 * registers commands.
+	 * Loads resources from this plugin's data folder and registers events.
 	 */
 	private void load() {
 		QuestLoader.loadQuests();
