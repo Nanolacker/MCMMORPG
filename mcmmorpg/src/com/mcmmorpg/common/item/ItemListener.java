@@ -236,6 +236,7 @@ class ItemListener implements Listener {
 				Inventory inventory = player.getInventory();
 				int slot = event.getSlot();
 				if (rawSlot >= 5 && rawSlot < 9) {
+					// 5-8 = armor
 					// unequip
 					inventory.setItem(slot, null);
 					inventory.addItem(clickedItemStack);
@@ -280,6 +281,12 @@ class ItemListener implements Listener {
 				}
 				CLICK_NOISE.play(player);
 			}
+		} else {
+			if (rawSlot >= 5 && rawSlot < 9) {
+				// 5-8 = armor
+				// don't let players drop items into their equipment slots
+				event.setCancelled(true);
+			}
 		}
 	}
 
@@ -291,8 +298,10 @@ class ItemListener implements Listener {
 			return;
 		}
 		int rawSlot = (int) event.getRawSlots().toArray()[0];
-		if (rawSlot == 45 || (rawSlot >= 5 && rawSlot < 8)) {
+		if (rawSlot == 45 || (rawSlot >= 5 && rawSlot < 9)) {
 			// 45 = offhand
+			// 5-8 = armor
+			// don't let players drop items into their equipment slots
 			event.setCancelled(true);
 		}
 	}

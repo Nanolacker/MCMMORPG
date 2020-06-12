@@ -1,5 +1,6 @@
 package com.mcmmorpg.impl.npcs;
 
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.entity.EntityType;
 import org.bukkit.potion.PotionEffect;
@@ -10,12 +11,13 @@ import com.mcmmorpg.common.util.BukkitUtility;
 
 public class Horse extends NonPlayerCharacter {
 
+	private static final int LEVEL = 3;
 	private static final PotionEffect SLOWNESS = new PotionEffect(PotionEffectType.SLOW, Integer.MAX_VALUE, 128);
 
 	private org.bukkit.entity.Horse entity;
 
-	public Horse(String name, int level, Location location) {
-		super(name, level, location);
+	public Horse(Location location) {
+		super(ChatColor.GREEN + "Horse", LEVEL, location);
 	}
 
 	@Override

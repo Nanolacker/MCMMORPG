@@ -17,11 +17,11 @@ import com.mcmmorpg.common.util.MathUtility;
 public class Collider {
 
 	/**
-	 * The particle used to draw colliders.
+	 * The default particle used to draw colliders.
 	 */
 	private static final Particle DEFAULT_DRAW_PARTICLE = Particle.CRIT;
 	/**
-	 * The period by which collider will be drawn.
+	 * The period by which colliders will be drawn when made visible.
 	 */
 	private static final double DRAW_PERIOD = 0.1;
 	/**
@@ -54,7 +54,7 @@ public class Collider {
 	 * Whether this collider should be "drawn" in its Minecraft world using
 	 * particles to visualize its location and size.
 	 */
-	private boolean drawingEnabled;
+	private boolean visible;
 	/**
 	 * The type of pattern in which this collider will be drawn when
 	 * {@code drawingEnabled} is true. The default mode is
@@ -116,7 +116,7 @@ public class Collider {
 		this.zMax = zMax;
 
 		active = false;
-		drawingEnabled = false;
+		visible = false;
 		drawMode = ColliderDrawMode.WIREFRAME;
 		drawParticle = DEFAULT_DRAW_PARTICLE;
 		drawTask = null;
@@ -558,6 +558,10 @@ public class Collider {
 				&& (this.getZMin() <= other.getZMax() && this.getZMax() >= other.getZMin());
 	}
 
+	/**
+	 * Returns an array of colliders which this collider is currently colliding
+	 * with.
+	 */
 	public final Collider[] getCollidingColliders() {
 		return collidingColliders.toArray(new Collider[collidingColliders.size()]);
 	}
@@ -586,12 +590,12 @@ public class Collider {
 	 * costly, this should only be invoked for debugging purposes.
 	 */
 	public final void setVisible(boolean visible) {
-		boolean redundant = this.drawingEnabled == visible;
+		boolean redundant = this.visible == visible;
 		if (redundant) {
 			return;
 		}
-		this.drawingEnabled = visible;
-		if (drawingEnabled) {
+		this.visible = visible;
+		if (visible) {
 			if (drawTask == null) {
 				assignDrawTask();
 			}
@@ -609,11 +613,11 @@ public class Collider {
 	 */
 	public final void setDrawMode(ColliderDrawMode mode) {
 		drawMode = mode;
-		if (drawingEnabled) {
+		if (visible) {
 			drawTask.cancel();
 		}
 		assignDrawTask();
-		if (drawingEnabled) {
+		if (visible) {
 			drawTask.schedule();
 		}
 	}
@@ -718,6 +722,10 @@ public class Collider {
 		}
 	}
 
+	/**
+	 * Draws this collider in a fill pattern (i.e. the drawing is completely filled
+	 * with particles) with the specified particle density.
+	 */
 	public void drawFill(Particle particle, double particleDensity) {
 		double spaceDistance = 1 / particleDensity;
 		for (double xCount = xMin; xCount <= xMax; xCount += spaceDistance) {

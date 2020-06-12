@@ -1,6 +1,5 @@
 package com.mcmmorpg.impl.locations;
 
-import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -8,7 +7,10 @@ import org.bukkit.event.Listener;
 import com.mcmmorpg.common.character.PlayerCharacter;
 import com.mcmmorpg.common.character.PlayerCharacter.PlayerCharacterCollider;
 import com.mcmmorpg.common.event.PlayerCharacterLevelUpEvent;
+import com.mcmmorpg.common.item.Item;
+import com.mcmmorpg.common.item.LootChest;
 import com.mcmmorpg.common.physics.Collider;
+import com.mcmmorpg.impl.constants.Items;
 import com.mcmmorpg.impl.constants.Quests;
 import com.mcmmorpg.impl.constants.RespawnLocations;
 import com.mcmmorpg.impl.constants.Soundtracks;
@@ -35,6 +37,7 @@ import com.mcmmorpg.impl.npcs.TrainingDummy;
  */
 public class MelcherListener implements Listener {
 
+	private static final double LOOT_CHEST_RESPAWN_TIME = 60;
 	private static final Location[] VILLAGER_LOCATIONS = { new Location(Worlds.ELADRADOR, -1167, 73, 273),
 			new Location(Worlds.ELADRADOR, -1153, 73, 269), new Location(Worlds.ELADRADOR, -1138, 73, 260),
 			new Location(Worlds.ELADRADOR, -1146, 73, 240), new Location(Worlds.ELADRADOR, -1130, 73, 242),
@@ -105,10 +108,15 @@ public class MelcherListener implements Listener {
 			new Location(Worlds.ELADRADOR, -1188.227450, 74.000000, 162.177680, -6.989624f, 15.986921f),
 			new Location(Worlds.ELADRADOR, -1118.575813, 76.000000, 155.300048, -15.678314f, 26.413179f),
 			new Location(Worlds.ELADRADOR, -1109.433998, 77.000000, 155.343152, -32.707916f, 26.760717f) };
+	private static final Location[] LOOT_CHEST_LOCATIONS = { new Location(Worlds.ELADRADOR, -1152, 79, 139),
+			new Location(Worlds.ELADRADOR, -1072, 65, 246, 180, 0) };
+	private static final Item[][] LOOT_CHEST_CONTENTS = { { Items.GARLIC_BREAD, Items.GARLIC_BREAD },
+			{ Items.GARLIC_BREAD, Items.MELCHER_MEAD } };
 
 	public MelcherListener() {
 		setBounds();
 		spawnNpcs();
+		spawnLootChests();
 	}
 
 	private void setBounds() {
@@ -167,7 +175,7 @@ public class MelcherListener implements Listener {
 			new Chicken(location).setAlive(true);
 		}
 		for (Location location : HORSE_LOCATIONS) {
-			new Horse(ChatColor.GREEN + "Horse", 3, location).setAlive(true);
+			new Horse(location).setAlive(true);
 		}
 		for (Location location : TAVERN_RAT_LOCATIONS) {
 			new MelcherTavernRat(location).setAlive(true);
@@ -175,6 +183,14 @@ public class MelcherListener implements Listener {
 		new MelcherTavernKingRat(TAVERN_KING_RAT_LOCATION).setAlive(true);
 		for (Location location : THIEF_LOCATIONS) {
 			new MelcherThief(location).setAlive(true);
+		}
+	}
+
+	private void spawnLootChests() {
+		for (int i = 0; i < LOOT_CHEST_LOCATIONS.length; i++) {
+			Location location = LOOT_CHEST_LOCATIONS[i];
+			Item[] contents = LOOT_CHEST_CONTENTS[i];
+			LootChest.spawnLootChest(location, LOOT_CHEST_RESPAWN_TIME, contents);
 		}
 	}
 

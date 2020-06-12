@@ -14,7 +14,9 @@ import com.mcmmorpg.impl.npcs.FlintonMayor;
 import com.mcmmorpg.impl.npcs.FlintonMerchant;
 import com.mcmmorpg.impl.npcs.FlintonVillager;
 import com.mcmmorpg.impl.npcs.Guard;
+import com.mcmmorpg.impl.npcs.Horse;
 import com.mcmmorpg.impl.npcs.Lumberjack;
+import com.mcmmorpg.impl.npcs.Chicken;
 import com.mcmmorpg.impl.npcs.FlintonAlchemistAssistant;
 import com.mcmmorpg.impl.npcs.FlintonMasterAlchemist;
 
@@ -100,6 +102,14 @@ public class FlintonListener implements Listener {
 			new Location(Worlds.ELADRADOR, -324.087068, 82.000000, 85.608782, -69.664360f, 2.432992f),
 			new Location(Worlds.ELADRADOR, -389.047747, 82.000000, 6.156181, -277.840942f, 17.377245f),
 			new Location(Worlds.ELADRADOR, -394.365479, 82.000000, 3.015291, -277.840942f, 17.377245f) };
+	private static final Location[] HORSE_LOCATION = {
+			new Location(Worlds.ELADRADOR, -289.146696, 82.000000, 58.044259, -0.694495f, 63.252583f),
+			new Location(Worlds.ELADRADOR, -284.499662, 82.000000, 58.240501, 2.433372f, 68.118164f),
+			new Location(Worlds.ELADRADOR, -293.535344, 82.000000, 58.117396, -2.432242f, 70.550949f) };
+	private static final Location[] CHICKEN_LOCATIONS = {
+			new Location(Worlds.ELADRADOR, -289.612971, 82.000000, 66.813743, 180.026886f, 60.819817f),
+			new Location(Worlds.ELADRADOR, -291.548854, 82.000000, 66.813405, 180.026886f, 60.819817f),
+			new Location(Worlds.ELADRADOR, -293.404422, 83.000000, 67.445170, 109.823517f, 50.741104f) };
 
 	public FlintonListener() {
 		setBounds();
@@ -164,6 +174,12 @@ public class FlintonListener implements Listener {
 			Location location = GUARD_LOCATIONS[i];
 			boolean male = i % 2 == 0;
 			new Guard(location, male).setAlive(true);
+		}
+		for (Location location : HORSE_LOCATION) {
+			new Horse(location).setAlive(true);
+		}
+		for (Location location : CHICKEN_LOCATIONS) {
+			new Chicken(location).setAlive(true);
 		}
 	}
 

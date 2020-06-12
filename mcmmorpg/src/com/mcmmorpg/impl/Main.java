@@ -5,7 +5,6 @@ import com.mcmmorpg.impl.load.ItemLoader;
 import com.mcmmorpg.impl.load.ListenerLoader;
 import com.mcmmorpg.impl.load.PlayerClassLoader;
 import com.mcmmorpg.impl.load.QuestLoader;
-import com.mcmmorpg.test.DeveloperCommands;
 
 /**
  * Main class of the implementation of MCMMORPG.
@@ -26,7 +25,6 @@ public class Main extends MMORPGPlugin {
 		PlayerClassLoader.loadClasses();
 		ItemLoader.loadItems();
 		ListenerLoader.loadListeners();
-		DeveloperCommands.registerDeveloperCommands();
 	}
 
 	@Override

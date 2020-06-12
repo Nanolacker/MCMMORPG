@@ -234,7 +234,7 @@ public class GelatinousCube extends NonPlayerCharacter {
 		super.onDeath();
 		Location location = getLocation();
 		PlayerCharacter.distributeXp(location, 25, XP_REWARD);
-		int sludgeAmount = (int) (Math.random() * 3);
+		int sludgeAmount = (int) (Math.random() * 4);
 		Items.SLUDGE.drop(location, sludgeAmount);
 		List<PlayerCharacter> nearbyPcs = PlayerCharacter.getNearbyPlayerCharacters(location, 25);
 		for (PlayerCharacter pc : nearbyPcs) {
