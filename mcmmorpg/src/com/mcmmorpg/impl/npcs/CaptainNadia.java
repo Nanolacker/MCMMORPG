@@ -82,7 +82,7 @@ public class CaptainNadia extends StaticHuman {
 							pc);
 					break;
 				case 5:
-					Quests.CULLING_THE_CULT.getObjective(4).complete(pc);
+					Quests.CULLING_THE_CULT.getObjective(2).complete(pc);
 					pc.giveXp(CULLING_THE_CULT_XP_REWARD);
 					Quests.THREAT_LEVEL_GOD.start(pc);
 					break;

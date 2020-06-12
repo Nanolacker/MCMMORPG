@@ -7,10 +7,10 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
-import com.mcmmorpg.common.character.HumanEntity;
 import com.mcmmorpg.common.character.MovementSynchronizer;
 import com.mcmmorpg.common.character.MovementSynchronizer.MovementSynchronizerMode;
 import com.mcmmorpg.common.util.BukkitUtility;
+import com.mcmmorpg.common.util.HumanEntity;
 import com.mcmmorpg.common.character.NonPlayerCharacter;
 import com.mcmmorpg.common.character.PlayerCharacter;
 import com.mcmmorpg.common.character.PlayerCharacterInteractionCollider;

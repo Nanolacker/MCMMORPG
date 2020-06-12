@@ -153,8 +153,7 @@ public class FighterListener implements Listener {
 			@Override
 			protected void run() {
 				Location location = pc.getLocation();
-				location.setYaw(location.getYaw() + 90);
-				pc.getPlayer().teleport(location);
+				pc.setYaw(pc.getYaw() + 90);
 				count++;
 				WOOSH_NOISE.play(location);
 				Collider hitbox = new Collider(location, 10, 10, 10) {

@@ -87,6 +87,7 @@ public class WildBoar extends NonPlayerCharacter {
 		super.spawn();
 		hitbox.setActive(true);
 		entity = (Pig) BukkitUtility.spawnNonpersistentEntity(spawnLocation, EntityType.PIG);
+		entity.setAI(false);
 		entity.setAdult();
 		entity.setInvulnerable(true);
 		entity.setSilent(true);

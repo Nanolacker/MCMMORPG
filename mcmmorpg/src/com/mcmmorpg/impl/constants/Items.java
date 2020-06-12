@@ -142,7 +142,7 @@ public class Items {
 	/**
 	 * Key required to open the north portcullis in Flinton Sewers.
 	 */
-	public static final Item NORTH_SEWERS_KEY = Item.forName("North Sewers Key");
+	public static final Item NORTHWEST_SEWERS_KEY = Item.forName("Northwest Sewers Key");
 	/**
 	 * Key required to open the east portcullis in Flinton Sewers.
 	 */

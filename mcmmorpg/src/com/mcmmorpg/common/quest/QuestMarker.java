@@ -15,8 +15,8 @@ import com.mcmmorpg.common.util.CardinalDirection;
  */
 public class QuestMarker {
 
-	private static final String TEXT = ChatColor.YELLOW + "!";
-	private static final double STANDARD_RADIUS = 50.0;
+	private static final String TEXT = ChatColor.YELLOW + "" + ChatColor.BOLD + ChatColor.UNDERLINE + "!";
+	private static final double STANDARD_RADIUS = 25.0;
 	private static final String QUEST_MARKER_TUTORIAL_TAG = "QUEST_MARKER_TUTORIAL";
 
 	private TextPanel textPanel;
@@ -43,7 +43,8 @@ public class QuestMarker {
 							protected void run() {
 								pc.sendMessage(ChatColor.GRAY + "[" + ChatColor.GREEN + "Tutorial" + ChatColor.GRAY
 										+ "]: " + ChatColor.WHITE
-										+ "Quest markers point you toward important locations for quests, usually quest givers.");
+										+ "Quest markers point you toward important locations for quests, usually quest givers. Look for NPCs with a \""
+										+ TEXT + ChatColor.RESET + "" + ChatColor.WHITE + "\" above their head.");
 							}
 						}.schedule();
 						pc.addTag(QUEST_MARKER_TUTORIAL_TAG);

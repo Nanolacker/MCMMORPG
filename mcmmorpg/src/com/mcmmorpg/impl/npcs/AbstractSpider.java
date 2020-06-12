@@ -85,7 +85,7 @@ public abstract class AbstractSpider extends NonPlayerCharacter {
 		this.xpReward = xpReward;
 		hitbox = new CharacterCollider(this, spawnLocation, lengthX, lengthY, lengthZ);
 		movementSyncer = new MovementSynchronizer(this, MovementSynchronizerMode.CHARACTER_FOLLOWS_ENTITY);
-		surroundings = new Collider(spawnLocation, 25, 25, 25) {
+		surroundings = new Collider(spawnLocation, 15, 15, 15) {
 			@Override
 			protected void onCollisionEnter(Collider other) {
 				if (other instanceof PlayerCharacterCollider) {

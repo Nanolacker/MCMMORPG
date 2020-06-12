@@ -222,11 +222,11 @@ public class FlintonSewersListener implements Listener {
 	private static final Item[][] LOOT_CHEST_CONTENTS = { { Items.EAST_SEWERS_KEY, Items.POTION_OF_LESSER_HEALING },
 			{ Items.WEST_SEWERS_KEY, Items.POTION_OF_LESSER_HEALING },
 			{ Items.EAST_SEWERS_KEY, Items.POTION_OF_LESSER_HEALING },
-			{ Items.NORTH_SEWERS_KEY, Items.POTION_OF_LESSER_HEALING, Items.POTION_OF_LESSER_HEALING },
-			{ Items.NORTH_SEWERS_KEY, Items.POTION_OF_LESSER_HEALING },
+			{ Items.NORTHWEST_SEWERS_KEY, Items.POTION_OF_LESSER_HEALING, Items.POTION_OF_LESSER_HEALING },
+			{ Items.NORTHWEST_SEWERS_KEY, Items.POTION_OF_LESSER_HEALING },
 			{ Items.WEST_SEWERS_KEY, Items.POTION_OF_HEALING },
-			{ Items.NORTH_SEWERS_KEY, Items.POTION_OF_LESSER_HEALING },
-			{ Items.NORTH_SEWERS_KEY, Items.POTION_OF_LESSER_HEALING }, { Items.SKELETAL_WAND, Items.BANDITS_BATTLE_AXE,
+			{ Items.NORTHWEST_SEWERS_KEY, Items.POTION_OF_LESSER_HEALING },
+			{ Items.NORTHWEST_SEWERS_KEY, Items.POTION_OF_LESSER_HEALING }, { Items.SKELETAL_WAND, Items.BANDITS_BATTLE_AXE,
 					Items.POTION_OF_LESSER_HEALING, Items.POTION_OF_LESSER_HEALING, Items.POTION_OF_HEALING } };
 
 	public static final Map<PlayerCharacter, Integer> smallGelatinousCubeCounts = new HashMap<>();
@@ -354,7 +354,7 @@ public class FlintonSewersListener implements Listener {
 		Location northPortcullisLocation = new Location(Worlds.ELADRADOR, -314.5, 43, 0);
 		new FlintonSewersPortcullis(eastPortcullisLocation, false, Items.EAST_SEWERS_KEY);
 		new FlintonSewersPortcullis(westPortcullisLocation, false, Items.WEST_SEWERS_KEY);
-		new FlintonSewersPortcullis(northPortcullisLocation, false, Items.NORTH_SEWERS_KEY);
+		new FlintonSewersPortcullis(northPortcullisLocation, false, Items.NORTHWEST_SEWERS_KEY);
 	}
 
 	private void spawnLootChests() {

@@ -1,5 +1,6 @@
 package com.mcmmorpg.impl.playerClasses;
 
+import org.bukkit.ChatColor;
 import org.bukkit.Effect;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -31,8 +32,6 @@ import com.mcmmorpg.common.time.RepeatingTask;
 import com.mcmmorpg.common.util.BukkitUtility;
 import com.mcmmorpg.impl.constants.PlayerClasses;
 
-import net.md_5.bungee.api.ChatColor;
-
 /**
  * Class for registering events for the mage player class.
  */
@@ -42,10 +41,10 @@ public class MageListener implements Listener {
 			130.0, 146.0, 163.0, 181.0, 200.0, 220.0, 241.0, 263.0, 286.0 };
 	private static final double[] HEALTH_REGEN_RATE = { 1, 1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 1.7, 1.8, 1.9, 2, 2.1, 2.2,
 			2.3, 2.4, 2.5, 2.7, 2.8, 2.9, 3 };
-	private static final double[] MAX_MANA = { 15.0, 19.0, 23.0, 27.0, 31.0, 35.0, 39.0, 43.0, 47.0, 51.0, 55.0, 59.0,
-			63.0, 67.0, 71.0, 75.0, 79.0, 83.0, 87.0, 91.0 };
-	private static final double[] MANA_REGEN_RATE = { 2.0, 2.1, 2.2, 2.3, 2.4, 2.5, 2.6, 2.7, 2.8, 2.9, 3, 3.1, 3.2,
-			3.3, 3.4, 3.5, 3.6, 3.7, 3.8, 3.9 };
+	private static final double[] MAX_MANA = { 15.0, 17.0, 19.0, 21.0, 23.0, 25.0, 27.0, 29.0, 31.0, 33.0, 35.0, 37.0,
+			39.0, 41.0, 43.0, 45.0, 47.0, 49.0, 51.0, 53.0 };
+	private static final double[] MANA_REGEN_RATE = { 1.5, 1.6, 1.7, 1.8, 1.9, 2.0, 2.1, 2.2, 2.3, 2.4, 2.5, 2.6, 2.7,
+			2.8, 2.9, 3, 3.1, 3.2, 3.3, 3.4 };
 	public static final double STANDARD_SILENCE_DURATION = 1;
 
 	private static final Noise FIREBALL_CONJURE_NOISE = new Noise(Sound.ENTITY_ZOMBIE_VILLAGER_CURE);

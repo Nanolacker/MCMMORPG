@@ -32,7 +32,7 @@ import com.mcmmorpg.impl.constants.Worlds;
 public class FlintonSewersXylphanos extends AbstractCultist {
 
 	private static final int LEVEL = 15;
-	private static final double MAX_HEALTH = 2500;
+	private static final double MAX_HEALTH = 100;// 2500;
 	private static final int XP_REWARD = 250;
 	private static final String TEXTURE_DATA = "ewogICJ0aW1lc3RhbXAiIDogMTU4OTk5NzQ4MDk3NCwKICAicHJvZmlsZUlkIiA6ICI0NDAzZGM1NDc1YmM0YjE1YTU0OGNmZGE2YjBlYjdkOSIsCiAgInByb2ZpbGVOYW1lIiA6ICJGbGF3Q3JhQm90MDEiLAogICJzaWduYXR1cmVSZXF1aXJlZCIgOiB0cnVlLAogICJ0ZXh0dXJlcyIgOiB7CiAgICAiU0tJTiIgOiB7CiAgICAgICJ1cmwiIDogImh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYTVkNTg3NjhmYjJlNDMyN2I4NWVkMDAxODY0NmUxYTBlNGIzYzhiYmIwY2ViZDAyYWM2YzI5NjBjYjQzNzNkYiIKICAgIH0KICB9Cn0=";
 	private static final String TEXTURE_SIGNATURE = "vRomneBuiAl7MB+6+kpoS/a42CIISA6sdBNoJMgOyoDuu7jA/h+mZRlScAtIRbn897BIeowRRIfCZlOcgb51saLk0ELIKkOV83nh9KyimTNSjP99t7BxCC+Rf/TQUdzTuLwC1S4GdF1KZ7NDfMlOuyslCgRl5YEo03Czcr9zk5Ff92gCGzksuLMiwuill+pPFeMFxZ2BT6tQ9ysJ7Ev+PP+c4fwGJ/JRRKsYxjGx/VkVCk/LnnQEL40DvQC30ztHpN7QuvMfpnpa37OZMsy8MdKgdVTw0O+PWWSMU4AdYHIQTKjDsdpr8tnygi1t9TmIEXaLQzrQhtvlyf9O2+xdh49EXDU56DD9TNYb9/K12QRQK1O2z2NGed1Ve/UwrVSHv829+YVrr820g0KI47pJRlZDE2mbL4FKrGGdkp28YsCfyvk+czNPwFvKA8vqj5Cg8l7K7MNe4HjQ5JH+kZFE78D/NhlUntRIj7abNC8jMuoOlnmiwYkaZqixuSQa9Of9OwmRijnPfmX+ArUgvLDYCAtPG8wdVdduEqRdzuL2sZqr54KCkixPl1V/xlpAscZLh1g7cOjohn4qcoGx9xxyrsIixjsFhwOUreuXND331/qUhqjNPEflEYnSaUa801xygT3IMmNQzfP+gLEHGLfe5A9bOfP2vTSD3Wn/+DDYg24=";
@@ -40,12 +40,12 @@ public class FlintonSewersXylphanos extends AbstractCultist {
 	private static final double FIELD_OF_DEATH_CHANNEL_DURATION = 4;
 	private static final double FIELD_OF_DEATH_WIDTH = 15;
 	private static final double FIELD_OF_DEATH_HEIGHT = 1;
-	private static final double FIELD_OF_DEATH_DAMAGE = 35;
+	private static final double FIELD_OF_DEATH_DAMAGE = 50;
 	private static final Particle FIELD_OF_DEATH_PARTICLE = Particle.SPELL_WITCH;
 	private static final Noise FIELD_OF_DEATH_CHANNEL_NOISE = new Noise(Sound.BLOCK_PORTAL_TRIGGER);
 	private static final Noise FIELD_OF_DEATH_EXPLODE_NOISE = new Noise(Sound.ENTITY_WITHER_HURT);
 	private static final Noise TELEPORT_NOISE = new Noise(Sound.ENTITY_WITHER_HURT);
-	private static final double TELEPORT_SPEED = 10;
+	private static final double TELEPORT_SPEED = 7;
 	private static final String[] BATTLE_DIALOGUE_OPTIONS = { "You think vermin like you can stop me?" };
 	private static final double DIALOGUE_PERIOD = 10;
 
@@ -106,7 +106,7 @@ public class FlintonSewersXylphanos extends AbstractCultist {
 					Location location = getLocation();
 					List<PlayerCharacter> nearbyPcs = PlayerCharacter.getNearbyPlayerCharacters(location, 40);
 					for (PlayerCharacter nearbyPc : nearbyPcs) {
-						Quests.CULLING_THE_CULT.getObjective(2).complete(nearbyPc);
+						Quests.CULLING_THE_CULT.getObjective(1).complete(nearbyPc);
 					}
 					TELEPORT_NOISE.play(location);
 					// so players don't see death
@@ -175,8 +175,17 @@ public class FlintonSewersXylphanos extends AbstractCultist {
 	public void damage(double amount, Source source) {
 		if (getCurrentHealth() - amount <= 0) {
 			passive = true;
-			spellProgressBar.dispose();
-			setCurrentHealth(getMaxHealth());
+			cancelSpell();
+			ai.addPotionEffect(SLOW_EFFECT);
+			for (int i = 1; i <= 8; i++) {
+				double health = MAX_HEALTH / 8 * i;
+				new DelayedTask(i * 0.25) {
+					@Override
+					protected void run() {
+						setCurrentHealth(health);
+					}
+				}.schedule();
+			}
 			hitbox.setActive(false);
 			aiSyncer.setEnabled(false);
 			ai.remove();
@@ -188,7 +197,7 @@ public class FlintonSewersXylphanos extends AbstractCultist {
 			return;
 		}
 		super.damage(amount, source);
-		if (Math.random() < 0.4) {
+		if (Math.random() < 0.6) {
 			TELEPORT_NOISE.play(getLocation());
 			Vector velocity = new Vector(Math.random() - 0.5, 0, Math.random() - 0.5);
 			velocity.multiply(TELEPORT_SPEED);
@@ -212,12 +221,6 @@ public class FlintonSewersXylphanos extends AbstractCultist {
 	@Override
 	protected void despawn() {
 		super.despawn();
-		surroundings.setActive(false);
-	}
-
-	@Override
-	protected void onDeath() {
-		super.onDeath();
 		surroundings.setActive(false);
 	}
 

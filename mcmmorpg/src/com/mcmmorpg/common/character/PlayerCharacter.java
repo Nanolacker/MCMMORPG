@@ -13,6 +13,7 @@ import org.bukkit.Location;
 import org.bukkit.Sound;
 import org.bukkit.craftbukkit.v1_15_R1.entity.CraftArmorStand;
 import org.bukkit.entity.ArmorStand;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -77,7 +78,7 @@ public final class PlayerCharacter extends AbstractCharacter {
 	private static final Noise HURT_NOISE = new Noise(Sound.ENTITY_PLAYER_HURT);
 	private static final Noise DEATH_NOISE = new Noise(Sound.ENTITY_WITHER_SPAWN);
 	private static final double HEIGHT = 2;
-	private static final double MAX_DISPLACEMENT_WITHOUT_TELEPORT = 5.0;
+	private static final double MAX_DISPLACEMENT_WITHOUT_TELEPORT_SQUARED = 25.0;
 	private static final double INTERACT_RANGE = 4.0;
 	private static final double SPEAK_RADIUS = 25.0;
 
@@ -243,7 +244,7 @@ public final class PlayerCharacter extends AbstractCharacter {
 					PlayerCharacter pc = pcs.get(i);
 					int skillUpgradePoints = pc.getSkillUpgradePoints();
 					if (skillUpgradePoints > 0) {
-						pc.sendMessage(ChatColor.GRAY + "You have " + skillUpgradePoints + " skill "
+						pc.sendMessage(ChatColor.GREEN + "You have " + skillUpgradePoints + " skill "
 								+ (skillUpgradePoints == 1 ? "point" : "points")
 								+ " available! Open your skill tree to unlock or upgrade a skill!");
 					}
@@ -365,13 +366,43 @@ public final class PlayerCharacter extends AbstractCharacter {
 	@Override
 	public void setLocation(Location location) {
 		Location oldLocation = getLocation();
-		double distance = location.distance(oldLocation);
 		super.setLocation(location);
 		hitbox.setCenter(getColliderCenter());
-		if (distance > MAX_DISPLACEMENT_WITHOUT_TELEPORT) {
+		double distanceSquared = location.distanceSquared(oldLocation);
+		if (distanceSquared > MAX_DISPLACEMENT_WITHOUT_TELEPORT_SQUARED) {
+			unhidePlayerNameplate();
 			player.teleport(location);
+			hidePlayerNameplate();
 		}
 		updateActionBar();
+	}
+
+	public float getYaw() {
+		return player.getLocation().getYaw();
+	}
+
+	public void setYaw(float yaw) {
+		Location location = getLocation();
+		location.setYaw(yaw);
+		unhidePlayerNameplate();
+		player.teleport(location);
+		hidePlayerNameplate();
+	}
+
+	public float getPitch() {
+		return player.getLocation().getPitch();
+	}
+
+	public void setPitch(float pitch) {
+		Location location = getLocation();
+		location.setPitch(pitch);
+		unhidePlayerNameplate();
+		player.teleport(location);
+		hidePlayerNameplate();
+	}
+
+	public void setPitch() {
+
 	}
 
 	/**
@@ -455,18 +486,33 @@ public final class PlayerCharacter extends AbstractCharacter {
 		player.setFoodLevel(foodLevel);
 	}
 
+	/**
+	 * Must unhide nameplate before teleporting player because armor stand
+	 * passengers.
+	 */
 	private void hidePlayerNameplate() {
 		// adding an armor stand passenger to a player hides their nameplate
 		Location location = getLocation();
 		ArmorStand passenger = (ArmorStand) location.getWorld().spawnEntity(location, EntityType.ARMOR_STAND);
 		((CraftArmorStand) passenger).getHandle().setInvisible(true);
+		passenger.setSmall(true);
+		passenger.setMarker(true);
+		passenger.setInvulnerable(true);
+		passenger.setCollidable(false);
 		player.addPassenger(passenger);
 	}
 
+	/**
+	 * Must unhide nameplate before teleporting player because armor stand
+	 * passengers.
+	 */
 	private void unhidePlayerNameplate() {
-		ArmorStand passenger = (ArmorStand) player.getPassengers().get(0);
-		player.removePassenger(passenger);
-		passenger.remove();
+		List<Entity> passengers = player.getPassengers();
+		if (!passengers.isEmpty()) {
+			ArmorStand passenger = (ArmorStand) player.getPassengers().get(0);
+			player.removePassenger(passenger);
+			passenger.remove();
+		}
 	}
 
 	/**
@@ -936,7 +982,7 @@ public final class PlayerCharacter extends AbstractCharacter {
 			@Override
 			protected void run() {
 				sendMessage(ChatColor.GRAY + "Respawning...");
-				player.teleport(respawnLocation);
+				setLocation(respawnLocation);
 				setAlive(true);
 				hitbox.setActive(true);
 				setNameplateVisible(true);

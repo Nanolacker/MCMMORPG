@@ -26,7 +26,7 @@ public final class Ray {
 	 * Create a new ray with the specified start, direciton, and length.
 	 */
 	public Ray(Location start, Vector direction, double length) {
-		this(start, start.clone().add(direction.multiply(length)));
+		this(start, start.clone().add(direction.clone().normalize().multiply(length)));
 	}
 
 	/**

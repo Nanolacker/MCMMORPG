@@ -60,7 +60,7 @@ public class ItemListener implements Listener {
 		Vector direction = start.getDirection();
 		Location particleLocation = start.clone().add(direction.clone().multiply(2));
 		particleLocation.getWorld().spawnParticle(Particle.SWEEP_ATTACK, particleLocation, 0);
-		Ray ray = new Ray(start, direction, 3);
+		Ray ray = new Ray(start, direction, 4);
 		Raycast raycast = new Raycast(ray, CharacterCollider.class);
 		Collider[] hits = raycast.getHits();
 		boolean missed = true;
@@ -73,7 +73,7 @@ public class ItemListener implements Listener {
 			}
 		}
 		if (!missed) {
-			pc.disarm(0.5);
+			pc.disarm(0.75);
 		}
 	}
 
@@ -99,7 +99,7 @@ public class ItemListener implements Listener {
 		Vector direction = start.getDirection();
 		Location particleLocation = start.clone().add(direction.clone().multiply(2));
 		particleLocation.getWorld().spawnParticle(Particle.SWEEP_ATTACK, particleLocation, 0);
-		Ray ray = new Ray(start, direction, 3);
+		Ray ray = new Ray(start, direction, 4);
 		Raycast raycast = new Raycast(ray, CharacterCollider.class);
 		Collider[] hits = raycast.getHits();
 		boolean missed = true;
@@ -143,7 +143,7 @@ public class ItemListener implements Listener {
 		Ray beam = new Ray(start, end);
 		beam.draw(particleEffect, 1);
 		WAND_FIRE_NOISE.play(start);
-		pc.disarm(0.5);
+		pc.disarm(0.75);
 	}
 
 	/**

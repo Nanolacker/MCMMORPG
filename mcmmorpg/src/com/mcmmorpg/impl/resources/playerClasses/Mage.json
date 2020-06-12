@@ -4,7 +4,7 @@
 		{
 			"name": "Fireball",
 			"description": "Shoot a fireball toward enemies in front of you that explodes on impact",
-			"manaCost": 5,
+			"manaCost": 10,
 			"cooldown": 4,
 			"minimumLevel": 1,
 			"prerequisiteSkill": null,
@@ -16,7 +16,7 @@
 		{
 			"name": "Ice Beam",
 			"description": "Channel a line of ice shards at enemies in front of you",
-			"manaCost": 10,
+			"manaCost": 15,
 			"cooldown": 10,
 			"minimumLevel": 2,
 			"prerequisiteSkill": null,
@@ -52,7 +52,7 @@
 		{
 			"name": "Restore",
 			"description": "Shoot a ball of light that heals allies on impact",
-			"manaCost": 40,
+			"manaCost": 25,
 			"cooldown": 25,
 			"minimumLevel": 13,
 			"prerequisiteSkill": "Whirlwind",
@@ -64,7 +64,7 @@
 		{
 			"name": "Shadow Void",
 			"description": "Summon a pool of darkness that consumes enemies after a short duration",
-			"manaCost": 30,
+			"manaCost": 25,
 			"cooldown": 15,
 			"minimumLevel": 13,
 			"prerequisiteSkill": "Earthquake",

@@ -17,7 +17,6 @@ import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
 
 import com.mcmmorpg.common.character.CharacterCollider;
-import com.mcmmorpg.common.character.HumanEntity;
 import com.mcmmorpg.common.character.MovementSynchronizer;
 import com.mcmmorpg.common.character.MovementSynchronizer.MovementSynchronizerMode;
 import com.mcmmorpg.common.character.NonPlayerCharacter;
@@ -26,6 +25,7 @@ import com.mcmmorpg.common.character.Source;
 import com.mcmmorpg.common.event.EventManager;
 import com.mcmmorpg.common.time.DelayedTask;
 import com.mcmmorpg.common.util.BukkitUtility;
+import com.mcmmorpg.common.util.HumanEntity;
 
 public abstract class AbstractHumanEnemy extends NonPlayerCharacter {
 

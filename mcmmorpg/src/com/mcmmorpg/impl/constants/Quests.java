@@ -52,7 +52,7 @@ public class Quests {
 	/**
 	 * Quest that has the player eliminate bandits in Flinton Sewers.
 	 */
-	public static final Quest DRIVING_OUT_THE_BANDITS = Quest.forName("Driving out the Bandits");
+	public static final Quest DRIVING_OUT_THE_BANDITS = Quest.forName("Driving Out the Bandits");
 	/**
 	 * Quest that has the player eliminate cultists and fight Xylphanos in Flinton
 	 * Sewers.

@@ -19,7 +19,7 @@ public class FlintonSewersPortcullis {
 	private static final double SHIFT_PERIOD = 1;
 	private static final double OPEN_DURATION = 5;
 	private static final Material GATE_MATERIAL = Material.IRON_BARS;
-	private static final Noise SHIFT_NOISE = new Noise(Sound.ENTITY_ZOMBIE_ATTACK_IRON_DOOR);
+	private static final Noise SHIFT_NOISE = new Noise(Sound.ENTITY_ZOMBIE_ATTACK_IRON_DOOR, 0.25f, 1);
 
 	private final Location location;
 	private final Block[][] blocks;
