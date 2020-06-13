@@ -283,7 +283,7 @@ public class MageListener implements Listener {
 						if (character instanceof PlayerCharacter) {
 							int speedAmplifier = whirlwind.getUpgradeLevel(pc);
 							PotionEffect speed = new PotionEffect(PotionEffectType.SPEED, 8 * 20, speedAmplifier);
-							((PlayerCharacter) pc).getPlayer().addPotionEffect(speed);
+							((PlayerCharacter) character).getPlayer().addPotionEffect(speed);
 							WHIRLWIND_HIT_NOISE.play(target);
 						}
 					}

@@ -72,20 +72,39 @@ public class FlintonMayor extends StaticHuman {
 				}
 			}
 		};
-		completeThreatLevelGodInteraction = new InteractionSequence(3) {
+		completeThreatLevelGodInteraction = new InteractionSequence(8) {
 			@Override
 			protected void onAdvance(PlayerCharacter pc, int interactionIndex) {
 				switch (interactionIndex) {
 				case 0:
-					say("", pc);
+					say("By the gods, you found some lunatic who thinks he can become the new god of death?", pc);
 					break;
 				case 1:
+					say("That genocidal maniac... The amount of sacrifices that it would take to reach such power is unspeakable.",
+							pc);
+					break;
+				case 2:
+					say("And you say that he already seemed to pose a formidable threat?", pc);
+					break;
+				case 3:
+					say("This is truly worrisome. I must organize with other settlements to prepare for the possible destruction.",
+							pc);
+					break;
+				case 4:
+					say("Although, you came back in one piece. Perhaps you'd be able to keep track of his whereabouts.",
+							pc);
+					break;
+				case 5:
+					say("Traveller, you must venture out and stop Xylphanos at all costs. For the sake of all things living.",
+							pc);
+					break;
+				case 6:
 					Quests.THREAT_LEVEL_GOD.getObjective(0).complete(pc);
 					pc.giveXp(THREAT_LEVEL_GOD_XP_REWARD);
 					break;
-				case 2:
-					pc.sendMessage(ChatColor.GRAY
-							+ "Thank you for playing the MCMMORPG demo! More content will be added in the future.");
+				case 7:
+					pc.sendMessage(ChatColor.GREEN
+							+ "Thank you for playing the MCMMORPG demo! More content is planned the future.");
 					break;
 				}
 			}

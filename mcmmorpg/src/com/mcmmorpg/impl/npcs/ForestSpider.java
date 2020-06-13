@@ -13,7 +13,7 @@ public class ForestSpider extends AbstractSpider {
 
 	private static final int LEVEL = 5;
 	private static final int SPEED = 1;
-	private static final double MAX_HEALTH = 75;
+	private static final double MAX_HEALTH = 150;
 	private static final double DAMAGE_AMOUNT = 5;
 	private static final int XP_REWARD = 15;
 

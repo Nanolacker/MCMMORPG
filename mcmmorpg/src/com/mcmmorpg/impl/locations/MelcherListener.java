@@ -110,7 +110,9 @@ public class MelcherListener implements Listener {
 			new Location(Worlds.ELADRADOR, -1109.433998, 77.000000, 155.343152, -32.707916f, 26.760717f) };
 	private static final Location[] LOOT_CHEST_LOCATIONS = { new Location(Worlds.ELADRADOR, -1152, 79, 139),
 			new Location(Worlds.ELADRADOR, -1072, 65, 246, 180, 0) };
-	private static final Item[][] LOOT_CHEST_CONTENTS = { { Items.GARLIC_BREAD, Items.GARLIC_BREAD },
+	private static final Item[][] LOOT_CHEST_CONTENTS = {
+			{ Items.STOLEN_FOOD, Items.STOLEN_FOOD, Items.STOLEN_FOOD, Items.STOLEN_FOOD, Items.STOLEN_FOOD,
+					Items.STOLEN_FOOD, Items.STOLEN_FOOD, Items.GARLIC_BREAD, Items.GARLIC_BREAD },
 			{ Items.GARLIC_BREAD, Items.MELCHER_MEAD } };
 
 	public MelcherListener() {

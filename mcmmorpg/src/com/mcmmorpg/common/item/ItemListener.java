@@ -207,7 +207,7 @@ class ItemListener implements Listener {
 				handlePlayerCharacterUseConsumable(pc, consumable, clickedItemStack);
 			} else if (clickedItem instanceof Weapon) {
 				if (rawSlot == 36 || clickedItem == pc.getWeapon()) {
-					pc.sendMessage(clickedItem + " is already equipped");
+					pc.sendMessage(clickedItem.toString() + ChatColor.GRAY + " is already equipped");
 				} else {
 					Weapon weapon = (Weapon) clickedItem;
 					PlayerClass weaponPlayerClass = weapon.getPlayerClass();

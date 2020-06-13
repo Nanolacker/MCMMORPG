@@ -6,7 +6,7 @@ import org.bukkit.Location;
 public class FlintonSewersRat extends Rat {
 
 	private static final int LEVEL = 8;
-	private static final double MAX_HEALTH = 75;
+	private static final double MAX_HEALTH = 150;
 	private static final double DAMAGE_AMOUNT = 6;
 	private static final int XP_REWARD = 20;
 

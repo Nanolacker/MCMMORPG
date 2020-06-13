@@ -15,7 +15,7 @@ import com.mcmmorpg.impl.constants.Quests;
 public class FlintonSewersBandit extends AbstractHumanEnemy {
 
 	private static final int LEVEL = 9;
-	private static final double MAX_HEALTH = 200;
+	private static final double MAX_HEALTH = 400;
 	private static final double DAMAGE_AMOUNT = 10;
 	private static final int XP_REWARD = 10;
 	private static final double RESPAWN_TIME = 60;

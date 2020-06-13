@@ -159,7 +159,6 @@ public final class PlayerCharacter extends AbstractCharacter {
 		this.movementSyncer = new MovementSynchronizer(this, MovementSynchronizerMode.CHARACTER_FOLLOWS_ENTITY);
 		movementSyncer.setEntity(player);
 		movementSyncer.setEnabled(true);
-		hitbox.setActive(true);
 
 		undisarmTask = null;
 		unsilenceTask = null;
@@ -172,6 +171,7 @@ public final class PlayerCharacter extends AbstractCharacter {
 		pcs.add(this);
 		playerMap.put(player, this);
 
+		hitbox.setActive(true);
 		updateActionBar();
 		updateQuestDisplay();
 		updateXpDisplay();

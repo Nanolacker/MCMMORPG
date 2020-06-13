@@ -44,7 +44,7 @@ import com.mcmmorpg.impl.constants.Quests;
 public class ColossalGelatinousCube extends NonPlayerCharacter {
 
 	private static final int LEVEL = 11;
-	private static final int MAX_HEALTH = 2500;
+	private static final int MAX_HEALTH = 7500;
 	private static final int XP_REWARD = 200;
 	private static final double BASIC_ATTACK_DAMAGE = 10;
 	private static final double SPLIT_CHANNEL_RATE = 0.25;

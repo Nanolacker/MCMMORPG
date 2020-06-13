@@ -41,9 +41,9 @@ import com.mcmmorpg.impl.constants.Quests;
 public class GelatinousCube extends NonPlayerCharacter {
 
 	private static final int LEVEL = 9;
-	private static final int MAX_HEALTH = 300;
+	private static final int MAX_HEALTH = 500;
 	private static final int XP_REWARD = 30;
-	private static final double BASIC_ATTACK_DAMAGE = 8;
+	private static final double BASIC_ATTACK_DAMAGE = 12;
 	private static final double ACID_SPRAY_DAMAGE = 30;
 	private static final double ACID_SPRAY_CHANNEL_RATE = 0.35;
 	private static final double ACID_SPRAY_COOLDOWN = 15;

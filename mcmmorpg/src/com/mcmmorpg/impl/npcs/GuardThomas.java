@@ -6,7 +6,6 @@ import org.bukkit.Sound;
 
 import com.mcmmorpg.common.character.PlayerCharacter;
 import com.mcmmorpg.common.quest.QuestMarker;
-import com.mcmmorpg.common.quest.QuestObjective;
 import com.mcmmorpg.common.quest.QuestStatus;
 import com.mcmmorpg.common.sound.Noise;
 import com.mcmmorpg.common.ui.InteractionSequence;
@@ -58,7 +57,7 @@ public class GuardThomas extends StaticHuman {
 					say("Thank you, you've been huge help.", pc);
 					break;
 				case 1:
-					Quests.DRIVING_OUT_THE_BANDITS.getObjective(4).complete(pc);
+					Quests.DRIVING_OUT_THE_BANDITS.getObjective(2).complete(pc);
 					pc.giveXp(DRIVING_OUT_THE_BANDITS_XP_REWARD);
 					break;
 				}
@@ -71,15 +70,8 @@ public class GuardThomas extends StaticHuman {
 		if (Quests.DRIVING_OUT_THE_BANDITS.compareStatus(pc, QuestStatus.NOT_STARTED)) {
 			startDrivingOutTheBanditsInteraction.advance(pc);
 		} else if (Quests.DRIVING_OUT_THE_BANDITS.compareStatus(pc, QuestStatus.IN_PROGRESS)) {
-			QuestObjective[] objectives = Quests.DRIVING_OUT_THE_BANDITS.getObjectives();
-			boolean readyToTurnIn = true;
-			for (int i = 0; i < objectives.length - 1; i++) {
-				if (!objectives[i].isComplete(pc)) {
-					readyToTurnIn = false;
-					break;
-				}
-			}
-			if (readyToTurnIn) {
+			if (Quests.DRIVING_OUT_THE_BANDITS.getObjective(0).isComplete(pc)
+					&& Quests.DRIVING_OUT_THE_BANDITS.getObjective(1).isComplete(pc)) {
 				completeDrivingOutTheBanditsInteraction.advance(pc);
 			} else {
 				say("There's bandits afoot, adventurer.", pc);
