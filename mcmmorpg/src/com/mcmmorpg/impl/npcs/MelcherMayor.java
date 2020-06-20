@@ -39,25 +39,25 @@ public class MelcherMayor extends StaticHuman {
 			protected void onAdvance(PlayerCharacter pc, int messageIndex) {
 				switch (messageIndex) {
 				case 0:
-					say("Greetings adventurer!", pc);
+					speak("Greetings adventurer!", pc);
 					break;
 				case 1:
-					say("You must have recently arrived by ship! Welcome to the land of Eladrador!", pc);
+					speak("You must have recently arrived by ship! Welcome to the land of Eladrador!", pc);
 					break;
 				case 2:
-					say("We've been in great need of adventurers like you lately. Bandits, cultists, and undead have been popping up like wildfire lately.",
+					speak("We've been in great need of adventurers like you lately. Bandits, cultists, and undead have been popping up like wildfire lately.",
 							pc);
 					break;
 				case 3:
-					say("We'd all be greatful if you could help us restore peace to this land. Speak with me again when you're ready to support our cause.",
+					speak("We'd all be greatful if you could help us restore peace to this land. Speak with me again when you're ready to support our cause.",
 							pc);
 					break;
 				case 4:
-					say("To start, thieves that live in the woods around Melcher have been stealing food from the people of Melcher. Our people are going to starve if we don't do something.",
+					speak("To start, thieves that live in the woods around Melcher have been stealing food from the people of Melcher. Our people are going to starve if we don't do something.",
 							pc);
 					break;
 				case 5:
-					say("I want you to find their hideout and teach them a lesson. Their crimes will not go unpunished!",
+					speak("I want you to find their hideout and teach them a lesson. Their crimes will not go unpunished!",
 							pc);
 					break;
 				case 6:
@@ -73,23 +73,23 @@ public class MelcherMayor extends StaticHuman {
 			protected void onAdvance(PlayerCharacter pc, int messageIndex) {
 				switch (messageIndex) {
 				case 0:
-					say("My people are indebted to you. Thanks to you, this town will have a steady supply of food.",
+					speak("My people are indebted to you. Thanks to you, this town will have a steady supply of food.",
 							pc);
 					break;
 				case 1:
-					say("I have one last task for you, however.", pc);
+					speak("I have one last task for you, however.", pc);
 					break;
 				case 2:
-					say("Highwaymen have been ambushing travellers along the road east of Melcher.", pc);
+					speak("Highwaymen have been ambushing travellers along the road east of Melcher.", pc);
 					break;
 				case 3:
-					say("They've been murdering and looting traders who visit Melcher.", pc);
+					speak("They've been murdering and looting traders who visit Melcher.", pc);
 					break;
 				case 4:
-					say("They must be dealt with at once. Please take care of them for me.", pc);
+					speak("They must be dealt with at once. Please take care of them for me.", pc);
 					break;
 				case 5:
-					say("When you're done, speak with the mayor of Flinton to inform him that the roads have been made safer.",
+					speak("When you're done, speak with the mayor of Flinton to inform him that the roads have been made safer.",
 							pc);
 					break;
 				case 6:
@@ -110,16 +110,16 @@ public class MelcherMayor extends StaticHuman {
 			if (Quests.THWARTING_THE_THIEVES.getObjective(0).isComplete(pc)) {
 				completeThwartingTheThievesInteraction.advance(pc);
 			} else {
-				say("Please teach those thieves a lesson for us, adventurer.", pc);
+				speak("Please teach those thieves a lesson for us, adventurer.", pc);
 			}
 		} else {
-			say("Greetings adventurer!", pc);
+			speak("Greetings adventurer!", pc);
 		}
 	}
 
 	@Override
-	public void say(String dialogue, PlayerCharacter recipient) {
-		super.say(dialogue, recipient);
+	public void speak(String dialogue, PlayerCharacter recipient) {
+		super.speak(dialogue, recipient);
 		SPEAK_NOISE.play(recipient);
 	}
 

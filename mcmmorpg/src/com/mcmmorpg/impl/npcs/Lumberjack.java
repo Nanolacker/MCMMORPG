@@ -30,12 +30,12 @@ public class Lumberjack extends StaticHuman {
 	protected void onInteract(PlayerCharacter pc) {
 		int i = (int) (Math.random() * DIALOGUE_OPTIONS.length);
 		String dialogue = DIALOGUE_OPTIONS[i];
-		say(dialogue, pc);
+		speak(dialogue, pc);
 	}
 
 	@Override
-	public void say(String dialogue, PlayerCharacter recipient) {
-		super.say(dialogue, recipient);
+	public void speak(String dialogue, PlayerCharacter recipient) {
+		super.speak(dialogue, recipient);
 		SPEAK_NOISE.play(recipient);
 	}
 

@@ -383,7 +383,7 @@ public abstract class AbstractCharacter implements Source {
 	 * Speaks to the specified recipient.
 	 */
 	@OverridingMethodsMustInvokeSuper
-	public void say(String dialogue, PlayerCharacter recipient) {
+	public void speak(String dialogue, PlayerCharacter recipient) {
 		String formattedDialogue = formatDialogue(dialogue);
 		recipient.sendMessage(formattedDialogue);
 	}
@@ -392,7 +392,7 @@ public abstract class AbstractCharacter implements Source {
 	 * Speaks to those in an area around this character.
 	 */
 	@OverridingMethodsMustInvokeSuper
-	public void say(String dialogue, double radius) {
+	public void speak(String dialogue, double radius) {
 		String formattedDialogue = formatDialogue(dialogue);
 		PlayerCharacter.sendMessageToAllNearby(formattedDialogue, getLocation(), radius);
 	}

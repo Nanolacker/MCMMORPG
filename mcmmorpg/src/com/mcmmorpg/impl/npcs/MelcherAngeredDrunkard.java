@@ -47,10 +47,10 @@ public class MelcherAngeredDrunkard extends AbstractHumanEnemy {
 			protected void onAdvance(PlayerCharacter pc, int interactionIndex) {
 				switch (interactionIndex) {
 				case 0:
-					say("What's your problem?", pc);
+					speak("What's your problem?", pc);
 					break;
 				case 1:
-					say("What do you mean calm down? Nobody tells me what to do!", pc);
+					speak("What do you mean calm down? Nobody tells me what to do!", pc);
 					break;
 				case 2:
 					setEnraged(true);
@@ -107,8 +107,8 @@ public class MelcherAngeredDrunkard extends AbstractHumanEnemy {
 	}
 
 	@Override
-	public void say(String dialogue, PlayerCharacter recipient) {
-		super.say(dialogue, recipient);
+	public void speak(String dialogue, PlayerCharacter recipient) {
+		super.speak(dialogue, recipient);
 		SPEAK_NOISE.play(recipient);
 	}
 
@@ -116,7 +116,7 @@ public class MelcherAngeredDrunkard extends AbstractHumanEnemy {
 		if (Quests.BAR_FIGHT.compareStatus(pc, QuestStatus.IN_PROGRESS) && !isEnraged()) {
 			enrageInteraction.advance(pc);
 		} else {
-			say("Buzz off, would ya?", pc);
+			speak("Buzz off, would ya?", pc);
 		}
 	}
 

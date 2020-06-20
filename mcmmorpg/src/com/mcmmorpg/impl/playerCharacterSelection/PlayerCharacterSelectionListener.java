@@ -196,8 +196,8 @@ public class PlayerCharacterSelectionListener implements Listener {
 		Player player = event.getPlayer();
 		PlayerCharacter pc = PlayerCharacter.forPlayer(player);
 		if (pc != null) {
-			savePlayerCharacter(pc);
 			pc.remove();
+			savePlayerCharacter(pc);
 		}
 		profileMap.remove(player);
 	}
@@ -223,10 +223,10 @@ public class PlayerCharacterSelectionListener implements Listener {
 			Player player = event.getPlayer();
 			player.sendMessage(ChatColor.GRAY + "Logging out...");
 			PlayerCharacter pc = PlayerCharacter.forPlayer(player);
+			pc.remove();
 			savePlayerCharacter(pc);
 			player.closeInventory();
 			player.getInventory().clear();
-			pc.remove();
 			sendToCharacterSelection(player);
 			CHARACTER_TRANSITION_NOISE.play(player);
 		}

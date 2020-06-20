@@ -15,7 +15,7 @@ import com.mcmmorpg.common.character.PlayerCharacter.PlayerCharacterCollider;
 import com.mcmmorpg.common.event.PlayerCharacterLevelUpEvent;
 import com.mcmmorpg.common.item.Item;
 import com.mcmmorpg.common.item.LootChest;
-import com.mcmmorpg.common.navigation.PlayerCharacterMapSegment;
+import com.mcmmorpg.common.navigation.MapSegment;
 import com.mcmmorpg.common.navigation.QuestMarker;
 import com.mcmmorpg.common.physics.Collider;
 import com.mcmmorpg.common.util.IOUtility;
@@ -137,7 +137,7 @@ public class MelcherListener implements Listener {
 			image = ImageIO.read(imageFile);
 		} catch (IOException e) {
 		}
-		PlayerCharacterMapSegment map = new PlayerCharacterMapSegment(Zones.MELCHER, -1116, 161, -988, 289, image);
+		MapSegment map = new MapSegment(RespawnLocations.MELCHER, image);
 		QuestMarker questMarker = new QuestMarker(RespawnLocations.MELCHER) {
 			@Override
 			protected QuestMarkerDisplayType getDisplayType(PlayerCharacter pc) {

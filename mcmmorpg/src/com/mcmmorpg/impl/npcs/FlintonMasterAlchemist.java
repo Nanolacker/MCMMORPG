@@ -36,18 +36,18 @@ public class FlintonMasterAlchemist extends StaticHuman {
 			protected void onAdvance(PlayerCharacter pc, int interactionIndex) {
 				switch (interactionIndex) {
 				case 0:
-					say("Greetings! Lovely day to tend to some stewing cauldrons, wouldn't you say?", pc);
+					speak("Greetings! Lovely day to tend to some stewing cauldrons, wouldn't you say?", pc);
 					break;
 				case 1:
-					say("Well, that's what me and my fellow alchemists do here all day. Welcome to the Potion Factory!",
+					speak("Well, that's what me and my fellow alchemists do here all day. Welcome to the Potion Factory!",
 							pc);
 					break;
 				case 2:
-					say("I'd offer you health potions for sale, but unfortunately bandits have been slowing down our ingredient deliveries. We're low on stock.",
+					speak("I'd offer you health potions for sale, but unfortunately bandits have been slowing down our ingredient deliveries. We're low on stock.",
 							pc);
 					break;
 				case 3:
-					say("Actually, would you be able to gather boar tusks for us? The powder is what we use to base our potions.",
+					speak("Actually, would you be able to gather boar tusks for us? The powder is what we use to base our potions.",
 							pc);
 					break;
 				case 4:
@@ -61,10 +61,10 @@ public class FlintonMasterAlchemist extends StaticHuman {
 			protected void onAdvance(PlayerCharacter pc, int interactionIndex) {
 				switch (interactionIndex) {
 				case 0:
-					say("Wonderful! Now we have materials until the supply lines are reestablished.", pc);
+					speak("Wonderful! Now we have materials until the supply lines are reestablished.", pc);
 					break;
 				case 1:
-					say("Have some health potions as thanks.", pc);
+					speak("Have some health potions as thanks.", pc);
 					break;
 				case 2:
 					pc.removeItem(Items.BOAR_TUSK, 15);
@@ -85,16 +85,16 @@ public class FlintonMasterAlchemist extends StaticHuman {
 			if (Quests.BOARS_GALORE.getObjective(0).isComplete(pc) && pc.getItemCount(Items.BOAR_TUSK) >= 15) {
 				completeBoarsGaloreInteraction.advance(pc);
 			} else {
-				say("Off you go now!", pc);
+				speak("Off you go now!", pc);
 			}
 		} else {
-			say("Welcome to the Potion Factory. Keep your arms and legs outside of the cauldrons, please.", pc);
+			speak("Welcome to the Potion Factory. Keep your arms and legs outside of the cauldrons, please.", pc);
 		}
 	}
 
 	@Override
-	public void say(String dialogue, PlayerCharacter recipient) {
-		super.say(dialogue, recipient);
+	public void speak(String dialogue, PlayerCharacter recipient) {
+		super.speak(dialogue, recipient);
 		SPEAK_NOISE.play(recipient);
 	}
 

@@ -28,7 +28,7 @@ public class FlintonSewersCultSacrifice extends AbstractFriendlyHuman {
 			protected void run() {
 				FlintonSewersCultSacrifice sacrifice = sacrifices.get((int) (Math.random() * sacrifices.size()));
 				String dialogue = DIALOGUE_OPTIONS[(int) (Math.random() * DIALOGUE_OPTIONS.length)];
-				sacrifice.say(dialogue, 25);
+				sacrifice.speak(dialogue, 25);
 			}
 		};
 		dialogueTask.schedule();

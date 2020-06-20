@@ -12,6 +12,8 @@ import com.mcmmorpg.common.ui.TextPanel;
  */
 public abstract class QuestMarker {
 
+	private static final String TEXT_PANEL_TEXT = ChatColor.YELLOW + "" + ChatColor.BOLD + ChatColor.UNDERLINE + "!";
+
 	private TextPanel textPanel;
 
 	/**
@@ -19,7 +21,7 @@ public abstract class QuestMarker {
 	 * overworld and also on maps if added to a map segment.
 	 */
 	public QuestMarker(Location location) {
-		textPanel = new TextPanel(location, QuestMarkerDisplayType.READY_TO_START.getDisplayText());
+		textPanel = new TextPanel(location, TEXT_PANEL_TEXT);
 		textPanel.setVisible(true);
 	}
 
@@ -29,9 +31,7 @@ public abstract class QuestMarker {
 	 * location is determined by the character's height.
 	 */
 	public QuestMarker(AbstractCharacter character) {
-		Location location = character.getLocation().add(0, character.getHeight() + 0.25, 0);
-		textPanel = new TextPanel(location, QuestMarkerDisplayType.READY_TO_START.getDisplayText());
-		textPanel.setVisible(true);
+		this(character.getLocation().add(0, character.getHeight() + 0.25, 0));
 	}
 
 	/**
@@ -50,18 +50,16 @@ public abstract class QuestMarker {
 	 * How a quest maker is displayed on a map.
 	 */
 	public enum QuestMarkerDisplayType {
-		HIDDEN(""), READY_TO_START(
-				ChatColor.YELLOW + "" + ChatColor.BOLD + ChatColor.UNDERLINE + "!"), READY_TO_TURN_IN(
-						ChatColor.YELLOW + "" + ChatColor.BOLD + ChatColor.UNDERLINE + "?");
+		HIDDEN(""), READY_TO_START("§74;!"), READY_TO_TURN_IN("§74;?");
 
-		private final String displayText;
+		private final String mapText;
 
-		QuestMarkerDisplayType(String displayText) {
-			this.displayText = displayText;
+		QuestMarkerDisplayType(String mapText) {
+			this.mapText = mapText;
 		}
 
-		public String getDisplayText() {
-			return displayText;
+		public String getMapText() {
+			return mapText;
 		}
 	}
 

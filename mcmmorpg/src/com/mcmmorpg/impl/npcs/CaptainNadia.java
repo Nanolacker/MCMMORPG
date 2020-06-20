@@ -36,24 +36,24 @@ public class CaptainNadia extends StaticHuman {
 			protected void onAdvance(PlayerCharacter pc, int messageIndex) {
 				switch (messageIndex) {
 				case 0:
-					say("The mayor sent you, eh? Let's hope you're as good as he thinks.", pc);
+					speak("The mayor sent you, eh? Let's hope you're as good as he thinks.", pc);
 					break;
 				case 1:
-					say("If you haven't noticed already, this place is chalk full of thick, magic sludge that dissolves anything it touches.",
+					speak("If you haven't noticed already, this place is chalk full of thick, magic sludge that dissolves anything it touches.",
 							pc);
 					break;
 				case 2:
-					say("I guess an unpredictable, filthy concoction is what happens when alchemical leftovers and human waste mix together.",
+					speak("I guess an unpredictable, filthy concoction is what happens when alchemical leftovers and human waste mix together.",
 							pc);
 					break;
 				case 3:
-					say("Anyway, seems that cult activity has involved summoning undead and sacrifices.", pc);
+					speak("Anyway, seems that cult activity has involved summoning undead and sacrifices.", pc);
 					break;
 				case 4:
-					say("The bandits must be getting payed a hefty sum to be helping these freaks.", pc);
+					speak("The bandits must be getting payed a hefty sum to be helping these freaks.", pc);
 					break;
 				case 5:
-					say("I need you to venture out and take care of the cultists. They've been deemed too dangerous to simply arrest.",
+					speak("I need you to venture out and take care of the cultists. They've been deemed too dangerous to simply arrest.",
 							pc);
 					break;
 				case 6:
@@ -69,21 +69,21 @@ public class CaptainNadia extends StaticHuman {
 			protected void onAdvance(PlayerCharacter pc, int messageIndex) {
 				switch (messageIndex) {
 				case 0:
-					say("Good to see you made it back alive. Those gashes will make for some impressive scars.", pc);
+					speak("Good to see you made it back alive. Those gashes will make for some impressive scars.", pc);
 					break;
 				case 1:
-					say("... A god of death wannabe? That's what those fanatics were worshipping?", pc);
+					speak("... A god of death wannabe? That's what those fanatics were worshipping?", pc);
 					break;
 				case 2:
-					say("This is way worse than what we were expecting... This Xylphanos character sounds like a piece of work.",
+					speak("This is way worse than what we were expecting... This Xylphanos character sounds like a piece of work.",
 							pc);
 					break;
 				case 3:
-					say("Still, with that sort of power he is a serious threat. We must alert all corners of Eladrador to be especially vigilant.",
+					speak("Still, with that sort of power he is a serious threat. We must alert all corners of Eladrador to be especially vigilant.",
 							pc);
 					break;
 				case 4:
-					say("Report these findings back to mayor as soon as possible. My squadron will stay down here to scout out any remaining bandits.",
+					speak("Report these findings back to mayor as soon as possible. My squadron will stay down here to scout out any remaining bandits.",
 							pc);
 					break;
 				case 5:
@@ -101,18 +101,18 @@ public class CaptainNadia extends StaticHuman {
 		if (Quests.INTO_THE_SEWERS.compareStatus(pc, QuestStatus.IN_PROGRESS)) {
 			completeIntoTheSewersInteraction.advance(pc);
 		} else if (Quests.CULLING_THE_CULT.compareStatus(pc, QuestStatus.COMPLETED)) {
-			say("I owe you one.", pc);
+			speak("I owe you one.", pc);
 		} else if (Quests.CULLING_THE_CULT.getObjective(0).isComplete(pc)
 				&& Quests.CULLING_THE_CULT.getObjective(1).isComplete(pc)) {
 			completeCullingTheCultInteraction.advance(pc);
 		} else {
-			say("Go on now.", pc);
+			speak("Go on now.", pc);
 		}
 	}
 
 	@Override
-	public void say(String dialogue, PlayerCharacter recipient) {
-		super.say(dialogue, recipient);
+	public void speak(String dialogue, PlayerCharacter recipient) {
+		super.speak(dialogue, recipient);
 		SPEAK_NOISE.play(recipient);
 	}
 }

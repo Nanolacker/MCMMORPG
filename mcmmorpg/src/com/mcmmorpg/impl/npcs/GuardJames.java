@@ -38,24 +38,24 @@ public class GuardJames extends StaticHuman {
 			protected void onAdvance(PlayerCharacter pc, int messageIndex) {
 				switch (messageIndex) {
 				case 0:
-					say("Greetings, traveller.", pc);
+					speak("Greetings, traveller.", pc);
 					break;
 				case 1:
-					say("I am one of Melcher's finest guardsmen. I protect the town from this post.", pc);
+					speak("I am one of Melcher's finest guardsmen. I protect the town from this post.", pc);
 					break;
 				case 2:
-					say("Recently we've received reports of giant spiders along the road. Despicable, wretched things.",
+					speak("Recently we've received reports of giant spiders along the road. Despicable, wretched things.",
 							pc);
 					break;
 				case 3:
-					say("Those beady eyes... Their spindly, horrifying legs... Enough to make a grown man squeal in fright.",
+					speak("Those beady eyes... Their spindly, horrifying legs... Enough to make a grown man squeal in fright.",
 							pc);
 					break;
 				case 4:
-					say("Ehem. You have a weapon. Why don't you take care of them?", pc);
+					speak("Ehem. You have a weapon. Why don't you take care of them?", pc);
 					break;
 				case 5:
-					say("I'll stay here where it's safe-er, to fend off any highwaymen. Yes, highwaymen. Not spiders.",
+					speak("I'll stay here where it's safe-er, to fend off any highwaymen. Yes, highwaymen. Not spiders.",
 							pc);
 					break;
 				case 6:
@@ -69,19 +69,19 @@ public class GuardJames extends StaticHuman {
 			protected void onAdvance(PlayerCharacter pc, int messageIndex) {
 				switch (messageIndex) {
 				case 0:
-					say("You did it? The brood mother as well?", pc);
+					speak("You did it? The brood mother as well?", pc);
 					break;
 				case 1:
-					say("Thank you for your help, traveller. You've truly made my day.", pc);
+					speak("Thank you for your help, traveller. You've truly made my day.", pc);
 					break;
 				case 2:
-					say("Dear gods, thank you so much. Now I can finally sleep without a candle lit.", pc);
+					speak("Dear gods, thank you so much. Now I can finally sleep without a candle lit.", pc);
 					break;
 				case 3:
-					say("Uh, rather, now the trade routes are safer because of you.", pc);
+					speak("Uh, rather, now the trade routes are safer because of you.", pc);
 					break;
 				case 4:
-					say("Here, a little something from our barracks. A weapon fit for a hero such as yourself.", pc);
+					speak("Here, a little something from our barracks. A weapon fit for a hero such as yourself.", pc);
 					break;
 				case 5:
 					Quests.ARACHNOPHOBIA.getObjective(2).complete(pc);
@@ -103,18 +103,18 @@ public class GuardJames extends StaticHuman {
 		if (Quests.ARACHNOPHOBIA.compareStatus(pc, QuestStatus.NOT_STARTED)) {
 			startArachnophobiaInteraction.advance(pc);
 		} else if (Quests.ARACHNOPHOBIA.compareStatus(pc, QuestStatus.COMPLETED)) {
-			say("I owe you one.", pc);
+			speak("I owe you one.", pc);
 		} else if (Quests.ARACHNOPHOBIA.getObjective(0).isComplete(pc)
 				&& Quests.ARACHNOPHOBIA.getObjective(1).isComplete(pc)) {
 			completeArachnophobiaInteraction.advance(pc);
 		} else {
-			say("Go on now. Rid the lands of those monsters.", pc);
+			speak("Go on now. Rid the lands of those monsters.", pc);
 		}
 	}
 
 	@Override
-	public void say(String dialogue, PlayerCharacter recipient) {
-		super.say(dialogue, recipient);
+	public void speak(String dialogue, PlayerCharacter recipient) {
+		super.speak(dialogue, recipient);
 		SPEAK_NOISE.play(recipient);
 	}
 

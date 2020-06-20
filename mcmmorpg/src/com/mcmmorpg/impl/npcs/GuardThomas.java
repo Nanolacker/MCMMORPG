@@ -35,17 +35,17 @@ public class GuardThomas extends StaticHuman {
 			protected void onAdvance(PlayerCharacter pc, int messageIndex) {
 				switch (messageIndex) {
 				case 0:
-					say("Hey there, adventurer.", pc);
+					speak("Hey there, adventurer.", pc);
 					break;
 				case 1:
-					say("Happy to know you're here to help us. You must be strong if the mayor send you.", pc);
+					speak("Happy to know you're here to help us. You must be strong if the mayor send you.", pc);
 					break;
 				case 2:
-					say("You're right on time, 'cause we got quite the case of bandits lurkin' about these sewers. These criminals will kill for money.",
+					speak("You're right on time, 'cause we got quite the case of bandits lurkin' about these sewers. These criminals will kill for money.",
 							pc);
 					break;
 				case 3:
-					say("Come back once their guild is no more. They like to hide in the rooms scattered throughout the sewers.",
+					speak("Come back once their guild is no more. They like to hide in the rooms scattered throughout the sewers.",
 							pc);
 					break;
 				case 4:
@@ -59,7 +59,7 @@ public class GuardThomas extends StaticHuman {
 			protected void onAdvance(PlayerCharacter pc, int messageIndex) {
 				switch (messageIndex) {
 				case 0:
-					say("Thank you, you've been huge help.", pc);
+					speak("Thank you, you've been huge help.", pc);
 					break;
 				case 1:
 					Quests.DRIVING_OUT_THE_BANDITS.getObjective(2).complete(pc);
@@ -79,16 +79,16 @@ public class GuardThomas extends StaticHuman {
 					&& Quests.DRIVING_OUT_THE_BANDITS.getObjective(1).isComplete(pc)) {
 				completeDrivingOutTheBanditsInteraction.advance(pc);
 			} else {
-				say("There's bandits afoot, adventurer.", pc);
+				speak("There's bandits afoot, adventurer.", pc);
 			}
 		} else {
-			say("Hello there!", pc);
+			speak("Hello there!", pc);
 		}
 	}
 
 	@Override
-	public void say(String dialogue, PlayerCharacter recipient) {
-		super.say(dialogue, recipient);
+	public void speak(String dialogue, PlayerCharacter recipient) {
+		super.speak(dialogue, recipient);
 		SPEAK_NOISE.play(recipient);
 	}
 

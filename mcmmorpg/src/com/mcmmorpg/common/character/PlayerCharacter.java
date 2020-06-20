@@ -1171,6 +1171,7 @@ public final class PlayerCharacter extends AbstractCharacter {
 		setHealthBarVisible(false);
 		unhidePlayerNameplate();
 		soundtrackPlayer.setSoundtrack(null);
+		map.close();
 		movementSyncer.setEnabled(false);
 		pcs.remove(this);
 		playerMap.remove(player);
@@ -1249,7 +1250,7 @@ public final class PlayerCharacter extends AbstractCharacter {
 			}
 			event.setCancelled(true);
 			String message = event.getMessage();
-			pc.say(message, SPEAK_RADIUS);
+			pc.speak(message, SPEAK_RADIUS);
 		}
 
 		@EventHandler

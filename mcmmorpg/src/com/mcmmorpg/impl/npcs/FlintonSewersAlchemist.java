@@ -36,23 +36,23 @@ public class FlintonSewersAlchemist extends StaticHuman {
 			protected void onAdvance(PlayerCharacter pc, int interactionIndex) {
 				switch (interactionIndex) {
 				case 0:
-					say("Don't you find sludge so interesting? It has many peculiar properties.", pc);
+					speak("Don't you find sludge so interesting? It has many peculiar properties.", pc);
 					break;
 				case 1:
-					say("Dissolves bones, sears flesh, and makes adorable sludge monsters!", pc);
+					speak("Dissolves bones, sears flesh, and makes adorable sludge monsters!", pc);
 					break;
 				case 2:
-					say("Er, perhaps you don't find the gelatinous cubes very cute.", pc);
+					speak("Er, perhaps you don't find the gelatinous cubes very cute.", pc);
 					break;
 				case 3:
-					say("Regardless, I think it's absolutely fascinating. I would love to get samples to study, but alas, I am a scientist, not a fighter.",
+					speak("Regardless, I think it's absolutely fascinating. I would love to get samples to study, but alas, I am a scientist, not a fighter.",
 							pc);
 					break;
 				case 4:
-					say("You, however, seem to have some fight in you. I can tell.", pc);
+					speak("You, however, seem to have some fight in you. I can tell.", pc);
 					break;
 				case 5:
-					say("So how 'bout it? Get me some sludge samples and you'll make my day.", pc);
+					speak("So how 'bout it? Get me some sludge samples and you'll make my day.", pc);
 					break;
 				case 6:
 					Quests.SAMPLING_SLUDGE.start(pc);
@@ -65,7 +65,7 @@ public class FlintonSewersAlchemist extends StaticHuman {
 			protected void onAdvance(PlayerCharacter pc, int interactionIndex) {
 				switch (interactionIndex) {
 				case 0:
-					say("By golly, you've done it! The last few I asked never made it back, haha!", pc);
+					speak("By golly, you've done it! The last few I asked never made it back, haha!", pc);
 					break;
 				case 1:
 					pc.removeItem(Items.SLUDGE, 15);
@@ -87,16 +87,16 @@ public class FlintonSewersAlchemist extends StaticHuman {
 					&& pc.getItemCount(Items.COLOSSAL_SLUDGE) >= 1) {
 				completeSamplingSludgeInteraction.advance(pc);
 			} else {
-				say("Come on now, I need way more sludge than that!", pc);
+				speak("Come on now, I need way more sludge than that!", pc);
 			}
 		} else {
-			say("Well met.", pc);
+			speak("Well met.", pc);
 		}
 	}
 
 	@Override
-	public void say(String dialogue, PlayerCharacter recipient) {
-		super.say(dialogue, recipient);
+	public void speak(String dialogue, PlayerCharacter recipient) {
+		super.speak(dialogue, recipient);
 		SPEAK_NOISE.play(recipient);
 	}
 

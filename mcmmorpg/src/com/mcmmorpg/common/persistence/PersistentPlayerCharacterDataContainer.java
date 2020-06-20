@@ -72,6 +72,9 @@ public class PersistentPlayerCharacterDataContainer {
 	 * Creates a data container for the specified player character.
 	 */
 	public static PersistentPlayerCharacterDataContainer createSaveData(PlayerCharacter pc) {
+		if (pc.isActive()) {
+			throw new IllegalStateException("Pc was not removed");
+		}
 		PlayerClass playerClass = pc.getPlayerClass();
 		String zone = pc.getZone();
 		Location location = pc.getLocation();

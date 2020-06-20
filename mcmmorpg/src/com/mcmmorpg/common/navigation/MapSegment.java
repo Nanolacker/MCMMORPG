@@ -10,25 +10,20 @@ import org.bukkit.map.MapCursorCollection;
 import org.bukkit.map.MinecraftFont;
 
 import com.mcmmorpg.common.character.PlayerCharacter;
-import com.mcmmorpg.common.util.Debug;
+import com.mcmmorpg.common.util.StringUtility;
 
 /**
  * A map segment that players can view with their map. Each segment represents
  * 128 by 128 blocks and can display quest markers.
  */
-public class PlayerCharacterMapSegment {
+public class MapSegment {
 
-	private final String zone;
-	private int xMin, zMin, xMax, zMax;
+	private Location center;
 	private final Image image;
 	private final List<QuestMarker> questMarkers;
 
-	public PlayerCharacterMapSegment(String zone, int xMin, int zMin, int xMax, int zMax, Image image) {
-		this.zone = zone;
-		this.xMin = xMin;
-		this.zMin = zMin;
-		this.xMax = xMax;
-		this.zMax = zMax;
+	public MapSegment(Location center, Image image) {
+		this.center = center;
 		this.image = image;
 		if (image == null) {
 			throw new NullPointerException("Image is null");
@@ -36,30 +31,8 @@ public class PlayerCharacterMapSegment {
 		this.questMarkers = new ArrayList<>();
 	}
 
-	public String getZone() {
-		return zone;
-	}
-
-	/**
-	 * How many blocks wide this map segment is (length across x-axis).
-	 */
-	public int getWidth() {
-		return xMax - xMin;
-	}
-
-	/**
-	 * How many blocks high this map segment is (length across z-axis).
-	 */
-	public int getHeight() {
-		return zMax - zMin;
-	}
-
 	public Image getImage() {
 		return image;
-	}
-
-	public List<QuestMarker> getQuestMarkers() {
-		return questMarkers;
 	}
 
 	public void addQuestMarker(QuestMarker questMarker) {
@@ -73,12 +46,15 @@ public class PlayerCharacterMapSegment {
 			}
 		}
 
+		int mapCenterX = center.getBlockX();
+		int mapCenterZ = center.getBlockZ();
+
 		Location location = pc.getLocation();
 		int pcX = location.getBlockX();
 		int pcZ = location.getBlockZ();
 
-		int imageX = xMax - pcX - 64;
-		int imageY = zMax - pcZ - 64;
+		int imageX = mapCenterX - pcX;
+		int imageY = mapCenterZ - pcZ;
 		canvas.drawImage(imageX, imageY, image);
 
 		byte direction = (byte) (CardinalDirection.forVector(location.getDirection()).getOctant() * 2 - 4);
@@ -93,10 +69,15 @@ public class PlayerCharacterMapSegment {
 		}
 
 		for (QuestMarker questMarker : questMarkers) {
-			int questMarkerX = questMarker.getLocation().getBlockX() - pcX + 64;
-			int questMarkerY = questMarker.getLocation().getBlockZ() - pcZ + 64;
-			canvas.drawText(questMarkerX, questMarkerY, MinecraftFont.Font, "§74;!");
+			Location questMarkerLocation = questMarker.getLocation();
+			int questMarkerX = questMarkerLocation.getBlockX() - pcX + 61;
+			int questMarkerY = questMarkerLocation.getBlockZ() - pcZ + 61;
+			String questMarkerText = questMarker.getDisplayType(pc).getMapText();
+			canvas.drawText(questMarkerX, questMarkerY, MinecraftFont.Font, questMarkerText);
 		}
+
+		String zoneText = StringUtility.chatColorToMapText(pc.getZone());
+		canvas.drawText(0, 0, MinecraftFont.Font, zoneText);
 	}
 
 }

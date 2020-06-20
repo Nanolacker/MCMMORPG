@@ -36,38 +36,38 @@ public class FlintonMayor extends StaticHuman {
 			protected void onAdvance(PlayerCharacter pc, int interactionIndex) {
 				switch (interactionIndex) {
 				case 0:
-					say("Welcome, adventurer. You look rather battered.", pc);
+					speak("Welcome, adventurer. You look rather battered.", pc);
 					break;
 				case 1:
-					say("You've cleared the paths to Melcher of the highwaymen? In that case you have Flinton's sincerest thanks.",
+					speak("You've cleared the paths to Melcher of the highwaymen? In that case you have Flinton's sincerest thanks.",
 							pc);
 					break;
 				case 2:
-					say("Unfortunately, the thieving filth runs deeper than the road.", pc);
+					speak("Unfortunately, the thieving filth runs deeper than the road.", pc);
 					break;
 				case 3:
-					say("We've received reports from guards that bandits have begun establishing hideouts in the sewers directly below us.",
+					speak("We've received reports from guards that bandits have begun establishing hideouts in the sewers directly below us.",
 							pc);
 					break;
 				case 4:
-					say("The reports suggest that they seem to be aiding a mysterious cult.", pc);
+					speak("The reports suggest that they seem to be aiding a mysterious cult.", pc);
 					break;
 				case 5:
-					say("We've sent in other guards to survey the area further but with little success.", pc);
+					speak("We've sent in other guards to survey the area further but with little success.", pc);
 					break;
 				case 6:
-					say("We could really use someone skilled like you to investigate the situation further.", pc);
+					speak("We could really use someone skilled like you to investigate the situation further.", pc);
 					break;
 				case 7:
-					say("A small guard's post has been set up in the sewers. Go there and speak with Captain Nadia for further instructions.",
+					speak("A small guard's post has been set up in the sewers. Go there and speak with Captain Nadia for further instructions.",
 							pc);
 					break;
 				case 8:
-					say("For the safety of Flinton, we cannot allow the cult's activities to go unmonitored any longer.",
+					speak("For the safety of Flinton, we cannot allow the cult's activities to go unmonitored any longer.",
 							pc);
 					break;
 				case 9:
-					say("Be careful, adventurer. We don't know what we're up against yet.", pc);
+					speak("Be careful, adventurer. We don't know what we're up against yet.", pc);
 					break;
 				case 10:
 					Quests.CLEARING_THE_ROAD.getObjective(1).complete(pc);
@@ -82,25 +82,25 @@ public class FlintonMayor extends StaticHuman {
 			protected void onAdvance(PlayerCharacter pc, int interactionIndex) {
 				switch (interactionIndex) {
 				case 0:
-					say("By the gods, you found some lunatic who thinks he can become the new god of death?", pc);
+					speak("By the gods, you found some lunatic who thinks he can become the new god of death?", pc);
 					break;
 				case 1:
-					say("That genocidal maniac... The amount of sacrifices that it would take to reach such power is unspeakable.",
+					speak("That genocidal maniac... The amount of sacrifices that it would take to reach such power is unspeakable.",
 							pc);
 					break;
 				case 2:
-					say("And you say that he already seemed to pose a formidable threat?", pc);
+					speak("And you say that he already seemed to pose a formidable threat?", pc);
 					break;
 				case 3:
-					say("This is truly worrisome. I must organize with other settlements to prepare for the possible destruction.",
+					speak("This is truly worrisome. I must organize with other settlements to prepare for the possible destruction.",
 							pc);
 					break;
 				case 4:
-					say("Although, you came back in one piece. Perhaps you'd be able to keep track of his whereabouts.",
+					speak("Although, you came back in one piece. Perhaps you'd be able to keep track of his whereabouts.",
 							pc);
 					break;
 				case 5:
-					say("Traveller, you must venture out and stop Xylphanos at all costs. For the sake of all things living.",
+					speak("Traveller, you must venture out and stop Xylphanos at all costs. For the sake of all things living.",
 							pc);
 					break;
 				case 6:
@@ -117,8 +117,8 @@ public class FlintonMayor extends StaticHuman {
 	}
 
 	@Override
-	public void say(String dialogue, PlayerCharacter recipient) {
-		super.say(dialogue, recipient);
+	public void speak(String dialogue, PlayerCharacter recipient) {
+		super.speak(dialogue, recipient);
 		SPEAK_NOISE.play(recipient);
 	}
 
@@ -130,7 +130,7 @@ public class FlintonMayor extends StaticHuman {
 		} else if (Quests.THREAT_LEVEL_GOD.compareStatus(pc, QuestStatus.IN_PROGRESS)) {
 			completeThreatLevelGodInteraction.advance(pc);
 		} else {
-			say("Welcome to Flinton.", pc);
+			speak("Welcome to Flinton.", pc);
 		}
 	}
 

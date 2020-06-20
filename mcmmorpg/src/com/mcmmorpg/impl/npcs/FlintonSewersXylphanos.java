@@ -82,25 +82,25 @@ public class FlintonSewersXylphanos extends AbstractCultist {
 			protected void onAdvance(PlayerCharacter pc, int interactionIndex) {
 				switch (interactionIndex) {
 				case 0:
-					say("Enough of this child's play.", 25);
+					speak("Enough of this child's play.", 25);
 					break;
 				case 1:
-					say("You seek to stop my rise to power? My path to creating a just and forgiving world?", 25);
+					speak("You seek to stop my rise to power? My path to creating a just and forgiving world?", 25);
 					break;
 				case 2:
-					say("The current god of death is unworthy. She will be usurped, and replaced by someone who understands mortal grief and pain.",
+					speak("The current god of death is unworthy. She will be usurped, and replaced by someone who understands mortal grief and pain.",
 							25);
 					break;
 				case 3:
-					say("How I reach this is none of your concern, you ignorant worm. My plans are for the greater good.",
+					speak("How I reach this is none of your concern, you ignorant worm. My plans are for the greater good.",
 							25);
 					break;
 				case 4:
-					say("I am Xylphanos. Remember my name, for it shall be celebrated once I am the new merciful god of death.",
+					speak("I am Xylphanos. Remember my name, for it shall be celebrated once I am the new merciful god of death.",
 							25);
 					break;
 				case 5:
-					say("Do not interfere more, lest you be known as the one who prolonged humanity's suffering.", 25);
+					speak("Do not interfere more, lest you be known as the one who prolonged humanity's suffering.", 25);
 					break;
 				case 6:
 					Location location = getLocation();
@@ -131,7 +131,7 @@ public class FlintonSewersXylphanos extends AbstractCultist {
 			protected void run() {
 				if (!passive) {
 					String dialogue = BATTLE_DIALOGUE_OPTIONS[dialogueIndex];
-					say(dialogue, 20);
+					speak(dialogue, 20);
 					dialogueIndex++;
 					if (dialogueIndex == BATTLE_DIALOGUE_OPTIONS.length) {
 						dialogueIndex = 0;

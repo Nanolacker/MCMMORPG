@@ -31,7 +31,7 @@ public class MelcherVillager extends AbstractFriendlyHuman {
 	protected void onInteract(PlayerCharacter pc) {
 		int i = (int) (Math.random() * DIALOGUE_OPTIONS.length);
 		String dialogue = DIALOGUE_OPTIONS[i];
-		say(dialogue, pc);
+		speak(dialogue, pc);
 		if (male) {
 			MALE_SPEAK_NOISE.play(pc);
 		} else {

@@ -1,9 +1,12 @@
 package com.mcmmorpg.common.util;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.bukkit.ChatColor;
+import org.bukkit.Color;
 
 public class StringUtility {
 
@@ -11,6 +14,16 @@ public class StringUtility {
 	 * The ideal amount of characters per line to display in the lore of an item.
 	 */
 	public static final int STANDARD_LINE_LENGTH = 18;
+	private static final Map<ChatColor, Integer> CHAT_COLOR_TO_MAP_COLOR_CODE = new HashMap<>();
+
+	static {
+		CHAT_COLOR_TO_MAP_COLOR_CODE.put(ChatColor.YELLOW, 63);
+		CHAT_COLOR_TO_MAP_COLOR_CODE.put(ChatColor.GREEN, 32);
+		Color color = Color.GREEN;
+		int colorCode = ((color.getBlue() & 255 & 0xC0) + ((color.getGreen() & 255 & 0xE0) >> 2)
+				+ ((color.getRed() & 0xE0) >> 5)) & 0xFF;
+		Debug.log(colorCode);
+	}
 
 	private StringUtility() {
 	}
@@ -121,6 +134,26 @@ public class StringUtility {
 	 */
 	public static boolean isNumeric(String s) {
 		return s.matches("-?\\d+(\\.\\d+)?");
+	}
+
+	public static String chatColorToMapText(String text) {
+		StringBuilder mapText = new StringBuilder();
+		for (int i = 0; i < text.length(); i++) {
+			char ch = text.charAt(i);
+			if (ch == '§') {
+				i++;
+				char chatColorCode = text.charAt(i);
+				ChatColor chatColor = ChatColor.getByChar(chatColorCode);
+				Integer mapColorCode = CHAT_COLOR_TO_MAP_COLOR_CODE.get(chatColor);
+				if (mapColorCode != null) {
+					String mapColor = "§" + mapColorCode + ";";
+					mapText.append(mapColor);
+				}
+			} else {
+				mapText.append(ch);
+			}
+		}
+		return mapText.toString();
 	}
 
 }

@@ -35,18 +35,18 @@ public class MelcherFarmer extends StaticHuman {
 			protected void onAdvance(PlayerCharacter pc, int interactionIndex) {
 				switch (interactionIndex) {
 				case 0:
-					say("Oh thank the gods you're here.", pc);
+					speak("Oh thank the gods you're here.", pc);
 					break;
 				case 1:
-					say("I manage Melcher's food supply, but thieves have been stealing our food deliveries and crops.",
+					speak("I manage Melcher's food supply, but thieves have been stealing our food deliveries and crops.",
 							pc);
 					break;
 				case 2:
-					say("The villagers have begun to blame me for the food shortage, even threatening to eat me and my family!",
+					speak("The villagers have begun to blame me for the food shortage, even threatening to eat me and my family!",
 							pc);
 					break;
 				case 3:
-					say("Won't you please find the thieves responsible? I hear they lurk somewhere in the forest.", pc);
+					speak("Won't you please find the thieves responsible? I hear they lurk somewhere in the forest.", pc);
 					break;
 				case 4:
 					Quests.FOOD_DELIVERY.start(pc);
@@ -59,10 +59,10 @@ public class MelcherFarmer extends StaticHuman {
 			protected void onAdvance(PlayerCharacter pc, int interactionIndex) {
 				switch (interactionIndex) {
 				case 0:
-					say("Adventurer if I didn't have a wife I would kiss you right now.", pc);
+					speak("Adventurer if I didn't have a wife I would kiss you right now.", pc);
 					break;
 				case 1:
-					say("Instead, have this bread as my expression of gratitude.", pc);
+					speak("Instead, have this bread as my expression of gratitude.", pc);
 					break;
 				case 2:
 					pc.removeItem(Items.STOLEN_FOOD, 10);
@@ -83,16 +83,16 @@ public class MelcherFarmer extends StaticHuman {
 			if (pc.getItemCount(Items.STOLEN_FOOD) >= 10) {
 				completeFoodDeliveryInteraction.advance(pc);
 			} else {
-				say("Have you found them yet? And the food?", pc);
+				speak("Have you found them yet? And the food?", pc);
 			}
 		} else {
-			say("Greetings! Mind the horses.", pc);
+			speak("Greetings! Mind the horses.", pc);
 		}
 	}
 
 	@Override
-	public void say(String dialogue, PlayerCharacter recipient) {
-		super.say(dialogue, recipient);
+	public void speak(String dialogue, PlayerCharacter recipient) {
+		super.speak(dialogue, recipient);
 		SPEAK_NOISE.play(recipient);
 	}
 

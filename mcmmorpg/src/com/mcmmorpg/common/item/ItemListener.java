@@ -77,7 +77,7 @@ class ItemListener implements Listener {
 		if (pc == null) {
 			return;
 		}
-		if (falseAttackers.contains(pc)) {
+		if (falseAttackers.contains(pc) || pc.getMap().isOpen()) {
 			return;
 		}
 		handlePlayerCharacterUseWeapon(pc);
@@ -167,10 +167,10 @@ class ItemListener implements Listener {
 			return;
 		}
 		addPCToSet(swingingHands, pc);
-		Weapon weapon = pc.getWeapon();
 		if (pc.isDisarmed()) {
 			return;
 		}
+		Weapon weapon = pc.getWeapon();
 		EventManager.callEvent(new PlayerCharacterUseWeaponEvent(pc, weapon));
 	}
 
@@ -219,6 +219,7 @@ class ItemListener implements Listener {
 						pc.sendMessage(ChatColor.GRAY + "You must be " + ChatColor.GOLD + "level " + weaponLevel
 								+ ChatColor.GRAY + " to wield " + weapon);
 					} else {
+						pc.getMap().close();
 						// equip new weapon
 						Inventory inventory = player.getInventory();
 						// must go back to non-raw slots here

@@ -38,16 +38,16 @@ public class MelcherBartender extends StaticHuman {
 			protected void onAdvance(PlayerCharacter pc, int interactionIndex) {
 				switch (interactionIndex) {
 				case 0:
-					say("Hey there adventurer! Welcome to my tavern.", pc);
+					speak("Hey there adventurer! Welcome to my tavern.", pc);
 					break;
 				case 1:
-					say("Why, after all your travelin' I suppose you fancy yourself a drink.", pc);
+					speak("Why, after all your travelin' I suppose you fancy yourself a drink.", pc);
 					break;
 				case 2:
-					say("Unfortunately I've a rowdy drunkard on my hands, scarin' away my other patrons.", pc);
+					speak("Unfortunately I've a rowdy drunkard on my hands, scarin' away my other patrons.", pc);
 					break;
 				case 3:
-					say("Surely you've dealt with all sorts on your travels. Could you have a word with him and escort him out for me?",
+					speak("Surely you've dealt with all sorts on your travels. Could you have a word with him and escort him out for me?",
 							pc);
 					break;
 				case 4:
@@ -61,20 +61,20 @@ public class MelcherBartender extends StaticHuman {
 			protected void onAdvance(PlayerCharacter pc, int interactionIndex) {
 				switch (interactionIndex) {
 				case 0:
-					say("BY THE GODS!", pc);
+					speak("BY THE GODS!", pc);
 					break;
 				case 1:
-					say("Well aren't you just a bloodthirsty barbarian. I said ESCORT, not EXTERMINATE.", pc);
+					speak("Well aren't you just a bloodthirsty barbarian. I said ESCORT, not EXTERMINATE.", pc);
 					break;
 				case 2:
-					say("That man was half of my income, you scoundrel!", pc);
+					speak("That man was half of my income, you scoundrel!", pc);
 					break;
 				case 3:
-					say("You know what? Now you owe me a favor. I have a rat problem in my basement that needs taken care of.",
+					speak("You know what? Now you owe me a favor. I have a rat problem in my basement that needs taken care of.",
 							pc);
 					break;
 				case 4:
-					say("Judging by your last performance, I think you're perfect for the job. Now get to it!", pc);
+					speak("Judging by your last performance, I think you're perfect for the job. Now get to it!", pc);
 					break;
 				case 5:
 					Quests.BAR_FIGHT.getObjective(1).complete(pc);
@@ -89,13 +89,13 @@ public class MelcherBartender extends StaticHuman {
 			protected void onAdvance(PlayerCharacter pc, int interactionIndex) {
 				switch (interactionIndex) {
 				case 0:
-					say("Well, well, well. If it ain't the butcher themself.", pc);
+					speak("Well, well, well. If it ain't the butcher themself.", pc);
 					break;
 				case 1:
-					say("I'd ask you to patch up the wall, but you'd probably manage to blow it up somehow.", pc);
+					speak("I'd ask you to patch up the wall, but you'd probably manage to blow it up somehow.", pc);
 					break;
 				case 2:
-					say("Here, have a drink. Now put that darned weapon of yours away.", pc);
+					speak("Here, have a drink. Now put that darned weapon of yours away.", pc);
 					break;
 				case 3:
 					Quests.PEST_CONTROL.getObjective(2).complete(pc);
@@ -119,16 +119,16 @@ public class MelcherBartender extends StaticHuman {
 					&& Quests.PEST_CONTROL.getObjective(1).isComplete(pc)) {
 				completePestControlInteraction.advance(pc);
 			} else {
-				say("What are you doing here? Get rid of those rats for me.", pc);
+				speak("What are you doing here? Get rid of those rats for me.", pc);
 			}
 		} else if (Quests.PEST_CONTROL.compareStatus(pc, QuestStatus.COMPLETED)) {
-			say("Welcome to my tavern.", pc);
+			speak("Welcome to my tavern.", pc);
 		}
 	}
 
 	@Override
-	public void say(String dialogue, PlayerCharacter recipient) {
-		super.say(dialogue, recipient);
+	public void speak(String dialogue, PlayerCharacter recipient) {
+		super.speak(dialogue, recipient);
 		SPEAK_NOISE.play(recipient);
 	}
 

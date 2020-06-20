@@ -1,6 +1,7 @@
 package com.mcmmorpg.common.navigation;
 
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -12,46 +13,70 @@ import org.bukkit.map.MapRenderer;
 import org.bukkit.map.MapView;
 
 import com.mcmmorpg.common.character.PlayerCharacter;
-import com.mcmmorpg.common.util.Debug;
 
 public class PlayerCharacterMap {
 
 	private final PlayerCharacter pc;
 	private final ItemStack itemStack;
-	private PlayerCharacterMapSegment mapSegment;
+	private MapSegment mapSegment;
 	private boolean isOpen;
+	private ItemStack pcWeaponItemStackTemp;
 
 	public PlayerCharacterMap(PlayerCharacter pc) {
 		this.pc = pc;
 		this.itemStack = new ItemStack(Material.FILLED_MAP);
+
+		ItemMeta itemMeta = itemStack.getItemMeta();
+		itemMeta.setDisplayName(ChatColor.YELLOW + "Map");
+		MapMeta meta = ((MapMeta) itemMeta);
+		MapView mapView = Bukkit.createMap(pc.getWorld());
+		meta.setMapView(mapView);
+		itemStack.setItemMeta(meta);
+		itemStack.setItemMeta(itemMeta);
+
 		this.mapSegment = null;
 		this.isOpen = false;
+		pcWeaponItemStackTemp = null;
 	}
 
-	public PlayerCharacterMapSegment getMapSegment() {
+	public MapSegment getMapSegment() {
 		return mapSegment;
 	}
 
-	public void setMapSegment(PlayerCharacterMapSegment mapSegment) {
+	public void setMapSegment(MapSegment mapSegment) {
 		this.mapSegment = mapSegment;
+		update();
 	}
 
 	public boolean isOpen() {
 		return isOpen;
 	}
 
+	/**
+	 * Does nothing if the map is already open.
+	 */
 	public void open() {
+		if (isOpen) {
+			return;
+		}
+		pcWeaponItemStackTemp = pc.getWeapon().getItemStack();
 		Player player = pc.getPlayer();
 		PlayerInventory inventory = player.getInventory();
-		inventory.setItemInMainHand(itemStack);
 		isOpen = true;
 		update();
+		inventory.setItemInMainHand(itemStack);
 	}
 
+	/**
+	 * Does nothing if the map is already closed.
+	 */
 	public void close() {
+		if (!isOpen) {
+			return;
+		}
 		Player player = pc.getPlayer();
 		PlayerInventory inventory = player.getInventory();
-		// inventory.setItemInMainHand(pc.getWeapon().getItemStack());
+		inventory.setItemInMainHand(pcWeaponItemStackTemp);
 		isOpen = false;
 	}
 
@@ -59,11 +84,10 @@ public class PlayerCharacterMap {
 		if (mapSegment == null || !isOpen) {
 			return;
 		}
-		Debug.log("update");
-		ItemMeta itemMeta = itemStack.getItemMeta();
-		itemMeta.setDisplayName(mapSegment.getZone());
-		itemStack.setItemMeta(itemMeta);
-		MapView mapView = Bukkit.createMap(pc.getWorld());
+
+		MapMeta mapMeta = (MapMeta) itemStack.getItemMeta();
+		MapView mapView = mapMeta.getMapView();
+
 		for (MapRenderer renderer : mapView.getRenderers()) {
 			mapView.removeRenderer(renderer);
 		}
@@ -75,10 +99,6 @@ public class PlayerCharacterMap {
 			}
 		};
 		mapView.addRenderer(renderer);
-
-		MapMeta meta = ((MapMeta) itemStack.getItemMeta());
-		meta.setMapView(mapView);
-		itemStack.setItemMeta(meta);
 	}
 
 }
