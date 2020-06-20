@@ -17,12 +17,12 @@ import org.bukkit.entity.Player;
 
 import com.mcmmorpg.common.character.PlayerCharacter;
 import com.mcmmorpg.common.item.Item;
+import com.mcmmorpg.common.navigation.CardinalDirection;
 import com.mcmmorpg.common.quest.Quest;
 import com.mcmmorpg.common.quest.QuestObjective;
 import com.mcmmorpg.common.time.DelayedTask;
 import com.mcmmorpg.common.ui.Command;
 import com.mcmmorpg.common.ui.CommandManager;
-import com.mcmmorpg.common.util.CardinalDirection;
 import com.mcmmorpg.common.util.Debug;
 import com.mcmmorpg.common.util.IOUtility;
 import com.mcmmorpg.common.util.StringUtility;

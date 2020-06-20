@@ -21,11 +21,11 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 
 import com.mcmmorpg.common.character.PlayerCharacter;
+import com.mcmmorpg.common.navigation.CardinalDirection;
 import com.mcmmorpg.common.time.DelayedTask;
 import com.mcmmorpg.common.time.RepeatingTask;
 import com.mcmmorpg.common.ui.TextPanel;
 import com.mcmmorpg.common.util.BukkitUtility;
-import com.mcmmorpg.common.util.CardinalDirection;
 
 /**
  * Place chests that player characters can loot.

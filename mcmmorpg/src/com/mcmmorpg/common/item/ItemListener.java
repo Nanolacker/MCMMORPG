@@ -26,13 +26,13 @@ import org.bukkit.event.player.PlayerSwapHandItemsEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-
 import com.mcmmorpg.common.character.PlayerCharacter;
 import com.mcmmorpg.common.event.EventManager;
 import com.mcmmorpg.common.event.PlayerCharacterOpenLootChestEvent;
 import com.mcmmorpg.common.event.PlayerCharacterUseConsumableItemEvent;
 import com.mcmmorpg.common.event.PlayerCharacterUseWeaponEvent;
 import com.mcmmorpg.common.event.StaticInteractableEvent;
+import com.mcmmorpg.common.navigation.PlayerCharacterMap;
 import com.mcmmorpg.common.playerClass.PlayerClass;
 import com.mcmmorpg.common.sound.Noise;
 import com.mcmmorpg.common.time.DelayedTask;
@@ -414,6 +414,17 @@ class ItemListener implements Listener {
 	@EventHandler
 	private void onSwapHands(PlayerSwapHandItemsEvent event) {
 		event.setCancelled(true);
+		Player player = event.getPlayer();
+		PlayerCharacter pc = PlayerCharacter.forPlayer(player);
+		if (pc == null) {
+			return;
+		}
+		PlayerCharacterMap map = pc.getMap();
+		if (map.isOpen()) {
+			map.close();
+		} else {
+			map.open();
+		}
 	}
 
 }

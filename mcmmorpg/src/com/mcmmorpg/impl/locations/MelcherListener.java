@@ -1,5 +1,11 @@
 package com.mcmmorpg.impl.locations;
 
+import java.awt.Image;
+import java.io.File;
+import java.io.IOException;
+
+import javax.imageio.ImageIO;
+
 import org.bukkit.Location;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -9,7 +15,10 @@ import com.mcmmorpg.common.character.PlayerCharacter.PlayerCharacterCollider;
 import com.mcmmorpg.common.event.PlayerCharacterLevelUpEvent;
 import com.mcmmorpg.common.item.Item;
 import com.mcmmorpg.common.item.LootChest;
+import com.mcmmorpg.common.navigation.PlayerCharacterMapSegment;
+import com.mcmmorpg.common.navigation.QuestMarker;
 import com.mcmmorpg.common.physics.Collider;
+import com.mcmmorpg.common.util.IOUtility;
 import com.mcmmorpg.impl.constants.Items;
 import com.mcmmorpg.impl.constants.Quests;
 import com.mcmmorpg.impl.constants.RespawnLocations;
@@ -20,15 +29,15 @@ import com.mcmmorpg.impl.npcs.Adventurer;
 import com.mcmmorpg.impl.npcs.Chicken;
 import com.mcmmorpg.impl.npcs.Guard;
 import com.mcmmorpg.impl.npcs.Horse;
+import com.mcmmorpg.impl.npcs.Lumberjack;
 import com.mcmmorpg.impl.npcs.MelcherAngeredDrunkard;
 import com.mcmmorpg.impl.npcs.MelcherBartender;
 import com.mcmmorpg.impl.npcs.MelcherFarmer;
-import com.mcmmorpg.impl.npcs.Lumberjack;
 import com.mcmmorpg.impl.npcs.MelcherMayor;
 import com.mcmmorpg.impl.npcs.MelcherTavernKingRat;
 import com.mcmmorpg.impl.npcs.MelcherTavernRat;
-import com.mcmmorpg.impl.npcs.MelcherVillager;
 import com.mcmmorpg.impl.npcs.MelcherThief;
+import com.mcmmorpg.impl.npcs.MelcherVillager;
 import com.mcmmorpg.impl.npcs.TrainingDummy;
 
 /**
@@ -122,6 +131,20 @@ public class MelcherListener implements Listener {
 	}
 
 	private void setBounds() {
+		File imageFile = new File(IOUtility.getDataFolder(), "map.jpg");
+		Image image = null;
+		try {
+			image = ImageIO.read(imageFile);
+		} catch (IOException e) {
+		}
+		PlayerCharacterMapSegment map = new PlayerCharacterMapSegment(Zones.MELCHER, -1116, 161, -988, 289, image);
+		QuestMarker questMarker = new QuestMarker(RespawnLocations.MELCHER) {
+			@Override
+			protected QuestMarkerDisplayType getDisplayType(PlayerCharacter pc) {
+				return QuestMarkerDisplayType.READY_TO_START;
+			}
+		};
+		map.addQuestMarker(questMarker);
 		Collider entranceBounds = new Collider(Worlds.ELADRADOR, -1186, 30, 110, -930, 126, 300) {
 			@Override
 			protected void onCollisionEnter(Collider other) {
@@ -130,6 +153,7 @@ public class MelcherListener implements Listener {
 					pc.setZone(Zones.MELCHER);
 					pc.setRespawnLocation(RespawnLocations.MELCHER);
 					pc.getSoundTrackPlayer().setSoundtrack(Soundtracks.VILLAGE);
+					pc.getMap().setMapSegment(map);
 				}
 			}
 		};

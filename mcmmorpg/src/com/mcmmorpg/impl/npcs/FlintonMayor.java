@@ -5,7 +5,7 @@ import org.bukkit.Location;
 import org.bukkit.Sound;
 
 import com.mcmmorpg.common.character.PlayerCharacter;
-import com.mcmmorpg.common.quest.QuestMarker;
+import com.mcmmorpg.common.navigation.QuestMarker;
 import com.mcmmorpg.common.quest.QuestStatus;
 import com.mcmmorpg.common.sound.Noise;
 import com.mcmmorpg.common.ui.InteractionSequence;
@@ -25,7 +25,12 @@ public class FlintonMayor extends StaticHuman {
 
 	public FlintonMayor(Location location) {
 		super(ChatColor.GREEN + "Mayor of Flinton", LEVEL, location, TEXTURE_DATA, TEXTURE_SIGNATURE);
-		QuestMarker.createMarker(location.clone().add(0, 2.25, 0));
+		new QuestMarker(location.clone().add(0, 2.25, 0)) {
+			@Override
+			protected QuestMarkerDisplayType getDisplayType(PlayerCharacter pc) {
+				return QuestMarkerDisplayType.HIDDEN;
+			}
+		};
 		completeClearingTheRoadInteraction = new InteractionSequence(11) {
 			@Override
 			protected void onAdvance(PlayerCharacter pc, int interactionIndex) {

@@ -11,6 +11,7 @@ import java.util.Set;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Sound;
+import org.bukkit.World;
 import org.bukkit.craftbukkit.v1_15_R1.entity.CraftArmorStand;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Entity;
@@ -19,7 +20,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
-import org.bukkit.event.entity.EntityCombustEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerInteractAtEntityEvent;
@@ -40,6 +40,8 @@ import com.mcmmorpg.common.event.PlayerCharacterRemoveEvent;
 import com.mcmmorpg.common.item.ArmorItem;
 import com.mcmmorpg.common.item.Item;
 import com.mcmmorpg.common.item.Weapon;
+import com.mcmmorpg.common.navigation.CardinalDirection;
+import com.mcmmorpg.common.navigation.PlayerCharacterMap;
 import com.mcmmorpg.common.persistence.PersistentPlayerCharacterDataContainer;
 import com.mcmmorpg.common.physics.Collider;
 import com.mcmmorpg.common.physics.Ray;
@@ -59,7 +61,6 @@ import com.mcmmorpg.common.time.RepeatingTask;
 import com.mcmmorpg.common.ui.ActionBarText;
 import com.mcmmorpg.common.ui.SidebarText;
 import com.mcmmorpg.common.ui.TitleText;
-import com.mcmmorpg.common.util.CardinalDirection;
 import com.mcmmorpg.common.util.MathUtility;
 
 /**
@@ -80,6 +81,7 @@ public final class PlayerCharacter extends AbstractCharacter {
 	private static final double HEIGHT = 2;
 	private static final double MAX_DISPLACEMENT_WITHOUT_TELEPORT_SQUARED = 25.0;
 	private static final double INTERACT_RANGE = 4.0;
+	private static final double INTERACT_COOLDOWN = 0.1;
 	private static final double SPEAK_RADIUS = 25.0;
 
 	private static final List<PlayerCharacter> pcs;
@@ -107,6 +109,7 @@ public final class PlayerCharacter extends AbstractCharacter {
 	private final double initialPlayTime;
 	private final double playSessionStartTime;
 	private final PlayerCharacterSoundtrackPlayer soundtrackPlayer;
+	private final PlayerCharacterMap map;
 	private CharacterCollider hitbox;
 	private final MovementSynchronizer movementSyncer;
 	private DelayedTask undisarmTask;
@@ -153,6 +156,7 @@ public final class PlayerCharacter extends AbstractCharacter {
 		this.playSessionStartTime = Clock.getTime();
 
 		soundtrackPlayer = new PlayerCharacterSoundtrackPlayer(this);
+		this.map = new PlayerCharacterMap(this);
 		this.hitbox = new PlayerCharacterCollider(this);
 		player.teleport(getLocation());
 
@@ -375,6 +379,7 @@ public final class PlayerCharacter extends AbstractCharacter {
 			hidePlayerNameplate();
 		}
 		updateActionBar();
+		map.update();
 	}
 
 	public float getYaw() {
@@ -401,8 +406,11 @@ public final class PlayerCharacter extends AbstractCharacter {
 		hidePlayerNameplate();
 	}
 
-	public void setPitch() {
-
+	/**
+	 * Returns the world that this player character is in.
+	 */
+	public World getWorld() {
+		return player.getWorld();
 	}
 
 	/**
@@ -738,6 +746,7 @@ public final class PlayerCharacter extends AbstractCharacter {
 	public void damage(double amount, Source source) {
 		amount = getMitigatedDamage(amount, getProtections());
 		super.damage(amount, source);
+		player.damage(0);
 		HURT_NOISE.play(getLocation());
 	}
 
@@ -1141,6 +1150,10 @@ public final class PlayerCharacter extends AbstractCharacter {
 		return soundtrackPlayer;
 	}
 
+	public PlayerCharacterMap getMap() {
+		return map;
+	}
+
 	/**
 	 * Returns whether this player character is currently being used by a player.
 	 */
@@ -1219,7 +1232,7 @@ public final class PlayerCharacter extends AbstractCharacter {
 				collider.onInteract(pc);
 			}
 			interactingPlayers.add(pc);
-			new DelayedTask(0.1) {
+			new DelayedTask(INTERACT_COOLDOWN) {
 				@Override
 				protected void run() {
 					interactingPlayers.remove(pc);
@@ -1241,14 +1254,12 @@ public final class PlayerCharacter extends AbstractCharacter {
 
 		@EventHandler
 		private void onDamage(EntityDamageEvent event) {
-			// Screw it. Let's just put it here for all entities.
-			event.setCancelled(true);
+			Entity entity = event.getEntity();
+			if (entity.getType() == EntityType.PLAYER) {
+				event.setDamage(0);
+			}
 		}
 
-		@EventHandler
-		private void onCombust(EntityCombustEvent event) {
-			event.setCancelled(true);
-		}
 	}
 
 }

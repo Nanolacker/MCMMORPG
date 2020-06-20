@@ -1,4 +1,4 @@
-package com.mcmmorpg.common.util;
+package com.mcmmorpg.common.navigation;
 
 import org.bukkit.util.Vector;
 
@@ -31,6 +31,14 @@ public enum CardinalDirection {
 	 */
 	public static CardinalDirection forVector(Vector direction) {
 		return forVector(direction.getX(), direction.getZ());
+	}
+
+	/**
+	 * Returns the octant in which this direction resides, from 0-8, beginning at
+	 * east and going around clockwise.
+	 */
+	public int getOctant() {
+		return ordinal();
 	}
 
 	@Override
