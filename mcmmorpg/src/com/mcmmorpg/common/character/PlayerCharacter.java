@@ -155,10 +155,10 @@ public final class PlayerCharacter extends AbstractCharacter {
 		this.initialPlayTime = playTime;
 		this.playSessionStartTime = Clock.getTime();
 
+		player.teleport(getLocation());
 		soundtrackPlayer = new PlayerCharacterSoundtrackPlayer(this);
 		this.map = new PlayerCharacterMap(this);
 		this.hitbox = new PlayerCharacterCollider(this);
-		player.teleport(getLocation());
 
 		this.movementSyncer = new MovementSynchronizer(this, MovementSynchronizerMode.CHARACTER_FOLLOWS_ENTITY);
 		movementSyncer.setEntity(player);
@@ -379,7 +379,6 @@ public final class PlayerCharacter extends AbstractCharacter {
 			hidePlayerNameplate();
 		}
 		updateActionBar();
-		map.update();
 	}
 
 	public float getYaw() {

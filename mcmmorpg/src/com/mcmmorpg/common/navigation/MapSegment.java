@@ -4,14 +4,12 @@ import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.map.MapCanvas;
 import org.bukkit.map.MapCursorCollection;
 import org.bukkit.map.MinecraftFont;
 
 import com.mcmmorpg.common.character.PlayerCharacter;
-import com.mcmmorpg.common.util.StringUtility;
 
 /**
  * A map segment that players can view with their map. Each segment represents
@@ -22,6 +20,7 @@ public class MapSegment {
 	private Location origin;
 	private final BufferedImage image;
 	private final List<QuestMarker> questMarkers;
+	private final int imageSemiWidth;
 
 	public MapSegment(Location origin, BufferedImage image) {
 		this.origin = origin;
@@ -30,6 +29,7 @@ public class MapSegment {
 			throw new NullPointerException("Image is null");
 		}
 		this.questMarkers = new ArrayList<>();
+		this.imageSemiWidth = image.getWidth() / 2;
 	}
 
 	public BufferedImage getImage() {
@@ -47,7 +47,6 @@ public class MapSegment {
 			}
 		}
 
-		int imageSemiWidth = image.getWidth() / 2;
 		int mapOriginX = origin.getBlockX() + imageSemiWidth;
 		int mapOriginZ = origin.getBlockZ() + imageSemiWidth;
 
@@ -75,17 +74,7 @@ public class MapSegment {
 			int questMarkerX = questMarkerLocation.getBlockX() - pcX + 64;
 			int questMarkerY = questMarkerLocation.getBlockZ() - pcZ + 64;
 			String questMarkerText = questMarker.getDisplayType(pc).getMapText();
-			// canvas.drawText(questMarkerX, questMarkerY, MinecraftFont.Font,
-			// questMarkerText);
-
-			String text = "";
-			ChatColor[] values = ChatColor.values();
-			for (int i = 0; i < values.length; i++) {
-				ChatColor value = values[i];
-				text += value.toString() + value.name().charAt(0);
-			}
-			text = StringUtility.chatColorToMapColor(text);
-			canvas.drawText(0, 50, MinecraftFont.Font, text);
+			canvas.drawText(questMarkerX, questMarkerY, MinecraftFont.Font, questMarkerText);
 		}
 	}
 

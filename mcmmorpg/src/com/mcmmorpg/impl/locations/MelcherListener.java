@@ -1,8 +1,5 @@
 package com.mcmmorpg.impl.locations;
 
-import java.awt.image.BufferedImage;
-import java.io.File;
-
 import org.bukkit.Location;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -12,11 +9,9 @@ import com.mcmmorpg.common.character.PlayerCharacter.PlayerCharacterCollider;
 import com.mcmmorpg.common.event.PlayerCharacterLevelUpEvent;
 import com.mcmmorpg.common.item.Item;
 import com.mcmmorpg.common.item.LootChest;
-import com.mcmmorpg.common.navigation.MapSegment;
-import com.mcmmorpg.common.navigation.QuestMarker;
 import com.mcmmorpg.common.physics.Collider;
-import com.mcmmorpg.common.util.IOUtility;
 import com.mcmmorpg.impl.constants.Items;
+import com.mcmmorpg.impl.constants.Maps;
 import com.mcmmorpg.impl.constants.Quests;
 import com.mcmmorpg.impl.constants.RespawnLocations;
 import com.mcmmorpg.impl.constants.Soundtracks;
@@ -128,16 +123,6 @@ public class MelcherListener implements Listener {
 	}
 
 	private void setBounds() {
-		File imageFile = new File(IOUtility.getDataFolder(), "map.jpg");
-		BufferedImage image = IOUtility.readImageFile(imageFile);
-		MapSegment map = new MapSegment(RespawnLocations.MELCHER, image);
-		QuestMarker questMarker = new QuestMarker(RespawnLocations.MELCHER) {
-			@Override
-			protected QuestMarkerDisplayType getDisplayType(PlayerCharacter pc) {
-				return QuestMarkerDisplayType.READY_TO_START;
-			}
-		};
-		map.addQuestMarker(questMarker);
 		Collider entranceBounds = new Collider(Worlds.ELADRADOR, -1186, 30, 110, -930, 126, 300) {
 			@Override
 			protected void onCollisionEnter(Collider other) {
@@ -146,7 +131,7 @@ public class MelcherListener implements Listener {
 					pc.setZone(Zones.MELCHER);
 					pc.setRespawnLocation(RespawnLocations.MELCHER);
 					pc.getSoundTrackPlayer().setSoundtrack(Soundtracks.VILLAGE);
-					pc.getMap().setMapSegment(map);
+					pc.getMap().setMapSegment(Maps.ELADRADOR);
 				}
 			}
 		};
@@ -158,6 +143,7 @@ public class MelcherListener implements Listener {
 					PlayerCharacter pc = ((PlayerCharacterCollider) other).getCharacter();
 					pc.setZone(Zones.ELADRADOR);
 					pc.getSoundTrackPlayer().setSoundtrack(Soundtracks.WILDNERNESS);
+					pc.getMap().setMapSegment(Maps.FLINTON_SEWERS);
 				}
 			}
 		};

@@ -155,7 +155,6 @@ public class StringUtility {
 			if (ch == '§') {
 				i++;
 				char chatColorCode = text.charAt(i);
-				Debug.log(chatColorCode);
 				ChatColor chatColor = ChatColor.getByChar(chatColorCode);
 				Integer mapColorCode = CHAT_COLOR_TO_MAP_COLOR_CODE.get(chatColor);
 				if (mapColorCode != null) {
