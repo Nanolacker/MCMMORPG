@@ -32,13 +32,13 @@ public class Soundtracks {
 		File soundtrackFolder = new File(IOUtility.getDataFolder(), "resources/soundtracks");
 
 		File villageFile = new File(soundtrackFolder, "Village.json");
-		VILLAGE = IOUtility.readJson(villageFile, PersistentSoundSequenceDataContainer.class).toSoundSequence();
+		VILLAGE = IOUtility.readJsonFile(villageFile, PersistentSoundSequenceDataContainer.class).toSoundSequence();
 
 		File wildernessFile = new File(soundtrackFolder, "Wilderness.json");
-		WILDNERNESS = IOUtility.readJson(wildernessFile, PersistentSoundSequenceDataContainer.class).toSoundSequence();
+		WILDNERNESS = IOUtility.readJsonFile(wildernessFile, PersistentSoundSequenceDataContainer.class).toSoundSequence();
 
 		File dungeonFile = new File(soundtrackFolder, "Dungeon.json");
-		DUNGEON = IOUtility.readJson(dungeonFile, PersistentSoundSequenceDataContainer.class).toSoundSequence();
+		DUNGEON = IOUtility.readJsonFile(dungeonFile, PersistentSoundSequenceDataContainer.class).toSoundSequence();
 	}
 
 }

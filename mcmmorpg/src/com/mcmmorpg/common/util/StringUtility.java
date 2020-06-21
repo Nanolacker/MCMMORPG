@@ -16,7 +16,22 @@ public class StringUtility {
 	private static final Map<ChatColor, Integer> CHAT_COLOR_TO_MAP_COLOR_CODE = new HashMap<>();
 
 	static {
-		CHAT_COLOR_TO_MAP_COLOR_CODE.put(ChatColor.YELLOW, 44);
+		CHAT_COLOR_TO_MAP_COLOR_CODE.put(ChatColor.DARK_RED, 16);
+		CHAT_COLOR_TO_MAP_COLOR_CODE.put(ChatColor.RED, 62);
+		CHAT_COLOR_TO_MAP_COLOR_CODE.put(ChatColor.YELLOW, 122);
+		CHAT_COLOR_TO_MAP_COLOR_CODE.put(ChatColor.GOLD, 73);
+		CHAT_COLOR_TO_MAP_COLOR_CODE.put(ChatColor.DARK_GREEN, -123);
+		CHAT_COLOR_TO_MAP_COLOR_CODE.put(ChatColor.GREEN, -122);
+		CHAT_COLOR_TO_MAP_COLOR_CODE.put(ChatColor.AQUA, 126);
+		CHAT_COLOR_TO_MAP_COLOR_CODE.put(ChatColor.DARK_AQUA, 125);
+		CHAT_COLOR_TO_MAP_COLOR_CODE.put(ChatColor.DARK_BLUE, 48);
+		CHAT_COLOR_TO_MAP_COLOR_CODE.put(ChatColor.BLUE, 50);
+		CHAT_COLOR_TO_MAP_COLOR_CODE.put(ChatColor.LIGHT_PURPLE, 66);
+		CHAT_COLOR_TO_MAP_COLOR_CODE.put(ChatColor.DARK_PURPLE, 65);
+		CHAT_COLOR_TO_MAP_COLOR_CODE.put(ChatColor.WHITE, 34);
+		CHAT_COLOR_TO_MAP_COLOR_CODE.put(ChatColor.GRAY, 14);
+		CHAT_COLOR_TO_MAP_COLOR_CODE.put(ChatColor.DARK_GRAY, 85);
+		CHAT_COLOR_TO_MAP_COLOR_CODE.put(ChatColor.BLACK, 119);
 	}
 
 	private StringUtility() {
@@ -130,24 +145,27 @@ public class StringUtility {
 		return s.matches("-?\\d+(\\.\\d+)?");
 	}
 
-	public static String chatColorToMapText(String text) {
+	/**
+	 * Converts chat color text to map color text.
+	 */
+	public static String chatColorToMapColor(String text) {
 		StringBuilder mapText = new StringBuilder();
 		for (int i = 0; i < text.length(); i++) {
 			char ch = text.charAt(i);
 			if (ch == 'ง') {
 				i++;
 				char chatColorCode = text.charAt(i);
+				Debug.log(chatColorCode);
 				ChatColor chatColor = ChatColor.getByChar(chatColorCode);
 				Integer mapColorCode = CHAT_COLOR_TO_MAP_COLOR_CODE.get(chatColor);
 				if (mapColorCode != null) {
-					String mapColor = "ยง" + mapColorCode + ";";
+					String mapColor = "ง" + mapColorCode + ";";
 					mapText.append(mapColor);
 				}
 			} else {
 				mapText.append(ch);
 			}
 		}
-		Debug.log(mapText.toString());
 		return mapText.toString();
 	}
 

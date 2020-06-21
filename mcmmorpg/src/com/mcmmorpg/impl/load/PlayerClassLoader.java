@@ -19,7 +19,7 @@ public class PlayerClassLoader {
 		File playerClassFolder = new File(IOUtility.getDataFolder(), "resources/playerClasses");
 		File[] playerClassFiles = playerClassFolder.listFiles();
 		for (File file : playerClassFiles) {
-			PlayerClass playerClass = IOUtility.readJson(file, PlayerClass.class);
+			PlayerClass playerClass = IOUtility.readJsonFile(file, PlayerClass.class);
 			playerClass.initialize();
 		}
 	}

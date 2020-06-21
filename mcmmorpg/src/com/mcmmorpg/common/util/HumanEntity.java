@@ -78,8 +78,6 @@ public class HumanEntity {
 		viewers = new ArrayList<>();
 		setVisible(false);
 		humanEntities.add(this);
-
-		worldServer.removePlayer(entityPlayer);
 	}
 
 	/**

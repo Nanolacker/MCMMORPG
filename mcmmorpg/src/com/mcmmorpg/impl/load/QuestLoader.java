@@ -17,7 +17,7 @@ public class QuestLoader {
 		File questFolder = new File(IOUtility.getDataFolder(), "resources/quests");
 		File[] questFiles = questFolder.listFiles();
 		for (File questFile : questFiles) {
-			Quest quest = IOUtility.readJson(questFile, Quest.class);
+			Quest quest = IOUtility.readJsonFile(questFile, Quest.class);
 			quest.initialize();
 		}
 	}

@@ -37,7 +37,7 @@ class PlayerCharacterSelectionProfile {
 	private PersistentPlayerCharacterDataContainer fetchCharacterDataFromFile(int characterSlot) {
 		File characterSaveFile = PlayerCharacterSelectionListener.getCharacterSaveFile(player, characterSlot);
 		if (characterSaveFile.exists()) {
-			return IOUtility.readJson(characterSaveFile, PersistentPlayerCharacterDataContainer.class);
+			return IOUtility.readJsonFile(characterSaveFile, PersistentPlayerCharacterDataContainer.class);
 		} else {
 			return null;
 		}

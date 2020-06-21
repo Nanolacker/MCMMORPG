@@ -1,16 +1,17 @@
 package com.mcmmorpg.common.navigation;
 
-import java.awt.Image;
+import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.map.MapCanvas;
 import org.bukkit.map.MapCursorCollection;
 import org.bukkit.map.MinecraftFont;
 
 import com.mcmmorpg.common.character.PlayerCharacter;
-import com.mcmmorpg.common.util.Debug;
+import com.mcmmorpg.common.util.StringUtility;
 
 /**
  * A map segment that players can view with their map. Each segment represents
@@ -19,10 +20,10 @@ import com.mcmmorpg.common.util.Debug;
 public class MapSegment {
 
 	private Location origin;
-	private final Image image;
+	private final BufferedImage image;
 	private final List<QuestMarker> questMarkers;
 
-	public MapSegment(Location origin, Image image) {
+	public MapSegment(Location origin, BufferedImage image) {
 		this.origin = origin;
 		this.image = image;
 		if (image == null) {
@@ -31,7 +32,7 @@ public class MapSegment {
 		this.questMarkers = new ArrayList<>();
 	}
 
-	public Image getImage() {
+	public BufferedImage getImage() {
 		return image;
 	}
 
@@ -46,8 +47,9 @@ public class MapSegment {
 			}
 		}
 
-		int mapOriginX = origin.getBlockX();
-		int mapOriginZ = origin.getBlockZ();
+		int imageSemiWidth = image.getWidth() / 2;
+		int mapOriginX = origin.getBlockX() + imageSemiWidth;
+		int mapOriginZ = origin.getBlockZ() + imageSemiWidth;
 
 		Location location = pc.getLocation();
 		int pcX = location.getBlockX();
@@ -55,7 +57,7 @@ public class MapSegment {
 
 		int imageX = mapOriginX - pcX;
 		int imageY = mapOriginZ - pcZ;
-		//canvas.drawImage(imageX, imageY, image);
+		canvas.drawImage(imageX, imageY, image);
 
 		byte direction = (byte) (CardinalDirection.forVector(location.getDirection()).getOctant() * 2 - 4);
 		if (direction < 0) {
@@ -70,14 +72,21 @@ public class MapSegment {
 
 		for (QuestMarker questMarker : questMarkers) {
 			Location questMarkerLocation = questMarker.getLocation();
-			int questMarkerX = questMarkerLocation.getBlockX() - pcX + 61;
-			int questMarkerY = questMarkerLocation.getBlockZ() - pcZ + 61;
+			int questMarkerX = questMarkerLocation.getBlockX() - pcX + 64;
+			int questMarkerY = questMarkerLocation.getBlockZ() - pcZ + 64;
 			String questMarkerText = questMarker.getDisplayType(pc).getMapText();
-			canvas.drawText(questMarkerX, questMarkerY, MinecraftFont.Font, questMarkerText);
+			// canvas.drawText(questMarkerX, questMarkerY, MinecraftFont.Font,
+			// questMarkerText);
+
+			String text = "";
+			ChatColor[] values = ChatColor.values();
+			for (int i = 0; i < values.length; i++) {
+				ChatColor value = values[i];
+				text += value.toString() + value.name().charAt(0);
+			}
+			text = StringUtility.chatColorToMapColor(text);
+			canvas.drawText(0, 50, MinecraftFont.Font, text);
 		}
-
-		Debug.log("color at (0, 0): " + canvas.getPixel(0, 0));
-
 	}
 
 }

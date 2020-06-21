@@ -21,18 +21,8 @@ public class Debug {
 	 * element from which this method was called for ease of debugging.
 	 */
 	public static void log(Object message) {
-		boolean initialized = MMORPGPlugin.isInitialized();
-		StackTraceElement source = Thread.currentThread().getStackTrace()[2];
-		if (initialized) {
-			log0(message, source);
-		} else {
-			new DelayedTask() {
-				@Override
-				public void run() {
-					log0(message, source);
-				}
-			}.schedule();
-		}
+		StackTraceElement caller = Thread.currentThread().getStackTrace()[2];
+		log0(message, caller);
 	}
 
 	/**
@@ -40,15 +30,41 @@ public class Debug {
 	 * trace element from which this method was called for ease of debugging.
 	 */
 	public static void logf(String format, Object... args) {
+		StackTraceElement caller = Thread.currentThread().getStackTrace()[2];
 		String message = String.format(format, args);
-		log(message);
+		log0(message, caller);
 	}
 
-	private static void log0(Object message, StackTraceElement source) {
+	/**
+	 * Logs how much memory has been used of the available memory.
+	 */
+	public static void logMemoryUsage() {
+		StackTraceElement caller = Thread.currentThread().getStackTrace()[2];
+		Runtime runtime = Runtime.getRuntime();
+		long freeMemory = runtime.freeMemory();
+		long maxMemory = runtime.maxMemory();
+		long usedMemory = maxMemory - freeMemory;
+		double usedMemoryGigabytes = usedMemory * 0.000000001;
+		double maxMemoryGigabytes = maxMemory * 0.000000001;
+		String message = usedMemoryGigabytes + " / " + maxMemoryGigabytes + " GB used";
+		log0(message, caller);
+	}
+
+	private static void log0(Object message, StackTraceElement caller) {
+		boolean initialized = MMORPGPlugin.isInitialized();
 		Server server = Bukkit.getServer();
 		String formattedMessage = ChatColor.AQUA + "[DEBUG]: " + ChatColor.RESET + message + "\n" + ChatColor.AQUA
-				+ source.toString();
-		server.broadcastMessage(formattedMessage);
+				+ caller.toString();
+		if (initialized) {
+			server.broadcastMessage(formattedMessage);
+		} else {
+			new DelayedTask() {
+				@Override
+				protected void run() {
+					server.broadcastMessage(formattedMessage);
+				}
+			}.schedule();
+		}
 	}
 
 	/**

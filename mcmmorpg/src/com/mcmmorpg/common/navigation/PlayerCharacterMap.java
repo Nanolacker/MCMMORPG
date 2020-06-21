@@ -14,7 +14,6 @@ import org.bukkit.map.MapView;
 import org.bukkit.map.MinecraftFont;
 
 import com.mcmmorpg.common.character.PlayerCharacter;
-import com.mcmmorpg.common.util.Debug;
 import com.mcmmorpg.common.util.StringUtility;
 
 public class PlayerCharacterMap {
@@ -102,7 +101,7 @@ public class PlayerCharacterMap {
 				if (mapSegment != null) {
 					mapSegment.render(canvas, pc);
 				}
-				String zoneText = StringUtility.chatColorToMapText(pc.getZone());
+				String zoneText = StringUtility.chatColorToMapColor(pc.getZone());
 				canvas.drawText(0, 0, MinecraftFont.Font, zoneText);
 			}
 		};

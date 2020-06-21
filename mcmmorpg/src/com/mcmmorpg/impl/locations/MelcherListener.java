@@ -1,10 +1,7 @@
 package com.mcmmorpg.impl.locations;
 
-import java.awt.Image;
+import java.awt.image.BufferedImage;
 import java.io.File;
-import java.io.IOException;
-
-import javax.imageio.ImageIO;
 
 import org.bukkit.Location;
 import org.bukkit.event.EventHandler;
@@ -131,12 +128,8 @@ public class MelcherListener implements Listener {
 	}
 
 	private void setBounds() {
-		File imageFile = new File(IOUtility.getDataFolder(), "map.png");
-		Image image = null;
-		try {
-			image = ImageIO.read(imageFile);
-		} catch (IOException e) {
-		}
+		File imageFile = new File(IOUtility.getDataFolder(), "map.jpg");
+		BufferedImage image = IOUtility.readImageFile(imageFile);
 		MapSegment map = new MapSegment(RespawnLocations.MELCHER, image);
 		QuestMarker questMarker = new QuestMarker(RespawnLocations.MELCHER) {
 			@Override

@@ -412,7 +412,7 @@ public class PlayerCharacterSelectionListener implements Listener {
 		}
 		PersistentPlayerCharacterDataContainer data = PersistentPlayerCharacterDataContainer.createFreshSaveData(player,
 				playerClass, STARTING_ZONE, STARTING_LOCATION, startWeapon);
-		IOUtility.writeJson(characterSaveFile, data);
+		IOUtility.writeJsonFile(characterSaveFile, data);
 	}
 
 	static File getCharacterSaveFile(Player player, int characterSlot) {
@@ -469,7 +469,7 @@ public class PlayerCharacterSelectionListener implements Listener {
 		int characterSlot = profile.getCurrentCharacterSlot();
 		PersistentPlayerCharacterDataContainer data = PersistentPlayerCharacterDataContainer.createSaveData(pc);
 		File saveFile = getCharacterSaveFile(player, characterSlot);
-		IOUtility.writeJson(saveFile, data);
+		IOUtility.writeJsonFile(saveFile, data);
 	}
 
 	@EventHandler
