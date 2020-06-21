@@ -26,6 +26,8 @@ import org.bukkit.event.player.PlayerSwapHandItemsEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.PlayerInventory;
+
 import com.mcmmorpg.common.character.PlayerCharacter;
 import com.mcmmorpg.common.event.EventManager;
 import com.mcmmorpg.common.event.PlayerCharacterOpenLootChestEvent;
@@ -79,6 +81,11 @@ class ItemListener implements Listener {
 		}
 		if (falseAttackers.contains(pc) || pc.getMap().isOpen()) {
 			return;
+		}
+		PlayerInventory inventory = player.getInventory();
+		if (inventory.getHeldItemSlot() != 0) {
+			// make sure they click with weapon in hand
+			inventory.setHeldItemSlot(0);
 		}
 		handlePlayerCharacterUseWeapon(pc);
 	}
@@ -416,6 +423,11 @@ class ItemListener implements Listener {
 	private void onSwapHands(PlayerSwapHandItemsEvent event) {
 		event.setCancelled(true);
 		Player player = event.getPlayer();
+		PlayerInventory inventory = player.getInventory();
+		if (inventory.getHeldItemSlot() != 0) {
+			// to prevent map duplication
+			inventory.setHeldItemSlot(0);
+		}
 		PlayerCharacter pc = PlayerCharacter.forPlayer(player);
 		if (pc == null) {
 			return;

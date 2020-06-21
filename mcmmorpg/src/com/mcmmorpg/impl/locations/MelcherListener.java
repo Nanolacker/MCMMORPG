@@ -131,7 +131,7 @@ public class MelcherListener implements Listener {
 	}
 
 	private void setBounds() {
-		File imageFile = new File(IOUtility.getDataFolder(), "map.jpg");
+		File imageFile = new File(IOUtility.getDataFolder(), "map.png");
 		Image image = null;
 		try {
 			image = ImageIO.read(imageFile);

@@ -26,19 +26,18 @@ public class Debug {
 		if (initialized) {
 			log0(message, source);
 		} else {
-			DelayedTask dt = new DelayedTask() {
+			new DelayedTask() {
 				@Override
 				public void run() {
 					log0(message, source);
 				}
-			};
-			dt.schedule();
+			}.schedule();
 		}
 	}
 
 	/**
-	 * Prints the formatted message to the console and players, including the stack trace
-	 * element from which this method was called for ease of debugging.
+	 * Prints the formatted message to the console and players, including the stack
+	 * trace element from which this method was called for ease of debugging.
 	 */
 	public static void logf(String format, Object... args) {
 		String message = String.format(format, args);

@@ -50,7 +50,7 @@ public abstract class QuestMarker {
 	 * How a quest maker is displayed on a map.
 	 */
 	public enum QuestMarkerDisplayType {
-		HIDDEN(""), READY_TO_START("§74;!"), READY_TO_TURN_IN("§74;?");
+		HIDDEN(""), READY_TO_START("§72;!"), READY_TO_TURN_IN("§74;?");
 
 		private final String mapText;
 

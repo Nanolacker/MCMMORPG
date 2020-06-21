@@ -11,8 +11,11 @@ import org.bukkit.inventory.meta.MapMeta;
 import org.bukkit.map.MapCanvas;
 import org.bukkit.map.MapRenderer;
 import org.bukkit.map.MapView;
+import org.bukkit.map.MinecraftFont;
 
 import com.mcmmorpg.common.character.PlayerCharacter;
+import com.mcmmorpg.common.util.Debug;
+import com.mcmmorpg.common.util.StringUtility;
 
 public class PlayerCharacterMap {
 
@@ -30,6 +33,7 @@ public class PlayerCharacterMap {
 		itemMeta.setDisplayName(ChatColor.YELLOW + "Map");
 		MapMeta meta = ((MapMeta) itemMeta);
 		MapView mapView = Bukkit.createMap(pc.getWorld());
+		mapView.setLocked(true);
 		meta.setMapView(mapView);
 		itemStack.setItemMeta(meta);
 		itemStack.setItemMeta(itemMeta);
@@ -81,7 +85,7 @@ public class PlayerCharacterMap {
 	}
 
 	public void update() {
-		if (mapSegment == null || !isOpen) {
+		if (!isOpen) {
 			return;
 		}
 
@@ -95,7 +99,11 @@ public class PlayerCharacterMap {
 		MapRenderer renderer = new MapRenderer() {
 			@Override
 			public void render(MapView map, MapCanvas canvas, Player player) {
-				mapSegment.render(canvas, pc);
+				if (mapSegment != null) {
+					mapSegment.render(canvas, pc);
+				}
+				String zoneText = StringUtility.chatColorToMapText(pc.getZone());
+				canvas.drawText(0, 0, MinecraftFont.Font, zoneText);
 			}
 		};
 		mapView.addRenderer(renderer);

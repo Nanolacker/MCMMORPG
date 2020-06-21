@@ -10,7 +10,7 @@ import org.bukkit.map.MapCursorCollection;
 import org.bukkit.map.MinecraftFont;
 
 import com.mcmmorpg.common.character.PlayerCharacter;
-import com.mcmmorpg.common.util.StringUtility;
+import com.mcmmorpg.common.util.Debug;
 
 /**
  * A map segment that players can view with their map. Each segment represents
@@ -18,12 +18,12 @@ import com.mcmmorpg.common.util.StringUtility;
  */
 public class MapSegment {
 
-	private Location center;
+	private Location origin;
 	private final Image image;
 	private final List<QuestMarker> questMarkers;
 
-	public MapSegment(Location center, Image image) {
-		this.center = center;
+	public MapSegment(Location origin, Image image) {
+		this.origin = origin;
 		this.image = image;
 		if (image == null) {
 			throw new NullPointerException("Image is null");
@@ -46,16 +46,16 @@ public class MapSegment {
 			}
 		}
 
-		int mapCenterX = center.getBlockX();
-		int mapCenterZ = center.getBlockZ();
+		int mapOriginX = origin.getBlockX();
+		int mapOriginZ = origin.getBlockZ();
 
 		Location location = pc.getLocation();
 		int pcX = location.getBlockX();
 		int pcZ = location.getBlockZ();
 
-		int imageX = mapCenterX - pcX;
-		int imageY = mapCenterZ - pcZ;
-		canvas.drawImage(imageX, imageY, image);
+		int imageX = mapOriginX - pcX;
+		int imageY = mapOriginZ - pcZ;
+		//canvas.drawImage(imageX, imageY, image);
 
 		byte direction = (byte) (CardinalDirection.forVector(location.getDirection()).getOctant() * 2 - 4);
 		if (direction < 0) {
@@ -76,8 +76,8 @@ public class MapSegment {
 			canvas.drawText(questMarkerX, questMarkerY, MinecraftFont.Font, questMarkerText);
 		}
 
-		String zoneText = StringUtility.chatColorToMapText(pc.getZone());
-		canvas.drawText(0, 0, MinecraftFont.Font, zoneText);
+		Debug.log("color at (0, 0): " + canvas.getPixel(0, 0));
+
 	}
 
 }
