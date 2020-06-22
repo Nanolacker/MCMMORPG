@@ -25,7 +25,7 @@ public class FlintonMayor extends StaticHuman {
 
 	public FlintonMayor(Location location) {
 		super(ChatColor.GREEN + "Mayor of Flinton", LEVEL, location, TEXTURE_DATA, TEXTURE_SIGNATURE);
-		new QuestMarker(location.clone().add(0, 2.25, 0)) {
+		new QuestMarker(Quests.CLEARING_THE_ROAD, location.clone().add(0, 2.25, 0)) {
 			@Override
 			protected QuestMarkerDisplayType getDisplayType(PlayerCharacter pc) {
 				return QuestMarkerDisplayType.HIDDEN;

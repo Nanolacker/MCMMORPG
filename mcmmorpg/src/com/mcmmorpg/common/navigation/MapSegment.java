@@ -10,6 +10,7 @@ import org.bukkit.map.MapCursorCollection;
 import org.bukkit.map.MinecraftFont;
 
 import com.mcmmorpg.common.character.PlayerCharacter;
+import com.mcmmorpg.common.quest.Quest;
 
 /**
  * A map segment that players can view with their map. Each segment represents
@@ -20,7 +21,6 @@ public class MapSegment {
 	private Location origin;
 	private final BufferedImage image;
 	private final List<QuestMarker> questMarkers;
-	private final int imageSemiWidth;
 
 	public MapSegment(Location origin, BufferedImage image) {
 		this.origin = origin;
@@ -29,7 +29,6 @@ public class MapSegment {
 			throw new NullPointerException("Image is null");
 		}
 		this.questMarkers = new ArrayList<>();
-		this.imageSemiWidth = image.getWidth() / 2;
 	}
 
 	public BufferedImage getImage() {
@@ -47,18 +46,13 @@ public class MapSegment {
 			}
 		}
 
-		int mapOriginX = origin.getBlockX() + imageSemiWidth;
-		int mapOriginZ = origin.getBlockZ() + imageSemiWidth;
+		Location mapCenter = pc.getLocation();
+		int mapCenterX = mapCenter.getBlockX();
+		int mapCenterZ = mapCenter.getBlockZ();
 
-		Location location = pc.getLocation();
-		int pcX = location.getBlockX();
-		int pcZ = location.getBlockZ();
+		drawMapImage(canvas, origin, image, mapCenter);
 
-		int imageX = mapOriginX - pcX;
-		int imageY = mapOriginZ - pcZ;
-		canvas.drawImage(imageX, imageY, image);
-
-		byte direction = (byte) (CardinalDirection.forVector(location.getDirection()).getOctant() * 2 - 4);
+		byte direction = (byte) (CardinalDirection.forVector(mapCenter.getDirection()).getOctant() * 2 - 4);
 		if (direction < 0) {
 			direction = (byte) (16 + direction);
 		}
@@ -71,11 +65,53 @@ public class MapSegment {
 
 		for (QuestMarker questMarker : questMarkers) {
 			Location questMarkerLocation = questMarker.getLocation();
-			int questMarkerX = questMarkerLocation.getBlockX() - pcX + 64;
-			int questMarkerY = questMarkerLocation.getBlockZ() - pcZ + 64;
-			String questMarkerText = questMarker.getDisplayType(pc).getMapText();
+			int questMarkerX = questMarkerLocation.getBlockX() - mapCenterX + 64;
+			int questMarkerY = questMarkerLocation.getBlockZ() - mapCenterZ + 64;
+			Quest quest = questMarker.getQuest();
+			String questMarkerText = questMarker.getDisplayType(pc).getMapText(quest, pc);
 			canvas.drawText(questMarkerX, questMarkerY, MinecraftFont.Font, questMarkerText);
 		}
+	}
+
+	private static void drawMapImage(MapCanvas canvas, Location mapSegmentOrigin, BufferedImage image,
+			Location mapCenter) {
+		int originX = mapSegmentOrigin.getBlockX();
+		int originZ = mapSegmentOrigin.getBlockZ();
+
+		int mapCenterX = mapCenter.getBlockX();
+		int mapCenterZ = mapCenter.getBlockZ();
+
+		int imageWidth = image.getWidth();
+		int imageHeight = image.getHeight();
+
+		int imageMapPosX;
+		int imageMapPosY;
+
+		int x1 = Math.max(mapCenterX - 192, originX);
+		int x2 = Math.min(mapCenterX - 65, originX + imageWidth);
+		if (x1 > x2) {
+			imageMapPosX = originX - mapCenterX + 64;
+			x1 = 0;
+		} else {
+			imageMapPosX = 0;
+		}
+
+		int z1 = Math.max(mapCenterZ - 192, originZ);
+		int z2 = Math.min(mapCenterZ - 65, originZ + imageHeight);
+		if (z1 > z2) {
+			imageMapPosY = originZ - mapCenterZ + 64;
+			z1 = 0;
+		} else {
+			imageMapPosY = 0;
+		}
+
+		int subimageX = Math.min(Math.max(0, mapCenterX - originX - 64), imageWidth - 1);
+		int subimageY = Math.min(Math.max(0, mapCenterZ - originZ - 64), imageHeight - 1);
+		int pixelWidth = Math.min(128, imageWidth - subimageX);
+		int pixelHeight = Math.min(128, imageHeight - subimageY);
+
+		BufferedImage subImage = image.getSubimage(subimageX, subimageY, pixelWidth, pixelHeight);
+		canvas.drawImage(imageMapPosX, imageMapPosY, subImage);
 	}
 
 }

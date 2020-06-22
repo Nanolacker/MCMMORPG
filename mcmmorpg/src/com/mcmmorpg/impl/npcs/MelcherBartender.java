@@ -27,7 +27,7 @@ public class MelcherBartender extends StaticHuman {
 
 	public MelcherBartender(Location location) {
 		super(ChatColor.GREEN + "Bartender", LEVEL, location, TEXTURE_DATA, TEXTURE_SIGNATURE);
-		new QuestMarker(this) {
+		new QuestMarker(Quests.BAR_FIGHT, this) {
 			@Override
 			protected QuestMarkerDisplayType getDisplayType(PlayerCharacter pc) {
 				return QuestMarkerDisplayType.HIDDEN;

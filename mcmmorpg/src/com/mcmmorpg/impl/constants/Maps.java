@@ -16,11 +16,11 @@ public class Maps {
 	static {
 		File mapImagesFile = new File(IOUtility.getDataFolder(), "resources/mapImages");
 
-		Location eladradorOrigin = new Location(Worlds.ELADRADOR, -1400, 0, 51);
+		Location eladradorOrigin = RespawnLocations.MELCHER;
 		File eladradorImageFile = new File(mapImagesFile, "eladrador.png");
 		BufferedImage eladradorImage = IOUtility.readImageFile(eladradorImageFile);
 
-		Location flintonSewersOrigin =  new Location(Worlds.ELADRADOR, -1400, 0, 51);
+		Location flintonSewersOrigin = RespawnLocations.MELCHER;
 		File flintonSewersImageFile = new File(mapImagesFile, "flintonSewers.png");
 		BufferedImage flintonSewersImage = IOUtility.readImageFile(flintonSewersImageFile);
 

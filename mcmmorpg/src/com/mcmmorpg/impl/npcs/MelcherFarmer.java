@@ -24,7 +24,7 @@ public class MelcherFarmer extends StaticHuman {
 
 	public MelcherFarmer(Location location) {
 		super(ChatColor.GREEN + "Farmer", 1, location, TEXTURE_DATA, TEXTURE_SIGNATURE);
-		new QuestMarker(this) {
+		new QuestMarker(Quests.FOOD_DELIVERY, this) {
 			@Override
 			protected QuestMarkerDisplayType getDisplayType(PlayerCharacter pc) {
 				return QuestMarkerDisplayType.HIDDEN;
@@ -46,7 +46,8 @@ public class MelcherFarmer extends StaticHuman {
 							pc);
 					break;
 				case 3:
-					speak("Won't you please find the thieves responsible? I hear they lurk somewhere in the forest.", pc);
+					speak("Won't you please find the thieves responsible? I hear they lurk somewhere in the forest.",
+							pc);
 					break;
 				case 4:
 					Quests.FOOD_DELIVERY.start(pc);

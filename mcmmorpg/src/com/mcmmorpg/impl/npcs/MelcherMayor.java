@@ -28,7 +28,7 @@ public class MelcherMayor extends StaticHuman {
 
 	public MelcherMayor(Location location) {
 		super(ChatColor.GREEN + "Mayor of Melcher", LEVEL, location, TEXTURE_DATA, TEXTURE_SIGNATURE);
-		new QuestMarker(this) {
+		new QuestMarker(Quests.THWARTING_THE_THIEVES, this) {
 			@Override
 			protected QuestMarkerDisplayType getDisplayType(PlayerCharacter pc) {
 				return QuestMarkerDisplayType.HIDDEN;

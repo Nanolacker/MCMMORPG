@@ -27,7 +27,7 @@ public class GuardJames extends StaticHuman {
 
 	public GuardJames(Location location) {
 		super(ChatColor.GREEN + "Guard James", LEVEL, location, TEXTURE_DATA, TEXTURE_SIGNATURE);
-		new QuestMarker(location.clone().add(0, 2.25, 0)) {
+		new QuestMarker(Quests.ARACHNOPHOBIA, location.clone().add(0, 2.25, 0)) {
 			@Override
 			protected QuestMarkerDisplayType getDisplayType(PlayerCharacter pc) {
 				return QuestMarkerDisplayType.HIDDEN;

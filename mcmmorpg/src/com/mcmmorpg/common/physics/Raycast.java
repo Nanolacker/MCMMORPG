@@ -1,6 +1,8 @@
 package com.mcmmorpg.common.physics;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import org.bukkit.Location;
@@ -64,7 +66,11 @@ public final class Raycast {
 				hitsList.add(collider);
 			}
 		}
-		hits = hitsList.toArray(new Collider[hitsList.size()]);
+
+		ColliderComparator comparator = new ColliderComparator(startAsLoc);
+		Collections.sort(hitsList, comparator);
+
+		this.hits = hitsList.toArray(new Collider[hitsList.size()]);
 	}
 
 	/**
@@ -76,10 +82,32 @@ public final class Raycast {
 	}
 
 	/**
-	 * Returns the colliders that the ray in this raycast intersected.
+	 * Returns the colliders that the ray in this raycast intersected in order based
+	 * on their distance from the ray start.
 	 */
 	public Collider[] getHits() {
 		return hits;
+	}
+
+	private static final class ColliderComparator implements Comparator<Collider> {
+
+		private Location rayStart;
+
+		private ColliderComparator(Location rayStart) {
+			this.rayStart = rayStart;
+		}
+
+		@Override
+		public int compare(Collider collider1, Collider collider2) {
+			Location center1 = collider1.getCenter();
+			Location center2 = collider2.getCenter();
+
+			double distance1 = center1.distanceSquared(rayStart);
+			double distance2 = center2.distanceSquared(rayStart);
+
+			return (int) (distance1 - distance2);
+		}
+
 	}
 
 }

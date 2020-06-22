@@ -25,7 +25,7 @@ public class FlintonSewersAlchemist extends StaticHuman {
 
 	public FlintonSewersAlchemist(Location location) {
 		super(ChatColor.GREEN + "Alchemist", LEVEL, location, TEXTURE_DATA, TEXTURE_SIGNATURE);
-		new QuestMarker(location.clone().add(0, 2.25, 0)) {
+		new QuestMarker(Quests.SAMPLING_SLUDGE, location.clone().add(0, 2.25, 0)) {
 			@Override
 			protected QuestMarkerDisplayType getDisplayType(PlayerCharacter pc) {
 				return QuestMarkerDisplayType.HIDDEN;

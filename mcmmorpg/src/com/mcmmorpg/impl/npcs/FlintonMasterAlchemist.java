@@ -25,7 +25,7 @@ public class FlintonMasterAlchemist extends StaticHuman {
 
 	public FlintonMasterAlchemist(Location location) {
 		super(ChatColor.GREEN + "Master Alchemist", LEVEL, location, TEXTURE_DATA, TEXTURE_SIGNATURE);
-		new QuestMarker(location.clone().add(0, 2.25, 0)) {
+		new QuestMarker(Quests.BOARS_GALORE, location.clone().add(0, 2.25, 0)) {
 			@Override
 			protected QuestMarkerDisplayType getDisplayType(PlayerCharacter pc) {
 				return QuestMarkerDisplayType.HIDDEN;

@@ -15,6 +15,7 @@ import org.bukkit.map.MapView;
 import org.bukkit.map.MinecraftFont;
 
 import com.mcmmorpg.common.character.PlayerCharacter;
+import com.mcmmorpg.common.item.Weapon;
 import com.mcmmorpg.common.util.StringUtility;
 
 public class PlayerCharacterMap {
@@ -23,14 +24,17 @@ public class PlayerCharacterMap {
 	 * How far player characters must travel from their previous location to render
 	 * their map squared.
 	 */
-	private static final double MINIMUM_DISTANCE_THRESHOLD_SQUARED = 4;
+	private static final double MINIMUM_DISTANCE_THRESHOLD_SQUARED = 0;
 
 	private final PlayerCharacter pc;
 	private final ItemStack itemStack;
 	private MapSegment mapSegment;
 	private boolean isOpen;
 	private Location previousLocation;
-	private ItemStack pcWeaponItemStackTemp;
+	/**
+	 * Store weapon when map is opened.
+	 */
+	private Weapon pcWeaponTemp;
 
 	public PlayerCharacterMap(PlayerCharacter pc) {
 		this.pc = pc;
@@ -51,19 +55,18 @@ public class PlayerCharacterMap {
 		MapRenderer renderer = new MapRenderer() {
 			@Override
 			public void render(MapView map, MapCanvas canvas, Player player) {
-				if (mapSegment == null) {
-					return;
-				}
 				Location currentLocation = pc.getLocation();
 				boolean shouldRender = currentLocation
 						.distanceSquared(previousLocation) > MINIMUM_DISTANCE_THRESHOLD_SQUARED;
 				if (!shouldRender) {
 					return;
 				}
-				previousLocation = currentLocation;
-				mapSegment.render(canvas, pc);
 				String zoneText = StringUtility.chatColorToMapColor(pc.getZone());
 				canvas.drawText(0, 0, MinecraftFont.Font, zoneText);
+				previousLocation = currentLocation;
+				if (mapSegment != null) {
+					mapSegment.render(canvas, pc);
+				}
 			}
 		};
 		mapView.addRenderer(renderer);
@@ -71,7 +74,7 @@ public class PlayerCharacterMap {
 		this.mapSegment = null;
 		this.isOpen = false;
 		this.previousLocation = new Location(pc.getWorld(), 0, 0, 0);
-		pcWeaponItemStackTemp = null;
+		pcWeaponTemp = null;
 	}
 
 	public MapSegment getMapSegment() {
@@ -93,7 +96,7 @@ public class PlayerCharacterMap {
 		if (isOpen) {
 			return;
 		}
-		pcWeaponItemStackTemp = pc.getWeapon().getItemStack();
+		pcWeaponTemp = pc.getWeapon();
 		Player player = pc.getPlayer();
 		PlayerInventory inventory = player.getInventory();
 		inventory.setItemInMainHand(itemStack);
@@ -109,9 +112,16 @@ public class PlayerCharacterMap {
 		}
 		Player player = pc.getPlayer();
 		PlayerInventory inventory = player.getInventory();
-		inventory.setItemInMainHand(pcWeaponItemStackTemp);
-		pcWeaponItemStackTemp = null;
+		inventory.setItemInMainHand(pcWeaponTemp.getItemStack());
+		pcWeaponTemp = null;
 		isOpen = false;
+	}
+
+	/**
+	 * Returns the player character's weapon if their map is open, null otherwise.
+	 */
+	public Weapon getPlayerCharacterWeapon() {
+		return pcWeaponTemp;
 	}
 
 }

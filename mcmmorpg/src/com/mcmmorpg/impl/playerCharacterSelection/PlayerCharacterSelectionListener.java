@@ -213,7 +213,7 @@ public class PlayerCharacterSelectionListener implements Listener {
 			Player player = event.getPlayer();
 			CLICK_NOISE.play(player);
 			PlayerCharacter pc = PlayerCharacter.forPlayer(player);
-			pc.openQuestLog();
+			pc.getQuestLog().open();
 		} else if (interactable.equals(OPEN_SKILL_TREE_ITEM_STACK)) {
 			Player player = event.getPlayer();
 			CLICK_NOISE.play(player);

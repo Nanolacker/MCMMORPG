@@ -1,6 +1,7 @@
 package com.mcmmorpg.common.quest;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -62,10 +63,10 @@ public class Quest {
 	}
 
 	/**
-	 * Returns an array containing every quest in the game.
+	 * Returns a collection containing every quest in the game.
 	 */
-	public static Quest[] getAll() {
-		return quests.values().toArray(new Quest[quests.size()]);
+	public static Collection<Quest> getAll() {
+		return quests.values();
 	}
 
 	/**
@@ -144,6 +145,9 @@ public class Quest {
 	}
 
 	ItemStack getQuestLogItemStack(PlayerCharacter pc) {
+		List<Quest> currentQuests = Quest.getAllQuestsMatchingStatus(pc, QuestStatus.IN_PROGRESS);
+		int questNum = currentQuests.indexOf(this) + 1;
+		String name = ChatColor.YELLOW + "(" + questNum + ") " + this.name;
 		String lore = ChatColor.GOLD + "Level " + level + " Quest\n\n" + getQuestLogLines(pc);
 		return ItemFactory.createItemStack(ChatColor.YELLOW + name, lore, Material.BOOK);
 	}
@@ -155,14 +159,12 @@ public class Quest {
 	public String getQuestLogLines(PlayerCharacter pc) {
 		String objectiveLines = "";
 		for (QuestObjective objective : objectives) {
+			if (objective.isComplete(pc)) {
+				continue;
+			}
 			int progress = objective.getProgress(pc);
 			int goal = objective.getGoal();
-			String progressText;
-			if (progress < goal) {
-				progressText = ChatColor.YELLOW + "";
-			} else {
-				progressText = ChatColor.GREEN + "";
-			}
+			String progressText = ChatColor.YELLOW + "";
 			progressText += "- " + progress + "/" + goal;
 			objectiveLines += progressText + " " + ChatColor.WHITE + objective.getDescription() + "\n";
 		}
@@ -170,18 +172,17 @@ public class Quest {
 	}
 
 	/**
-	 * Returns a list containing every quest that is in progress for the player
-	 * character.
+	 * Returns a list of all quests that match the specified quest status for the
+	 * player character.
 	 */
-	public static List<Quest> getInProgressQuests(PlayerCharacter pc) {
-		List<Quest> inProgressQuests = new ArrayList<>();
-		Quest[] allQuests = Quest.getAll();
-		for (Quest quest : allQuests) {
-			if (quest.getStatus(pc) == QuestStatus.IN_PROGRESS) {
-				inProgressQuests.add(quest);
+	public static List<Quest> getAllQuestsMatchingStatus(PlayerCharacter pc, QuestStatus status) {
+		List<Quest> quests = new ArrayList<>();
+		for (Quest quest : getAll()) {
+			if (quest.compareStatus(pc, status)) {
+				quests.add(quest);
 			}
 		}
-		return inProgressQuests;
+		return quests;
 	}
 
 }

@@ -38,7 +38,7 @@ public class QuestLog {
 	private Inventory createInventory() {
 		int size = 9 * 1;
 		Inventory inventory = Bukkit.createInventory(null, size, "Quest Log");
-		List<Quest> inProgressQuests = Quest.getInProgressQuests(pc);
+		List<Quest> inProgressQuests = Quest.getAllQuestsMatchingStatus(pc, QuestStatus.IN_PROGRESS);
 		for (int i = 0; i < size && i < inProgressQuests.size(); i++) {
 			Quest quest = inProgressQuests.get(i);
 			ItemStack itemStack = quest.getQuestLogItemStack(pc);

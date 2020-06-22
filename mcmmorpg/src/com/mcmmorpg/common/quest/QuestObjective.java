@@ -3,9 +3,11 @@ package com.mcmmorpg.common.quest;
 import org.bukkit.ChatColor;
 import org.bukkit.Sound;
 
+import com.mcmmorpg.common.character.AbstractCharacter;
 import com.mcmmorpg.common.character.PlayerCharacter;
 import com.mcmmorpg.common.event.EventManager;
 import com.mcmmorpg.common.event.QuestObjectiveChangeProgressEvent;
+import com.mcmmorpg.common.item.Item;
 import com.mcmmorpg.common.sound.Noise;
 import com.mcmmorpg.common.util.MathUtility;
 
@@ -128,6 +130,24 @@ public class QuestObjective {
 	 */
 	public boolean isComplete(PlayerCharacter pc) {
 		return getProgress(pc) == this.goal;
+	}
+	
+	
+	public void setAccessible(PlayerCharacter pc, boolean accessible) {
+		PlayerCharacterQuestManager questManager = pc.getQuestManager();
+		PlayerCharacterQuestData data = questManager.getQuestData(quest);
+		if (data == null) {
+			// don't do anything
+			return;
+		}
+	}
+	
+	public void markAsItemCollectionObjective(Item item) {
+		
+	}
+	
+	public void markAsSlayQuest(Class<? extends AbstractCharacter> characterType) {
+		
 	}
 
 }

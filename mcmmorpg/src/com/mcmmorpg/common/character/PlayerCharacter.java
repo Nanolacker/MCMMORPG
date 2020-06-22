@@ -53,6 +53,7 @@ import com.mcmmorpg.common.quest.PlayerCharacterQuestData;
 import com.mcmmorpg.common.quest.PlayerCharacterQuestManager;
 import com.mcmmorpg.common.quest.Quest;
 import com.mcmmorpg.common.quest.QuestLog;
+import com.mcmmorpg.common.quest.QuestStatus;
 import com.mcmmorpg.common.sound.Noise;
 import com.mcmmorpg.common.sound.PlayerCharacterSoundtrackPlayer;
 import com.mcmmorpg.common.time.Clock;
@@ -100,13 +101,14 @@ public final class PlayerCharacter extends AbstractCharacter {
 	private double currentMana;
 	private double manaRegenRate;
 	private final PlayerCharacterQuestManager questStatusManager;
+	private final QuestLog questLog;
 	private final PlayerSkillManager skillStatusManager;
 	private final List<String> tags;
 	/**
 	 * The total play time accumulated on this player character before the current
 	 * play session.
 	 */
-	private final double initialPlayTime;
+	private final double previousPlayTime;
 	private final double playSessionStartTime;
 	private final PlayerCharacterSoundtrackPlayer soundtrackPlayer;
 	private final PlayerCharacterMap map;
@@ -148,11 +150,12 @@ public final class PlayerCharacter extends AbstractCharacter {
 		this.maxMana = maxMana;
 		this.manaRegenRate = manaRegenRate;
 		this.questStatusManager = new PlayerCharacterQuestManager(completedQuests, questData);
+		this.questLog = new QuestLog(this);
 		this.skillStatusManager = new PlayerSkillManager(this, skillData);
 		this.skillStatusManager.init();
 		player.getInventory().setContents(inventoryContents);
 		this.tags = new ArrayList<>(Arrays.asList(tags));
-		this.initialPlayTime = playTime;
+		this.previousPlayTime = playTime;
 		this.playSessionStartTime = Clock.getTime();
 
 		player.teleport(getLocation());
@@ -766,6 +769,9 @@ public final class PlayerCharacter extends AbstractCharacter {
 	 * Returns the weapon that this player character is holding.
 	 */
 	public Weapon getWeapon() {
+		if (map.isOpen()) {
+			return map.getPlayerCharacterWeapon();
+		}
 		ItemStack itemStack = player.getInventory().getItem(0);
 		return (Weapon) Item.forItemStack(itemStack);
 	}
@@ -861,9 +867,8 @@ public final class PlayerCharacter extends AbstractCharacter {
 	/**
 	 * Opens the quest log menu.
 	 */
-	public void openQuestLog() {
-		QuestLog questLog = new QuestLog(this);
-		questLog.open();
+	public QuestLog getQuestLog() {
+		return questLog;
 	}
 
 	/**
@@ -909,7 +914,7 @@ public final class PlayerCharacter extends AbstractCharacter {
 	 */
 	public double getTotalPlayTime() {
 		double currentTime = Clock.getTime();
-		return initialPlayTime + currentTime - playSessionStartTime;
+		return previousPlayTime + currentTime - playSessionStartTime;
 	}
 
 	/**
@@ -1012,10 +1017,10 @@ public final class PlayerCharacter extends AbstractCharacter {
 	 */
 	public void updateQuestDisplay() {
 		String lines = "";
-		List<Quest> inProgressQuests = Quest.getInProgressQuests(this);
-		for (int i = 0; i < inProgressQuests.size(); i++) {
-			Quest quest = inProgressQuests.get(i);
-			lines += ChatColor.YELLOW + "" + ChatColor.BOLD + quest.getName() + ChatColor.RESET + "\n"
+		List<Quest> currentQuests = Quest.getAllQuestsMatchingStatus(this, QuestStatus.IN_PROGRESS);
+		for (int i = 0; i < currentQuests.size(); i++) {
+			Quest quest = currentQuests.get(i);
+			lines += ChatColor.YELLOW + "(" + (i + 1) + ") " + ChatColor.BOLD + quest.getName() + ChatColor.RESET + "\n"
 					+ quest.getQuestLogLines(this) + "\n";
 		}
 		SidebarText questDisplay = new SidebarText(ChatColor.YELLOW + "Quests", lines);
