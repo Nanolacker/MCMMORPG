@@ -131,8 +131,11 @@ public class QuestObjective {
 	public boolean isComplete(PlayerCharacter pc) {
 		return getProgress(pc) == this.goal;
 	}
-	
-	
+
+	public boolean isAccessible(PlayerCharacter pc) {
+		return false;
+	}
+
 	public void setAccessible(PlayerCharacter pc, boolean accessible) {
 		PlayerCharacterQuestManager questManager = pc.getQuestManager();
 		PlayerCharacterQuestData data = questManager.getQuestData(quest);
@@ -141,13 +144,13 @@ public class QuestObjective {
 			return;
 		}
 	}
-	
-	public void markAsItemCollectionObjective(Item item) {
-		
+
+	public void registerAsItemCollectionObjective(Item item) {
+
 	}
-	
-	public void markAsSlayQuest(Class<? extends AbstractCharacter> characterType) {
-		
+
+	public void registerAsSlayCharacterQuest(Class<? extends AbstractCharacter> characterType) {
+
 	}
 
 }

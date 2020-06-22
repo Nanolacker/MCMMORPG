@@ -29,6 +29,7 @@ public class Quest {
 
 	static {
 		quests = new HashMap<>();
+		EventManager.registerEvents(new QuestObjectiveListener());
 	}
 
 	private final String name;

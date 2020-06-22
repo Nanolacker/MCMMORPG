@@ -30,7 +30,10 @@ import org.bukkit.inventory.PlayerInventory;
 
 import com.mcmmorpg.common.character.PlayerCharacter;
 import com.mcmmorpg.common.event.EventManager;
+import com.mcmmorpg.common.event.PlayerCharacterDropItemEvent;
+import com.mcmmorpg.common.event.PlayerCharacterLootItemEvent;
 import com.mcmmorpg.common.event.PlayerCharacterOpenLootChestEvent;
+import com.mcmmorpg.common.event.PlayerCharacterPickUpItemEvent;
 import com.mcmmorpg.common.event.PlayerCharacterUseConsumableItemEvent;
 import com.mcmmorpg.common.event.PlayerCharacterUseWeaponEvent;
 import com.mcmmorpg.common.event.StaticInteractableEvent;
@@ -102,7 +105,8 @@ class ItemListener implements Listener {
 
 		if (ItemFactory.staticInteractables.contains(itemStack)) {
 			if (action == Action.RIGHT_CLICK_AIR || action == Action.RIGHT_CLICK_BLOCK) {
-				EventManager.callEvent(new StaticInteractableEvent(player, itemStack));
+				StaticInteractableEvent staticInteractableEvent = new StaticInteractableEvent(player, itemStack);
+				EventManager.callEvent(staticInteractableEvent);
 			}
 			return;
 		}
@@ -143,6 +147,8 @@ class ItemListener implements Listener {
 				} else {
 					pc.sendMessage(ChatColor.GRAY + "Dropped " + item + ChatColor.GRAY + " (" + amount + ")");
 				}
+				PlayerCharacterDropItemEvent dropItemEvent = new PlayerCharacterDropItemEvent(pc, item, amount);
+				EventManager.callEvent(dropItemEvent);
 			}
 		}
 	}
@@ -165,6 +171,8 @@ class ItemListener implements Listener {
 				} else {
 					pc.sendMessage(ChatColor.GRAY + "Picked up " + item + ChatColor.GRAY + " (" + amount + ")");
 				}
+				PlayerCharacterPickUpItemEvent pickUpItemEvent = new PlayerCharacterPickUpItemEvent(pc, item, amount);
+				EventManager.callEvent(pickUpItemEvent);
 			}
 		}
 	}
@@ -178,7 +186,8 @@ class ItemListener implements Listener {
 			return;
 		}
 		Weapon weapon = pc.getWeapon();
-		EventManager.callEvent(new PlayerCharacterUseWeaponEvent(pc, weapon));
+		PlayerCharacterUseWeaponEvent useWeaponEvent = new PlayerCharacterUseWeaponEvent(pc, weapon);
+		EventManager.callEvent(useWeaponEvent);
 	}
 
 	@EventHandler
@@ -189,7 +198,8 @@ class ItemListener implements Listener {
 		if (ItemFactory.staticInteractables.contains(clickedItemStack)) {
 			event.setCancelled(true);
 			if (cursorItemStack.getType() == Material.AIR) {
-				EventManager.callEvent(new StaticInteractableEvent(player, clickedItemStack));
+				StaticInteractableEvent staticInteractableEvent = new StaticInteractableEvent(player, clickedItemStack);
+				EventManager.callEvent(staticInteractableEvent);
 				return;
 			}
 		}
@@ -368,7 +378,8 @@ class ItemListener implements Listener {
 		chest.open(pc);
 		LOOT_CHEST_OPEN_NOISE.play(location);
 		chest.remove();
-		EventManager.callEvent(new PlayerCharacterOpenLootChestEvent(pc, chest));
+		PlayerCharacterOpenLootChestEvent openLootChestEvent = new PlayerCharacterOpenLootChestEvent(pc, chest);
+		EventManager.callEvent(openLootChestEvent);
 	}
 
 	@EventHandler
@@ -389,13 +400,16 @@ class ItemListener implements Listener {
 			PlayerCharacter pc = PlayerCharacter.forPlayer(player);
 			// pc should never be null
 			Item item = Item.forItemStack(itemStack);
-			pc.giveItem(item);
+			int amount = itemStack.getAmount();
+			pc.giveItem(item, amount);
 			CLICK_NOISE.play(pc);
 			boolean empty = inventoryIsEmpty(clickedInventory);
 			if (empty) {
 				player.closeInventory();
 				LOOT_CHEST_CLOSE_NOISE.play(player);
 			}
+			PlayerCharacterLootItemEvent lootItemEvent = new PlayerCharacterLootItemEvent(pc, item, amount);
+			EventManager.callEvent(lootItemEvent);
 		}
 	}
 
