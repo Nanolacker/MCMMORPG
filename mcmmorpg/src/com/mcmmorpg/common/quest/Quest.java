@@ -178,7 +178,7 @@ public class Quest {
 	public static List<Quest> getAllQuestsMatchingStatus(PlayerCharacter pc, QuestStatus status) {
 		List<Quest> quests = new ArrayList<>();
 		for (Quest quest : getAll()) {
-			if (quest.compareStatus(pc, status)) {
+			if (quest.getStatus(pc) == status) {
 				quests.add(quest);
 			}
 		}

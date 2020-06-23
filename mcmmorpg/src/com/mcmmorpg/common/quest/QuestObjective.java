@@ -6,6 +6,7 @@ import org.bukkit.Sound;
 import com.mcmmorpg.common.character.AbstractCharacter;
 import com.mcmmorpg.common.character.PlayerCharacter;
 import com.mcmmorpg.common.event.EventManager;
+import com.mcmmorpg.common.event.QuestObjectiveAccessibilityEvent;
 import com.mcmmorpg.common.event.QuestObjectiveChangeProgressEvent;
 import com.mcmmorpg.common.item.Item;
 import com.mcmmorpg.common.sound.Noise;
@@ -159,6 +160,8 @@ public class QuestObjective {
 		if (wasAccessible != accessible) {
 			data.setAccessible(index, accessible);
 			pc.updateQuestDisplay();
+			QuestObjectiveAccessibilityEvent event = new QuestObjectiveAccessibilityEvent(pc, this, accessible);
+			EventManager.callEvent(event);
 		}
 	}
 

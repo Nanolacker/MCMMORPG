@@ -49,7 +49,7 @@ public class QuestObjectiveAccessibilityEvent extends Event {
 	/**
 	 * Returns whether the quest objective was made accessible.
 	 */
-	public boolean isObjectiveAccessible() {
+	public boolean objectiveIsAccessible() {
 		return accessible;
 	}
 

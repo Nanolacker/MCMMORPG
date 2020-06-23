@@ -60,8 +60,8 @@ public class MelcherFarmer extends StaticHuman {
 					speak("Instead, have this bread as my expression of gratitude.", pc);
 					break;
 				case 2:
+					Quests.FOOD_DELIVERY.getObjective(1).complete(pc);
 					pc.removeItem(Items.STOLEN_FOOD, 10);
-					Quests.FOOD_DELIVERY.getObjective(0).complete(pc);
 					pc.giveXp(FOOD_DELIVERY_XP_REWARD);
 					pc.giveItem(Items.GARLIC_BREAD, 5);
 					break;
@@ -75,7 +75,7 @@ public class MelcherFarmer extends StaticHuman {
 		if (Quests.FOOD_DELIVERY.compareStatus(pc, QuestStatus.NOT_STARTED)) {
 			startFoodDeilveryInteraction.advance(pc);
 		} else if (Quests.FOOD_DELIVERY.compareStatus(pc, QuestStatus.IN_PROGRESS)) {
-			if (Quests.FOOD_DELIVERY.getObjective(0).isComplete(pc)) {
+			if (Quests.FOOD_DELIVERY.getObjective(1).isAccessible(pc)) {
 				completeFoodDeliveryInteraction.advance(pc);
 			} else {
 				speak("Have you found them yet? And the food?", pc);

@@ -257,7 +257,8 @@ public class MelcherListener implements Listener {
 
 		Quests.THWARTING_THE_THIEVES.getObjective(0).registerAsSlayCharacterQuest(MelcherThief.class);
 
-		QuestMarker foodDeliveryQuestMarker = new QuestMarker(Quests.FOOD_DELIVERY, FARMER_LOCATION) {
+		QuestMarker foodDeliveryQuestMarker = new QuestMarker(Quests.FOOD_DELIVERY,
+				FARMER_LOCATION.clone().add(0, 2.25, 0)) {
 			@Override
 			protected QuestMarkerIcon getIcon(PlayerCharacter pc) {
 				QuestStatus status = Quests.FOOD_DELIVERY.getStatus(pc);
@@ -277,6 +278,7 @@ public class MelcherListener implements Listener {
 				}
 			}
 		};
+		foodDeliveryQuestMarker.setTextPanelVisible(true);
 		Maps.ELADRADOR.addQuestMarker(foodDeliveryQuestMarker);
 
 		QuestMarker foodDeliveryThiefQuestMarker = new QuestMarker(Quests.FOOD_DELIVERY, THIEF_LOCATIONS[1]) {

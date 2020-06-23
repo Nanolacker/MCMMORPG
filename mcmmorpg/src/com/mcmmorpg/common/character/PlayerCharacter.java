@@ -35,8 +35,10 @@ import com.mcmmorpg.common.character.MovementSynchronizer.MovementSynchronizerMo
 import com.mcmmorpg.common.event.CharacterKillEvent;
 import com.mcmmorpg.common.event.EventManager;
 import com.mcmmorpg.common.event.PlayerCharacterLevelUpEvent;
+import com.mcmmorpg.common.event.PlayerCharacterReceiveItemEvent;
 import com.mcmmorpg.common.event.PlayerCharacterRegisterEvent;
 import com.mcmmorpg.common.event.PlayerCharacterRemoveEvent;
+import com.mcmmorpg.common.event.PlayerCharacterRemoveItemEvent;
 import com.mcmmorpg.common.item.ArmorItem;
 import com.mcmmorpg.common.item.Item;
 import com.mcmmorpg.common.item.Weapon;
@@ -1087,6 +1089,8 @@ public final class PlayerCharacter extends AbstractCharacter {
 		Inventory inventory = player.getInventory();
 		inventory.addItem(itemStack);
 		sendMessage(ChatColor.GRAY + "You received " + (amount > 1 ? amount + " " : "") + item + ChatColor.GRAY + "!");
+		PlayerCharacterReceiveItemEvent event = new PlayerCharacterReceiveItemEvent(this, item, amount);
+		EventManager.callEvent(event);
 	}
 
 	/**
@@ -1122,6 +1126,8 @@ public final class PlayerCharacter extends AbstractCharacter {
 		}
 		if (removedAmount > 0) {
 			sendMessage(ChatColor.GRAY + "Removed " + (removedAmount == 1 ? "" : removedAmount + " ") + item);
+			PlayerCharacterRemoveItemEvent event = new PlayerCharacterRemoveItemEvent(this, item, removedAmount);
+			EventManager.callEvent(event);
 		}
 	}
 
