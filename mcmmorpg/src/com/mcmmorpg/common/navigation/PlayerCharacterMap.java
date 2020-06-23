@@ -24,7 +24,7 @@ public class PlayerCharacterMap {
 	 * How far player characters must travel from their previous location to render
 	 * their map squared.
 	 */
-	private static final double MINIMUM_DISTANCE_THRESHOLD_SQUARED = 0;
+	private static final double MINIMUM_DISTANCE_THRESHOLD_SQUARED = 4;
 
 	private final PlayerCharacter pc;
 	private final ItemStack itemStack;
@@ -61,12 +61,14 @@ public class PlayerCharacterMap {
 				if (!shouldRender) {
 					return;
 				}
-				String zoneText = StringUtility.chatColorToMapColor(pc.getZone());
-				canvas.drawText(0, 0, MinecraftFont.Font, zoneText);
+
 				previousLocation = currentLocation;
 				if (mapSegment != null) {
 					mapSegment.render(canvas, pc);
 				}
+
+				String zoneText = StringUtility.chatColorToMapColor(pc.getZone());
+				canvas.drawText(0, 0, MinecraftFont.Font, zoneText);
 			}
 		};
 		mapView.addRenderer(renderer);

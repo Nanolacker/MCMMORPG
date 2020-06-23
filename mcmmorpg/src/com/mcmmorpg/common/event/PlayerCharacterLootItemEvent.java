@@ -5,7 +5,6 @@ import org.bukkit.event.HandlerList;
 
 import com.mcmmorpg.common.character.PlayerCharacter;
 import com.mcmmorpg.common.item.Item;
-import com.mcmmorpg.common.item.LootChest;
 
 /**
  * An event called when a player character loots an item from a loot chest.

@@ -5,7 +5,6 @@ import org.bukkit.Location;
 import org.bukkit.Sound;
 
 import com.mcmmorpg.common.character.PlayerCharacter;
-import com.mcmmorpg.common.navigation.QuestMarker;
 import com.mcmmorpg.common.quest.QuestStatus;
 import com.mcmmorpg.common.sound.Noise;
 import com.mcmmorpg.common.ui.InteractionSequence;
@@ -24,12 +23,6 @@ public class MelcherFarmer extends StaticHuman {
 
 	public MelcherFarmer(Location location) {
 		super(ChatColor.GREEN + "Farmer", 1, location, TEXTURE_DATA, TEXTURE_SIGNATURE);
-		new QuestMarker(Quests.FOOD_DELIVERY, this) {
-			@Override
-			protected QuestMarkerDisplayType getDisplayType(PlayerCharacter pc) {
-				return QuestMarkerDisplayType.HIDDEN;
-			}
-		};
 		startFoodDeilveryInteraction = new InteractionSequence(5) {
 			@Override
 			protected void onAdvance(PlayerCharacter pc, int interactionIndex) {
@@ -51,6 +44,7 @@ public class MelcherFarmer extends StaticHuman {
 					break;
 				case 4:
 					Quests.FOOD_DELIVERY.start(pc);
+					Quests.FOOD_DELIVERY.getObjective(0).setAccessible(pc, true);
 					break;
 				}
 			}
@@ -81,7 +75,7 @@ public class MelcherFarmer extends StaticHuman {
 		if (Quests.FOOD_DELIVERY.compareStatus(pc, QuestStatus.NOT_STARTED)) {
 			startFoodDeilveryInteraction.advance(pc);
 		} else if (Quests.FOOD_DELIVERY.compareStatus(pc, QuestStatus.IN_PROGRESS)) {
-			if (pc.getItemCount(Items.STOLEN_FOOD) >= 10) {
+			if (Quests.FOOD_DELIVERY.getObjective(0).isComplete(pc)) {
 				completeFoodDeliveryInteraction.advance(pc);
 			} else {
 				speak("Have you found them yet? And the food?", pc);

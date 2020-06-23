@@ -80,7 +80,11 @@ public class QuestObjective {
 				return 0;
 			}
 		}
-		return data.getProgress(this.index);
+		if (data.isAccessible(index)) {
+			return data.getProgress(this.index);
+		} else {
+			return 0;
+		}
 	}
 
 	/**
@@ -91,6 +95,9 @@ public class QuestObjective {
 		PlayerCharacterQuestData data = questManager.getQuestData(quest);
 		if (data == null) {
 			// don't do anything
+			return;
+		}
+		if (!data.isAccessible(index)) {
 			return;
 		}
 		int previousProgress = getProgress(pc);
@@ -104,7 +111,7 @@ public class QuestObjective {
 		EventManager.callEvent(event);
 		pc.updateQuestDisplay();
 		if (progress == goal) {
-			pc.sendMessage(description + ChatColor.GRAY + " complete!");
+			pc.sendMessage(goal + "/" + goal + " " + description + ChatColor.GRAY + " complete!");
 			OBJECTIVE_COMPLETE_NOISE.play(pc);
 		}
 		quest.checkForCompletion(pc);
@@ -133,7 +140,12 @@ public class QuestObjective {
 	}
 
 	public boolean isAccessible(PlayerCharacter pc) {
-		return false;
+		PlayerCharacterQuestManager questManager = pc.getQuestManager();
+		PlayerCharacterQuestData data = questManager.getQuestData(quest);
+		if (data == null) {
+			return false;
+		}
+		return data.isAccessible(index);
 	}
 
 	public void setAccessible(PlayerCharacter pc, boolean accessible) {
@@ -143,14 +155,19 @@ public class QuestObjective {
 			// don't do anything
 			return;
 		}
+		boolean wasAccessible = data.isAccessible(index);
+		if (wasAccessible != accessible) {
+			data.setAccessible(index, accessible);
+			pc.updateQuestDisplay();
+		}
 	}
 
 	public void registerAsItemCollectionObjective(Item item) {
-
+		QuestObjectiveListener.registerItemCollectionObjective(item, this);
 	}
 
 	public void registerAsSlayCharacterQuest(Class<? extends AbstractCharacter> characterType) {
-
+		QuestObjectiveListener.registerSlayCharacterObjective(characterType, this);
 	}
 
 }

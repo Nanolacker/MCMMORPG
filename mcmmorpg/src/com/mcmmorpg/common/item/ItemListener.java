@@ -210,7 +210,7 @@ class ItemListener implements Listener {
 		}
 
 		int rawSlot = event.getRawSlot();
-		if (rawSlot == 36 || rawSlot == 45 || (rawSlot >= 5 && rawSlot < 8)) {
+		if (rawSlot == 36 || rawSlot == 45 || (rawSlot < 9 && rawSlot >= 0)) {
 			// don't let the player fiddle with throwing away their equipment
 			// 45 = offhand
 			event.setCancelled(true);
@@ -299,12 +299,6 @@ class ItemListener implements Listener {
 				}
 				CLICK_NOISE.play(player);
 			}
-		} else {
-			if (rawSlot >= 5 && rawSlot < 9) {
-				// 5-8 = armor
-				// don't let players drop items into their equipment slots
-				event.setCancelled(true);
-			}
 		}
 	}
 
@@ -316,7 +310,7 @@ class ItemListener implements Listener {
 			return;
 		}
 		int rawSlot = (int) event.getRawSlots().toArray()[0];
-		if (rawSlot == 45 || (rawSlot >= 5 && rawSlot < 9)) {
+		if (rawSlot == 45 || rawSlot < 9) {
 			// 45 = offhand
 			// 5-8 = armor
 			// don't let players drop items into their equipment slots

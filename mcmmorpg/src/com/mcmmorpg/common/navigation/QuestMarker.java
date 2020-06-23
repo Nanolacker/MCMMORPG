@@ -19,7 +19,8 @@ public abstract class QuestMarker {
 	private static final String TEXT_PANEL_TEXT = ChatColor.YELLOW + "" + ChatColor.BOLD + ChatColor.UNDERLINE + "!";
 
 	private final Quest quest;
-	private final TextPanel textPanel;
+	private final Location location;
+	private TextPanel textPanel;
 
 	/**
 	 * Create a new quest marker at the specified location to display in the
@@ -27,8 +28,7 @@ public abstract class QuestMarker {
 	 */
 	public QuestMarker(Quest quest, Location location) {
 		this.quest = quest;
-		textPanel = new TextPanel(location, TEXT_PANEL_TEXT);
-		textPanel.setVisible(true);
+		this.location = location;
 	}
 
 	/**
@@ -48,21 +48,47 @@ public abstract class QuestMarker {
 	 * Returns the location of this quest marker.
 	 */
 	public Location getLocation() {
-		return textPanel.getLocation();
+		return location;
+	}
+
+	/**
+	 * Returns whether this quest marker is visible on a text panel at its location.
+	 */
+	public boolean isTextPanelVisible() {
+		return textPanel != null;
+	}
+
+	/**
+	 * Sets whether this quest marker will be visible on a text panel at its
+	 * location.
+	 */
+	public void setTextPanelVisible(boolean visible) {
+		if (visible) {
+			textPanel = new TextPanel(location, TEXT_PANEL_TEXT);
+			textPanel.setVisible(true);
+		} else if (textPanel != null) {
+			textPanel.setVisible(false);
+		}
 	}
 
 	/**
 	 * How this quest marker is displayed on maps.
 	 */
-	protected abstract QuestMarkerDisplayType getDisplayType(PlayerCharacter pc);
+	protected abstract QuestMarkerIcon getIcon(PlayerCharacter pc);
 
 	/**
 	 * How a quest maker is displayed on a map.
 	 */
-	public enum QuestMarkerDisplayType {
-		HIDDEN, READY_TO_START, READY_TO_TURN_IN, OBJECTIVE;
+	public enum QuestMarkerIcon {
+		HIDDEN(0), READY_TO_START(36864), READY_TO_TURN_IN(Integer.MAX_VALUE), OBJECTIVE(Integer.MAX_VALUE);
 
-		String getMapText(Quest quest, PlayerCharacter pc) {
+		private final double mapDisplayRangeSquared;
+
+		private QuestMarkerIcon(double mapDisplayRangeSquared) {
+			this.mapDisplayRangeSquared = mapDisplayRangeSquared;
+		}
+
+		String getText(Quest quest, PlayerCharacter pc) {
 			switch (this) {
 			case HIDDEN:
 				return "";
@@ -77,6 +103,10 @@ public abstract class QuestMarker {
 			default:
 				return null;
 			}
+		}
+
+		double getMapDisplayRangeSquared() {
+			return mapDisplayRangeSquared;
 		}
 	}
 

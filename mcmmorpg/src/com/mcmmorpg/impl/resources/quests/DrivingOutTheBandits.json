@@ -4,15 +4,15 @@
 	"objectives": [
 		{
 			"goal": 10,
-			"description": "Slay 10 §7[§cBandit§7]"
+			"description": "Bandit slain"
 		},
 		{
 			"goal": 3,
-			"description": "Slay 3 §7[§cBandit Chief§7]"
+			"description": "Bandit chief slain"
 		},
 		{
 			"goal": 1,
-			"description": "Return to §7[§aGuard Thomas§7]§r at §a(-286, 43, 25)"
+			"description": "Return to Guard Thomas"
 		}
 	]
 }

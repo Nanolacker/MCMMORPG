@@ -26,8 +26,8 @@ public class GuardThomas extends StaticHuman {
 		super(ChatColor.GREEN + "Guard Thomas", LEVEL, location, TEXTURE_DATA, TEXTURE_SIGNATURE);
 		new QuestMarker(Quests.DRIVING_OUT_THE_BANDITS, this) {
 			@Override
-			protected QuestMarkerDisplayType getDisplayType(PlayerCharacter pc) {
-				return QuestMarkerDisplayType.HIDDEN;
+			protected QuestMarkerIcon getIcon(PlayerCharacter pc) {
+				return QuestMarkerIcon.HIDDEN;
 			}
 		};
 		startDrivingOutTheBanditsInteraction = new InteractionSequence(5) {

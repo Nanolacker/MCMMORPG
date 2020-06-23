@@ -4,15 +4,15 @@
 	"objectives": [
 		{
 			"goal": 10,
-			"description": "Slay 10 §7[§cNecromancer§7]"
+			"description": "Necromancer slain"
 		},
 		{
 			"goal": 1,
-			"description": "Defeat §7[§cXylphanos§7]§r at §a(-423, 42, 52)"
+			"description": "Defeat Xylphanos"
 		},
 		{
 			"goal": 1,
-			"description": "Return to §7[§aCaptain Nadia§7]§r at §a(-288, 43, 25)"
+			"description": "Return to Captain Nadia"
 		}
 	]
 }

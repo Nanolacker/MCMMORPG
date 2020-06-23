@@ -5,7 +5,6 @@ import org.bukkit.Location;
 import org.bukkit.Sound;
 
 import com.mcmmorpg.common.character.PlayerCharacter;
-import com.mcmmorpg.common.navigation.QuestMarker;
 import com.mcmmorpg.common.quest.QuestStatus;
 import com.mcmmorpg.common.sound.Noise;
 import com.mcmmorpg.common.ui.InteractionSequence;
@@ -28,12 +27,6 @@ public class MelcherMayor extends StaticHuman {
 
 	public MelcherMayor(Location location) {
 		super(ChatColor.GREEN + "Mayor of Melcher", LEVEL, location, TEXTURE_DATA, TEXTURE_SIGNATURE);
-		new QuestMarker(Quests.THWARTING_THE_THIEVES, this) {
-			@Override
-			protected QuestMarkerDisplayType getDisplayType(PlayerCharacter pc) {
-				return QuestMarkerDisplayType.HIDDEN;
-			}
-		};
 		completeReportingForDutyInteraction = new InteractionSequence(7) {
 			@Override
 			protected void onAdvance(PlayerCharacter pc, int messageIndex) {
@@ -64,6 +57,7 @@ public class MelcherMayor extends StaticHuman {
 					Quests.REPORTING_FOR_DUTY.getObjective(0).complete(pc);
 					pc.giveXp(REPORTING_FOR_DUTY_XP_REWARD);
 					Quests.THWARTING_THE_THIEVES.start(pc);
+					Quests.THWARTING_THE_THIEVES.getObjective(0).setAccessible(pc, true);
 					break;
 				}
 			}

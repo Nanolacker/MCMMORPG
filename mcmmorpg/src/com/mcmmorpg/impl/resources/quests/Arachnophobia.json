@@ -4,15 +4,15 @@
 	"objectives": [
 		{
 			"goal": 20,
-			"description": "Slay 20 §7[§cForest Spider§7]"
+			"description": "Forest spider slain"
 		},
 		{
 			"goal": 1,
-			"description": "Slay the §7[§cBroodmother§7]§r at §a(-812, 62, -123)"
+			"description": "Broodmother slain"
 		},
 		{
 			"goal": 1,
-			"description": "Return to §7[§aGuard James§7]§r at §a(-644, 68, 23)"
+			"description": "Return to Guard James"
 		}
 	]
 }

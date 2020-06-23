@@ -1020,8 +1020,9 @@ public final class PlayerCharacter extends AbstractCharacter {
 		List<Quest> currentQuests = Quest.getAllQuestsMatchingStatus(this, QuestStatus.IN_PROGRESS);
 		for (int i = 0; i < currentQuests.size(); i++) {
 			Quest quest = currentQuests.get(i);
-			lines += ChatColor.YELLOW + "(" + (i + 1) + ") " + ChatColor.BOLD + quest.getName() + ChatColor.RESET + "\n"
-					+ quest.getQuestLogLines(this) + "\n";
+			int questNum = i + 1;
+			lines += ChatColor.YELLOW + "" + "(" + ChatColor.BOLD + questNum + ChatColor.RESET + "" + ChatColor.YELLOW
+					+ ") " + quest.getName() + ChatColor.RESET + "\n" + quest.getQuestLogLines(this) + "\n";
 		}
 		SidebarText questDisplay = new SidebarText(ChatColor.YELLOW + "Quests", lines);
 		questDisplay.apply(player);
@@ -1099,7 +1100,8 @@ public final class PlayerCharacter extends AbstractCharacter {
 		int removedAmount = 0;
 		ItemStack itemStack = item.getItemStack();
 		Inventory inventory = player.getInventory();
-		ItemStack[] contents = inventory.getContents();
+		ItemStack[] contents = Arrays.copyOf(inventory.getContents(), 42);
+		contents[41] = player.getItemOnCursor();
 		for (int i = 1; i < contents.length; i++) {
 			// skip weapon item stack
 			ItemStack content = contents[i];
@@ -1133,7 +1135,8 @@ public final class PlayerCharacter extends AbstractCharacter {
 		int count = 0;
 		ItemStack target = item.getItemStack();
 		Inventory inventory = player.getInventory();
-		ItemStack[] contents = inventory.getContents();
+		ItemStack[] contents = Arrays.copyOf(inventory.getContents(), 42);
+		contents[41] = player.getItemOnCursor();
 		for (ItemStack itemStack : contents) {
 			if (itemStack == null) {
 				continue;

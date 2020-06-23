@@ -7,9 +7,13 @@ import org.bukkit.event.Listener;
 import com.mcmmorpg.common.character.PlayerCharacter;
 import com.mcmmorpg.common.character.PlayerCharacter.PlayerCharacterCollider;
 import com.mcmmorpg.common.event.PlayerCharacterLevelUpEvent;
+import com.mcmmorpg.common.event.QuestObjectiveChangeProgressEvent;
 import com.mcmmorpg.common.item.Item;
 import com.mcmmorpg.common.item.LootChest;
+import com.mcmmorpg.common.navigation.QuestMarker;
 import com.mcmmorpg.common.physics.Collider;
+import com.mcmmorpg.common.quest.QuestObjective;
+import com.mcmmorpg.common.quest.QuestStatus;
 import com.mcmmorpg.impl.constants.Items;
 import com.mcmmorpg.impl.constants.Maps;
 import com.mcmmorpg.impl.constants.Quests;
@@ -119,6 +123,7 @@ public class MelcherListener implements Listener {
 	public MelcherListener() {
 		setBounds();
 		spawnNpcs();
+		createQuestMarkers();
 		spawnLootChests();
 	}
 
@@ -143,7 +148,6 @@ public class MelcherListener implements Listener {
 					PlayerCharacter pc = ((PlayerCharacterCollider) other).getCharacter();
 					pc.setZone(Zones.ELADRADOR);
 					pc.getSoundTrackPlayer().setSoundtrack(Soundtracks.WILDNERNESS);
-					pc.getMap().setMapSegment(Maps.FLINTON_SEWERS);
 				}
 			}
 		};
@@ -191,6 +195,110 @@ public class MelcherListener implements Listener {
 		}
 	}
 
+	private void createQuestMarkers() {
+		QuestMarker reportingForDutyQuestMarker = new QuestMarker(Quests.REPORTING_FOR_DUTY,
+				MAYOR_LOCATION.clone().add(0, 2.25, 0)) {
+			@Override
+			protected QuestMarkerIcon getIcon(PlayerCharacter pc) {
+				if (Quests.REPORTING_FOR_DUTY.getStatus(pc) == QuestStatus.IN_PROGRESS) {
+					return QuestMarkerIcon.READY_TO_TURN_IN;
+				} else {
+					return QuestMarkerIcon.HIDDEN;
+				}
+			}
+		};
+		reportingForDutyQuestMarker.setTextPanelVisible(true);
+		Maps.ELADRADOR.addQuestMarker(reportingForDutyQuestMarker);
+
+		QuestMarker thwartingTheThievesMayorQuestMarker = new QuestMarker(Quests.THWARTING_THE_THIEVES,
+				MAYOR_LOCATION) {
+			@Override
+			protected QuestMarkerIcon getIcon(PlayerCharacter pc) {
+				QuestStatus status = Quests.THWARTING_THE_THIEVES.getStatus(pc);
+				switch (status) {
+				case COMPLETED:
+					return QuestMarkerIcon.HIDDEN;
+				case IN_PROGRESS:
+					if (Quests.THWARTING_THE_THIEVES.getObjective(0).isComplete(pc)) {
+						return QuestMarkerIcon.READY_TO_TURN_IN;
+					} else {
+						return QuestMarkerIcon.HIDDEN;
+					}
+				case NOT_STARTED:
+					if (Quests.REPORTING_FOR_DUTY.getStatus(pc) == QuestStatus.COMPLETED) {
+						return QuestMarkerIcon.READY_TO_START;
+					} else {
+						return QuestMarkerIcon.HIDDEN;
+					}
+				default:
+					return null;
+				}
+			}
+		};
+		Maps.ELADRADOR.addQuestMarker(thwartingTheThievesMayorQuestMarker);
+
+		QuestMarker thwartingTheThievesThiefQuestMarker = new QuestMarker(Quests.THWARTING_THE_THIEVES,
+				THIEF_LOCATIONS[0]) {
+			@Override
+			protected QuestMarkerIcon getIcon(PlayerCharacter pc) {
+				QuestStatus status = Quests.THWARTING_THE_THIEVES.getStatus(pc);
+				if (status == QuestStatus.IN_PROGRESS) {
+					if (Quests.THWARTING_THE_THIEVES.getObjective(0).isComplete(pc)) {
+						return QuestMarkerIcon.HIDDEN;
+					} else {
+						return QuestMarkerIcon.OBJECTIVE;
+					}
+				} else {
+					return QuestMarkerIcon.HIDDEN;
+				}
+			}
+		};
+		Maps.ELADRADOR.addQuestMarker(thwartingTheThievesThiefQuestMarker);
+
+		Quests.THWARTING_THE_THIEVES.getObjective(0).registerAsSlayCharacterQuest(MelcherThief.class);
+
+		QuestMarker foodDeliveryQuestMarker = new QuestMarker(Quests.FOOD_DELIVERY, FARMER_LOCATION) {
+			@Override
+			protected QuestMarkerIcon getIcon(PlayerCharacter pc) {
+				QuestStatus status = Quests.FOOD_DELIVERY.getStatus(pc);
+				switch (status) {
+				case COMPLETED:
+					return QuestMarkerIcon.HIDDEN;
+				case IN_PROGRESS:
+					if (Quests.FOOD_DELIVERY.getObjective(0).isComplete(pc)) {
+						return QuestMarkerIcon.READY_TO_TURN_IN;
+					} else {
+						return QuestMarkerIcon.HIDDEN;
+					}
+				case NOT_STARTED:
+					return QuestMarkerIcon.READY_TO_START;
+				default:
+					return null;
+				}
+			}
+		};
+		Maps.ELADRADOR.addQuestMarker(foodDeliveryQuestMarker);
+
+		QuestMarker foodDeliveryThiefQuestMarker = new QuestMarker(Quests.FOOD_DELIVERY, THIEF_LOCATIONS[1]) {
+			@Override
+			protected QuestMarkerIcon getIcon(PlayerCharacter pc) {
+				QuestStatus status = Quests.FOOD_DELIVERY.getStatus(pc);
+				if (status == QuestStatus.IN_PROGRESS) {
+					if (Quests.FOOD_DELIVERY.getObjective(0).isComplete(pc)) {
+						return QuestMarkerIcon.HIDDEN;
+					} else {
+						return QuestMarkerIcon.OBJECTIVE;
+					}
+				} else {
+					return QuestMarkerIcon.HIDDEN;
+				}
+			}
+		};
+		Maps.ELADRADOR.addQuestMarker(foodDeliveryThiefQuestMarker);
+
+		Quests.FOOD_DELIVERY.getObjective(0).registerAsItemCollectionObjective(Items.STOLEN_FOOD);
+	}
+
 	private void spawnLootChests() {
 		for (int i = 0; i < LOOT_CHEST_LOCATIONS.length; i++) {
 			Location location = LOOT_CHEST_LOCATIONS[i];
@@ -205,6 +313,21 @@ public class MelcherListener implements Listener {
 		if (level == 1) {
 			PlayerCharacter pc = event.getPlayerCharacter();
 			Quests.REPORTING_FOR_DUTY.start(pc);
+			Quests.REPORTING_FOR_DUTY.getObjective(0).setAccessible(pc, true);
+		}
+	}
+
+	@EventHandler
+	private void onQuestObjectiveChangeProgress(QuestObjectiveChangeProgressEvent event) {
+		PlayerCharacter pc = event.getPlayerCharacter();
+		QuestObjective objective = event.getObjective();
+		if (objective == Quests.THWARTING_THE_THIEVES.getObjective(0)) {
+			if (objective.isComplete(pc)) {
+				Quests.THWARTING_THE_THIEVES.getObjective(1).setAccessible(pc, true);
+			}
+		} else if (objective == Quests.FOOD_DELIVERY.getObjective(0)) {
+			boolean accessible = Quests.FOOD_DELIVERY.getObjective(0).isComplete(pc);
+			Quests.FOOD_DELIVERY.getObjective(1).setAccessible(pc, accessible);
 		}
 	}
 

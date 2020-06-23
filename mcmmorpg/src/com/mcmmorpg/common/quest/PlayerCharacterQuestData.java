@@ -11,11 +11,23 @@ public class PlayerCharacterQuestData {
 	PlayerCharacterQuestData(Quest quest) {
 		this.questName = quest.getName();
 		objectiveData = new int[quest.getObjectives().length];
-		// initial progress for each objective is 0
+		for (int i = 0; i < objectiveData.length; i++) {
+			objectiveData[i] = -1;
+			// by default, objectives are not accessible to player characters
+		}
 	}
 
 	String getQuestName() {
 		return questName;
+	}
+
+	boolean isAccessible(int objectiveIndex) {
+		return objectiveData[objectiveIndex] != -1;
+	}
+
+	void setAccessible(int objectiveIndex, boolean accessible) {
+		int value = accessible ? 0 : -1;
+		objectiveData[objectiveIndex] = value;
 	}
 
 	int getProgress(int objectiveIndex) {

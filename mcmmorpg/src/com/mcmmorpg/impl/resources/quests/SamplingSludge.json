@@ -4,15 +4,23 @@
 	"objectives": [
 		{
 			"goal": 25,
-			"description": "Slay 25 §7[§cGelatinous Cube§7]"
+			"description": "Gelatinous Cube slain"
+		},
+		{
+			"goal": 15,
+			"description": "Sludge"
 		},
 		{
 			"goal": "1",
-			"description": "Slay the §7[§cColossal Gelatinous Cube§7]§r at §a(-117, 42, 96)"
+			"description": "Colossal gelatinous cube slain)"
+		},
+		{
+			"goal": 1,
+			"description": "Giant sludge"
 		},
 		{
 			"goal": "1",
-			"description": "Return 15 §7[Sludge§7]§r and 1 §7[§aGiant Sludge§7]§r to §7[§aAlchemist§7]§r at §a(-274, 42, 78)"
+			"description": "Return to Alchemist"
 		}
 	]
 }

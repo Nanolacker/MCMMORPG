@@ -160,13 +160,12 @@ public class Quest {
 	public String getQuestLogLines(PlayerCharacter pc) {
 		String objectiveLines = "";
 		for (QuestObjective objective : objectives) {
-			if (objective.isComplete(pc)) {
+			if (!objective.isAccessible(pc) || objective.isComplete(pc)) {
 				continue;
 			}
 			int progress = objective.getProgress(pc);
 			int goal = objective.getGoal();
-			String progressText = ChatColor.YELLOW + "";
-			progressText += "- " + progress + "/" + goal;
+			String progressText = "- " + progress + "/" + goal;
 			objectiveLines += progressText + " " + ChatColor.WHITE + objective.getDescription() + "\n";
 		}
 		return objectiveLines;

@@ -50,4 +50,11 @@ public class MathUtility {
 		return ticks / 20.0;
 	}
 
+	/**
+	 * Linearly interpolates between a and b by t.
+	 */
+	public static double lerp(double a, double b, double t) {
+		return a + (b - a) * t;
+	}
+
 }

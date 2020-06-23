@@ -4,11 +4,11 @@
 	"objectives": [
 		{
 			"goal": 10,
-			"description": "Slay 10 §7[§cThief§7]§r at §a(-1159, 79, 146)"
+			"description": "Thief slain"
 		},
 		{
 			"goal": 1,
-			"description": "Return to §7[§aMayor of Melcher§7]§r at §a(-1092, 70, 198)"
+			"description": "Return to mayor of Melcher"
 		}
 	]
 }

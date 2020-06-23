@@ -27,8 +27,8 @@ public class CaptainNadia extends StaticHuman {
 		super(ChatColor.GREEN + "Captain Nadia", LEVEL, location, TEXTURE_DATA, TEXTURE_SIGNATURE);
 		new QuestMarker(Quests.INTO_THE_SEWERS, location.clone().add(0, 2.25, 0)) {
 			@Override
-			protected QuestMarkerDisplayType getDisplayType(PlayerCharacter pc) {
-				return QuestMarkerDisplayType.HIDDEN;
+			protected QuestMarkerIcon getIcon(PlayerCharacter pc) {
+				return QuestMarkerIcon.HIDDEN;
 			}
 		};
 		completeIntoTheSewersInteraction = new InteractionSequence(7) {
