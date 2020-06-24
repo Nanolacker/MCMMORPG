@@ -1,5 +1,7 @@
 package com.mcmmorpg.impl.playerClasses;
 
+import java.util.List;
+
 import org.bukkit.ChatColor;
 import org.bukkit.Effect;
 import org.bukkit.Location;
@@ -25,6 +27,7 @@ import com.mcmmorpg.common.physics.Collider;
 import com.mcmmorpg.common.physics.Projectile;
 import com.mcmmorpg.common.physics.Ray;
 import com.mcmmorpg.common.physics.Raycast;
+import com.mcmmorpg.common.physics.RaycastHit;
 import com.mcmmorpg.common.playerClass.Skill;
 import com.mcmmorpg.common.sound.Noise;
 import com.mcmmorpg.common.time.DelayedTask;
@@ -201,45 +204,36 @@ public class MageListener implements Listener {
 
 			@Override
 			protected void run() {
-				Location targetLocationTemp = pc.getTargetLocation(15);
-				boolean hitSurface = pc.getLocation().distanceSquared(targetLocationTemp) < 14 * 14;
-				AbstractCharacter targetCharacterTemp = null;
+				Location hitLocation = pc.getTargetLocation(15);
+				AbstractCharacter targetCharacter = null;
+				boolean hitSurface = pc.getLocation().distanceSquared(hitLocation) < 14 * 14;
 				Location crosshair = pc.getLocation().add(0, 1.5, 0);
 				ICE_BEAM_CHANNEL_NOISE.play(crosshair);
 				Ray hitDetection = new Ray(crosshair, crosshair.getDirection(), 15);
 				Raycast raycast = new Raycast(hitDetection, CharacterCollider.class);
-				Collider[] hits = raycast.getHits();
-				for (Collider hit : hits) {
-					if (hit instanceof CharacterCollider) {
-						AbstractCharacter character = ((CharacterCollider) hit).getCharacter();
+				List<RaycastHit> hits = raycast.getHits();
+				for (RaycastHit hit : hits) {
+					Collider collider = hit.getCollider();
+					if (collider instanceof CharacterCollider) {
+						AbstractCharacter character = ((CharacterCollider) collider).getCharacter();
 						if (!character.isFriendly(pc)) {
-							Location hitLocation = hit.getCenter();
-							if (targetLocationTemp == null) {
-								targetLocationTemp = hitLocation;
-							} else if (hitLocation.distanceSquared(crosshair) < targetLocationTemp
-									.distanceSquared(crosshair)) {
-								targetLocationTemp = hitLocation;
-								targetCharacterTemp = character;
-							}
+							hitLocation = hit.getHitLocation();
+							targetCharacter = character;
+							break;
 						}
 					}
 				}
-				final Location targetLocation = targetLocationTemp;
-				final AbstractCharacter targetCharacter = targetCharacterTemp;
 
 				Location startLocation = pc.getHandLocation();
-				Ray beam = new Ray(startLocation, targetLocation);
+				Ray beam = new Ray(startLocation, hitLocation);
 				beam.draw(Particle.CRIT_MAGIC, 1);
 				if (count % 3 == 0) {
 					if (targetCharacter != null) {
 						targetCharacter.damage(damagePerTick, pc);
-						Location hitLocation = targetCharacter.getLocation().add(0, 1, 0);
-						world.spawnParticle(Particle.FIREWORKS_SPARK, hitLocation, 10);
-						ICE_BEAM_HIT_NOISE.play(hitLocation);
-					} else if (hitSurface) {
-						world.spawnParticle(Particle.FIREWORKS_SPARK, targetLocation, 10);
-						ICE_BEAM_HIT_NOISE.play(targetLocation);
 					}
+					if (targetCharacter != null || hitSurface)
+						world.spawnParticle(Particle.FIREWORKS_SPARK, hitLocation, 10);
+					ICE_BEAM_HIT_NOISE.play(hitLocation);
 				}
 				count++;
 				if (count == maxCount) {
@@ -250,31 +244,27 @@ public class MageListener implements Listener {
 		channel.schedule();
 		pc.silence(duration);
 		pc.disarm(duration);
+
 	}
 
 	private void useWhirlwind(PlayerCharacter pc) {
 		double damagePerTick = 0.75 * pc.getWeapon().getBaseDamage() * whirlwind.getUpgradeLevel(pc)
 				+ 0.25 * pc.getLevel();
-		Location targetTemp = pc.getTargetLocation(15);
+		Location targetLocation = pc.getTargetLocation(15);
 		Location location = pc.getLocation().add(0, 1.5, 0);
 		Ray ray = new Ray(location, location.getDirection(), 15);
 		Raycast raycast = new Raycast(ray, CharacterCollider.class);
-		Collider[] hits = raycast.getHits();
-		for (Collider hit : hits) {
-			if (hit instanceof CharacterCollider) {
-				AbstractCharacter character = ((CharacterCollider) hit).getCharacter();
-				if (!character.isFriendly(pc)) {
-					Location hitLocation = hit.getCenter().subtract(0, 1, 0);
-					if (targetTemp == null) {
-						targetTemp = hitLocation;
-					} else if (hitLocation.distanceSquared(location) < targetTemp.distanceSquared(location)) {
-						targetTemp = hitLocation;
-					}
-				}
+		List<RaycastHit> hits = raycast.getHits();
+		for (RaycastHit hit : hits) {
+			Collider collider = hit.getCollider();
+			AbstractCharacter character = ((CharacterCollider) collider).getCharacter();
+			if (!character.isFriendly(pc)) {
+				targetLocation = hit.getHitLocation().clone().subtract(0, character.getHeight() / 2, 0);
+				break;
 			}
 		}
-		final Location target = targetTemp;
-		Collider hitbox = new Collider(targetTemp.clone().add(0, 2, 0), 4, 5, 4) {
+		final Location target = targetLocation;
+		Collider hitbox = new Collider(targetLocation.clone().add(0, 2, 0), 4, 5, 4) {
 			@Override
 			protected void onCollisionEnter(Collider other) {
 				if (other instanceof CharacterCollider) {
@@ -467,25 +457,20 @@ public class MageListener implements Listener {
 		double damageAmount = 15 * pc.getWeapon().getBaseDamage() * shadowVoid.getUpgradeLevel(pc) + 8 * pc.getLevel();
 		double size = 10;
 		SHADOW_VOID_USE_NOISE.play(pc.getLocation());
-		Location targetTemp = pc.getTargetLocation(15);
-		Location location = pc.getLocation().add(0, 1.5, 0);
-		Ray ray = new Ray(location, location.getDirection(), 15);
+		Location targetLocation = pc.getTargetLocation(15);
+		Location startLocation = pc.getLocation().add(0, 1.5, 0);
+		Ray ray = new Ray(startLocation, startLocation.getDirection(), 15);
 		Raycast raycast = new Raycast(ray, CharacterCollider.class);
-		Collider[] hits = raycast.getHits();
-		for (Collider hit : hits) {
-			if (hit instanceof CharacterCollider) {
-				AbstractCharacter character = ((CharacterCollider) hit).getCharacter();
-				if (!character.isFriendly(pc)) {
-					Location hitLocation = hit.getCenter().subtract(0, 1, 0);
-					if (targetTemp == null) {
-						targetTemp = hitLocation;
-					} else if (hitLocation.distanceSquared(location) < targetTemp.distanceSquared(location)) {
-						targetTemp = hitLocation;
-					}
-				}
+		List<RaycastHit> hits = raycast.getHits();
+		for (RaycastHit hit : hits) {
+			Collider collider = hit.getCollider();
+			AbstractCharacter character = ((CharacterCollider) collider).getCharacter();
+			if (!character.isFriendly(pc)) {
+				targetLocation = hit.getHitLocation();
+				break;
 			}
 		}
-		final Location target = targetTemp;
+		final Location target = targetLocation;
 		World world = target.getWorld();
 		new RepeatingTask(0.2) {
 			int count = 0;

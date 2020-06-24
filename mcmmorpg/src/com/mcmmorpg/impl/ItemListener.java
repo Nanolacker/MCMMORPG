@@ -1,5 +1,7 @@
 package com.mcmmorpg.impl;
 
+import java.util.List;
+
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Particle;
@@ -21,6 +23,7 @@ import com.mcmmorpg.common.item.Weapon;
 import com.mcmmorpg.common.physics.Collider;
 import com.mcmmorpg.common.physics.Ray;
 import com.mcmmorpg.common.physics.Raycast;
+import com.mcmmorpg.common.physics.RaycastHit;
 import com.mcmmorpg.common.playerClass.PlayerClass;
 import com.mcmmorpg.common.sound.Noise;
 import com.mcmmorpg.common.util.MathUtility;
@@ -62,10 +65,11 @@ public class ItemListener implements Listener {
 		particleLocation.getWorld().spawnParticle(Particle.SWEEP_ATTACK, particleLocation, 0);
 		Ray ray = new Ray(start, direction, 4);
 		Raycast raycast = new Raycast(ray, CharacterCollider.class);
-		Collider[] hits = raycast.getHits();
+		List<RaycastHit> hits = raycast.getHits();
 		boolean missed = true;
-		for (Collider hit : hits) {
-			AbstractCharacter character = ((CharacterCollider) hit).getCharacter();
+		for (RaycastHit hit : hits) {
+			Collider collider = hit.getCollider();
+			AbstractCharacter character = ((CharacterCollider) collider).getCharacter();
 			if (!character.isFriendly(pc)) {
 				character.damage(damage, pc);
 				SWORD_HIT_NOISE.play(character.getLocation());
@@ -101,10 +105,11 @@ public class ItemListener implements Listener {
 		particleLocation.getWorld().spawnParticle(Particle.SWEEP_ATTACK, particleLocation, 0);
 		Ray ray = new Ray(start, direction, 4);
 		Raycast raycast = new Raycast(ray, CharacterCollider.class);
-		Collider[] hits = raycast.getHits();
+		List<RaycastHit> hits = raycast.getHits();
 		boolean missed = true;
-		for (Collider hit : hits) {
-			AbstractCharacter character = ((CharacterCollider) hit).getCharacter();
+		for (RaycastHit hit : hits) {
+			Collider collider = hit.getCollider();
+			AbstractCharacter character = ((CharacterCollider) collider).getCharacter();
 			if (!character.isFriendly(pc)) {
 				character.damage(damage, pc);
 				STAFF_HIT_NOISE.play(character.getLocation());
@@ -125,15 +130,16 @@ public class ItemListener implements Listener {
 		Location crosshair = pc.getLocation().add(0, 1.5, 0);
 		Ray hitDetection = new Ray(crosshair, crosshair.getDirection(), 15);
 		Raycast raycast = new Raycast(hitDetection);
-		Collider[] hits = raycast.getHits();
+		List<RaycastHit> hits = raycast.getHits();
 		Location start = pc.getHandLocation();
 		Location end = start.clone().add(start.getDirection().multiply(maxDistance));
-		for (Collider hit : hits) {
-			if (hit instanceof CharacterCollider) {
-				AbstractCharacter character = ((CharacterCollider) hit).getCharacter();
+		for (RaycastHit hit : hits) {
+			Collider collider = hit.getCollider();
+			if (collider instanceof CharacterCollider) {
+				AbstractCharacter character = ((CharacterCollider) collider).getCharacter();
 				if (!character.isFriendly(pc)) {
 					character.damage(damageAmount, pc);
-					Location hitLocation = hit.getCenter();
+					Location hitLocation = hit.getHitLocation();
 					WAND_HIT_NOISE.play(hitLocation);
 					end = hitLocation;
 					break;

@@ -72,11 +72,16 @@ public final class Ray {
 	}
 
 	/**
-	 * Returns whether this ray intersects the specified collider.
+	 * Returns the location at which this ray intersects the specified collider, or
+	 * null if this ray does not intersect the collider.
 	 */
-	public boolean intersects(Collider collider) {
+	public Location getIntsersection(Collider collider) {
 		RayTraceResult result = collider.toBoundingBox().rayTrace(start.toVector(), getDirection(), getLength());
-		return result != null;
+		if (result == null) {
+			return null;
+		} else {
+			return result.getHitPosition().toLocation(start.getWorld());
+		}
 	}
 
 	/**
@@ -89,7 +94,7 @@ public final class Ray {
 		Vector direction = v.normalize();
 		int particleCount = (int) (length * particleDensity);
 		Location particleLocation = start.clone();
-		double spaceDistance = 1 / particleDensity;
+		double spaceDistance = 1.0 / particleDensity;
 		Vector increment = direction.multiply(spaceDistance);
 		for (int i = 0; i < particleCount; i++) {
 			world.spawnParticle(particle, particleLocation, 0);

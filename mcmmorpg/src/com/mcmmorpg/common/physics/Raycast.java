@@ -14,7 +14,7 @@ import org.bukkit.util.Vector;
  */
 public final class Raycast {
 
-	private final Collider[] hits;
+	private final List<RaycastHit> hits;
 
 	/**
 	 * Creates a raycast with the specified ray. The raycast will only target
@@ -23,9 +23,9 @@ public final class Raycast {
 	public Raycast(Ray ray, Class<? extends Collider> target) {
 		List<ColliderBucket> nearbyBuckets = new ArrayList<>();
 		double bucketSize = ColliderBucket.BUCKET_SIZE;
-		Location startAsLoc = ray.getStart();
-		World world = startAsLoc.getWorld();
-		Vector start = startAsLoc.toVector();
+		Location startLocation = ray.getStart();
+		World world = startLocation.getWorld();
+		Vector start = startLocation.toVector();
 		Vector end = ray.getEnd().toVector();
 		Vector min = Vector.getMinimum(start, end);
 		Vector max = Vector.getMaximum(start, end);
@@ -60,17 +60,17 @@ public final class Raycast {
 			}
 		}
 
-		List<Collider> hitsList = new ArrayList<>();
+		hits = new ArrayList<>();
 		for (Collider collider : nearbyColliders) {
-			if (ray.intersects(collider)) {
-				hitsList.add(collider);
+			Location hitLocation = ray.getIntsersection(collider);
+			if (hitLocation != null) {
+				RaycastHit hit = new RaycastHit(collider, hitLocation);
+				hits.add(hit);
 			}
 		}
 
-		ColliderComparator comparator = new ColliderComparator(startAsLoc);
-		Collections.sort(hitsList, comparator);
-
-		this.hits = hitsList.toArray(new Collider[hitsList.size()]);
+		RaycastHitComparator comparator = new RaycastHitComparator(startLocation);
+		Collections.sort(hits, comparator);
 	}
 
 	/**
@@ -81,29 +81,25 @@ public final class Raycast {
 		this(ray, Collider.class);
 	}
 
-	/**
-	 * Returns the colliders that the ray in this raycast intersected in order based
-	 * on their distance from the ray start.
-	 */
-	public Collider[] getHits() {
+	public List<RaycastHit> getHits() {
 		return hits;
 	}
 
-	private static final class ColliderComparator implements Comparator<Collider> {
+	private static final class RaycastHitComparator implements Comparator<RaycastHit> {
 
 		private Location rayStart;
 
-		private ColliderComparator(Location rayStart) {
+		private RaycastHitComparator(Location rayStart) {
 			this.rayStart = rayStart;
 		}
 
 		@Override
-		public int compare(Collider collider1, Collider collider2) {
-			Location center1 = collider1.getCenter();
-			Location center2 = collider2.getCenter();
+		public int compare(RaycastHit hit1, RaycastHit hit2) {
+			Location hitLocation1 = hit1.getHitLocation();
+			Location hitLocation2 = hit2.getHitLocation();
 
-			double distance1 = center1.distanceSquared(rayStart);
-			double distance2 = center2.distanceSquared(rayStart);
+			double distance1 = hitLocation1.distanceSquared(rayStart);
+			double distance2 = hitLocation2.distanceSquared(rayStart);
 
 			return (int) (distance1 - distance2);
 		}

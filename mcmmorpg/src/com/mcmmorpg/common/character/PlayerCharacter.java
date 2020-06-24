@@ -48,6 +48,7 @@ import com.mcmmorpg.common.persistence.PersistentPlayerCharacterDataContainer;
 import com.mcmmorpg.common.physics.Collider;
 import com.mcmmorpg.common.physics.Ray;
 import com.mcmmorpg.common.physics.Raycast;
+import com.mcmmorpg.common.physics.RaycastHit;
 import com.mcmmorpg.common.playerClass.PlayerClass;
 import com.mcmmorpg.common.playerClass.PlayerSkillData;
 import com.mcmmorpg.common.playerClass.PlayerSkillManager;
@@ -1240,9 +1241,9 @@ public final class PlayerCharacter extends AbstractCharacter {
 			Location start = pc.getLocation().add(0, 1.5, 0);
 			Ray ray = new Ray(start, start.getDirection(), INTERACT_RANGE);
 			Raycast raycast = new Raycast(ray, PlayerCharacterInteractionCollider.class);
-			Collider[] hits = raycast.getHits();
-			for (Collider hit : hits) {
-				PlayerCharacterInteractionCollider collider = (PlayerCharacterInteractionCollider) hit;
+			List<RaycastHit> hits = raycast.getHits();
+			for (RaycastHit hit : hits) {
+				PlayerCharacterInteractionCollider collider = (PlayerCharacterInteractionCollider) hit.getCollider();
 				collider.onInteract(pc);
 			}
 			interactingPlayers.add(pc);
