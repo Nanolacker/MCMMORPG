@@ -8,7 +8,7 @@ import org.bukkit.Location;
 import com.mcmmorpg.common.character.PlayerCharacter;
 import com.mcmmorpg.common.character.PlayerCharacter.PlayerCharacterCollider;
 import com.mcmmorpg.common.physics.Collider;
-import com.mcmmorpg.common.time.RepeatingTask;
+import com.mcmmorpg.impl.constants.Maps;
 import com.mcmmorpg.impl.constants.Quests;
 import com.mcmmorpg.impl.constants.Worlds;
 
@@ -23,23 +23,35 @@ public class MelcherTavernRat extends Rat {
 	public static boolean shouldSpawn;
 
 	static {
-		spawnBounds = new Collider(Worlds.ELADRADOR, -1090, 64, 237, -1069, 68, 248);
-		spawnBounds.setActive(true);
-		RepeatingTask spawner = new RepeatingTask(1) {
+		spawnBounds = new Collider(Worlds.ELADRADOR, -1090, 64, 236, -1070, 69, 248) {
 			@Override
-			protected void run() {
-				// Debug.log(shouldSpawn);
-				Collider[] colliders = spawnBounds.getCollidingColliders();
-				for (Collider collider : colliders) {
-					if (collider instanceof PlayerCharacterCollider) {
-						shouldSpawn = true;
-						return;
-					}
+			protected void onCollisionEnter(Collider other) {
+				if (other instanceof PlayerCharacterCollider) {
+					PlayerCharacter pc = ((PlayerCharacterCollider) other).getCharacter();
+					pc.getMap().setMapSegment(Maps.MELCHER_TAVERN_BASEMENT);
+					Quests.PEST_CONTROL.getObjective(0).complete(pc);
+					Quests.PEST_CONTROL.getObjective(1).setAccessible(pc, true);
+					Quests.PEST_CONTROL.getObjective(2).setAccessible(pc, true);
+					shouldSpawn = true;
 				}
-				shouldSpawn = false;
+			}
+
+			@Override
+			protected void onCollisionExit(Collider other) {
+				if (other instanceof PlayerCharacterCollider) {
+					PlayerCharacter pc = ((PlayerCharacterCollider) other).getCharacter();
+					pc.getMap().setMapSegment(Maps.ELADRADOR);
+					Collider[] collidingColliders = getCollidingColliders();
+					for (Collider collider : collidingColliders) {
+						if (collider instanceof PlayerCharacterCollider) {
+							return;
+						}
+					}
+					shouldSpawn = false;
+				}
 			}
 		};
-		spawner.schedule();
+		spawnBounds.setActive(true);
 	}
 
 	public MelcherTavernRat(Location spawnLocation) {
@@ -51,7 +63,11 @@ public class MelcherTavernRat extends Rat {
 		super.onDeath();
 		List<PlayerCharacter> nearbyPcs = PlayerCharacter.getNearbyPlayerCharacters(getLocation(), 15);
 		for (PlayerCharacter pc : nearbyPcs) {
-			Quests.PEST_CONTROL.getObjective(0).addProgress(pc, 1);
+			Quests.PEST_CONTROL.getObjective(1).addProgress(pc, 1);
+			if (Quests.PEST_CONTROL.getObjective(1).isComplete(pc)
+					&& Quests.PEST_CONTROL.getObjective(2).isComplete(pc)) {
+				Quests.BAR_FIGHT.getObjective(3).setAccessible(pc, true);
+			}
 		}
 	}
 

@@ -15,7 +15,6 @@ import com.mcmmorpg.common.character.AbstractCharacter;
 import com.mcmmorpg.common.character.PlayerCharacter;
 import com.mcmmorpg.common.character.PlayerCharacterInteractionCollider;
 import com.mcmmorpg.common.character.Source;
-import com.mcmmorpg.common.quest.QuestStatus;
 import com.mcmmorpg.common.sound.Noise;
 import com.mcmmorpg.common.ui.InteractionSequence;
 import com.mcmmorpg.common.util.BukkitUtility;
@@ -53,7 +52,9 @@ public class MelcherAngeredDrunkard extends AbstractHumanEnemy {
 					speak("What do you mean calm down? Nobody tells me what to do!", pc);
 					break;
 				case 2:
+					Quests.BAR_FIGHT.getObjective(0).complete(pc);
 					setEnraged(true);
+					Quests.BAR_FIGHT.getObjective(1).setAccessible(pc, true);
 					break;
 				}
 			}
@@ -95,9 +96,10 @@ public class MelcherAngeredDrunkard extends AbstractHumanEnemy {
 		super.onDeath();
 		Location location = getLocation();
 		DEATH_NOISE.play(location);
-		List<PlayerCharacter> nearbyPcs = PlayerCharacter.getNearbyPlayerCharacters(location, 25);
+		List<PlayerCharacter> nearbyPcs = PlayerCharacter.getNearbyPlayerCharacters(location, 10);
 		for (PlayerCharacter pc : nearbyPcs) {
-			Quests.BAR_FIGHT.getObjective(0).complete(pc);
+			Quests.BAR_FIGHT.getObjective(1).complete(pc);
+			Quests.BAR_FIGHT.getObjective(2).setAccessible(pc, true);
 		}
 	}
 
@@ -113,7 +115,8 @@ public class MelcherAngeredDrunkard extends AbstractHumanEnemy {
 	}
 
 	protected void onInteract(PlayerCharacter pc) {
-		if (Quests.BAR_FIGHT.compareStatus(pc, QuestStatus.IN_PROGRESS) && !isEnraged()) {
+		if (!isEnraged() && Quests.BAR_FIGHT.getObjective(0).isAccessible(pc)
+				|| Quests.BAR_FIGHT.getObjective(1).isAccessible(pc)) {
 			enrageInteraction.advance(pc);
 		} else {
 			speak("Buzz off, would ya?", pc);

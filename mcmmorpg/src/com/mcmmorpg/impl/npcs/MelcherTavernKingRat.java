@@ -24,7 +24,10 @@ public class MelcherTavernKingRat extends Rat {
 		super.onDeath();
 		List<PlayerCharacter> nearbyPcs = PlayerCharacter.getNearbyPlayerCharacters(getLocation(), 25);
 		for (PlayerCharacter pc : nearbyPcs) {
-			Quests.PEST_CONTROL.getObjective(1).addProgress(pc, 1);
+			Quests.PEST_CONTROL.getObjective(2).complete(pc);
+			if (Quests.PEST_CONTROL.getObjective(1).isComplete(pc)) {
+				Quests.PEST_CONTROL.getObjective(3).setAccessible(pc, true);
+			}
 		}
 	}
 

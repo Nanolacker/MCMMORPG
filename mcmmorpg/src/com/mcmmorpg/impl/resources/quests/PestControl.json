@@ -3,6 +3,10 @@
 	"level": 3,
 	"objectives": [
 		{
+			"goal": 1,
+			"description": "Enter the tavern basement"
+		},
+		{
 			"goal": 5,
 			"description": "Rat slain"
 		},

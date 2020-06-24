@@ -52,6 +52,7 @@ public class MelcherBartender extends StaticHuman {
 					break;
 				case 4:
 					Quests.BAR_FIGHT.start(pc);
+					Quests.BAR_FIGHT.getObjective(0).setAccessible(pc, true);
 					break;
 				}
 			}
@@ -77,9 +78,10 @@ public class MelcherBartender extends StaticHuman {
 					speak("Judging by your last performance, I think you're perfect for the job. Now get to it!", pc);
 					break;
 				case 5:
-					Quests.BAR_FIGHT.getObjective(1).complete(pc);
+					Quests.BAR_FIGHT.getObjective(2).complete(pc);
 					pc.giveXp(BAR_FIGHT_XP);
 					Quests.PEST_CONTROL.start(pc);
+					Quests.PEST_CONTROL.getObjective(0).setAccessible(pc, true);
 					break;
 				}
 			}
@@ -98,7 +100,7 @@ public class MelcherBartender extends StaticHuman {
 					speak("Here, have a drink. Now put that darned weapon of yours away.", pc);
 					break;
 				case 3:
-					Quests.PEST_CONTROL.getObjective(2).complete(pc);
+					Quests.PEST_CONTROL.getObjective(3).complete(pc);
 					pc.giveXp(PEST_CONTROL_XP);
 					pc.giveItem(Items.MELCHER_MEAD, 3);
 					break;
@@ -115,8 +117,8 @@ public class MelcherBartender extends StaticHuman {
 				&& Quests.BAR_FIGHT.getObjective(0).isComplete(pc)) {
 			completeBarFightInteraction.advance(pc);
 		} else if (Quests.PEST_CONTROL.compareStatus(pc, QuestStatus.IN_PROGRESS)) {
-			if (Quests.PEST_CONTROL.getObjective(0).isComplete(pc)
-					&& Quests.PEST_CONTROL.getObjective(1).isComplete(pc)) {
+			if (Quests.PEST_CONTROL.getObjective(1).isComplete(pc)
+					&& Quests.PEST_CONTROL.getObjective(2).isComplete(pc)) {
 				completePestControlInteraction.advance(pc);
 			} else {
 				speak("What are you doing here? Get rid of those rats for me.", pc);

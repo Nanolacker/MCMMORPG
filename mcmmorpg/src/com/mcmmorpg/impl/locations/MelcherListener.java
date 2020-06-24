@@ -297,8 +297,82 @@ public class MelcherListener implements Listener {
 			}
 		};
 		Maps.ELADRADOR.addQuestMarker(foodDeliveryThiefQuestMarker);
-
 		Quests.FOOD_DELIVERY.getObjective(0).registerAsItemCollectionObjective(Items.STOLEN_FOOD);
+
+		QuestMarker barFightBartenderQuestMarker = new QuestMarker(Quests.BAR_FIGHT,
+				BARTENDER_LOCATION.clone().add(0, 2.25, 0)) {
+			@Override
+			protected QuestMarkerIcon getIcon(PlayerCharacter pc) {
+				QuestStatus status = Quests.BAR_FIGHT.getStatus(pc);
+				if (status == QuestStatus.NOT_STARTED) {
+					return QuestMarkerIcon.READY_TO_START;
+				} else if (Quests.BAR_FIGHT.getObjective(2).isAccessible(pc)) {
+					return QuestMarkerIcon.READY_TO_TURN_IN;
+				} else {
+					return QuestMarkerIcon.HIDDEN;
+				}
+			}
+		};
+		barFightBartenderQuestMarker.setTextPanelVisible(true);
+		Maps.ELADRADOR.addQuestMarker(barFightBartenderQuestMarker);
+
+		QuestMarker barFightDrunkardQuestMarker = new QuestMarker(Quests.BAR_FIGHT,
+				DRUNKARD_LOCATION.clone().add(0, 2.25, 0)) {
+			@Override
+			protected QuestMarkerIcon getIcon(PlayerCharacter pc) {
+				if (Quests.BAR_FIGHT.getObjective(0).isAccessible(pc)
+						|| Quests.BAR_FIGHT.getObjective(1).isAccessible(pc)) {
+					return QuestMarkerIcon.OBJECTIVE;
+				} else {
+					return QuestMarkerIcon.HIDDEN;
+				}
+			}
+		};
+		Maps.ELADRADOR.addQuestMarker(barFightDrunkardQuestMarker);
+
+		QuestMarker pestControlBartenderQuestMarker = new QuestMarker(Quests.PEST_CONTROL,
+				BARTENDER_LOCATION.clone().add(0, 2.25, 0)) {
+			@Override
+			protected QuestMarkerIcon getIcon(PlayerCharacter pc) {
+				QuestStatus status = Quests.BAR_FIGHT.getStatus(pc);
+				if (status == QuestStatus.NOT_STARTED) {
+					return QuestMarkerIcon.READY_TO_START;
+				} else if (Quests.BAR_FIGHT.getObjective(2).isAccessible(pc)) {
+					return QuestMarkerIcon.READY_TO_TURN_IN;
+				} else {
+					return QuestMarkerIcon.HIDDEN;
+				}
+			}
+		};
+		Maps.ELADRADOR.addQuestMarker(pestControlBartenderQuestMarker);
+
+		Location basementEntranceLocation = new Location(Worlds.ELADRADOR, -1088.5, 70, 245.5);
+		QuestMarker pestControlBasementEntranceQuestMarker = new QuestMarker(Quests.PEST_CONTROL,
+				basementEntranceLocation) {
+			@Override
+			protected QuestMarkerIcon getIcon(PlayerCharacter pc) {
+				QuestStatus status = Quests.PEST_CONTROL.getStatus(pc);
+				if (status == QuestStatus.IN_PROGRESS && !Quests.PEST_CONTROL.getObjective(0).isComplete(pc)) {
+					return QuestMarkerIcon.OBJECTIVE;
+				} else {
+					return QuestMarkerIcon.HIDDEN;
+				}
+			}
+		};
+		Maps.ELADRADOR.addQuestMarker(pestControlBasementEntranceQuestMarker);
+
+		QuestMarker pestControlKingRatQuestMarker = new QuestMarker(Quests.PEST_CONTROL, TAVERN_KING_RAT_LOCATION) {
+			@Override
+			protected QuestMarkerIcon getIcon(PlayerCharacter pc) {
+				QuestStatus status = Quests.PEST_CONTROL.getStatus(pc);
+				if (status == QuestStatus.IN_PROGRESS && Quests.PEST_CONTROL.getObjective(0).isComplete(pc)) {
+					return QuestMarkerIcon.OBJECTIVE;
+				} else {
+					return QuestMarkerIcon.HIDDEN;
+				}
+			}
+		};
+		Maps.MELCHER_TAVERN_BASEMENT.addQuestMarker(pestControlKingRatQuestMarker);
 	}
 
 	private void spawnLootChests() {
