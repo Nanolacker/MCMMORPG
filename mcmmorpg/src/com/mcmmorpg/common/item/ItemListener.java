@@ -82,8 +82,12 @@ class ItemListener implements Listener {
 		if (pc == null) {
 			return;
 		}
-		if (falseAttackers.contains(pc) || pc.getMap().isOpen()) {
+		if (falseAttackers.contains(pc)) {
 			return;
+		}
+		PlayerCharacterMap map = pc.getMap();
+		if (map.isOpen()) {
+			map.close();
 		}
 		PlayerInventory inventory = player.getInventory();
 		if (inventory.getHeldItemSlot() != 0) {

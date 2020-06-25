@@ -50,6 +50,8 @@ public class GuardThomas extends StaticHuman {
 					break;
 				case 4:
 					Quests.DRIVING_OUT_THE_BANDITS.start(pc);
+					Quests.DRIVING_OUT_THE_BANDITS.getObjective(0).setAccessible(pc, true);
+					Quests.DRIVING_OUT_THE_BANDITS.getObjective(1).setAccessible(pc, true);
 					break;
 				}
 			}
@@ -75,8 +77,7 @@ public class GuardThomas extends StaticHuman {
 		if (Quests.DRIVING_OUT_THE_BANDITS.compareStatus(pc, QuestStatus.NOT_STARTED)) {
 			startDrivingOutTheBanditsInteraction.advance(pc);
 		} else if (Quests.DRIVING_OUT_THE_BANDITS.compareStatus(pc, QuestStatus.IN_PROGRESS)) {
-			if (Quests.DRIVING_OUT_THE_BANDITS.getObjective(0).isComplete(pc)
-					&& Quests.DRIVING_OUT_THE_BANDITS.getObjective(1).isComplete(pc)) {
+			if (Quests.DRIVING_OUT_THE_BANDITS.getObjective(2).isAccessible(pc)) {
 				completeDrivingOutTheBanditsInteraction.advance(pc);
 			} else {
 				speak("There's bandits afoot, adventurer.", pc);

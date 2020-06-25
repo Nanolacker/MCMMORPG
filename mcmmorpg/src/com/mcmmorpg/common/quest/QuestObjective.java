@@ -3,7 +3,6 @@ package com.mcmmorpg.common.quest;
 import org.bukkit.ChatColor;
 import org.bukkit.Sound;
 
-import com.mcmmorpg.common.character.AbstractCharacter;
 import com.mcmmorpg.common.character.PlayerCharacter;
 import com.mcmmorpg.common.event.EventManager;
 import com.mcmmorpg.common.event.QuestObjectiveAccessibilityEvent;
@@ -167,10 +166,6 @@ public class QuestObjective {
 
 	public void registerAsItemCollectionObjective(Item item) {
 		QuestObjectiveListener.registerItemCollectionObjective(item, this);
-	}
-
-	public void registerAsSlayCharacterQuest(Class<? extends AbstractCharacter> characterType) {
-		QuestObjectiveListener.registerSlayCharacterObjective(characterType, this);
 	}
 
 }

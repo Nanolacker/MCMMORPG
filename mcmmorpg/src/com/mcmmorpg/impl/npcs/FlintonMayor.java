@@ -73,6 +73,7 @@ public class FlintonMayor extends StaticHuman {
 					Quests.CLEARING_THE_ROAD.getObjective(1).complete(pc);
 					pc.giveXp(CLEARING_THE_ROAD_XP_REWARD);
 					Quests.INTO_THE_SEWERS.start(pc);
+					Quests.INTO_THE_SEWERS.getObjective(0).setAccessible(pc, true);
 					break;
 				}
 			}
@@ -124,8 +125,7 @@ public class FlintonMayor extends StaticHuman {
 
 	@Override
 	protected void onInteract(PlayerCharacter pc) {
-		if (Quests.CLEARING_THE_ROAD.compareStatus(pc, QuestStatus.IN_PROGRESS)
-				&& Quests.CLEARING_THE_ROAD.getObjective(0).isComplete(pc)) {
+		if (Quests.CLEARING_THE_ROAD.getObjective(1).isAccessible(pc)) {
 			completeClearingTheRoadInteraction.advance(pc);
 		} else if (Quests.THREAT_LEVEL_GOD.compareStatus(pc, QuestStatus.IN_PROGRESS)) {
 			completeThreatLevelGodInteraction.advance(pc);

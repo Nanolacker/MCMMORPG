@@ -1,14 +1,22 @@
 package com.mcmmorpg.impl.locations;
 
 import org.bukkit.Location;
+import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
 import com.mcmmorpg.common.character.PlayerCharacter;
 import com.mcmmorpg.common.character.PlayerCharacter.PlayerCharacterCollider;
+import com.mcmmorpg.common.event.PlayerCharacterRegisterEvent;
 import com.mcmmorpg.common.item.Item;
 import com.mcmmorpg.common.item.LootChest;
+import com.mcmmorpg.common.navigation.PlayerCharacterMap;
+import com.mcmmorpg.common.navigation.QuestMarker;
 import com.mcmmorpg.common.physics.Collider;
+import com.mcmmorpg.common.quest.QuestStatus;
+import com.mcmmorpg.common.time.DelayedTask;
 import com.mcmmorpg.impl.constants.Items;
+import com.mcmmorpg.impl.constants.Maps;
+import com.mcmmorpg.impl.constants.Quests;
 import com.mcmmorpg.impl.constants.RespawnLocations;
 import com.mcmmorpg.impl.constants.Soundtracks;
 import com.mcmmorpg.impl.constants.Worlds;
@@ -134,6 +142,7 @@ public class ForestListener implements Listener {
 	public ForestListener() {
 		setBroodmotherLairBounds();
 		spawnNpcs();
+		createQuestMarkers();
 		spawnLootChests();
 	}
 
@@ -179,12 +188,58 @@ public class ForestListener implements Listener {
 		new GuardJames(GUARD_JAMES_LOCATION).setAlive(true);
 	}
 
+	private void createQuestMarkers() {
+		QuestMarker arachnophobiaJamesQuestMarker = new QuestMarker(Quests.ARACHNOPHOBIA,
+				GUARD_JAMES_LOCATION.clone().add(0, 2.25, 0)) {
+			@Override
+			protected QuestMarkerIcon getIcon(PlayerCharacter pc) {
+				QuestStatus status = Quests.ARACHNOPHOBIA.getStatus(pc);
+				if (status == QuestStatus.NOT_STARTED) {
+					return QuestMarkerIcon.READY_TO_START;
+				} else if (Quests.ARACHNOPHOBIA.getObjective(2).isAccessible(pc)) {
+					return QuestMarkerIcon.READY_TO_TURN_IN;
+				} else {
+					return QuestMarkerIcon.HIDDEN;
+				}
+			}
+		};
+		arachnophobiaJamesQuestMarker.setTextPanelVisible(true);
+		Maps.ELADRADOR.addQuestMarker(arachnophobiaJamesQuestMarker);
+
+		QuestMarker arachnophobiaLairQuestMarker = new QuestMarker(Quests.ARACHNOPHOBIA, BROODMOTHER_LOCATION) {
+			@Override
+			protected QuestMarkerIcon getIcon(PlayerCharacter pc) {
+				if (Quests.ARACHNOPHOBIA.getStatus(pc) == QuestStatus.IN_PROGRESS) {
+					if (!Quests.ARACHNOPHOBIA.getObjective(2).isAccessible(pc)) {
+						return QuestMarkerIcon.OBJECTIVE;
+					}
+				}
+				return QuestMarkerIcon.HIDDEN;
+			}
+		};
+		Maps.ELADRADOR.addQuestMarker(arachnophobiaLairQuestMarker);
+	}
+
 	private void spawnLootChests() {
 		for (int i = 0; i < LOOT_CHEST_LOCATIONS.length; i++) {
 			Location location = LOOT_CHEST_LOCATIONS[i];
 			Item[] contents = LOOT_CHEST_CONTENTS[i];
 			LootChest.spawnLootChest(location, LOOT_CHEST_RESPAWN_TIME, contents);
 		}
+	}
+
+	@EventHandler
+	private void onPlayerCharacterRegister(PlayerCharacterRegisterEvent event) {
+		PlayerCharacter pc = event.getPlayerCharacter();
+		new DelayedTask(1) {
+			@Override
+			protected void run() {
+				PlayerCharacterMap map = pc.getMap();
+				if (map.getMapSegment() == null) {
+					map.setMapSegment(Maps.ELADRADOR);
+				}
+			}
+		}.schedule();
 	}
 
 }

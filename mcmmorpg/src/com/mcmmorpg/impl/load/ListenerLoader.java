@@ -1,6 +1,7 @@
 package com.mcmmorpg.impl.load;
 
 import com.mcmmorpg.common.event.EventManager;
+import com.mcmmorpg.impl.EntityListener;
 import com.mcmmorpg.impl.ItemListener;
 import com.mcmmorpg.impl.locations.FlintonListener;
 import com.mcmmorpg.impl.locations.FlintonSewersListener;
@@ -22,6 +23,7 @@ public class ListenerLoader {
 	public static void loadListeners() {
 		EventManager.registerEvents(new PlayerCharacterSelectionListener());
 		EventManager.registerEvents(new ItemListener());
+		EventManager.registerEvents(new EntityListener());
 
 		EventManager.registerEvents(new FighterListener());
 		EventManager.registerEvents(new MageListener());

@@ -255,8 +255,6 @@ public class MelcherListener implements Listener {
 		};
 		Maps.ELADRADOR.addQuestMarker(thwartingTheThievesThiefQuestMarker);
 
-		Quests.THWARTING_THE_THIEVES.getObjective(0).registerAsSlayCharacterQuest(MelcherThief.class);
-
 		QuestMarker foodDeliveryQuestMarker = new QuestMarker(Quests.FOOD_DELIVERY,
 				FARMER_LOCATION.clone().add(0, 2.25, 0)) {
 			@Override

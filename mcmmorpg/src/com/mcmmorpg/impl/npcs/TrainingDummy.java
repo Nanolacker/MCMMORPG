@@ -56,7 +56,7 @@ public class TrainingDummy extends NonPlayerCharacter {
 		DESTROY_NOISE.play(getLocation());
 		entity.remove();
 		hitbox.setActive(false);
-		PlayerCharacter.distributeXp(getLocation(), 10, 3);
+		PlayerCharacter.distributeXp(getLocation(), 10, 1);
 		DelayedTask respawnTask = new DelayedTask(RESPAWN_TIME) {
 			@Override
 			protected void run() {

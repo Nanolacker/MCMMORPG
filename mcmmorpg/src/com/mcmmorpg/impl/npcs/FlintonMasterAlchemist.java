@@ -52,6 +52,7 @@ public class FlintonMasterAlchemist extends StaticHuman {
 					break;
 				case 4:
 					Quests.BOARS_GALORE.start(pc);
+					Quests.BOARS_GALORE.getObjective(0).setAccessible(pc, true);
 					break;
 				}
 			}
@@ -67,8 +68,8 @@ public class FlintonMasterAlchemist extends StaticHuman {
 					speak("Have some health potions as thanks.", pc);
 					break;
 				case 2:
-					pc.removeItem(Items.BOAR_TUSK, 15);
 					Quests.BOARS_GALORE.getObjective(1).complete(pc);
+					pc.removeItem(Items.BOAR_TUSK, 15);
 					pc.giveXp(BOARS_GALORE_XP_REWARD);
 					pc.giveItem(Items.POTION_OF_LESSER_HEALING, 3);
 					break;

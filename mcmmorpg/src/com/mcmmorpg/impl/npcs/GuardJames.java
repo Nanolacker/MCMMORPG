@@ -60,6 +60,8 @@ public class GuardJames extends StaticHuman {
 					break;
 				case 6:
 					Quests.ARACHNOPHOBIA.start(pc);
+					Quests.ARACHNOPHOBIA.getObjective(0).setAccessible(pc, true);
+					Quests.ARACHNOPHOBIA.getObjective(1).setAccessible(pc, true);
 					break;
 				}
 			}
@@ -104,8 +106,7 @@ public class GuardJames extends StaticHuman {
 			startArachnophobiaInteraction.advance(pc);
 		} else if (Quests.ARACHNOPHOBIA.compareStatus(pc, QuestStatus.COMPLETED)) {
 			speak("I owe you one.", pc);
-		} else if (Quests.ARACHNOPHOBIA.getObjective(0).isComplete(pc)
-				&& Quests.ARACHNOPHOBIA.getObjective(1).isComplete(pc)) {
+		} else if (Quests.ARACHNOPHOBIA.getObjective(2).isAccessible(pc)) {
 			completeArachnophobiaInteraction.advance(pc);
 		} else {
 			speak("Go on now. Rid the lands of those monsters.", pc);

@@ -56,6 +56,10 @@ public class FlintonSewersAlchemist extends StaticHuman {
 					break;
 				case 6:
 					Quests.SAMPLING_SLUDGE.start(pc);
+					Quests.SAMPLING_SLUDGE.getObjective(0).setAccessible(pc, true);
+					Quests.SAMPLING_SLUDGE.getObjective(1).setAccessible(pc, true);
+					Quests.SAMPLING_SLUDGE.getObjective(2).setAccessible(pc, true);
+					Quests.SAMPLING_SLUDGE.getObjective(3).setAccessible(pc, true);
 					break;
 				}
 			}
@@ -68,9 +72,9 @@ public class FlintonSewersAlchemist extends StaticHuman {
 					speak("By golly, you've done it! The last few I asked never made it back, haha!", pc);
 					break;
 				case 1:
+					Quests.SAMPLING_SLUDGE.getObjective(4).complete(pc);
 					pc.removeItem(Items.SLUDGE, 15);
 					pc.removeItem(Items.COLOSSAL_SLUDGE, 2);
-					Quests.SAMPLING_SLUDGE.getObjective(2).complete(pc);
 					pc.giveXp(SAMPLING_SLUDGE_XP_REWARD);
 				}
 			}
@@ -82,9 +86,7 @@ public class FlintonSewersAlchemist extends StaticHuman {
 		if (Quests.SAMPLING_SLUDGE.compareStatus(pc, QuestStatus.NOT_STARTED)) {
 			startSamplingSludgeInteraction.advance(pc);
 		} else if (Quests.SAMPLING_SLUDGE.compareStatus(pc, QuestStatus.IN_PROGRESS)) {
-			if (Quests.SAMPLING_SLUDGE.getObjective(0).isComplete(pc)
-					&& Quests.SAMPLING_SLUDGE.getObjective(1).isComplete(pc) && pc.getItemCount(Items.SLUDGE) >= 15
-					&& pc.getItemCount(Items.COLOSSAL_SLUDGE) >= 1) {
+			if (Quests.SAMPLING_SLUDGE.getObjective(4).isAccessible(pc)) {
 				completeSamplingSludgeInteraction.advance(pc);
 			} else {
 				speak("Come on now, I need way more sludge than that!", pc);

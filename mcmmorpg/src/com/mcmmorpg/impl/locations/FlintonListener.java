@@ -5,20 +5,24 @@ import org.bukkit.event.Listener;
 
 import com.mcmmorpg.common.character.PlayerCharacter;
 import com.mcmmorpg.common.character.PlayerCharacter.PlayerCharacterCollider;
+import com.mcmmorpg.common.navigation.QuestMarker;
 import com.mcmmorpg.common.physics.Collider;
+import com.mcmmorpg.common.quest.QuestStatus;
+import com.mcmmorpg.impl.constants.Maps;
+import com.mcmmorpg.impl.constants.Quests;
 import com.mcmmorpg.impl.constants.RespawnLocations;
 import com.mcmmorpg.impl.constants.Soundtracks;
 import com.mcmmorpg.impl.constants.Worlds;
 import com.mcmmorpg.impl.constants.Zones;
+import com.mcmmorpg.impl.npcs.Chicken;
+import com.mcmmorpg.impl.npcs.FlintonAlchemistAssistant;
+import com.mcmmorpg.impl.npcs.FlintonMasterAlchemist;
 import com.mcmmorpg.impl.npcs.FlintonMayor;
 import com.mcmmorpg.impl.npcs.FlintonMerchant;
 import com.mcmmorpg.impl.npcs.FlintonVillager;
 import com.mcmmorpg.impl.npcs.Guard;
 import com.mcmmorpg.impl.npcs.Horse;
 import com.mcmmorpg.impl.npcs.Lumberjack;
-import com.mcmmorpg.impl.npcs.Chicken;
-import com.mcmmorpg.impl.npcs.FlintonAlchemistAssistant;
-import com.mcmmorpg.impl.npcs.FlintonMasterAlchemist;
 
 /**
  * Listener for the village of Flinton that also sets the bounds of the area and
@@ -114,6 +118,7 @@ public class FlintonListener implements Listener {
 	public FlintonListener() {
 		setBounds();
 		spawnNpcs();
+		createQuestMarkers();
 	}
 
 	/**
@@ -128,6 +133,7 @@ public class FlintonListener implements Listener {
 					PlayerCharacter pc = ((PlayerCharacterCollider) other).getCharacter();
 					pc.setZone(Zones.FLINTON);
 					pc.getSoundTrackPlayer().setSoundtrack(Soundtracks.VILLAGE);
+					pc.getMap().setMapSegment(Maps.ELADRADOR);
 				}
 			}
 		};
@@ -181,6 +187,65 @@ public class FlintonListener implements Listener {
 		for (Location location : CHICKEN_LOCATIONS) {
 			new Chicken(location).setAlive(true);
 		}
+	}
+
+	private void createQuestMarkers() {
+		QuestMarker clearingTheRoadMayorMarker = new QuestMarker(Quests.CLEARING_THE_ROAD,
+				MAYOR_LOCATION.clone().add(0, 2.25, 0)) {
+			@Override
+			protected QuestMarkerIcon getIcon(PlayerCharacter pc) {
+				if (Quests.CLEARING_THE_ROAD.getObjective(1).isAccessible(pc)) {
+					return QuestMarkerIcon.READY_TO_TURN_IN;
+				} else {
+					return QuestMarkerIcon.HIDDEN;
+				}
+			}
+		};
+		clearingTheRoadMayorMarker.setTextPanelVisible(true);
+		Maps.ELADRADOR.addQuestMarker(clearingTheRoadMayorMarker);
+
+		QuestMarker intoTheSewersSewerEntranceMarker = new QuestMarker(Quests.INTO_THE_SEWERS,
+				new Location(Worlds.ELADRADOR, -269, 78, 79)) {
+			@Override
+			protected QuestMarkerIcon getIcon(PlayerCharacter pc) {
+				if (Quests.INTO_THE_SEWERS.getStatus(pc) == QuestStatus.IN_PROGRESS) {
+					return QuestMarkerIcon.OBJECTIVE;
+				} else {
+					return QuestMarkerIcon.HIDDEN;
+				}
+			}
+		};
+		Maps.ELADRADOR.addQuestMarker(intoTheSewersSewerEntranceMarker);
+
+		QuestMarker boarsGaloreAlchemistMarker = new QuestMarker(Quests.BOARS_GALORE,
+				MASTER_ALCHEMIST_LOCATION.clone().add(0, 2.25, 0)) {
+			@Override
+			protected QuestMarkerIcon getIcon(PlayerCharacter pc) {
+				QuestStatus status = Quests.BOARS_GALORE.getStatus(pc);
+				if (status == QuestStatus.NOT_STARTED) {
+					return QuestMarkerIcon.READY_TO_START;
+				} else if (Quests.BOARS_GALORE.getObjective(1).isAccessible(pc)) {
+					return QuestMarkerIcon.READY_TO_TURN_IN;
+				} else {
+					return QuestMarkerIcon.HIDDEN;
+				}
+			}
+		};
+		boarsGaloreAlchemistMarker.setTextPanelVisible(true);
+		Maps.ELADRADOR.addQuestMarker(boarsGaloreAlchemistMarker);
+
+		QuestMarker threatLevelGodTurnInMarker = new QuestMarker(Quests.THREAT_LEVEL_GOD,
+				MAYOR_LOCATION.clone().add(0, 2.25, 0)) {
+			@Override
+			protected QuestMarkerIcon getIcon(PlayerCharacter pc) {
+				if (Quests.THREAT_LEVEL_GOD.getObjective(0).isAccessible(pc)) {
+					return QuestMarkerIcon.READY_TO_TURN_IN;
+				} else {
+					return QuestMarkerIcon.HIDDEN;
+				}
+			}
+		};
+		Maps.ELADRADOR.addQuestMarker(threatLevelGodTurnInMarker);
 	}
 
 }

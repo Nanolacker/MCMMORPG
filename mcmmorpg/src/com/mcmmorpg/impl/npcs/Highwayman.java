@@ -43,6 +43,9 @@ public class Highwayman extends AbstractHumanEnemy {
 		List<PlayerCharacter> nearbyPcs = PlayerCharacter.getNearbyPlayerCharacters(location, 25);
 		for (PlayerCharacter pc : nearbyPcs) {
 			Quests.CLEARING_THE_ROAD.getObjective(0).addProgress(pc, 1);
+			if (Quests.CLEARING_THE_ROAD.getObjective(0).isComplete(pc)) {
+				Quests.CLEARING_THE_ROAD.getObjective(1).setAccessible(pc, true);
+			}
 		}
 		Items.THIEF_DAGGER.drop(getLocation(), 0.02);
 		Items.BRITTLE_WAND.drop(getLocation(), 0.02);

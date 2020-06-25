@@ -264,7 +264,7 @@ public class ColossalGelatinousCube extends NonPlayerCharacter {
 		Location location = getLocation();
 		List<PlayerCharacter> nearbyPcs = PlayerCharacter.getNearbyPlayerCharacters(location, 25);
 		for (PlayerCharacter pc : nearbyPcs) {
-			Quests.SAMPLING_SLUDGE.getObjective(1).addProgress(pc, 1);
+			Quests.SAMPLING_SLUDGE.getObjective(2).addProgress(pc, 1);
 		}
 		int giantSludgeAmount = nearbyPcs.size();
 		Items.COLOSSAL_SLUDGE.drop(location, giantSludgeAmount);

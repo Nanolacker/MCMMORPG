@@ -1,8 +1,17 @@
 package com.mcmmorpg.impl.locations;
 
 import org.bukkit.Location;
+import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
+import com.mcmmorpg.common.character.PlayerCharacter;
+import com.mcmmorpg.common.event.QuestObjectiveChangeProgressEvent;
+import com.mcmmorpg.common.navigation.QuestMarker;
+import com.mcmmorpg.common.quest.QuestObjective;
+import com.mcmmorpg.common.quest.QuestStatus;
+import com.mcmmorpg.impl.constants.Items;
+import com.mcmmorpg.impl.constants.Maps;
+import com.mcmmorpg.impl.constants.Quests;
 import com.mcmmorpg.impl.constants.Worlds;
 import com.mcmmorpg.impl.npcs.WildBoar;
 
@@ -77,11 +86,39 @@ public class PlainsListener implements Listener {
 
 	public PlainsListener() {
 		spawnNpcs();
+		createQuestMarkers();
 	}
 
 	private void spawnNpcs() {
 		for (Location location : BOAR_LOCATIONS) {
 			new WildBoar(location).setAlive(true);
+		}
+	}
+
+	private void createQuestMarkers() {
+		Quests.BOARS_GALORE.getObjective(0).registerAsItemCollectionObjective(Items.BOAR_TUSK);
+		Location boarsGaloreMarkerLocation = new Location(Worlds.ELADRADOR, -80, 69, -34);
+		QuestMarker boarsGaloreMarker = new QuestMarker(Quests.BOARS_GALORE, boarsGaloreMarkerLocation) {
+			@Override
+			protected QuestMarkerIcon getIcon(PlayerCharacter pc) {
+				QuestStatus status = Quests.BOARS_GALORE.getStatus(pc);
+				if (status == QuestStatus.IN_PROGRESS) {
+					if (!Quests.BOARS_GALORE.getObjective(1).isAccessible(pc)) {
+						return QuestMarkerIcon.OBJECTIVE;
+					}
+				}
+				return QuestMarkerIcon.HIDDEN;
+			}
+		};
+		Maps.ELADRADOR.addQuestMarker(boarsGaloreMarker);
+	}
+
+	@EventHandler
+	private void onCollectAllTusk(QuestObjectiveChangeProgressEvent event) {
+		QuestObjective objective = event.getObjective();
+		if (objective == Quests.BOARS_GALORE.getObjective(0)) {
+			PlayerCharacter pc = event.getPlayerCharacter();
+			Quests.BOARS_GALORE.getObjective(1).setAccessible(pc, objective.isComplete(pc));
 		}
 	}
 

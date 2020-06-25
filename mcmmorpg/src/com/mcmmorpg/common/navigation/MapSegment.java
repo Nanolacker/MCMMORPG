@@ -20,8 +20,8 @@ import com.mcmmorpg.common.util.StringUtility;
  */
 public class MapSegment {
 
+	private static final int QUEST_MARKER_ICON_RIGHT_CUSHION = 6;
 	private static final int QUEST_MARKER_ICON_LEFT_CUSHION = 2;
-	private static final int QUEST_MARKER_ICON_RIGHT_CUSHION = 2;
 	private static final int QUEST_MARKER_ICON_TOP_CUSHION = 2;
 	private static final int QUEST_MARKER_ICON_BOTTOM_CUSHION = 8;
 
@@ -126,11 +126,11 @@ public class MapSegment {
 
 			double tan = (double) offsetZ / offsetX;
 
-			if (offsetX >= 64 - QUEST_MARKER_ICON_LEFT_CUSHION) {
-				offsetX = 63 - QUEST_MARKER_ICON_LEFT_CUSHION;
+			if (offsetX >= 64 - QUEST_MARKER_ICON_RIGHT_CUSHION) {
+				offsetX = 63 - QUEST_MARKER_ICON_RIGHT_CUSHION;
 				offsetZ = (int) (offsetX * tan);
-			} else if (offsetX < -64 + QUEST_MARKER_ICON_RIGHT_CUSHION) {
-				offsetX = -64 + QUEST_MARKER_ICON_RIGHT_CUSHION;
+			} else if (offsetX < -64 + QUEST_MARKER_ICON_LEFT_CUSHION) {
+				offsetX = -64 + QUEST_MARKER_ICON_LEFT_CUSHION;
 				offsetZ = (int) (offsetX * tan);
 			}
 			if (offsetZ >= 64 - QUEST_MARKER_ICON_BOTTOM_CUSHION) {
@@ -142,8 +142,7 @@ public class MapSegment {
 			}
 
 			Quest quest = questMarker.getQuest();
-			String questMarkerText = StringUtility
-					.chatColorToMapColor(questMarker.getIcon(pc).getText(quest, pc));
+			String questMarkerText = StringUtility.chatColorToMapColor(questMarker.getIcon(pc).getText(quest, pc));
 
 			canvas.drawText((int) offsetX + 64, (int) offsetZ + 64, MinecraftFont.Font, questMarkerText);
 		}

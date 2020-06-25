@@ -10,6 +10,7 @@ import org.bukkit.Sound;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
@@ -18,21 +19,28 @@ import org.bukkit.util.Vector;
 import com.mcmmorpg.common.character.PlayerCharacter;
 import com.mcmmorpg.common.character.PlayerCharacter.PlayerCharacterCollider;
 import com.mcmmorpg.common.character.Source;
+import com.mcmmorpg.common.event.QuestObjectiveChangeProgressEvent;
 import com.mcmmorpg.common.item.Item;
 import com.mcmmorpg.common.item.LootChest;
+import com.mcmmorpg.common.navigation.QuestMarker;
 import com.mcmmorpg.common.physics.Collider;
+import com.mcmmorpg.common.quest.Quest;
+import com.mcmmorpg.common.quest.QuestObjective;
+import com.mcmmorpg.common.quest.QuestStatus;
 import com.mcmmorpg.common.sound.Noise;
 import com.mcmmorpg.common.time.RepeatingTask;
 import com.mcmmorpg.common.ui.TextPanel;
 import com.mcmmorpg.common.ui.TitleText;
 import com.mcmmorpg.common.util.MathUtility;
 import com.mcmmorpg.impl.constants.Items;
+import com.mcmmorpg.impl.constants.Maps;
 import com.mcmmorpg.impl.constants.Quests;
 import com.mcmmorpg.impl.constants.RespawnLocations;
 import com.mcmmorpg.impl.constants.Soundtracks;
 import com.mcmmorpg.impl.constants.Worlds;
 import com.mcmmorpg.impl.constants.Zones;
 import com.mcmmorpg.impl.npcs.Adventurer;
+import com.mcmmorpg.impl.npcs.CaptainNadia;
 import com.mcmmorpg.impl.npcs.ColossalGelatinousCube;
 import com.mcmmorpg.impl.npcs.FlintonSewersAlchemist;
 import com.mcmmorpg.impl.npcs.FlintonSewersBandit;
@@ -42,7 +50,6 @@ import com.mcmmorpg.impl.npcs.FlintonSewersNecromancer;
 import com.mcmmorpg.impl.npcs.FlintonSewersRat;
 import com.mcmmorpg.impl.npcs.FlintonSewersXylphanos;
 import com.mcmmorpg.impl.npcs.GelatinousCube;
-import com.mcmmorpg.impl.npcs.CaptainNadia;
 import com.mcmmorpg.impl.npcs.GuardThomas;
 import com.mcmmorpg.impl.npcs.SmallGelatinousCube;
 
@@ -61,7 +68,7 @@ public class FlintonSewersListener implements Listener {
 	private static final TitleText ENTER_TEXT = new TitleText(ChatColor.GRAY + "Flinton Sewers", null);
 	private static final Location ENTRANCE_LOCATION = new Location(Worlds.ELADRADOR, -269.5, 80, 79.5);
 	private static final Location ALCHEMIST_LOCATION = new Location(Worlds.ELADRADOR, -274, 42.5, 79, 180, 0);
-	private static final Location GUARD_NADIA_LOCATION = new Location(Worlds.ELADRADOR, -288.655881, 43.000000,
+	private static final Location CAPTAIN_NADIA_LOCATION = new Location(Worlds.ELADRADOR, -288.655881, 43.000000,
 			24.776586, 341.285797f, 49.350960f);
 	private static final Location GUARD_THOMAS_LOCATION = new Location(Worlds.ELADRADOR, -286.187316, 43.000000,
 			25.479414, 14.596418f, 42.747627f);
@@ -224,6 +231,7 @@ public class FlintonSewersListener implements Listener {
 		spawnNpcs();
 		setUpPortcullises();
 		spawnLootChests();
+		createQuestMarkers();
 	}
 
 	private void setBounds() {
@@ -235,8 +243,10 @@ public class FlintonSewersListener implements Listener {
 					pc.setZone(Zones.FLINTON_SEWERS);
 					pc.setRespawnLocation(RespawnLocations.FLINTON_SEWERS);
 					pc.getSoundTrackPlayer().setSoundtrack(Soundtracks.DUNGEON);
+					pc.getMap().setMapSegment(Maps.FLINTON_SEWERS);
 					ENTER_TEXT.apply(pc);
 					Quests.INTO_THE_SEWERS.getObjective(0).complete(pc);
+					Quests.INTO_THE_SEWERS.getObjective(1).setAccessible(pc, true);
 					smallGelatinousCubeCounts.put(pc, 0);
 				}
 			}
@@ -300,7 +310,7 @@ public class FlintonSewersListener implements Listener {
 
 	private void spawnNpcs() {
 		new FlintonSewersAlchemist(ALCHEMIST_LOCATION).setAlive(true);
-		new CaptainNadia(GUARD_NADIA_LOCATION).setAlive(true);
+		new CaptainNadia(CAPTAIN_NADIA_LOCATION).setAlive(true);
 		new GuardThomas(GUARD_THOMAS_LOCATION).setAlive(true);
 		for (int i = 0; i < ADVENTURER_LOCATIONS.length; i++) {
 			Location location = ADVENTURER_LOCATIONS[i];
@@ -347,6 +357,146 @@ public class FlintonSewersListener implements Listener {
 			Location location = LOOT_CHEST_LOCATIONS[i];
 			Item[] contents = LOOT_CHEST_CONTENTS[i];
 			LootChest.spawnLootChest(location, LOOT_CHEST_RESPAWN_TIME, contents);
+		}
+	}
+
+	private void createQuestMarkers() {
+		Quests.SAMPLING_SLUDGE.getObjective(1).registerAsItemCollectionObjective(Items.SLUDGE);
+		Quests.SAMPLING_SLUDGE.getObjective(3).registerAsItemCollectionObjective(Items.COLOSSAL_SLUDGE);
+
+		QuestMarker intoTheSewersTurnInMarker = new QuestMarker(Quests.INTO_THE_SEWERS,
+				CAPTAIN_NADIA_LOCATION.clone().add(0, 2.25, 0)) {
+			@Override
+			protected QuestMarkerIcon getIcon(PlayerCharacter pc) {
+				if (Quests.INTO_THE_SEWERS.getObjective(1).isAccessible(pc)) {
+					return QuestMarkerIcon.READY_TO_TURN_IN;
+				} else {
+					return QuestMarkerIcon.HIDDEN;
+				}
+			}
+		};
+		intoTheSewersTurnInMarker.setTextPanelVisible(true);
+		Maps.FLINTON_SEWERS.addQuestMarker(intoTheSewersTurnInMarker);
+
+		QuestMarker samplingSludgeTurnInMarker = new QuestMarker(Quests.SAMPLING_SLUDGE,
+				ALCHEMIST_LOCATION.clone().add(0, 2.25, 0)) {
+			@Override
+			protected QuestMarkerIcon getIcon(PlayerCharacter pc) {
+				QuestStatus status = Quests.SAMPLING_SLUDGE.getStatus(pc);
+				if (status == QuestStatus.NOT_STARTED) {
+					return QuestMarkerIcon.READY_TO_START;
+				} else if (Quests.SAMPLING_SLUDGE.getObjective(4).isAccessible(pc)) {
+					return QuestMarkerIcon.READY_TO_TURN_IN;
+				} else {
+					return QuestMarkerIcon.HIDDEN;
+				}
+			}
+		};
+		samplingSludgeTurnInMarker.setTextPanelVisible(true);
+		Maps.FLINTON_SEWERS.addQuestMarker(samplingSludgeTurnInMarker);
+
+		QuestMarker gelatinousCubeMarker = new QuestMarker(Quests.SAMPLING_SLUDGE,
+				COLOSSAL_GELATINOUS_CUBE_LOCATIONS[0]) {
+			@Override
+			protected QuestMarkerIcon getIcon(PlayerCharacter pc) {
+				if (Quests.SAMPLING_SLUDGE.getStatus(pc) == QuestStatus.IN_PROGRESS
+						&& !Quests.SAMPLING_SLUDGE.getObjective(2).isComplete(pc)) {
+					return QuestMarkerIcon.OBJECTIVE;
+				} else {
+					return QuestMarkerIcon.HIDDEN;
+				}
+			}
+		};
+		Maps.FLINTON_SEWERS.addQuestMarker(gelatinousCubeMarker);
+
+		QuestMarker cullingTheCultTurnInMarker = new QuestMarker(Quests.CULLING_THE_CULT, CAPTAIN_NADIA_LOCATION) {
+			@Override
+			protected QuestMarkerIcon getIcon(PlayerCharacter pc) {
+				if (Quests.INTO_THE_SEWERS.getStatus(pc) == QuestStatus.COMPLETED
+						&& Quests.CULLING_THE_CULT.getStatus(pc) == QuestStatus.NOT_STARTED) {
+					return QuestMarkerIcon.READY_TO_START;
+				} else if (Quests.CULLING_THE_CULT.getObjective(2).isAccessible(pc)) {
+					return QuestMarkerIcon.READY_TO_TURN_IN;
+				} else {
+					return QuestMarkerIcon.HIDDEN;
+				}
+			}
+		};
+		Maps.FLINTON_SEWERS.addQuestMarker(cullingTheCultTurnInMarker);
+
+		QuestMarker cullingTheCultXylphanosMarker = new QuestMarker(Quests.CULLING_THE_CULT, XYLPHANOS_LOCATION) {
+			@Override
+			protected QuestMarkerIcon getIcon(PlayerCharacter pc) {
+				QuestStatus status = Quests.CULLING_THE_CULT.getStatus(pc);
+				if (status == QuestStatus.IN_PROGRESS) {
+					if (!Quests.CULLING_THE_CULT.getObjective(2).isAccessible(pc)) {
+						return QuestMarkerIcon.OBJECTIVE;
+					}
+				}
+				return QuestMarkerIcon.HIDDEN;
+			}
+		};
+		Maps.FLINTON_SEWERS.addQuestMarker(cullingTheCultXylphanosMarker);
+
+		QuestMarker drivingOutTheBanditsTurnIn = new QuestMarker(Quests.DRIVING_OUT_THE_BANDITS,
+				GUARD_THOMAS_LOCATION.clone().add(0, 2.25, 0)) {
+			@Override
+			protected QuestMarkerIcon getIcon(PlayerCharacter pc) {
+				QuestStatus status = Quests.DRIVING_OUT_THE_BANDITS.getStatus(pc);
+				if (status == QuestStatus.NOT_STARTED) {
+					return QuestMarkerIcon.READY_TO_START;
+				} else if (status == QuestStatus.IN_PROGRESS
+						&& Quests.DRIVING_OUT_THE_BANDITS.getObjective(2).isAccessible(pc)) {
+					return QuestMarkerIcon.READY_TO_TURN_IN;
+				} else {
+					return QuestMarkerIcon.HIDDEN;
+				}
+			}
+		};
+		drivingOutTheBanditsTurnIn.setTextPanelVisible(true);
+		Maps.FLINTON_SEWERS.addQuestMarker(drivingOutTheBanditsTurnIn);
+
+		for (Location location : BANDIT_CHIEF_LOCATIONS) {
+			QuestMarker drivingOutTheBanditsChiefMarker = new QuestMarker(Quests.DRIVING_OUT_THE_BANDITS, location) {
+				@Override
+				protected QuestMarkerIcon getIcon(PlayerCharacter pc) {
+					QuestStatus status = Quests.DRIVING_OUT_THE_BANDITS.getStatus(pc);
+					if (status == QuestStatus.IN_PROGRESS
+							&& !Quests.DRIVING_OUT_THE_BANDITS.getObjective(2).isAccessible(pc)) {
+						return QuestMarkerIcon.OBJECTIVE;
+					} else {
+						return QuestMarkerIcon.HIDDEN;
+					}
+				}
+			};
+			Maps.FLINTON_SEWERS.addQuestMarker(drivingOutTheBanditsChiefMarker);
+		}
+	}
+
+	@EventHandler
+	private void onChangeObjectiveProgress(QuestObjectiveChangeProgressEvent event) {
+		QuestObjective objective = event.getObjective();
+		Quest quest = objective.getQuest();
+		PlayerCharacter pc = event.getPlayerCharacter();
+		if (quest == Quests.SAMPLING_SLUDGE) {
+			if (Quests.SAMPLING_SLUDGE.getObjective(0).isComplete(pc)
+					&& Quests.SAMPLING_SLUDGE.getObjective(1).isComplete(pc)
+					&& Quests.SAMPLING_SLUDGE.getObjective(2).isComplete(pc)
+					&& Quests.SAMPLING_SLUDGE.getObjective(3).isComplete(pc)) {
+				Quests.SAMPLING_SLUDGE.getObjective(4).setAccessible(pc, true);
+			} else {
+				Quests.SAMPLING_SLUDGE.getObjective(4).setAccessible(pc, false);
+			}
+		} else if (quest == Quests.DRIVING_OUT_THE_BANDITS) {
+			if (Quests.DRIVING_OUT_THE_BANDITS.getObjective(0).isComplete(pc)
+					&& Quests.DRIVING_OUT_THE_BANDITS.getObjective(1).isComplete(pc)) {
+				Quests.DRIVING_OUT_THE_BANDITS.getObjective(2).setAccessible(pc, true);
+			}
+		} else if (quest == Quests.CULLING_THE_CULT) {
+			if (Quests.CULLING_THE_CULT.getObjective(0).isComplete(pc)
+					&& Quests.CULLING_THE_CULT.getObjective(1).isComplete(pc)) {
+				Quests.CULLING_THE_CULT.getObjective(2).setAccessible(pc, true);
+			}
 		}
 	}
 

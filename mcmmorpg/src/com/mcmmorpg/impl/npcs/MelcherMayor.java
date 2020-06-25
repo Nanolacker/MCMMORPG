@@ -90,6 +90,7 @@ public class MelcherMayor extends StaticHuman {
 					Quests.THWARTING_THE_THIEVES.getObjective(1).complete(pc);
 					pc.giveXp(THWARTING_THE_THIEVES_XP_REWARD);
 					Quests.CLEARING_THE_ROAD.start(pc);
+					Quests.CLEARING_THE_ROAD.getObjective(0).setAccessible(pc, true);
 					break;
 				}
 			}

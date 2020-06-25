@@ -165,8 +165,8 @@ public class Quest {
 			}
 			int progress = objective.getProgress(pc);
 			int goal = objective.getGoal();
-			String progressText = "- " + progress + "/" + goal;
-			objectiveLines += progressText + " " + ChatColor.WHITE + objective.getDescription() + "\n";
+			String progressText = ChatColor.BOLD + "- " + progress + "/" + goal;
+			objectiveLines += progressText + " " + ChatColor.RESET + objective.getDescription() + "\n";
 		}
 		return objectiveLines;
 	}

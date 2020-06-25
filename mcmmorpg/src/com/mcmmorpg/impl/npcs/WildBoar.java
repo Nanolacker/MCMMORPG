@@ -1,7 +1,6 @@
 package com.mcmmorpg.impl.npcs;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.bukkit.ChatColor;
@@ -30,7 +29,6 @@ import com.mcmmorpg.common.sound.Noise;
 import com.mcmmorpg.common.time.DelayedTask;
 import com.mcmmorpg.common.util.BukkitUtility;
 import com.mcmmorpg.impl.constants.Items;
-import com.mcmmorpg.impl.constants.Quests;
 
 public class WildBoar extends NonPlayerCharacter {
 
@@ -145,10 +143,6 @@ public class WildBoar extends NonPlayerCharacter {
 		DEATH_NOISE.play(location);
 		location.getWorld().spawnParticle(Particle.CLOUD, location, 10);
 		PlayerCharacter.distributeXp(location, 25, XP_REWARD);
-		List<PlayerCharacter> nearbyPcs = PlayerCharacter.getNearbyPlayerCharacters(location, 25);
-		for (PlayerCharacter pc : nearbyPcs) {
-			Quests.BOARS_GALORE.getObjective(0).addProgress(pc, 1);
-		}
 		int boarFlankAmount = (int) (Math.random() * 2);
 		int tuskAmount = (int) (Math.random() * 4);
 		Items.BOAR_FLANK.drop(location, boarFlankAmount);

@@ -60,6 +60,8 @@ public class CaptainNadia extends StaticHuman {
 					Quests.INTO_THE_SEWERS.getObjective(1).complete(pc);
 					pc.giveXp(INTO_THE_SEWERS_XP_REWARD);
 					Quests.CULLING_THE_CULT.start(pc);
+					Quests.CULLING_THE_CULT.getObjective(0).setAccessible(pc, true);
+					Quests.CULLING_THE_CULT.getObjective(1).setAccessible(pc, true);
 					break;
 				}
 			}
@@ -90,6 +92,7 @@ public class CaptainNadia extends StaticHuman {
 					Quests.CULLING_THE_CULT.getObjective(2).complete(pc);
 					pc.giveXp(CULLING_THE_CULT_XP_REWARD);
 					Quests.THREAT_LEVEL_GOD.start(pc);
+					Quests.THREAT_LEVEL_GOD.getObjective(0).setAccessible(pc, true);
 					break;
 				}
 			}

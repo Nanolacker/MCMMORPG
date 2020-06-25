@@ -48,6 +48,9 @@ public class Broodmother extends AbstractSpider {
 		List<PlayerCharacter> nearbyPcs = PlayerCharacter.getNearbyPlayerCharacters(getLocation(), 25);
 		for (PlayerCharacter pc : nearbyPcs) {
 			Quests.ARACHNOPHOBIA.getObjective(1).complete(pc);
+			if (Quests.ARACHNOPHOBIA.getObjective(0).isComplete(pc)) {
+				Quests.ARACHNOPHOBIA.getObjective(2).setAccessible(pc, true);
+			}
 		}
 	}
 

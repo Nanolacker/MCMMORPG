@@ -60,6 +60,9 @@ public class StringUtility {
 			throw new IllegalArgumentException("Line length of 0");
 		}
 		List<String> lines = new ArrayList<>();
+		if (text.isEmpty()) {
+			return lines;
+		}
 		String[] preLines = text.split("\n");
 		String chatColor = "";
 		for (String preLine : preLines) {
