@@ -26,7 +26,6 @@ import com.mcmmorpg.common.physics.Raycast;
 import com.mcmmorpg.common.physics.RaycastHit;
 import com.mcmmorpg.common.playerClass.PlayerClass;
 import com.mcmmorpg.common.sound.Noise;
-import com.mcmmorpg.common.util.Debug;
 import com.mcmmorpg.common.util.MathUtility;
 import com.mcmmorpg.impl.constants.Items;
 import com.mcmmorpg.impl.constants.PlayerClasses;
@@ -60,8 +59,6 @@ public class ItemListener implements Listener {
 	 */
 	private void useFighterWeapon(PlayerCharacter pc, Weapon weapon) {
 		double damage = weapon.getBaseDamage() * (1 + 0.2 * pc.getLevel());
-		damage = Integer.MAX_VALUE;
-		Debug.log("god mode");
 		Location start = pc.getLocation().add(0, 1.5, 0);
 		Vector direction = start.getDirection();
 		Location particleLocation = start.clone().add(direction.clone().multiply(2));

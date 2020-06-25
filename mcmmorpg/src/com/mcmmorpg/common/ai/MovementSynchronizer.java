@@ -1,4 +1,4 @@
-package com.mcmmorpg.common.character;
+package com.mcmmorpg.common.ai;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -6,6 +6,7 @@ import java.util.List;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 
+import com.mcmmorpg.common.character.AbstractCharacter;
 import com.mcmmorpg.common.time.RepeatingTask;
 
 /**

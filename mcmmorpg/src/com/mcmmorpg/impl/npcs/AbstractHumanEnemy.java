@@ -16,16 +16,16 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
 
+import com.mcmmorpg.common.ai.HumanEntity;
+import com.mcmmorpg.common.ai.MovementSynchronizer;
+import com.mcmmorpg.common.ai.MovementSynchronizer.MovementSynchronizerMode;
 import com.mcmmorpg.common.character.CharacterCollider;
-import com.mcmmorpg.common.character.MovementSynchronizer;
-import com.mcmmorpg.common.character.MovementSynchronizer.MovementSynchronizerMode;
 import com.mcmmorpg.common.character.NonPlayerCharacter;
 import com.mcmmorpg.common.character.PlayerCharacter;
 import com.mcmmorpg.common.character.Source;
 import com.mcmmorpg.common.event.EventManager;
 import com.mcmmorpg.common.time.DelayedTask;
 import com.mcmmorpg.common.util.BukkitUtility;
-import com.mcmmorpg.common.util.HumanEntity;
 
 public abstract class AbstractHumanEnemy extends NonPlayerCharacter {
 
@@ -105,6 +105,7 @@ public abstract class AbstractHumanEnemy extends NonPlayerCharacter {
 		}
 		ai.setRemoveWhenFarAway(false);
 		ai.getEquipment().clear();
+		ai.setConversionTime(Integer.MAX_VALUE);
 		aiSyncer.setEntity(ai);
 		aiSyncer.setEnabled(true);
 		aiMap.put(ai, this);

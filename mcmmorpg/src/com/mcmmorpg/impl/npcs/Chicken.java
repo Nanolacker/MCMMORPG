@@ -4,9 +4,9 @@ import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.entity.EntityType;
 
-import com.mcmmorpg.common.character.MovementSynchronizer;
-import com.mcmmorpg.common.character.MovementSynchronizer.MovementSynchronizerMode;
 import com.mcmmorpg.common.util.BukkitUtility;
+import com.mcmmorpg.common.ai.MovementSynchronizer;
+import com.mcmmorpg.common.ai.MovementSynchronizer.MovementSynchronizerMode;
 import com.mcmmorpg.common.character.NonPlayerCharacter;
 
 public class Chicken extends NonPlayerCharacter {

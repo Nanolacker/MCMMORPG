@@ -31,7 +31,8 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
 
-import com.mcmmorpg.common.character.MovementSynchronizer.MovementSynchronizerMode;
+import com.mcmmorpg.common.ai.MovementSynchronizer;
+import com.mcmmorpg.common.ai.MovementSynchronizer.MovementSynchronizerMode;
 import com.mcmmorpg.common.event.CharacterKillEvent;
 import com.mcmmorpg.common.event.EventManager;
 import com.mcmmorpg.common.event.PlayerCharacterLevelUpEvent;

@@ -1,4 +1,4 @@
-package com.mcmmorpg.common.util;
+package com.mcmmorpg.common.ai;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,6 +18,7 @@ import org.bukkit.inventory.EntityEquipment;
 import org.bukkit.inventory.ItemStack;
 
 import com.mcmmorpg.common.time.RepeatingTask;
+import com.mcmmorpg.common.util.BukkitUtility;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
 
