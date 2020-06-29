@@ -17,7 +17,7 @@ public class Maps {
 	static {
 		File mapImagesDir = new File(IOUtility.getDataFolder(), "resources/mapImages");
 
-		Location eladradorOrigin = RespawnLocations.MELCHER;
+		Location eladradorOrigin = new Location(Worlds.ELADRADOR, -1920, 0, -1920);
 		File eladradorImageFile = new File(mapImagesDir, "Eladrador.png");
 		BufferedImage eladradorImage = IOUtility.readImageFile(eladradorImageFile);
 		ELADRADOR = new MapSegment(eladradorOrigin, eladradorImage);

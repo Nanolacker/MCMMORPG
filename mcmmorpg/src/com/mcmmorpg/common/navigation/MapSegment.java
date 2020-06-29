@@ -20,10 +20,10 @@ import com.mcmmorpg.common.util.StringUtility;
  */
 public class MapSegment {
 
-	private static final int QUEST_MARKER_ICON_RIGHT_CUSHION = 6;
-	private static final int QUEST_MARKER_ICON_LEFT_CUSHION = 2;
-	private static final int QUEST_MARKER_ICON_TOP_CUSHION = 2;
-	private static final int QUEST_MARKER_ICON_BOTTOM_CUSHION = 8;
+	private static final int QUEST_MARKER_ICON_RIGHT_PADDING = 6;
+	private static final int QUEST_MARKER_ICON_LEFT_PADDING = 2;
+	private static final int QUEST_MARKER_ICON_TOP_PADDING = 2;
+	private static final int QUEST_MARKER_ICON_BOTTOM_PADDING = 8;
 
 	private Location origin;
 	private final BufferedImage image;
@@ -126,18 +126,18 @@ public class MapSegment {
 
 			double tan = (double) offsetZ / offsetX;
 
-			if (offsetX >= 64 - QUEST_MARKER_ICON_RIGHT_CUSHION) {
-				offsetX = 63 - QUEST_MARKER_ICON_RIGHT_CUSHION;
+			if (offsetX >= 64 - QUEST_MARKER_ICON_RIGHT_PADDING) {
+				offsetX = 63 - QUEST_MARKER_ICON_RIGHT_PADDING;
 				offsetZ = (int) (offsetX * tan);
-			} else if (offsetX < -64 + QUEST_MARKER_ICON_LEFT_CUSHION) {
-				offsetX = -64 + QUEST_MARKER_ICON_LEFT_CUSHION;
+			} else if (offsetX < -64 + QUEST_MARKER_ICON_LEFT_PADDING) {
+				offsetX = -64 + QUEST_MARKER_ICON_LEFT_PADDING;
 				offsetZ = (int) (offsetX * tan);
 			}
-			if (offsetZ >= 64 - QUEST_MARKER_ICON_BOTTOM_CUSHION) {
-				offsetZ = 63 - QUEST_MARKER_ICON_BOTTOM_CUSHION;
+			if (offsetZ >= 64 - QUEST_MARKER_ICON_BOTTOM_PADDING) {
+				offsetZ = 63 - QUEST_MARKER_ICON_BOTTOM_PADDING;
 				offsetX = (int) (offsetZ / tan);
-			} else if (offsetZ < -64 + QUEST_MARKER_ICON_TOP_CUSHION) {
-				offsetZ = -64 + QUEST_MARKER_ICON_TOP_CUSHION;
+			} else if (offsetZ < -64 + QUEST_MARKER_ICON_TOP_PADDING) {
+				offsetZ = -64 + QUEST_MARKER_ICON_TOP_PADDING;
 				offsetX = (int) (offsetZ / tan);
 			}
 

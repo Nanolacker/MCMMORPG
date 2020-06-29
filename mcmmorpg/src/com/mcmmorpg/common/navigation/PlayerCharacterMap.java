@@ -25,6 +25,8 @@ public class PlayerCharacterMap {
 	 * their map squared.
 	 */
 	private static final double MINIMUM_DISTANCE_THRESHOLD_SQUARED = 4;
+	private static final int ZONE_TEXT_LEFT_PADDING = 4;
+	private static final int ZONE_TEXT_TOP_PADDING = 4;
 
 	private final PlayerCharacter pc;
 	private final ItemStack itemStack;
@@ -68,7 +70,7 @@ public class PlayerCharacterMap {
 				}
 
 				String zoneText = StringUtility.chatColorToMapColor(pc.getZone());
-				canvas.drawText(0, 0, MinecraftFont.Font, zoneText);
+				canvas.drawText(ZONE_TEXT_LEFT_PADDING, ZONE_TEXT_TOP_PADDING, MinecraftFont.Font, zoneText);
 			}
 		};
 		mapView.addRenderer(renderer);
