@@ -869,7 +869,7 @@ public final class PlayerCharacter extends AbstractCharacter {
 	}
 
 	/**
-	 * Opens the quest log menu.
+	 * Returns this player character's quest log.
 	 */
 	public QuestLog getQuestLog() {
 		return questLog;

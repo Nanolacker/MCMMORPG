@@ -145,11 +145,23 @@ public class Quest {
 		pc.updateQuestDisplay();
 	}
 
-	ItemStack getQuestLogItemStack(PlayerCharacter pc) {
-		List<Quest> currentQuests = Quest.getAllQuestsMatchingStatus(pc, QuestStatus.IN_PROGRESS);
-		int questNum = currentQuests.indexOf(this) + 1;
+	ItemStack getInProgressQuestLogItemStack(int questIndex, PlayerCharacter pc) {
+		int questNum = questIndex + 1;
 		String name = ChatColor.YELLOW + "(" + questNum + ") " + this.name;
-		String lore = ChatColor.GOLD + "Level " + level + " Quest\n\n" + getQuestLogLines(pc);
+		String lore = ChatColor.GOLD + "Level " + level + " Quest\n\n" + ChatColor.WHITE + getQuestLogLines(pc);
+		return ItemFactory.createItemStack(ChatColor.YELLOW + name, lore, Material.BOOK);
+	}
+
+	ItemStack getCompletedQuestLogItemStack(PlayerCharacter pc) {
+		String name = ChatColor.GREEN + this.name;
+		String objectiveLines = "";
+		for (QuestObjective objective : objectives) {
+			int progress = objective.getProgress(pc);
+			int goal = objective.getGoal();
+			String progressText = ChatColor.GREEN + "" + ChatColor.BOLD + "- " + progress + "/" + goal;
+			objectiveLines += progressText + " " + ChatColor.RESET + objective.getDescription() + "\n";
+		}
+		String lore = ChatColor.GOLD + "Level " + level + " Quest\n\n" + ChatColor.WHITE + objectiveLines;
 		return ItemFactory.createItemStack(ChatColor.YELLOW + name, lore, Material.BOOK);
 	}
 
@@ -160,12 +172,13 @@ public class Quest {
 	public String getQuestLogLines(PlayerCharacter pc) {
 		String objectiveLines = "";
 		for (QuestObjective objective : objectives) {
-			if (!objective.isAccessible(pc) || objective.isComplete(pc)) {
+			if (!objective.isAccessible(pc)) {
 				continue;
 			}
 			int progress = objective.getProgress(pc);
 			int goal = objective.getGoal();
-			String progressText = ChatColor.BOLD + "- " + progress + "/" + goal;
+			ChatColor chatColor = progress == goal ? ChatColor.GREEN : ChatColor.WHITE;
+			String progressText = chatColor + "" + ChatColor.BOLD + "- " + progress + "/" + goal;
 			objectiveLines += progressText + " " + ChatColor.RESET + objective.getDescription() + "\n";
 		}
 		return objectiveLines;

@@ -35,25 +35,31 @@ public class QuestLog {
 		this.pc = pc;
 	}
 
-	private Inventory createInventory() {
-		int size = 9 * 1;
-		Inventory inventory = Bukkit.createInventory(null, size, "Quest Log");
-		List<Quest> inProgressQuests = Quest.getAllQuestsMatchingStatus(pc, QuestStatus.IN_PROGRESS);
-		for (int i = 0; i < size && i < inProgressQuests.size(); i++) {
-			Quest quest = inProgressQuests.get(i);
-			ItemStack itemStack = quest.getQuestLogItemStack(pc);
-			inventory.setItem(i, itemStack);
-		}
-		return inventory;
-	}
-
 	/**
 	 * Opens the quest log for the player character.
 	 */
 	public void open() {
-		Inventory inventory = createInventory();
+		Inventory inventory = createQuestLogInventory();
 		pc.getPlayer().openInventory(inventory);
 		questLogInventories.add(inventory);
+	}
+
+	private Inventory createQuestLogInventory() {
+		int size = 9 * 3;
+		Inventory inventory = Bukkit.createInventory(null, size, "Quest Log");
+		List<Quest> inProgressQuests = Quest.getAllQuestsMatchingStatus(pc, QuestStatus.IN_PROGRESS);
+		for (int i = 0; i < size && i < inProgressQuests.size(); i++) {
+			Quest quest = inProgressQuests.get(i);
+			ItemStack itemStack = quest.getInProgressQuestLogItemStack(i, pc);
+			inventory.setItem(i, itemStack);
+		}
+		List<Quest> completedQuests = Quest.getAllQuestsMatchingStatus(pc, QuestStatus.COMPLETED);
+		for (int i = 0; i < size && i < completedQuests.size(); i++) {
+			Quest quest = completedQuests.get(i);
+			ItemStack itemStack = quest.getCompletedQuestLogItemStack(pc);
+			inventory.setItem(inProgressQuests.size() + i, itemStack);
+		}
+		return inventory;
 	}
 
 	private static class QuestLogListener implements Listener {
