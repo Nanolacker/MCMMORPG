@@ -112,7 +112,7 @@ public class QuestObjective {
 		pc.updateQuestDisplay();
 		if (progress == goal) {
 			pc.sendMessage(ChatColor.GREEN + "" + goal + "/" + goal + " " + ChatColor.WHITE + description
-					+ ChatColor.GRAY + " complete!");
+					+ ChatColor.GREEN + " complete!");
 			OBJECTIVE_COMPLETE_NOISE.play(pc);
 		}
 		quest.checkForCompletion(pc);

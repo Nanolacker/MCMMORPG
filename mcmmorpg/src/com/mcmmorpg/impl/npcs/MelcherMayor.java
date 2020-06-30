@@ -42,8 +42,7 @@ public class MelcherMayor extends StaticHuman {
 							pc);
 					break;
 				case 3:
-					speak("We'd all be greatful if you could help us restore peace to this land. Speak with me again when you're ready to support our cause.",
-							pc);
+					speak("We'd all be greatful if you could help us restore peace to this land.", pc);
 					break;
 				case 4:
 					speak("To start, thieves that live in the woods around Melcher have been stealing food from the people of Melcher. Our people are going to starve if we don't do something.",

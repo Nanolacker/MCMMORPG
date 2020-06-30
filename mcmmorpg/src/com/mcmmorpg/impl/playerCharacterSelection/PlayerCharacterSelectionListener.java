@@ -29,9 +29,7 @@ import com.mcmmorpg.common.item.Weapon;
 import com.mcmmorpg.common.persistence.PersistentPlayerCharacterDataContainer;
 import com.mcmmorpg.common.playerClass.PlayerClass;
 import com.mcmmorpg.common.sound.Noise;
-import com.mcmmorpg.common.time.DelayedTask;
 import com.mcmmorpg.common.ui.TextPanel;
-import com.mcmmorpg.common.ui.Tutorial;
 import com.mcmmorpg.common.util.IOUtility;
 import com.mcmmorpg.impl.constants.Items;
 import com.mcmmorpg.impl.constants.PlayerClasses;
@@ -70,8 +68,6 @@ public class PlayerCharacterSelectionListener implements Listener {
 	private static final Noise CHARACTER_TRANSITION_NOISE = new Noise(Sound.ENTITY_ZOMBIE_VILLAGER_CONVERTED);
 	private static final Noise CHARACTER_DELETION_NOISE = new Noise(Sound.ENTITY_ZOMBIE_VILLAGER_CONVERTED);
 	private static final Noise SELECT_CHARACTER_NOISE = new Noise(Sound.BLOCK_PORTAL_TRAVEL, 0.2f, 1);
-
-	private static final String TUTORIAL_TAG = "TUTORIAL";
 
 	private Map<Player, PlayerCharacterSelectionProfile> profileMap = new HashMap<>();
 
@@ -452,38 +448,9 @@ public class PlayerCharacterSelectionListener implements Listener {
 		player.sendMessage(ChatColor.GRAY + "Logging in...");
 		Inventory inventory = player.getInventory();
 		inventory.clear();
-		PlayerCharacter pc = PlayerCharacter.registerPlayerCharacter(player, data);
+		PlayerCharacter.registerPlayerCharacter(player, data);
 		player.removePotionEffect(PotionEffectType.INVISIBILITY);
 		inventory.setItem(8, OPEN_MENU_ITEM_STACK);
-		if (!pc.hasTag(TUTORIAL_TAG)) {
-			new DelayedTask(5) {
-				@Override
-				protected void run() {
-					Tutorial.message(player,
-							"To open your " + ChatColor.YELLOW + "Menu" + ChatColor.WHITE + ", press 9 or click the "
-									+ ChatColor.YELLOW + "Menu" + ChatColor.WHITE + " icon in your inventory.");
-				}
-			}.schedule();
-			new DelayedTask(10) {
-				@Override
-				protected void run() {
-					Tutorial.message(player, "To open your map, press the F key.");
-				}
-			}.schedule();
-			new DelayedTask(15) {
-				@Override
-				protected void run() {
-					Tutorial.message(player, "Your map can help you navigate and find quests to do.");
-				}
-			}.schedule();
-			new DelayedTask(20) {
-				@Override
-				protected void run() {
-					Tutorial.message(player, "Complete quests to earn XP and other rewards. Good luck!");
-				}
-			}.schedule();
-			pc.addTag(TUTORIAL_TAG);
-		}
 	}
 
 	private void savePlayerCharacter(PlayerCharacter pc) {

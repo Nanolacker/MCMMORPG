@@ -123,7 +123,7 @@ public class Quest {
 		}
 		PlayerCharacterQuestManager questManager = pc.getQuestManager();
 		questManager.startQuest(this);
-		pc.sendMessage(ChatColor.GRAY + "Quest started: " + ChatColor.YELLOW + name);
+		pc.sendMessage(ChatColor.GREEN + "Quest started: " + ChatColor.YELLOW + name);
 		PlayerCharacterStartQuestEvent event = new PlayerCharacterStartQuestEvent(pc, this);
 		EventManager.callEvent(event);
 		pc.updateQuestDisplay();
@@ -139,7 +139,7 @@ public class Quest {
 	}
 
 	private void complete(PlayerCharacter pc) {
-		pc.sendMessage(ChatColor.YELLOW + name + ChatColor.GRAY + " complete!");
+		pc.sendMessage(ChatColor.YELLOW + name + ChatColor.GREEN + " complete!");
 		COMPLETE_NOISE.play(pc);
 		PlayerCharacterQuestManager questManager = pc.getQuestManager();
 		questManager.completeQuest(this);
@@ -151,7 +151,7 @@ public class Quest {
 	ItemStack getInProgressQuestLogItemStack(int questIndex, PlayerCharacter pc) {
 		int questNum = questIndex + 1;
 		String name = ChatColor.YELLOW + "(" + questNum + ") " + this.name;
-		String lore = ChatColor.GOLD + "Level " + level + " Quest\n\n" + ChatColor.WHITE + getQuestLogLines(pc);
+		String lore = ChatColor.GOLD + "Level " + level + " Quest\n" + ChatColor.WHITE + getQuestLogLines(pc);
 		return ItemFactory.createItemStack(ChatColor.YELLOW + name, lore, Material.BOOK);
 	}
 
@@ -164,7 +164,7 @@ public class Quest {
 			String progressText = ChatColor.GREEN + "" + ChatColor.BOLD + "- " + progress + "/" + goal;
 			objectiveLines += progressText + " " + ChatColor.RESET + objective.getDescription() + "\n";
 		}
-		String lore = ChatColor.GOLD + "Level " + level + " Quest\n\n" + ChatColor.WHITE + objectiveLines;
+		String lore = ChatColor.GOLD + "Level " + level + " Quest\n" + ChatColor.WHITE + objectiveLines;
 		return ItemFactory.createItemStack(ChatColor.YELLOW + name, lore, Material.BOOK);
 	}
 

@@ -1,5 +1,6 @@
 package com.mcmmorpg.impl.locations;
 
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -17,10 +18,13 @@ import com.mcmmorpg.common.item.Item;
 import com.mcmmorpg.common.item.LootChest;
 import com.mcmmorpg.common.navigation.QuestMarker;
 import com.mcmmorpg.common.physics.Collider;
+import com.mcmmorpg.common.playerClass.PlayerClass;
 import com.mcmmorpg.common.quest.QuestObjective;
 import com.mcmmorpg.common.quest.QuestStatus;
+import com.mcmmorpg.common.ui.Tutorial;
 import com.mcmmorpg.impl.constants.Items;
 import com.mcmmorpg.impl.constants.Maps;
+import com.mcmmorpg.impl.constants.PlayerClasses;
 import com.mcmmorpg.impl.constants.Quests;
 import com.mcmmorpg.impl.constants.RespawnLocations;
 import com.mcmmorpg.impl.constants.Soundtracks;
@@ -164,8 +168,15 @@ public class MelcherListener implements Listener {
 			protected void onCollisionEnter(Collider other) {
 				if (other instanceof PlayerCharacterCollider) {
 					PlayerCharacter pc = ((PlayerCharacterCollider) other).getCharacter();
-					Quests.TUTORIAL.getObjective(6).complete(pc);
-					Quests.TUTORIAL.getObjective(7).setAccessible(pc, true);
+					if (Quests.TUTORIAL.getObjective(6).isAccessible(pc)
+							&& !Quests.TUTORIAL.getObjective(6).isComplete(pc)) {
+						Quests.TUTORIAL.getObjective(6).complete(pc);
+						Quests.TUTORIAL.getObjective(7).setAccessible(pc, true);
+						PlayerClass playerClass = pc.getPlayerClass();
+						String skillName = playerClass == PlayerClasses.FIGHER ? "Bash" : "Fireball";
+						Tutorial.message(pc, "Now, use a mix of your weapon and " + ChatColor.GREEN + skillName
+								+ ChatColor.WHITE + " to slay several training dummies.");
+					}
 				}
 			}
 		};
@@ -214,19 +225,33 @@ public class MelcherListener implements Listener {
 	}
 
 	private void createQuestMarkers() {
-		QuestMarker reportingForDutyQuestMarker = new QuestMarker(Quests.TUTORIAL,
+		Location trainingGroundsLocation = new Location(Worlds.ELADRADOR, -1122, 72, 252);
+		QuestMarker tutorialTrainingGroundQuestMarker = new QuestMarker(Quests.TUTORIAL, trainingGroundsLocation) {
+			protected QuestMarkerIcon getIcon(PlayerCharacter pc) {
+				if ((Quests.TUTORIAL.getObjective(6).isAccessible(pc)
+						|| Quests.TUTORIAL.getObjective(7).isAccessible(pc))
+						&& !Quests.TUTORIAL.getObjective(7).isComplete(pc)) {
+					return QuestMarkerIcon.OBJECTIVE;
+				} else {
+					return QuestMarkerIcon.HIDDEN;
+				}
+			}
+		};
+		Maps.ELADRADOR.addQuestMarker(tutorialTrainingGroundQuestMarker);
+
+		QuestMarker tutorialTurnInQuestMarker = new QuestMarker(Quests.TUTORIAL,
 				MAYOR_LOCATION.clone().add(0, 2.25, 0)) {
 			@Override
 			protected QuestMarkerIcon getIcon(PlayerCharacter pc) {
-				if (Quests.TUTORIAL.getStatus(pc) == QuestStatus.IN_PROGRESS) {
+				if (Quests.TUTORIAL.getObjective(8).isAccessible(pc)) {
 					return QuestMarkerIcon.READY_TO_TURN_IN;
 				} else {
 					return QuestMarkerIcon.HIDDEN;
 				}
 			}
 		};
-		reportingForDutyQuestMarker.setTextPanelVisible(true);
-		Maps.ELADRADOR.addQuestMarker(reportingForDutyQuestMarker);
+		tutorialTurnInQuestMarker.setTextPanelVisible(true);
+		Maps.ELADRADOR.addQuestMarker(tutorialTurnInQuestMarker);
 
 		QuestMarker thwartingTheThievesMayorQuestMarker = new QuestMarker(Quests.THWARTING_THE_THIEVES,
 				MAYOR_LOCATION) {
@@ -406,60 +431,88 @@ public class MelcherListener implements Listener {
 			PlayerCharacter pc = event.getPlayerCharacter();
 			Quests.TUTORIAL.start(pc);
 			Quests.TUTORIAL.getObjective(0).setAccessible(pc, true);
+			Tutorial.message(pc, "Open your menu by pressing the 9 key, or by clicking the " + ChatColor.YELLOW
+					+ "Menu " + ChatColor.WHITE + "item in your inventory.", 3);
 		}
 	}
 
 	@EventHandler
 	private void onOpenMenu(PlayerCharacterOpenMenuEvent event) {
 		PlayerCharacter pc = event.getPlayerCharacter();
-		if (Quests.TUTORIAL.getObjective(0).isAccessible(pc)) {
+		if (Quests.TUTORIAL.getObjective(0).isAccessible(pc) && !Quests.TUTORIAL.getObjective(0).isComplete(pc)) {
 			Quests.TUTORIAL.getObjective(0).complete(pc);
 			Quests.TUTORIAL.getObjective(1).setAccessible(pc, true);
+			Tutorial.message(pc,
+					"Here, you can view your " + ChatColor.YELLOW + "Quest Log" + ChatColor.WHITE + ", open your "
+							+ ChatColor.YELLOW + "Skill Tree" + ChatColor.WHITE
+							+ ", or return to character selection to " + ChatColor.YELLOW + "Change Character"
+							+ ChatColor.WHITE + ".",
+					1);
+			Tutorial.message(pc,
+					"Open your " + ChatColor.YELLOW + "Skill Tree " + ChatColor.WHITE + "to unlock a skill.", 6);
 		}
 	}
 
 	@EventHandler
 	private void onOpenSkillTree(PlayerCharacterOpenSkillTreeEvent event) {
 		PlayerCharacter pc = event.getPlayerCharacter();
-		if (Quests.TUTORIAL.getObjective(1).isAccessible(pc)) {
+		if (Quests.TUTORIAL.getObjective(1).isAccessible(pc) && !Quests.TUTORIAL.getObjective(1).isComplete(pc)) {
 			Quests.TUTORIAL.getObjective(1).complete(pc);
 			Quests.TUTORIAL.getObjective(2).setAccessible(pc, true);
+			Tutorial.message(pc, "Here, you can unlock and upgrade powerful abilities called skills.", 1);
+			PlayerClass playerClass = pc.getPlayerClass();
+			String skillName = playerClass == PlayerClasses.FIGHER ? "Bash" : "Fireball";
+			Tutorial.message(pc, "Shift-click " + ChatColor.GREEN + skillName + ChatColor.WHITE + " to unlock it.", 6);
 		}
 	}
 
 	@EventHandler
 	private void onUnlockSkill(PlayerCharacterUpgradeSkillEvent event) {
 		PlayerCharacter pc = event.getPlayerCharacter();
-		if (Quests.TUTORIAL.getObjective(2).isAccessible(pc)) {
+		if (Quests.TUTORIAL.getObjective(2).isAccessible(pc) && !Quests.TUTORIAL.getObjective(2).isComplete(pc)) {
 			Quests.TUTORIAL.getObjective(2).complete(pc);
 			Quests.TUTORIAL.getObjective(3).setAccessible(pc, true);
+			String skillName = event.getSkill().getName();
+			Tutorial.message(pc,
+					"Click " + ChatColor.GREEN + skillName + ChatColor.WHITE + " to add it to your hotbar.", 1);
 		}
 	}
 
 	@EventHandler
 	private void onAddSkillToHotbar(PlayerCharacterAddSkillToHotbarEvent event) {
 		PlayerCharacter pc = event.getPlayerCharacter();
-		if (Quests.TUTORIAL.getObjective(3).isAccessible(pc)) {
+		if (Quests.TUTORIAL.getObjective(3).isAccessible(pc) && !Quests.TUTORIAL.getObjective(3).isComplete(pc)) {
 			Quests.TUTORIAL.getObjective(3).complete(pc);
 			Quests.TUTORIAL.getObjective(4).setAccessible(pc, true);
+			String skillName = event.getSkill().getName();
+			int key = event.getHotbarSlot() + 1;
+			Tutorial.message(pc,
+					"Use " + ChatColor.GREEN + skillName + ChatColor.WHITE + " by pressing the " + key + " key.", 1);
 		}
 	}
 
 	@EventHandler
 	private void onUseSkill(PlayerCharacterUseSkillEvent event) {
 		PlayerCharacter pc = event.getPlayerCharacter();
-		if (Quests.TUTORIAL.getObjective(4).isAccessible(pc)) {
+		if (Quests.TUTORIAL.getObjective(4).isAccessible(pc) && !Quests.TUTORIAL.getObjective(4).isComplete(pc)) {
 			Quests.TUTORIAL.getObjective(4).complete(pc);
 			Quests.TUTORIAL.getObjective(5).setAccessible(pc, true);
+			Tutorial.message(pc, "Well done.", 1);
+			Tutorial.message(pc, "Now, open your map by pressing the F key.", 3);
 		}
 	}
 
 	@EventHandler
 	private void onOpenMap(PlayerCharacterOpenMapEvent event) {
 		PlayerCharacter pc = event.getPlayerCharacter();
-		if (Quests.TUTORIAL.getObjective(5).isAccessible(pc)) {
+		if (Quests.TUTORIAL.getObjective(5).isAccessible(pc) && !Quests.TUTORIAL.getObjective(5).isComplete(pc)) {
 			Quests.TUTORIAL.getObjective(5).complete(pc);
 			Quests.TUTORIAL.getObjective(6).setAccessible(pc, true);
+			Tutorial.message(pc,
+					"Your map displays not only your surroundings, but also quest markers, which allow you to easily find available quests and areas of interest.",
+					1);
+			Tutorial.message(pc, "Now, go to the training grounds, marked by a " + ChatColor.YELLOW + "1 "
+					+ ChatColor.WHITE + "on your map.", 6);
 		}
 	}
 

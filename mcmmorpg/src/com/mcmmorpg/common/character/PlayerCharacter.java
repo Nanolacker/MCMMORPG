@@ -83,11 +83,12 @@ public final class PlayerCharacter extends AbstractCharacter {
 	private static final int MAX_XP = determineMaxXp();
 	private static final Noise HURT_NOISE = new Noise(Sound.ENTITY_PLAYER_HURT);
 	private static final Noise DEATH_NOISE = new Noise(Sound.ENTITY_WITHER_SPAWN);
-	private static final double HEIGHT = 2;
+	private static final double HEIGHT = 2.0;
 	private static final double MAX_DISPLACEMENT_WITHOUT_TELEPORT_SQUARED = 25.0;
 	private static final double INTERACT_RANGE = 4.0;
 	private static final double INTERACT_COOLDOWN = 0.1;
 	private static final double SPEAK_RADIUS = 25.0;
+	private static final double SKILL_UPGRADE_REMINDER_PERIOD = 30.0;
 
 	private static final List<PlayerCharacter> pcs;
 	private static final Map<Player, PlayerCharacter> playerMap;
@@ -248,7 +249,7 @@ public final class PlayerCharacter extends AbstractCharacter {
 	 * points periodically.
 	 */
 	private static void scheduleSkillUpgradeReminderTask() {
-		RepeatingTask skillUpgradeReminderTask = new RepeatingTask(15) {
+		RepeatingTask skillUpgradeReminderTask = new RepeatingTask(SKILL_UPGRADE_REMINDER_PERIOD) {
 			@Override
 			protected void run() {
 				for (int i = 0; i < pcs.size(); i++) {
@@ -1243,7 +1244,8 @@ public final class PlayerCharacter extends AbstractCharacter {
 			Ray ray = new Ray(start, start.getDirection(), INTERACT_RANGE);
 			Raycast raycast = new Raycast(ray, PlayerCharacterInteractionCollider.class);
 			List<RaycastHit> hits = raycast.getHits();
-			for (RaycastHit hit : hits) {
+			if (hits.size() > 0) {
+				RaycastHit hit = hits.get(0);
 				PlayerCharacterInteractionCollider collider = (PlayerCharacterInteractionCollider) hit.getCollider();
 				collider.onInteract(pc);
 			}
