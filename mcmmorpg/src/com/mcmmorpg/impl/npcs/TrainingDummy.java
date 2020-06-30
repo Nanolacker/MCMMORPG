@@ -1,5 +1,7 @@
 package com.mcmmorpg.impl.npcs;
 
+import java.util.List;
+
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Sound;
@@ -13,6 +15,7 @@ import com.mcmmorpg.common.character.Source;
 import com.mcmmorpg.common.sound.Noise;
 import com.mcmmorpg.common.time.DelayedTask;
 import com.mcmmorpg.common.util.BukkitUtility;
+import com.mcmmorpg.impl.constants.Quests;
 
 public class TrainingDummy extends NonPlayerCharacter {
 
@@ -53,10 +56,18 @@ public class TrainingDummy extends NonPlayerCharacter {
 	@Override
 	protected void onDeath() {
 		super.onDeath();
-		DESTROY_NOISE.play(getLocation());
+		Location location = getLocation();
+		DESTROY_NOISE.play(location);
 		entity.remove();
 		hitbox.setActive(false);
-		PlayerCharacter.distributeXp(getLocation(), 10, 1);
+		List<PlayerCharacter> nearbyPcs = PlayerCharacter.getNearbyPlayerCharacters(location, 10);
+		for (PlayerCharacter pc : nearbyPcs) {
+			pc.giveXp(1);
+			Quests.TUTORIAL.getObjective(7).addProgress(pc, 1);
+			if (Quests.TUTORIAL.getObjective(7).isComplete(pc)) {
+				Quests.TUTORIAL.getObjective(8).setAccessible(pc, true);
+			}
+		}
 		DelayedTask respawnTask = new DelayedTask(RESPAWN_TIME) {
 			@Override
 			protected void run() {

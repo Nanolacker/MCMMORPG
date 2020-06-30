@@ -7,6 +7,7 @@ import org.bukkit.inventory.ItemStack;
 
 import com.mcmmorpg.common.character.PlayerCharacter;
 import com.mcmmorpg.common.event.EventManager;
+import com.mcmmorpg.common.event.PlayerCharacterUpgradeSkillEvent;
 import com.mcmmorpg.common.event.PlayerCharacterUseSkillEvent;
 import com.mcmmorpg.common.item.ItemFactory;
 import com.mcmmorpg.common.sound.Noise;
@@ -136,8 +137,8 @@ public final class Skill {
 	 * tree.
 	 */
 	public boolean isUnlocked(PlayerCharacter pc) {
-		PlayerSkillManager manager = pc.getSkillManager();
-		PlayerSkillData data = manager.getSkillData(this);
+		PlayerCharacterSkillManager manager = pc.getSkillManager();
+		PlayerCharacterSkillData data = manager.getSkillData(this);
 		return data != null;
 	}
 
@@ -146,8 +147,8 @@ public final class Skill {
 	 * skill tree.
 	 */
 	public int getUpgradeLevel(PlayerCharacter pc) {
-		PlayerSkillManager manager = pc.getSkillManager();
-		PlayerSkillData data = manager.getSkillData(this);
+		PlayerCharacterSkillManager manager = pc.getSkillManager();
+		PlayerCharacterSkillData data = manager.getSkillData(this);
 		if (data == null) {
 			return 0;
 		} else {
@@ -156,8 +157,8 @@ public final class Skill {
 	}
 
 	void upgrade(PlayerCharacter pc) {
-		PlayerSkillManager manager = pc.getSkillManager();
-		PlayerSkillData data = manager.getSkillData(this);
+		PlayerCharacterSkillManager manager = pc.getSkillManager();
+		PlayerCharacterSkillData data = manager.getSkillData(this);
 		if (data == null) {
 			// unlock
 			manager.unlockSkill(this);
@@ -171,6 +172,8 @@ public final class Skill {
 					+ newLevel + ChatColor.GRAY + "!");
 			UPGRADE_NOISE.play(pc);
 		}
+		PlayerCharacterUpgradeSkillEvent event = new PlayerCharacterUpgradeSkillEvent(pc, this);
+		EventManager.callEvent(event);
 	}
 
 	ItemStack getHotbarItemStack() {
@@ -188,8 +191,8 @@ public final class Skill {
 	}
 
 	ItemStack getSkillTreeItemStack(PlayerCharacter pc) {
-		PlayerSkillManager manager = pc.getSkillManager();
-		PlayerSkillData data = manager.getSkillData(this);
+		PlayerCharacterSkillManager manager = pc.getSkillManager();
+		PlayerCharacterSkillData data = manager.getSkillData(this);
 		boolean unlocked = isUnlocked(pc);
 		int upgradeLevel = data == null ? 0 : data.getUpgradeLevel();
 		Material material = unlocked ? icon : LOCKED_MATERIAL;
@@ -236,8 +239,8 @@ public final class Skill {
 		if (getUpgradeLevel(pc) == 0) {
 			throw new IllegalArgumentException("Player has not unlocked skill");
 		}
-		PlayerSkillManager manager = pc.getSkillManager();
-		PlayerSkillData data = manager.getSkillData(Skill.this);
+		PlayerCharacterSkillManager manager = pc.getSkillManager();
+		PlayerCharacterSkillData data = manager.getSkillData(Skill.this);
 		return data.getSkillCooldownSeconds();
 	}
 
@@ -249,8 +252,8 @@ public final class Skill {
 	}
 
 	void cooldown(PlayerCharacter pc, double duration) {
-		PlayerSkillManager manager = pc.getSkillManager();
-		PlayerSkillData data = manager.getSkillData(this);
+		PlayerCharacterSkillManager manager = pc.getSkillManager();
+		PlayerCharacterSkillData data = manager.getSkillData(this);
 		data.setCooldown(duration);
 		RepeatingTask cooldownTask = new RepeatingTask(COOLDOWN_UPDATE_PERIOD_SECONDS) {
 			@Override

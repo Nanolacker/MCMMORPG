@@ -9,6 +9,8 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 import com.mcmmorpg.common.character.PlayerCharacter;
+import com.mcmmorpg.common.event.EventManager;
+import com.mcmmorpg.common.event.PlayerCharacterOpenSkillTreeEvent;
 
 /**
  * The center of player character advancement. A skill tree allows player
@@ -32,6 +34,8 @@ public class SkillTree {
 		Inventory inventory = createInventory(pc);
 		inventoryMap.put(pc, inventory);
 		pc.getPlayer().openInventory(inventory);
+		PlayerCharacterOpenSkillTreeEvent event = new PlayerCharacterOpenSkillTreeEvent(pc);
+		EventManager.callEvent(event);
 	}
 
 	private Inventory createInventory(PlayerCharacter pc) {

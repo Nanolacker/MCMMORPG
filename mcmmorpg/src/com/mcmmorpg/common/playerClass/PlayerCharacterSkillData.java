@@ -4,14 +4,14 @@ package com.mcmmorpg.common.playerClass;
  * A serializable data container that stores player character data pertaining to
  * a skill, such as upgrade level and cooldown.
  */
-public class PlayerSkillData {
+public class PlayerCharacterSkillData {
 
 	private final String skillName;
 	private final String playerClassName;
 	private int upgradeLevel;
 	private double skillCooldownSeconds;
 
-	PlayerSkillData(Skill skill) {
+	PlayerCharacterSkillData(Skill skill) {
 		skillName = skill.getName();
 		playerClassName = skill.getPlayerClass().getName();
 		upgradeLevel = 1;

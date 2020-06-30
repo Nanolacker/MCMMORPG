@@ -26,7 +26,7 @@ public class Quests {
 	/**
 	 * First quest of the game that has the player report to the mayor of Melcher.
 	 */
-	public static final Quest REPORTING_FOR_DUTY = Quest.forName("Reporting for Duty");
+	public static final Quest TUTORIAL = Quest.forName("Tutorial");
 	/**
 	 * Quest that has the player get into a fight with an angered drunkard.
 	 */

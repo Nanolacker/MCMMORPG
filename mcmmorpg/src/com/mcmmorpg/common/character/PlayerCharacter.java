@@ -51,8 +51,8 @@ import com.mcmmorpg.common.physics.Ray;
 import com.mcmmorpg.common.physics.Raycast;
 import com.mcmmorpg.common.physics.RaycastHit;
 import com.mcmmorpg.common.playerClass.PlayerClass;
-import com.mcmmorpg.common.playerClass.PlayerSkillData;
-import com.mcmmorpg.common.playerClass.PlayerSkillManager;
+import com.mcmmorpg.common.playerClass.PlayerCharacterSkillData;
+import com.mcmmorpg.common.playerClass.PlayerCharacterSkillManager;
 import com.mcmmorpg.common.quest.PlayerCharacterQuestData;
 import com.mcmmorpg.common.quest.PlayerCharacterQuestManager;
 import com.mcmmorpg.common.quest.Quest;
@@ -106,7 +106,7 @@ public final class PlayerCharacter extends AbstractCharacter {
 	private double manaRegenRate;
 	private final PlayerCharacterQuestManager questStatusManager;
 	private final QuestLog questLog;
-	private final PlayerSkillManager skillStatusManager;
+	private final PlayerCharacterSkillManager skillStatusManager;
 	private final List<String> tags;
 	/**
 	 * The total play time accumulated on this player character before the current
@@ -137,7 +137,7 @@ public final class PlayerCharacter extends AbstractCharacter {
 	private PlayerCharacter(Player player, boolean fresh, PlayerClass playerClass, String zone, Location location,
 			Location respawnLocation, int xp, int skillUpgradePoints, int currency, double maxHealth,
 			double currentHealth, double healthRegenRate, double maxMana, double currentMana, double manaRegenRate,
-			Quest[] completedQuests, PlayerCharacterQuestData[] questData, PlayerSkillData[] skillData,
+			Quest[] completedQuests, PlayerCharacterQuestData[] questData, PlayerCharacterSkillData[] skillData,
 			ItemStack[] inventoryContents, String[] tags, double playTime) {
 		super(ChatColor.GREEN + player.getName(), xpToLevel(xp), location);
 		super.setHeight(HEIGHT);
@@ -155,7 +155,7 @@ public final class PlayerCharacter extends AbstractCharacter {
 		this.manaRegenRate = manaRegenRate;
 		this.questStatusManager = new PlayerCharacterQuestManager(completedQuests, questData);
 		this.questLog = new QuestLog(this);
-		this.skillStatusManager = new PlayerSkillManager(this, skillData);
+		this.skillStatusManager = new PlayerCharacterSkillManager(this, skillData);
 		this.skillStatusManager.init();
 		player.getInventory().setContents(inventoryContents);
 		this.tags = new ArrayList<>(Arrays.asList(tags));
@@ -292,7 +292,7 @@ public final class PlayerCharacter extends AbstractCharacter {
 		double currentMana = saveData.getCurrentMana();
 		double manaRegenRate = saveData.getManaRegenRate();
 		PlayerCharacterQuestData[] questStatuses = saveData.getQuestData();
-		PlayerSkillData[] skillStatuses = saveData.getSkillData();
+		PlayerCharacterSkillData[] skillStatuses = saveData.getSkillData();
 		ItemStack[] inventoryContents = saveData.getInventoryContents();
 		String[] tags = saveData.getTags();
 		double playTime = saveData.getTotalPlayTime();
@@ -878,7 +878,7 @@ public final class PlayerCharacter extends AbstractCharacter {
 	/**
 	 * Returns this player character's skill manager.
 	 */
-	public PlayerSkillManager getSkillManager() {
+	public PlayerCharacterSkillManager getSkillManager() {
 		return skillStatusManager;
 	}
 

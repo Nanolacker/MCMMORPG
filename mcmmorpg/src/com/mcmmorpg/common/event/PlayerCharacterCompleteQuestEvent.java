@@ -9,14 +9,14 @@ import com.mcmmorpg.common.quest.Quest;
 /**
  * An event called when a player character completes a quest.
  */
-public class QuestCompletionEvent extends Event {
+public class PlayerCharacterCompleteQuestEvent extends Event {
 
 	private static final HandlerList handlers = new HandlerList();
 
 	private final PlayerCharacter pc;
 	private final Quest quest;
 
-	public QuestCompletionEvent(PlayerCharacter pc, Quest quest) {
+	public PlayerCharacterCompleteQuestEvent(PlayerCharacter pc, Quest quest) {
 		this.pc = pc;
 		this.quest = quest;
 	}

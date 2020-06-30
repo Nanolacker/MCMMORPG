@@ -13,7 +13,8 @@ import org.bukkit.inventory.ItemStack;
 
 import com.mcmmorpg.common.character.PlayerCharacter;
 import com.mcmmorpg.common.event.EventManager;
-import com.mcmmorpg.common.event.QuestCompletionEvent;
+import com.mcmmorpg.common.event.PlayerCharacterCompleteQuestEvent;
+import com.mcmmorpg.common.event.PlayerCharacterStartQuestEvent;
 import com.mcmmorpg.common.item.ItemFactory;
 import com.mcmmorpg.common.sound.Noise;
 
@@ -123,6 +124,8 @@ public class Quest {
 		PlayerCharacterQuestManager questManager = pc.getQuestManager();
 		questManager.startQuest(this);
 		pc.sendMessage(ChatColor.GRAY + "Quest started: " + ChatColor.YELLOW + name);
+		PlayerCharacterStartQuestEvent event = new PlayerCharacterStartQuestEvent(pc, this);
+		EventManager.callEvent(event);
 		pc.updateQuestDisplay();
 	}
 
@@ -140,7 +143,7 @@ public class Quest {
 		COMPLETE_NOISE.play(pc);
 		PlayerCharacterQuestManager questManager = pc.getQuestManager();
 		questManager.completeQuest(this);
-		QuestCompletionEvent event = new QuestCompletionEvent(pc, this);
+		PlayerCharacterCompleteQuestEvent event = new PlayerCharacterCompleteQuestEvent(pc, this);
 		EventManager.callEvent(event);
 		pc.updateQuestDisplay();
 	}
@@ -172,7 +175,7 @@ public class Quest {
 	public String getQuestLogLines(PlayerCharacter pc) {
 		String objectiveLines = "";
 		for (QuestObjective objective : objectives) {
-			if (!objective.isAccessible(pc)) {
+			if (!objective.isAccessible(pc) || objective.isComplete(pc)) {
 				continue;
 			}
 			int progress = objective.getProgress(pc);

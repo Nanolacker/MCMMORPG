@@ -6,7 +6,12 @@ import org.bukkit.event.Listener;
 
 import com.mcmmorpg.common.character.PlayerCharacter;
 import com.mcmmorpg.common.character.PlayerCharacter.PlayerCharacterCollider;
+import com.mcmmorpg.common.event.PlayerCharacterAddSkillToHotbarEvent;
 import com.mcmmorpg.common.event.PlayerCharacterLevelUpEvent;
+import com.mcmmorpg.common.event.PlayerCharacterOpenMapEvent;
+import com.mcmmorpg.common.event.PlayerCharacterOpenSkillTreeEvent;
+import com.mcmmorpg.common.event.PlayerCharacterUpgradeSkillEvent;
+import com.mcmmorpg.common.event.PlayerCharacterUseSkillEvent;
 import com.mcmmorpg.common.event.QuestObjectiveChangeProgressEvent;
 import com.mcmmorpg.common.item.Item;
 import com.mcmmorpg.common.item.LootChest;
@@ -21,6 +26,7 @@ import com.mcmmorpg.impl.constants.RespawnLocations;
 import com.mcmmorpg.impl.constants.Soundtracks;
 import com.mcmmorpg.impl.constants.Worlds;
 import com.mcmmorpg.impl.constants.Zones;
+import com.mcmmorpg.impl.event.PlayerCharacterOpenMenuEvent;
 import com.mcmmorpg.impl.npcs.Adventurer;
 import com.mcmmorpg.impl.npcs.Chicken;
 import com.mcmmorpg.impl.npcs.Guard;
@@ -152,6 +158,18 @@ public class MelcherListener implements Listener {
 			}
 		};
 		exitBounds.setActive(true);
+
+		Collider trainingGroundsBounds = new Collider(Worlds.ELADRADOR, -1131, 70, 247, -1113, 76, 257) {
+			@Override
+			protected void onCollisionEnter(Collider other) {
+				if (other instanceof PlayerCharacterCollider) {
+					PlayerCharacter pc = ((PlayerCharacterCollider) other).getCharacter();
+					Quests.TUTORIAL.getObjective(6).complete(pc);
+					Quests.TUTORIAL.getObjective(7).setAccessible(pc, true);
+				}
+			}
+		};
+		trainingGroundsBounds.setActive(true);
 	}
 
 	private void spawnNpcs() {
@@ -196,11 +214,11 @@ public class MelcherListener implements Listener {
 	}
 
 	private void createQuestMarkers() {
-		QuestMarker reportingForDutyQuestMarker = new QuestMarker(Quests.REPORTING_FOR_DUTY,
+		QuestMarker reportingForDutyQuestMarker = new QuestMarker(Quests.TUTORIAL,
 				MAYOR_LOCATION.clone().add(0, 2.25, 0)) {
 			@Override
 			protected QuestMarkerIcon getIcon(PlayerCharacter pc) {
-				if (Quests.REPORTING_FOR_DUTY.getStatus(pc) == QuestStatus.IN_PROGRESS) {
+				if (Quests.TUTORIAL.getStatus(pc) == QuestStatus.IN_PROGRESS) {
 					return QuestMarkerIcon.READY_TO_TURN_IN;
 				} else {
 					return QuestMarkerIcon.HIDDEN;
@@ -225,7 +243,7 @@ public class MelcherListener implements Listener {
 						return QuestMarkerIcon.HIDDEN;
 					}
 				case NOT_STARTED:
-					if (Quests.REPORTING_FOR_DUTY.getStatus(pc) == QuestStatus.COMPLETED) {
+					if (Quests.TUTORIAL.getStatus(pc) == QuestStatus.COMPLETED) {
 						return QuestMarkerIcon.READY_TO_START;
 					} else {
 						return QuestMarkerIcon.HIDDEN;
@@ -386,8 +404,62 @@ public class MelcherListener implements Listener {
 		int level = event.getNewLevel();
 		if (level == 1) {
 			PlayerCharacter pc = event.getPlayerCharacter();
-			Quests.REPORTING_FOR_DUTY.start(pc);
-			Quests.REPORTING_FOR_DUTY.getObjective(0).setAccessible(pc, true);
+			Quests.TUTORIAL.start(pc);
+			Quests.TUTORIAL.getObjective(0).setAccessible(pc, true);
+		}
+	}
+
+	@EventHandler
+	private void onOpenMenu(PlayerCharacterOpenMenuEvent event) {
+		PlayerCharacter pc = event.getPlayerCharacter();
+		if (Quests.TUTORIAL.getObjective(0).isAccessible(pc)) {
+			Quests.TUTORIAL.getObjective(0).complete(pc);
+			Quests.TUTORIAL.getObjective(1).setAccessible(pc, true);
+		}
+	}
+
+	@EventHandler
+	private void onOpenSkillTree(PlayerCharacterOpenSkillTreeEvent event) {
+		PlayerCharacter pc = event.getPlayerCharacter();
+		if (Quests.TUTORIAL.getObjective(1).isAccessible(pc)) {
+			Quests.TUTORIAL.getObjective(1).complete(pc);
+			Quests.TUTORIAL.getObjective(2).setAccessible(pc, true);
+		}
+	}
+
+	@EventHandler
+	private void onUnlockSkill(PlayerCharacterUpgradeSkillEvent event) {
+		PlayerCharacter pc = event.getPlayerCharacter();
+		if (Quests.TUTORIAL.getObjective(2).isAccessible(pc)) {
+			Quests.TUTORIAL.getObjective(2).complete(pc);
+			Quests.TUTORIAL.getObjective(3).setAccessible(pc, true);
+		}
+	}
+
+	@EventHandler
+	private void onAddSkillToHotbar(PlayerCharacterAddSkillToHotbarEvent event) {
+		PlayerCharacter pc = event.getPlayerCharacter();
+		if (Quests.TUTORIAL.getObjective(3).isAccessible(pc)) {
+			Quests.TUTORIAL.getObjective(3).complete(pc);
+			Quests.TUTORIAL.getObjective(4).setAccessible(pc, true);
+		}
+	}
+
+	@EventHandler
+	private void onUseSkill(PlayerCharacterUseSkillEvent event) {
+		PlayerCharacter pc = event.getPlayerCharacter();
+		if (Quests.TUTORIAL.getObjective(4).isAccessible(pc)) {
+			Quests.TUTORIAL.getObjective(4).complete(pc);
+			Quests.TUTORIAL.getObjective(5).setAccessible(pc, true);
+		}
+	}
+
+	@EventHandler
+	private void onOpenMap(PlayerCharacterOpenMapEvent event) {
+		PlayerCharacter pc = event.getPlayerCharacter();
+		if (Quests.TUTORIAL.getObjective(5).isAccessible(pc)) {
+			Quests.TUTORIAL.getObjective(5).complete(pc);
+			Quests.TUTORIAL.getObjective(6).setAccessible(pc, true);
 		}
 	}
 

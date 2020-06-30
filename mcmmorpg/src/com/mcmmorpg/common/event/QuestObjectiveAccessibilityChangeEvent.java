@@ -6,10 +6,7 @@ import org.bukkit.event.HandlerList;
 import com.mcmmorpg.common.character.PlayerCharacter;
 import com.mcmmorpg.common.quest.QuestObjective;
 
-/**
- * This is a template for writing events.
- */
-public class QuestObjectiveAccessibilityEvent extends Event {
+public class QuestObjectiveAccessibilityChangeEvent extends Event {
 
 	private static final HandlerList handlers = new HandlerList();
 
@@ -17,7 +14,7 @@ public class QuestObjectiveAccessibilityEvent extends Event {
 	private final QuestObjective objective;
 	private final boolean accessible;
 
-	public QuestObjectiveAccessibilityEvent(PlayerCharacter pc, QuestObjective objective, boolean accessible) {
+	public QuestObjectiveAccessibilityChangeEvent(PlayerCharacter pc, QuestObjective objective, boolean accessible) {
 		this.pc = pc;
 		this.objective = objective;
 		this.accessible = accessible;

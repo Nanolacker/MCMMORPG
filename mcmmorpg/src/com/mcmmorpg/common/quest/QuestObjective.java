@@ -5,7 +5,7 @@ import org.bukkit.Sound;
 
 import com.mcmmorpg.common.character.PlayerCharacter;
 import com.mcmmorpg.common.event.EventManager;
-import com.mcmmorpg.common.event.QuestObjectiveAccessibilityEvent;
+import com.mcmmorpg.common.event.QuestObjectiveAccessibilityChangeEvent;
 import com.mcmmorpg.common.event.QuestObjectiveChangeProgressEvent;
 import com.mcmmorpg.common.item.Item;
 import com.mcmmorpg.common.sound.Noise;
@@ -111,7 +111,8 @@ public class QuestObjective {
 		EventManager.callEvent(event);
 		pc.updateQuestDisplay();
 		if (progress == goal) {
-			pc.sendMessage(goal + "/" + goal + " " + description + ChatColor.GRAY + " complete!");
+			pc.sendMessage(ChatColor.GREEN + "" + goal + "/" + goal + " " + ChatColor.WHITE + description
+					+ ChatColor.GRAY + " complete!");
 			OBJECTIVE_COMPLETE_NOISE.play(pc);
 		}
 		quest.checkForCompletion(pc);
@@ -159,7 +160,8 @@ public class QuestObjective {
 		if (wasAccessible != accessible) {
 			data.setAccessible(index, accessible);
 			pc.updateQuestDisplay();
-			QuestObjectiveAccessibilityEvent event = new QuestObjectiveAccessibilityEvent(pc, this, accessible);
+			QuestObjectiveAccessibilityChangeEvent event = new QuestObjectiveAccessibilityChangeEvent(pc, this,
+					accessible);
 			EventManager.callEvent(event);
 		}
 	}

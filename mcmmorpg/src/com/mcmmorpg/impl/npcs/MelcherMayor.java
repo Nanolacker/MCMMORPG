@@ -54,7 +54,7 @@ public class MelcherMayor extends StaticHuman {
 							pc);
 					break;
 				case 6:
-					Quests.REPORTING_FOR_DUTY.getObjective(0).complete(pc);
+					Quests.TUTORIAL.getObjective(8).complete(pc);
 					pc.giveXp(REPORTING_FOR_DUTY_XP_REWARD);
 					Quests.THWARTING_THE_THIEVES.start(pc);
 					Quests.THWARTING_THE_THIEVES.getObjective(0).setAccessible(pc, true);
@@ -99,7 +99,7 @@ public class MelcherMayor extends StaticHuman {
 
 	@Override
 	protected void onInteract(PlayerCharacter pc) {
-		if (Quests.REPORTING_FOR_DUTY.compareStatus(pc, QuestStatus.IN_PROGRESS)) {
+		if (Quests.TUTORIAL.compareStatus(pc, QuestStatus.IN_PROGRESS)) {
 			completeReportingForDutyInteraction.advance(pc);
 		} else if (Quests.THWARTING_THE_THIEVES.compareStatus(pc, QuestStatus.IN_PROGRESS)) {
 			if (Quests.THWARTING_THE_THIEVES.getObjective(0).isComplete(pc)) {

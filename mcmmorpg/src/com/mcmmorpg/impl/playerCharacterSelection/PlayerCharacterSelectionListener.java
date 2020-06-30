@@ -22,6 +22,7 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 import com.mcmmorpg.common.character.PlayerCharacter;
+import com.mcmmorpg.common.event.EventManager;
 import com.mcmmorpg.common.event.StaticInteractableEvent;
 import com.mcmmorpg.common.item.ItemFactory;
 import com.mcmmorpg.common.item.Weapon;
@@ -36,6 +37,7 @@ import com.mcmmorpg.impl.constants.Items;
 import com.mcmmorpg.impl.constants.PlayerClasses;
 import com.mcmmorpg.impl.constants.Worlds;
 import com.mcmmorpg.impl.constants.Zones;
+import com.mcmmorpg.impl.event.PlayerCharacterOpenMenuEvent;
 import com.mcmmorpg.impl.playerCharacterSelection.PlayerCharacterSelectionProfile.Menu;
 
 /**
@@ -210,6 +212,9 @@ public class PlayerCharacterSelectionListener implements Listener {
 			Player player = event.getPlayer();
 			CLICK_NOISE.play(player);
 			player.openInventory(MENU_INVENTORY);
+			PlayerCharacter pc = PlayerCharacter.forPlayer(player);
+			PlayerCharacterOpenMenuEvent openMenuEvent = new PlayerCharacterOpenMenuEvent(pc);
+			EventManager.callEvent(openMenuEvent);
 		} else if (interactable.equals(OPEN_QUEST_LOG_ITEM_STACK)) {
 			Player player = event.getPlayer();
 			CLICK_NOISE.play(player);
@@ -500,6 +505,8 @@ public class PlayerCharacterSelectionListener implements Listener {
 		if (event.getNewSlot() == 8) {
 			CLICK_NOISE.play(player);
 			player.openInventory(MENU_INVENTORY);
+			PlayerCharacterOpenMenuEvent openMenuEvent = new PlayerCharacterOpenMenuEvent(pc);
+			EventManager.callEvent(openMenuEvent);
 		}
 	}
 

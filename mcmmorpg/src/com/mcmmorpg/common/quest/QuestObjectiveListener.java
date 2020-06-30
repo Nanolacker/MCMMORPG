@@ -14,7 +14,7 @@ import com.mcmmorpg.common.event.PlayerCharacterPickUpItemEvent;
 import com.mcmmorpg.common.event.PlayerCharacterReceiveItemEvent;
 import com.mcmmorpg.common.event.PlayerCharacterRegisterEvent;
 import com.mcmmorpg.common.event.PlayerCharacterRemoveItemEvent;
-import com.mcmmorpg.common.event.QuestObjectiveAccessibilityEvent;
+import com.mcmmorpg.common.event.QuestObjectiveAccessibilityChangeEvent;
 import com.mcmmorpg.common.item.Item;
 
 class QuestObjectiveListener implements Listener {
@@ -99,7 +99,7 @@ class QuestObjectiveListener implements Listener {
 	}
 
 	@EventHandler
-	private void onObjectiveChangeAccessibility(QuestObjectiveAccessibilityEvent event) {
+	private void onObjectiveChangeAccessibility(QuestObjectiveAccessibilityChangeEvent event) {
 		if (!event.objectiveIsAccessible()) {
 			return;
 		}

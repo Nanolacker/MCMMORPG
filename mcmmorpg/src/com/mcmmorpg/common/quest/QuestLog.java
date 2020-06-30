@@ -14,6 +14,8 @@ import org.bukkit.inventory.ItemStack;
 
 import com.mcmmorpg.common.character.PlayerCharacter;
 import com.mcmmorpg.common.event.EventManager;
+import com.mcmmorpg.common.event.PlayerCharacterCloseQuestLogEvent;
+import com.mcmmorpg.common.event.PlayerCharacterOpenQuestLogEvent;
 
 /**
  * A menu in which a player character can view quests.
@@ -42,6 +44,8 @@ public class QuestLog {
 		Inventory inventory = createQuestLogInventory();
 		pc.getPlayer().openInventory(inventory);
 		questLogInventories.add(inventory);
+		PlayerCharacterOpenQuestLogEvent openQuestLogEvent = new PlayerCharacterOpenQuestLogEvent(pc);
+		EventManager.callEvent(openQuestLogEvent);
 	}
 
 	private Inventory createQuestLogInventory() {
@@ -65,11 +69,6 @@ public class QuestLog {
 	private static class QuestLogListener implements Listener {
 		@EventHandler
 		private void onClick(InventoryClickEvent event) {
-			Player player = (Player) event.getWhoClicked();
-			PlayerCharacter pc = PlayerCharacter.forPlayer(player);
-			if (pc == null) {
-				return;
-			}
 			Inventory topInventory = event.getInventory();
 			if (questLogInventories.contains(topInventory)) {
 				event.setCancelled(true);
@@ -78,7 +77,17 @@ public class QuestLog {
 
 		@EventHandler
 		private void onClose(InventoryCloseEvent event) {
-			questLogInventories.remove(event.getInventory());
+			Player player = (Player) event.getPlayer();
+			PlayerCharacter pc = PlayerCharacter.forPlayer(player);
+			if (pc == null) {
+				return;
+			}
+			Inventory inventory = event.getInventory();
+			if (questLogInventories.contains(inventory)) {
+				questLogInventories.remove(inventory);
+				PlayerCharacterCloseQuestLogEvent closeQuestLogEvent = new PlayerCharacterCloseQuestLogEvent(pc);
+				EventManager.callEvent(closeQuestLogEvent);
+			}
 		}
 	}
 

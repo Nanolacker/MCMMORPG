@@ -15,6 +15,9 @@ import org.bukkit.map.MapView;
 import org.bukkit.map.MinecraftFont;
 
 import com.mcmmorpg.common.character.PlayerCharacter;
+import com.mcmmorpg.common.event.EventManager;
+import com.mcmmorpg.common.event.PlayerCharacterCloseMapEvent;
+import com.mcmmorpg.common.event.PlayerCharacterOpenMapEvent;
 import com.mcmmorpg.common.item.Weapon;
 import com.mcmmorpg.common.util.StringUtility;
 
@@ -105,6 +108,8 @@ public class PlayerCharacterMap {
 		PlayerInventory inventory = player.getInventory();
 		inventory.setItemInMainHand(itemStack);
 		isOpen = true;
+		PlayerCharacterOpenMapEvent event = new PlayerCharacterOpenMapEvent(pc);
+		EventManager.callEvent(event);
 	}
 
 	/**
@@ -119,6 +124,8 @@ public class PlayerCharacterMap {
 		inventory.setItemInMainHand(pcWeaponTemp.getItemStack());
 		pcWeaponTemp = null;
 		isOpen = false;
+		PlayerCharacterCloseMapEvent event = new PlayerCharacterCloseMapEvent(pc);
+		EventManager.callEvent(event);
 	}
 
 	/**

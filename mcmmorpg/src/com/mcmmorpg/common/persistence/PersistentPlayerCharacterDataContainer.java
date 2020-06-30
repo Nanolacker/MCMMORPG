@@ -10,7 +10,7 @@ import org.bukkit.inventory.ItemStack;
 import com.mcmmorpg.common.character.PlayerCharacter;
 import com.mcmmorpg.common.item.Weapon;
 import com.mcmmorpg.common.playerClass.PlayerClass;
-import com.mcmmorpg.common.playerClass.PlayerSkillData;
+import com.mcmmorpg.common.playerClass.PlayerCharacterSkillData;
 import com.mcmmorpg.common.quest.PlayerCharacterQuestData;
 import com.mcmmorpg.common.quest.PlayerCharacterQuestManager;
 import com.mcmmorpg.common.quest.Quest;
@@ -33,7 +33,7 @@ public class PersistentPlayerCharacterDataContainer {
 	private final double manaRegenRate;
 	private final String[] completedQuestNames;
 	private final PlayerCharacterQuestData[] questData;
-	private final PlayerSkillData[] skillData;
+	private final PlayerCharacterSkillData[] skillData;
 	private final PersistentInventory inventory;
 	private final String[] tags;
 	private final double totalPlayTime;
@@ -41,7 +41,7 @@ public class PersistentPlayerCharacterDataContainer {
 	private PersistentPlayerCharacterDataContainer(boolean fresh, PlayerClass playerClass, String zone,
 			Location location, Location respawnLocation, int xp, int skillUpgradePoints, int currency, double maxHealth,
 			double currentHealth, double healthRegenRate, double maxMana, double currentMana, double manaRegenRate,
-			List<Quest> completedQuests, PlayerCharacterQuestData[] questData, PlayerSkillData[] skillData,
+			List<Quest> completedQuests, PlayerCharacterQuestData[] questData, PlayerCharacterSkillData[] skillData,
 			ItemStack[] inventoryContents, String[] tags, double totalPlayTime) {
 		this.fresh = fresh;
 		this.playerClassName = playerClass.getName();
@@ -91,7 +91,7 @@ public class PersistentPlayerCharacterDataContainer {
 		PlayerCharacterQuestManager questManager = pc.getQuestManager();
 		List<Quest> completedQuests = questManager.getCompletedQuests();
 		PlayerCharacterQuestData[] allQuestData = pc.getQuestManager().getQuestData();
-		PlayerSkillData[] skillData = pc.getSkillManager().getAllSkillData();
+		PlayerCharacterSkillData[] skillData = pc.getSkillManager().getAllSkillData();
 		ItemStack[] inventoryContents = pc.getPlayer().getInventory().getContents();
 		String[] tags = pc.getTags();
 		double totalPlayTime = pc.getTotalPlayTime();
@@ -116,7 +116,7 @@ public class PersistentPlayerCharacterDataContainer {
 		double currentMana = maxMana;
 		double manaRegenRate = 0;
 		PlayerCharacterQuestData[] questData = {};
-		PlayerSkillData[] skillData = {};
+		PlayerCharacterSkillData[] skillData = {};
 		ItemStack[] inventoryContents = { startWeapon.getItemStack() };
 		String[] tags = {};
 		double totalPlayTime = 0;
@@ -196,7 +196,7 @@ public class PersistentPlayerCharacterDataContainer {
 		return questData;
 	}
 
-	public PlayerSkillData[] getSkillData() {
+	public PlayerCharacterSkillData[] getSkillData() {
 		return skillData;
 	}
 

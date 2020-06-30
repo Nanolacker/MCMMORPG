@@ -9,27 +9,27 @@ import com.mcmmorpg.common.character.PlayerCharacter;
 /**
  * Manages data for a player character's skills.
  */
-public class PlayerSkillManager {
+public class PlayerCharacterSkillManager {
 
 	private final PlayerCharacter pc;
-	private final Map<Skill, PlayerSkillData> skillDataMap;
+	private final Map<Skill, PlayerCharacterSkillData> skillDataMap;
 
 	/**
 	 * Create a new skill manager for the specified player character using previous
 	 * skill data.
 	 */
-	public PlayerSkillManager(PlayerCharacter pc, PlayerSkillData[] allSkillData) {
+	public PlayerCharacterSkillManager(PlayerCharacter pc, PlayerCharacterSkillData[] allSkillData) {
 		this.pc = pc;
 		skillDataMap = new HashMap<>();
-		for (PlayerSkillData skillData : allSkillData) {
+		for (PlayerCharacterSkillData skillData : allSkillData) {
 			Skill skill = skillData.getSkill();
 			skillDataMap.put(skill, skillData);
 		}
 	}
 
 	public void init() {
-		Collection<PlayerSkillData> allSkillData = skillDataMap.values();
-		for (PlayerSkillData skillData : allSkillData) {
+		Collection<PlayerCharacterSkillData> allSkillData = skillDataMap.values();
+		for (PlayerCharacterSkillData skillData : allSkillData) {
 			Skill skill = skillData.getSkill();
 			double cooldown = skillData.getSkillCooldownSeconds();
 			if (cooldown > 0) {
@@ -42,19 +42,19 @@ public class PlayerSkillManager {
 	/**
 	 * Used for save data.
 	 */
-	public PlayerSkillData[] getAllSkillData() {
-		return skillDataMap.values().toArray(new PlayerSkillData[skillDataMap.size()]);
+	public PlayerCharacterSkillData[] getAllSkillData() {
+		return skillDataMap.values().toArray(new PlayerCharacterSkillData[skillDataMap.size()]);
 	}
 
 	/**
 	 * Returns null if the specified skill is not available to the player.
 	 */
-	PlayerSkillData getSkillData(Skill skill) {
+	PlayerCharacterSkillData getSkillData(Skill skill) {
 		return skillDataMap.get(skill);
 	}
 
 	void unlockSkill(Skill skill) {
-		PlayerSkillData skillStatus = new PlayerSkillData(skill);
+		PlayerCharacterSkillData skillStatus = new PlayerCharacterSkillData(skill);
 		skillDataMap.put(skill, skillStatus);
 	}
 

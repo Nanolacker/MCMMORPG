@@ -4,6 +4,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
 import com.mcmmorpg.common.character.PlayerCharacter;
+import com.mcmmorpg.common.time.DelayedTask;
 
 public class Tutorial {
 
@@ -18,6 +19,19 @@ public class Tutorial {
 		message = ChatColor.GRAY + "[" + ChatColor.GREEN + "Tutorial" + ChatColor.GRAY + "]: " + ChatColor.WHITE
 				+ message;
 		player.sendMessage(message);
+	}
+
+	public static void message(PlayerCharacter pc, String message, double delay) {
+		message(pc.getPlayer(), message, delay);
+	}
+
+	public static void message(Player player, String message, double delay) {
+		new DelayedTask(delay) {
+			@Override
+			protected void run() {
+				message(player, message);
+			}
+		}.schedule();
 	}
 
 }
