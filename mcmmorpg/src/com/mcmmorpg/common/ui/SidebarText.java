@@ -12,6 +12,7 @@ import org.bukkit.scoreboard.Objective;
 import org.bukkit.scoreboard.Score;
 import org.bukkit.scoreboard.Scoreboard;
 
+import com.mcmmorpg.common.character.PlayerCharacter;
 import com.mcmmorpg.common.util.StringUtility;
 
 /**
@@ -64,6 +65,10 @@ public class SidebarText {
 		player.setScoreboard(scoreboard);
 	}
 
+	public void apply(PlayerCharacter pc) {
+		apply(pc.getPlayer());
+	}
+
 	/**
 	 * No sidebar text will be displayed to this player.
 	 */
@@ -72,6 +77,10 @@ public class SidebarText {
 		if (scoreboard != null) {
 			scoreboard.clearSlot(DisplaySlot.SIDEBAR);
 		}
+	}
+
+	public static void clear(PlayerCharacter pc) {
+		clear(pc.getPlayer());
 	}
 
 }

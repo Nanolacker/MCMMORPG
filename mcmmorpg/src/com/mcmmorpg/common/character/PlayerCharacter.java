@@ -57,7 +57,6 @@ import com.mcmmorpg.common.quest.PlayerCharacterQuestData;
 import com.mcmmorpg.common.quest.PlayerCharacterQuestManager;
 import com.mcmmorpg.common.quest.Quest;
 import com.mcmmorpg.common.quest.QuestLog;
-import com.mcmmorpg.common.quest.QuestStatus;
 import com.mcmmorpg.common.sound.Noise;
 import com.mcmmorpg.common.sound.PlayerCharacterSoundtrackPlayer;
 import com.mcmmorpg.common.time.Clock;
@@ -185,7 +184,7 @@ public final class PlayerCharacter extends AbstractCharacter {
 
 		hitbox.setActive(true);
 		updateActionBar();
-		updateQuestDisplay();
+		questLog.updateSidebarText();
 		updateXpDisplay();
 		updateHealthDisplay();
 		updateManaDisplay();
@@ -1018,22 +1017,6 @@ public final class PlayerCharacter extends AbstractCharacter {
 	}
 
 	/**
-	 * Displays quest information on the side.
-	 */
-	public void updateQuestDisplay() {
-		String lines = "";
-		List<Quest> currentQuests = Quest.getAllQuestsMatchingStatus(this, QuestStatus.IN_PROGRESS);
-		for (int i = 0; i < currentQuests.size(); i++) {
-			Quest quest = currentQuests.get(i);
-			int questNum = i + 1;
-			lines += ChatColor.YELLOW + "" + "(" + ChatColor.BOLD + questNum + ChatColor.RESET + "" + ChatColor.YELLOW
-					+ ") " + quest.getName() + ChatColor.RESET + "\n" + quest.getQuestLogLines(this) + "\n";
-		}
-		SidebarText questDisplay = new SidebarText(ChatColor.YELLOW + "Quests", lines);
-		questDisplay.apply(player);
-	}
-
-	/**
 	 * Returns where this player character's hitbox should be relative to this
 	 * player character's location.
 	 */
@@ -1194,7 +1177,7 @@ public final class PlayerCharacter extends AbstractCharacter {
 		PlayerCharacterRemoveEvent event = new PlayerCharacterRemoveEvent(this);
 		EventManager.callEvent(event);
 		ActionBarText.clear(player);
-		SidebarText.clear(player);
+		SidebarText.clear(this);
 	}
 
 	/**

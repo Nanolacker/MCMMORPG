@@ -194,8 +194,12 @@ public class FlintonListener implements Listener {
 				MAYOR_LOCATION.clone().add(0, 2.25, 0)) {
 			@Override
 			protected QuestMarkerIcon getIcon(PlayerCharacter pc) {
-				if (Quests.CLEARING_THE_ROAD.getObjective(1).isAccessible(pc)) {
-					return QuestMarkerIcon.READY_TO_TURN_IN;
+				if (Quests.CLEARING_THE_ROAD.getStatus(pc) == QuestStatus.IN_PROGRESS) {
+					if (Quests.CLEARING_THE_ROAD.getObjective(1).isAccessible(pc)) {
+						return QuestMarkerIcon.READY_TO_TURN_IN;
+					} else {
+						return QuestMarkerIcon.OBJECTIVE;
+					}
 				} else {
 					return QuestMarkerIcon.HIDDEN;
 				}

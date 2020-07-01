@@ -66,7 +66,7 @@ public class MelcherTavernRat extends Rat {
 			Quests.PEST_CONTROL.getObjective(1).addProgress(pc, 1);
 			if (Quests.PEST_CONTROL.getObjective(1).isComplete(pc)
 					&& Quests.PEST_CONTROL.getObjective(2).isComplete(pc)) {
-				Quests.BAR_FIGHT.getObjective(3).setAccessible(pc, true);
+				Quests.PEST_CONTROL.getObjective(3).setAccessible(pc, true);
 			}
 		}
 	}

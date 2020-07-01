@@ -109,7 +109,7 @@ public class QuestObjective {
 		QuestObjectiveChangeProgressEvent event = new QuestObjectiveChangeProgressEvent(pc, this, previousProgress,
 				progress);
 		EventManager.callEvent(event);
-		pc.updateQuestDisplay();
+		pc.getQuestLog().updateSidebarText();
 		if (progress == goal) {
 			pc.sendMessage(ChatColor.GREEN + "" + goal + "/" + goal + " " + ChatColor.WHITE + description
 					+ ChatColor.GREEN + " complete!");
@@ -159,7 +159,7 @@ public class QuestObjective {
 		boolean wasAccessible = data.isAccessible(index);
 		if (wasAccessible != accessible) {
 			data.setAccessible(index, accessible);
-			pc.updateQuestDisplay();
+			pc.getQuestLog().updateSidebarText();
 			QuestObjectiveAccessibilityChangeEvent event = new QuestObjectiveAccessibilityChangeEvent(pc, this,
 					accessible);
 			EventManager.callEvent(event);

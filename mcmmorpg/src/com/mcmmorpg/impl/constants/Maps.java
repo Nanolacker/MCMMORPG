@@ -22,8 +22,8 @@ public class Maps {
 		BufferedImage eladradorImage = IOUtility.readImageFile(eladradorImageFile);
 		ELADRADOR = new MapSegment(eladradorOrigin, eladradorImage);
 
-		Location melcherTavernBasementOrigin = new Location(Worlds.ELADRADOR, -1088, 69, 238);
-		File melcherTavernBasementImageFile = new File(mapImagesDir, "MelcherTavernBasement.jpg");
+		Location melcherTavernBasementOrigin = new Location(Worlds.ELADRADOR, -1098, 69, 231);
+		File melcherTavernBasementImageFile = new File(mapImagesDir, "MelcherTavernBasement.png");
 		BufferedImage melcherTavernBasementImage = IOUtility.readImageFile(melcherTavernBasementImageFile);
 		MELCHER_TAVERN_BASEMENT = new MapSegment(melcherTavernBasementOrigin, melcherTavernBasementImage);
 

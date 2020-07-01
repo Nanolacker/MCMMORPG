@@ -7,15 +7,11 @@ import java.util.List;
 import java.util.Map;
 
 import org.bukkit.ChatColor;
-import org.bukkit.Material;
 import org.bukkit.Sound;
-import org.bukkit.inventory.ItemStack;
-
 import com.mcmmorpg.common.character.PlayerCharacter;
 import com.mcmmorpg.common.event.EventManager;
 import com.mcmmorpg.common.event.PlayerCharacterCompleteQuestEvent;
 import com.mcmmorpg.common.event.PlayerCharacterStartQuestEvent;
-import com.mcmmorpg.common.item.ItemFactory;
 import com.mcmmorpg.common.sound.Noise;
 
 /**
@@ -126,7 +122,7 @@ public class Quest {
 		pc.sendMessage(ChatColor.GREEN + "Quest started: " + ChatColor.YELLOW + name);
 		PlayerCharacterStartQuestEvent event = new PlayerCharacterStartQuestEvent(pc, this);
 		EventManager.callEvent(event);
-		pc.updateQuestDisplay();
+		pc.getQuestLog().updateSidebarText();
 	}
 
 	void checkForCompletion(PlayerCharacter pc) {
@@ -145,46 +141,7 @@ public class Quest {
 		questManager.completeQuest(this);
 		PlayerCharacterCompleteQuestEvent event = new PlayerCharacterCompleteQuestEvent(pc, this);
 		EventManager.callEvent(event);
-		pc.updateQuestDisplay();
-	}
-
-	ItemStack getInProgressQuestLogItemStack(int questIndex, PlayerCharacter pc) {
-		int questNum = questIndex + 1;
-		String name = ChatColor.YELLOW + "(" + questNum + ") " + this.name;
-		String lore = ChatColor.GOLD + "Level " + level + " Quest\n" + ChatColor.WHITE + getQuestLogLines(pc);
-		return ItemFactory.createItemStack(ChatColor.YELLOW + name, lore, Material.BOOK);
-	}
-
-	ItemStack getCompletedQuestLogItemStack(PlayerCharacter pc) {
-		String name = ChatColor.GREEN + this.name;
-		String objectiveLines = "";
-		for (QuestObjective objective : objectives) {
-			int progress = objective.getProgress(pc);
-			int goal = objective.getGoal();
-			String progressText = ChatColor.GREEN + "" + ChatColor.BOLD + "- " + progress + "/" + goal;
-			objectiveLines += progressText + " " + ChatColor.RESET + objective.getDescription() + "\n";
-		}
-		String lore = ChatColor.GOLD + "Level " + level + " Quest\n" + ChatColor.WHITE + objectiveLines;
-		return ItemFactory.createItemStack(ChatColor.YELLOW + name, lore, Material.BOOK);
-	}
-
-	/**
-	 * Return the lines that should be used to display this quest in the quest log
-	 * or quest sidebar.
-	 */
-	public String getQuestLogLines(PlayerCharacter pc) {
-		String objectiveLines = "";
-		for (QuestObjective objective : objectives) {
-			if (!objective.isAccessible(pc) || objective.isComplete(pc)) {
-				continue;
-			}
-			int progress = objective.getProgress(pc);
-			int goal = objective.getGoal();
-			ChatColor chatColor = progress == goal ? ChatColor.GREEN : ChatColor.WHITE;
-			String progressText = chatColor + "" + ChatColor.BOLD + "- " + progress + "/" + goal;
-			objectiveLines += progressText + " " + ChatColor.RESET + objective.getDescription() + "\n";
-		}
-		return objectiveLines;
+		pc.getQuestLog().updateSidebarText();
 	}
 
 	/**

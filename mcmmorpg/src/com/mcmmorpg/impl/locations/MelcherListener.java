@@ -393,7 +393,7 @@ public class MelcherListener implements Listener {
 			@Override
 			protected QuestMarkerIcon getIcon(PlayerCharacter pc) {
 				QuestStatus status = Quests.PEST_CONTROL.getStatus(pc);
-				if (status == QuestStatus.IN_PROGRESS && !Quests.PEST_CONTROL.getObjective(0).isComplete(pc)) {
+				if (status == QuestStatus.IN_PROGRESS && !Quests.PEST_CONTROL.getObjective(3).isAccessible(pc)) {
 					return QuestMarkerIcon.OBJECTIVE;
 				} else {
 					return QuestMarkerIcon.HIDDEN;
@@ -406,7 +406,7 @@ public class MelcherListener implements Listener {
 			@Override
 			protected QuestMarkerIcon getIcon(PlayerCharacter pc) {
 				QuestStatus status = Quests.PEST_CONTROL.getStatus(pc);
-				if (status == QuestStatus.IN_PROGRESS && Quests.PEST_CONTROL.getObjective(0).isComplete(pc)) {
+				if (status == QuestStatus.IN_PROGRESS && !Quests.PEST_CONTROL.getObjective(3).isAccessible(pc)) {
 					return QuestMarkerIcon.OBJECTIVE;
 				} else {
 					return QuestMarkerIcon.HIDDEN;
