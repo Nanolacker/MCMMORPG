@@ -33,8 +33,8 @@ public class StateMachine {
 		State currentState = states.get(currentStateIndex);
 		if (currentStateIndex != previousStateIndex) {
 			State previousState = states.get(previousStateIndex);
-			previousState.onStateExit(this);
-			currentState.onStateEnter(this);
+			previousState.terminate(this);
+			currentState.initialize(this);
 		}
 		previousStateIndex = currentStateIndex;
 	}
