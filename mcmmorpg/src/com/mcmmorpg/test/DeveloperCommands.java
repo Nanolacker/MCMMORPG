@@ -14,13 +14,13 @@ import org.bukkit.World;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
+import org.bukkit.util.Vector;
 
 import com.mcmmorpg.common.character.PlayerCharacter;
 import com.mcmmorpg.common.item.Item;
 import com.mcmmorpg.common.navigation.CardinalDirection;
 import com.mcmmorpg.common.quest.Quest;
 import com.mcmmorpg.common.quest.QuestObjective;
-import com.mcmmorpg.common.time.Clock;
 import com.mcmmorpg.common.time.DelayedTask;
 import com.mcmmorpg.common.time.RepeatingTask;
 import com.mcmmorpg.common.ui.Command;
@@ -240,14 +240,26 @@ public class DeveloperCommands {
 			@Override
 			protected void execute(CommandSender sender, String[] args) {
 				Location location = ((Player) sender).getLocation();
-				Head head = new Head(sender.getName(), location);
-				head.setVisible(true);
+
+				Head head1 = new Head(sender.getName(), location);
+				head1.setVisible(true);
+
+				Head head2 = new Head(sender.getName(), location);
+				head2.setVisible(true);
+
 				new RepeatingTask(0.05) {
 					@Override
 					protected void run() {
-						Location newLocation = location.clone().add(2 * Math.cos(Clock.getTime()), 5,
-								2 * Math.sin(Clock.getTime()));
-						head.setLocation(newLocation);
+						Location location = ((Player) sender).getLocation().clone().add(0, 1.4, 0);
+						Vector lookDir = location.getDirection();
+						Vector offset = new Vector(lookDir.getX(), 0, lookDir.getZ()).normalize()
+								.rotateAroundY(Math.PI / 2).multiply(0.6);
+
+						Location head1Loc = location.clone().add(offset);
+						Location head2Loc = location.clone().subtract(offset);
+
+						head1.setLocation(head1Loc);
+						head2.setLocation(head2Loc);
 					}
 				}.schedule();
 			}

@@ -17,7 +17,7 @@ public class Head {
 
 	public Head(String skinName, Location location) {
 		this.skinName = skinName;
-		this.location = location;
+		this.location = location.clone();
 	}
 
 	public Location getLocation() {
@@ -25,10 +25,9 @@ public class Head {
 	}
 
 	public void setLocation(Location location) {
-		this.location = location;
+		this.location = location.clone();
 		if (entity != null) {
 			Location entityLocation = getEntityLocation(location);
-			Debug.log(entityLocation);
 			entity.teleport(entityLocation);
 		}
 	}
@@ -42,14 +41,16 @@ public class Head {
 	@SuppressWarnings("deprecation")
 	private void spawn() {
 		Location entityLocation = getEntityLocation(location);
-		entity = (ArmorStand) BukkitUtility.spawnNonpersistentEntity(entityLocation, EntityType.ARMOR_STAND);
+
+		entity = (ArmorStand) entityLocation.getWorld().spawnEntity(entityLocation, EntityType.ARMOR_STAND);
+		entity.setPersistent(false);
 		entity.setGravity(false);
 		entity.setCollidable(false);
-		// entity.setVisible(false);
+		entity.setVisible(false);
 		entity.setSmall(true);
 		entity.setArms(false);
 		entity.setMarker(true);
-		entity.setBasePlate(false);
+
 		ItemStack headItemStack = new ItemStack(Material.PLAYER_HEAD);
 		SkullMeta itemMeta = (SkullMeta) headItemStack.getItemMeta();
 		itemMeta.setOwner(skinName);

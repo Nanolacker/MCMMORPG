@@ -4,15 +4,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.bukkit.Location;
-import org.bukkit.craftbukkit.v1_15_R1.CraftWorld;
+import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 
 import com.mcmmorpg.common.time.RepeatingTask;
 import com.mcmmorpg.common.util.StringUtility;
-
-import net.minecraft.server.v1_15_R1.EntityArmorStand;
-import net.minecraft.server.v1_15_R1.World;
 
 /**
  * Displays text at a location.
@@ -31,7 +28,7 @@ public final class TextPanel {
 	private int lineLength;
 	private String text;
 	private List<String> lines;
-	private List<EntityArmorStand> entities;
+	private List<ArmorStand> entities;
 
 	static {
 		RepeatingTask spawner = new RepeatingTask(SPAWNER_PERIOD) {
@@ -142,9 +139,8 @@ public final class TextPanel {
 		if (visible && spawned) {
 			int lineCount = lines.size();
 			for (int i = 0; i < lineCount; i++) {
-				EntityArmorStand entity = entities.get(i);
-				entity.setPosition(targetEntityLocation.getX(), targetEntityLocation.getY(),
-						targetEntityLocation.getZ());
+				ArmorStand entity = entities.get(i);
+				entity.teleport(targetEntityLocation);
 				targetEntityLocation.setY(targetEntityLocation.getY() - LINE_SEPEARATION_DISTANCE);
 			}
 		}
@@ -191,10 +187,9 @@ public final class TextPanel {
 	}
 
 	private void addAllEntities() {
-		World world = ((CraftWorld) location.getWorld()).getHandle();
 		int lineCount = lines.size();
 		for (int i = 0; i < lineCount; i++) {
-			addEntity(i, world);
+			addEntity(i);
 		}
 		updateEntityDisplayNames();
 	}
@@ -213,19 +208,20 @@ public final class TextPanel {
 	}
 
 	private void updateEntityDisplayName(int index) {
-		EntityArmorStand entity = entities.get(index);
+		ArmorStand entity = entities.get(index);
 		String line = lines.get(index);
-		entity.getBukkitEntity().setCustomName(line);
-		entity.setCustomNameVisible(!line.isEmpty());
+		if (!StringUtility.isEmpty(line)) {
+			entity.setCustomName(line);
+			entity.setCustomNameVisible(true);
+		}
 	}
 
 	private void resize(int lineCount) {
 		int entityCount = entities.size();
 		if (entityCount < lineCount) {
 			// add entities
-			World world = ((CraftWorld) location.getWorld()).getHandle();
 			for (int i = entityCount; i < lineCount; i++) {
-				addEntity(i, world);
+				addEntity(i);
 			}
 		} else if (entityCount > lineCount) {
 			// remove entities
@@ -235,23 +231,24 @@ public final class TextPanel {
 		}
 	}
 
-	private void addEntity(int index, World world) {
-		EntityArmorStand entity = new EntityArmorStand(world, location.getX(),
+	@SuppressWarnings("deprecation")
+	private void addEntity(int index) {
+		Location entityLocation = new Location(location.getWorld(), location.getX(),
 				location.getY() - index * LINE_SEPEARATION_DISTANCE, location.getZ());
-		entity.persist = false;
-		entity.setNoGravity(true);
-		entity.collides = false;
-		entity.setInvisible(true);
+		ArmorStand entity = (ArmorStand) location.getWorld().spawnEntity(entityLocation, EntityType.ARMOR_STAND);
+		entity.setPersistent(false);
+		entity.setGravity(false);
+		entity.setCollidable(false);
+		entity.setVisible(false);
 		entity.setSmall(true);
 		entity.setArms(false);
 		entity.setMarker(true);
-		world.addEntity(entity);
 		entities.add(index, entity);
 	}
 
 	private void removeEntity(int index) {
-		EntityArmorStand entity = entities.remove(index);
-		entity.killEntity();
+		ArmorStand entity = entities.remove(index);
+		entity.remove();
 	}
 
 }

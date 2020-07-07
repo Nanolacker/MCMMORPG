@@ -101,12 +101,11 @@ public class StringUtility {
 	}
 
 	/**
-	 * Returns the length of the token, excluding chat color characters. Used for
-	 * line splitting.
+	 * Returns the length of the token, excluding chat color characters.
 	 */
-	private static int length(String token) {
+	public static int length(String s) {
 		int count = 0;
-		char[] chars = token.toCharArray();
+		char[] chars = s.toCharArray();
 		for (int i = 0; i < chars.length; i++) {
 			char ch = chars[i];
 			if (ch == '§') {
@@ -120,13 +119,14 @@ public class StringUtility {
 	}
 
 	/**
-	 * Cuts the token so that its length does not exceed the line length.
+	 * Cuts the string so that its length does not exceed the length, excluding chat
+	 * color characters.
 	 */
-	private static String cut(String token, int length) {
+	public static String cut(String s, int length) {
 		int validCharCount = 0;
-		char[] chars = token.toCharArray();
+		char[] chars = s.toCharArray();
 		int i;
-		for (i = 0; i < token.length(); i++) {
+		for (i = 0; i < chars.length; i++) {
 			char ch = chars[i];
 			if (ch == '§') {
 				// skip next character
@@ -138,7 +138,24 @@ public class StringUtility {
 				}
 			}
 		}
-		return token.substring(0, i + 1);
+		return s.substring(0, i + 1);
+	}
+
+	/**
+	 * Returns whether the string is empty, excluding chat color characters.
+	 */
+	public static boolean isEmpty(String s) {
+		char[] chars = s.toCharArray();
+		for (int i = 0; i < chars.length; i++) {
+			char ch = chars[i];
+			if (ch == '§') {
+				// skip next character
+				i++;
+			} else {
+				return false;
+			}
+		}
+		return true;
 	}
 
 	/**
