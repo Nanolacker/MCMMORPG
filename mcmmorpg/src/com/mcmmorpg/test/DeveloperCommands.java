@@ -20,10 +20,13 @@ import com.mcmmorpg.common.item.Item;
 import com.mcmmorpg.common.navigation.CardinalDirection;
 import com.mcmmorpg.common.quest.Quest;
 import com.mcmmorpg.common.quest.QuestObjective;
+import com.mcmmorpg.common.time.Clock;
 import com.mcmmorpg.common.time.DelayedTask;
+import com.mcmmorpg.common.time.RepeatingTask;
 import com.mcmmorpg.common.ui.Command;
 import com.mcmmorpg.common.ui.CommandManager;
 import com.mcmmorpg.common.util.Debug;
+import com.mcmmorpg.common.util.Head;
 import com.mcmmorpg.common.util.IOUtility;
 import com.mcmmorpg.common.util.StringUtility;
 import com.mcmmorpg.impl.constants.RespawnLocations;
@@ -233,6 +236,22 @@ public class DeveloperCommands {
 				pc.setLocation(location);
 			}
 		};
+		Command spawnHead = new Command("spawnhead") {
+			@Override
+			protected void execute(CommandSender sender, String[] args) {
+				Location location = ((Player) sender).getLocation();
+				Head head = new Head(sender.getName(), location);
+				head.setVisible(true);
+				new RepeatingTask(0.05) {
+					@Override
+					protected void run() {
+						Location newLocation = location.clone().add(2 * Math.cos(Clock.getTime()), 5,
+								2 * Math.sin(Clock.getTime()));
+						head.setLocation(newLocation);
+					}
+				}.schedule();
+			}
+		};
 
 		CommandManager.registerCommand(printLocation);
 		CommandManager.registerCommand(heal);
@@ -247,6 +266,7 @@ public class DeveloperCommands {
 		CommandManager.registerCommand(removeEntities);
 		CommandManager.registerCommand(reloadmmorpg);
 		CommandManager.registerCommand(goTo);
+		CommandManager.registerCommand(spawnHead);
 	}
 
 }

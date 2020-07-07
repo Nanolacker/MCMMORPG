@@ -16,7 +16,7 @@ public abstract class Command {
 	 * Create a new command. The command must be registered with the command manager
 	 * before being used.
 	 */
-	public Command(String name) {
+	protected Command(String name) {
 		bukkitCommand = new BukkitCommand0(name, this);
 	}
 
