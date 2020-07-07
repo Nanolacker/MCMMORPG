@@ -16,12 +16,23 @@ import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.block.data.Directional;
+import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.block.Action;
+import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryCloseEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 
 import com.mcmmorpg.common.character.PlayerCharacter;
+import com.mcmmorpg.common.event.EventManager;
+import com.mcmmorpg.common.event.PlayerCharacterLootItemEvent;
+import com.mcmmorpg.common.event.PlayerCharacterOpenLootChestEvent;
 import com.mcmmorpg.common.navigation.CardinalDirection;
+import com.mcmmorpg.common.sound.Noise;
 import com.mcmmorpg.common.time.DelayedTask;
 import com.mcmmorpg.common.time.RepeatingTask;
 import com.mcmmorpg.common.ui.TextPanel;
@@ -59,10 +70,8 @@ public class LootChest {
 		lootChests.add(this);
 	}
 
-	/**
-	 * Called when the plugin is enabled.
-	 */
 	public static void init() {
+		EventManager.registerEvents(new LootChestListener());
 		RepeatingTask update = new RepeatingTask(UPDATE_PERIOD_SECONDS) {
 			@Override
 			public void run() {
@@ -121,7 +130,7 @@ public class LootChest {
 	/**
 	 * Returns the loot chest at the specified location.
 	 */
-	static LootChest forLocation(Location location) {
+	public static LootChest atLocation(Location location) {
 		return spawnedChestMap.get(location);
 	}
 
@@ -146,7 +155,7 @@ public class LootChest {
 		return contents;
 	}
 
-	void open(PlayerCharacter pc) {
+	private void open(PlayerCharacter pc) {
 		Inventory inventory = Bukkit.createInventory(null, 27, "Loot Chest");
 		ArrayList<ItemStack> itemStacks = new ArrayList<>(27);
 		for (int i = 0; i < contents.length; i++) {
@@ -236,6 +245,76 @@ public class LootChest {
 			// because lootChests is being modified
 			lootChest.remove();
 		}
+	}
+
+	private static class LootChestListener implements Listener {
+		@EventHandler
+		private void onOpenLootChest(PlayerInteractEvent event) {
+			if (event.getAction() != Action.RIGHT_CLICK_BLOCK) {
+				return;
+			}
+			Player player = event.getPlayer();
+			PlayerCharacter pc = PlayerCharacter.forPlayer(player);
+			if (pc == null) {
+				return;
+			}
+			Block block = event.getClickedBlock();
+			if (block == null) {
+				return;
+			}
+			Location location = block.getLocation();
+			LootChest chest = LootChest.atLocation(location);
+			if (chest == null) {
+				return;
+			}
+			chest.open(pc);
+			Noise.CHEST_OPEN.play(location);
+			chest.remove();
+			PlayerCharacterOpenLootChestEvent openLootChestEvent = new PlayerCharacterOpenLootChestEvent(pc, chest);
+			EventManager.callEvent(openLootChestEvent);
+		}
+
+		@EventHandler
+		private void onClickInLootChest(InventoryClickEvent event) {
+			Inventory inventory = event.getInventory();
+			Inventory clickedInventory = event.getClickedInventory();
+			if (LootChest.inventories.contains(inventory)) {
+				event.setCancelled(true);
+			}
+			if (LootChest.inventories.contains(clickedInventory)) {
+				ItemStack itemStack = event.getCurrentItem();
+				if (itemStack == null) {
+					return;
+				}
+				int slot = event.getSlot();
+				clickedInventory.setItem(slot, null);
+				Player player = (Player) event.getWhoClicked();
+				PlayerCharacter pc = PlayerCharacter.forPlayer(player);
+				// pc should never be null
+				Item item = Item.forItemStack(itemStack);
+				int amount = itemStack.getAmount();
+				pc.giveItem(item, amount);
+				Noise.CLICK.play(pc);
+				boolean empty = BukkitUtility.inventoryIsEmpty(clickedInventory);
+				if (empty) {
+					player.closeInventory();
+					Noise.CHEST_CLOSE.play(player);
+				}
+				PlayerCharacterLootItemEvent lootItemEvent = new PlayerCharacterLootItemEvent(pc, item, amount);
+				EventManager.callEvent(lootItemEvent);
+			}
+		}
+
+		@EventHandler
+		private void onCloseLootChest(InventoryCloseEvent event) {
+			Inventory inventory = event.getInventory();
+			if (LootChest.inventories.contains(inventory)) {
+				LootChest.inventories.remove(inventory);
+				Player player = (Player) event.getPlayer();
+				Noise.CHEST_CLOSE.play(player);
+			}
+		}
+
 	}
 
 }

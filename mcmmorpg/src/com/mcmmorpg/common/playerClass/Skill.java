@@ -9,9 +9,9 @@ import com.mcmmorpg.common.character.PlayerCharacter;
 import com.mcmmorpg.common.event.EventManager;
 import com.mcmmorpg.common.event.PlayerCharacterUpgradeSkillEvent;
 import com.mcmmorpg.common.event.PlayerCharacterUseSkillEvent;
-import com.mcmmorpg.common.item.ItemFactory;
 import com.mcmmorpg.common.sound.Noise;
 import com.mcmmorpg.common.time.RepeatingTask;
+import com.mcmmorpg.common.util.BukkitUtility;
 
 /**
  * A skill, or ability, to be used by a player character. Usually made in JSON.
@@ -20,7 +20,6 @@ public final class Skill {
 
 	private static final double COOLDOWN_UPDATE_PERIOD_SECONDS = 0.1;
 	private static final Material LOCKED_MATERIAL = Material.BARRIER;
-	private static final Noise CLICK_NOISE = new Noise(Sound.BLOCK_LEVER_CLICK);
 	private static final Noise UPGRADE_NOISE = new Noise(Sound.ENTITY_EXPERIENCE_ORB_PICKUP);
 	static final Material DISABLED_MATERIAL = Material.BARRIER;
 
@@ -186,7 +185,7 @@ public final class Skill {
 		lore.append(ChatColor.AQUA + "\nMana Cost: " + (int) Math.ceil(manaCost));
 		lore.append(ChatColor.YELLOW + "\nCooldown: " + (int) Math.ceil(cooldown));
 		lore.append(ChatColor.WHITE + "\n\n" + description);
-		ItemStack itemStack = ItemFactory.createItemStack(ChatColor.GREEN + name, lore.toString(), icon);
+		ItemStack itemStack = BukkitUtility.createItemStack(ChatColor.GREEN + name, lore.toString(), icon);
 		return itemStack;
 	}
 
@@ -228,7 +227,7 @@ public final class Skill {
 			}
 		}
 
-		ItemStack itemStack = ItemFactory.createItemStack(ChatColor.GREEN + name, lore.toString(), material);
+		ItemStack itemStack = BukkitUtility.createItemStack(ChatColor.GREEN + name, lore.toString(), material);
 		return itemStack;
 	}
 
@@ -290,7 +289,7 @@ public final class Skill {
 	}
 
 	void use(PlayerCharacter pc) {
-		CLICK_NOISE.play(pc);
+		Noise.CLICK.play(pc);
 		pc.sendMessage(ChatColor.GRAY + "Used " + ChatColor.GREEN + name + " " + ChatColor.GRAY + "(" + ChatColor.AQUA
 				+ -(int) Math.ceil(manaCost) + " MP" + ChatColor.GRAY + ")");
 		pc.setCurrentMana(pc.getCurrentMana() - manaCost);

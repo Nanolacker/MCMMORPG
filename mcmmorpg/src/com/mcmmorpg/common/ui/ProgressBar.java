@@ -157,9 +157,15 @@ public class ProgressBar {
 	/**
 	 * Show this progress bar at the specified location using a text panel.
 	 * Subsequent calls of this method will relocate the text panel, but not
-	 * duplicate it.
+	 * duplicate it. If location is null, the text panel will be removed.
 	 */
 	public final void display(Location location) {
+		if (location == null) {
+			if (textPanel != null) {
+				textPanel.setVisible(false);
+			}
+			textPanel = null;
+		}
 		if (textPanel == null) {
 			textPanel = new TextPanel(location);
 			updateTextPanelText();

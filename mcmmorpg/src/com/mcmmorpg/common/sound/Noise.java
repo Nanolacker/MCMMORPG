@@ -13,6 +13,10 @@ import com.mcmmorpg.common.character.PlayerCharacter;
  */
 public class Noise {
 
+	public static final Noise CLICK = new Noise(Sound.BLOCK_LEVER_CLICK);
+	public static final Noise CHEST_OPEN = new Noise(Sound.BLOCK_CHEST_OPEN);
+	public static final Noise CHEST_CLOSE = new Noise(Sound.BLOCK_CHEST_CLOSE);
+
 	private final Sound type;
 	private final float volume, pitch;
 

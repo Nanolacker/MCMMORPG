@@ -18,8 +18,8 @@ import com.mcmmorpg.common.character.PlayerCharacter;
 import com.mcmmorpg.common.event.EventManager;
 import com.mcmmorpg.common.event.PlayerCharacterCloseQuestLogEvent;
 import com.mcmmorpg.common.event.PlayerCharacterOpenQuestLogEvent;
-import com.mcmmorpg.common.item.ItemFactory;
 import com.mcmmorpg.common.ui.SidebarText;
+import com.mcmmorpg.common.util.BukkitUtility;
 
 /**
  * Displays quest status to a player character.
@@ -109,7 +109,7 @@ public class QuestLog {
 			objectiveLines += progressText + " " + ChatColor.RESET + objective.getDescription() + "\n";
 		}
 		String lore = ChatColor.GOLD + "Level " + quest.getLevel() + " Quest\n" + ChatColor.WHITE + objectiveLines;
-		return ItemFactory.createItemStack(ChatColor.YELLOW + name, lore, Material.BOOK);
+		return BukkitUtility.createItemStack(ChatColor.YELLOW + name, lore, Material.BOOK);
 	}
 
 	private ItemStack getCompletedQuestLogItemStack(PlayerCharacter pc, Quest quest) {
@@ -122,7 +122,7 @@ public class QuestLog {
 			objectiveLines += progressText + " " + ChatColor.RESET + objective.getDescription() + "\n";
 		}
 		String lore = ChatColor.GOLD + "Level " + quest.getLevel() + " Quest\n" + objectiveLines;
-		return ItemFactory.createItemStack(ChatColor.YELLOW + name, lore, Material.BOOK);
+		return BukkitUtility.createItemStack(ChatColor.YELLOW + name, lore, Material.BOOK);
 	}
 
 	private static class QuestLogListener implements Listener {

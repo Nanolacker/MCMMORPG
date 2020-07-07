@@ -23,13 +23,13 @@ import org.bukkit.potion.PotionEffectType;
 
 import com.mcmmorpg.common.character.PlayerCharacter;
 import com.mcmmorpg.common.event.EventManager;
-import com.mcmmorpg.common.event.StaticInteractableEvent;
-import com.mcmmorpg.common.item.ItemFactory;
 import com.mcmmorpg.common.item.Weapon;
 import com.mcmmorpg.common.persistence.PersistentPlayerCharacterDataContainer;
 import com.mcmmorpg.common.playerClass.PlayerClass;
 import com.mcmmorpg.common.sound.Noise;
+import com.mcmmorpg.common.ui.Button;
 import com.mcmmorpg.common.ui.TextPanel;
+import com.mcmmorpg.common.util.BukkitUtility;
 import com.mcmmorpg.common.util.IOUtility;
 import com.mcmmorpg.impl.constants.Items;
 import com.mcmmorpg.impl.constants.PlayerClasses;
@@ -47,14 +47,14 @@ public class PlayerCharacterSelectionListener implements Listener {
 	private static final File PLAYER_CHARACTER_DATA_DIRECTORY;
 	private static final Location CHARACTER_SELECTION_LOCATION;
 
-	private static final ItemStack OPEN_CHARACTER_SELECT_ITEM_STACK;
+	private static final Button OPEN_CHARACTER_SELECTION_BUTTON;
 	private static final ItemStack DELETE_CHARACTER_ITEM_STACK;
 	private static final ItemStack GO_BACK_ITEM_STACK;
 
-	private static final ItemStack OPEN_MENU_ITEM_STACK;
-	private static final ItemStack OPEN_QUEST_LOG_ITEM_STACK;
-	private static final ItemStack OPEN_SKILL_TREE_ITEM_STACK;
-	private static final ItemStack CHANGE_CHARACTER_SELECTION_ITEM_STACK;
+	private static final Button OPEN_MENU_BUTTON;
+	private static final Button OPEN_QUEST_LOG_BUTTON;
+	private static final Button OPEN_SKILL_TREE_BUTTON;
+	private static final Button CHANGE_CHARACTER_BUTTON;
 	private static final Inventory MENU_INVENTORY;
 
 	private static final Inventory PLAYER_CLASS_SELECT_INVENTORY;
@@ -64,12 +64,11 @@ public class PlayerCharacterSelectionListener implements Listener {
 	private static final Location STARTING_LOCATION;
 	private static final PotionEffect INVISIBILITY;
 
-	private static final Noise CLICK_NOISE = new Noise(Sound.BLOCK_LEVER_CLICK);
 	private static final Noise CHARACTER_TRANSITION_NOISE = new Noise(Sound.ENTITY_ZOMBIE_VILLAGER_CONVERTED);
 	private static final Noise CHARACTER_DELETION_NOISE = new Noise(Sound.ENTITY_ZOMBIE_VILLAGER_CONVERTED);
 	private static final Noise SELECT_CHARACTER_NOISE = new Noise(Sound.BLOCK_PORTAL_TRAVEL, 0.2f, 1);
 
-	private Map<Player, PlayerCharacterSelectionProfile> profileMap = new HashMap<>();
+	private static Map<Player, PlayerCharacterSelectionProfile> profileMap = new HashMap<>();
 
 	static {
 		PLAYER_CHARACTER_DATA_DIRECTORY = new File(IOUtility.getDataFolder(), "playerSaveData");
@@ -77,42 +76,61 @@ public class PlayerCharacterSelectionListener implements Listener {
 			PLAYER_CHARACTER_DATA_DIRECTORY.mkdir();
 		}
 		CHARACTER_SELECTION_LOCATION = new Location(Worlds.CHARACTER_SELECTION, 0, 1, 0);
-		OPEN_CHARACTER_SELECT_ITEM_STACK = ItemFactory.createItemStack(ChatColor.GREEN + "Select Character", null,
-				Material.EMERALD);
-		ItemFactory.registerStaticInteractable(OPEN_CHARACTER_SELECT_ITEM_STACK);
-		DELETE_CHARACTER_ITEM_STACK = ItemFactory.createItemStack(ChatColor.RED + "Delete Character",
+		OPEN_CHARACTER_SELECTION_BUTTON = new Button(ChatColor.GREEN + "Select Character", null, Material.EMERALD) {
+			@Override
+			protected void onInteract(Player player) {
+				onInteractWithOpenCharacterSelectionButton(player);
+			}
+		};
+		DELETE_CHARACTER_ITEM_STACK = BukkitUtility.createItemStack(ChatColor.RED + "Delete Character",
 				ChatColor.GRAY + "Open the character deletion menu", Material.BARRIER);
-		GO_BACK_ITEM_STACK = ItemFactory.createItemStack(ChatColor.RED + "Go back", null, Material.BARRIER);
+		GO_BACK_ITEM_STACK = BukkitUtility.createItemStack(ChatColor.RED + "Go back", null, Material.BARRIER);
 
-		OPEN_MENU_ITEM_STACK = ItemFactory.createItemStack(ChatColor.YELLOW + "Menu", null, Material.DIAMOND);
-		ItemFactory.registerStaticInteractable(OPEN_MENU_ITEM_STACK);
-		OPEN_QUEST_LOG_ITEM_STACK = ItemFactory.createItemStack(ChatColor.YELLOW + "Quest Log",
-				ChatColor.GRAY + "View and track your status on quests", Material.BOOK);
-		ItemFactory.registerStaticInteractable(OPEN_QUEST_LOG_ITEM_STACK);
-		OPEN_SKILL_TREE_ITEM_STACK = ItemFactory.createItemStack(ChatColor.YELLOW + "Skill Tree",
-				ChatColor.GRAY + "Unlock and upgrade powerful skills", Material.OAK_SAPLING);
-		ItemFactory.registerStaticInteractable(OPEN_SKILL_TREE_ITEM_STACK);
-		CHANGE_CHARACTER_SELECTION_ITEM_STACK = ItemFactory.createItemStack(ChatColor.YELLOW + "Change Character",
-				ChatColor.GRAY + "Save and return to character selection", Material.PLAYER_HEAD);
-		ItemFactory.registerStaticInteractable(CHANGE_CHARACTER_SELECTION_ITEM_STACK);
+		OPEN_MENU_BUTTON = new Button(ChatColor.YELLOW + "Menu", null, Material.DIAMOND) {
+			@Override
+			protected void onInteract(Player player) {
+				onInteractWithOpenMenuButton(player);
+			}
+		};
+		OPEN_QUEST_LOG_BUTTON = new Button(ChatColor.YELLOW + "Quest Log",
+				ChatColor.GRAY + "View and track your status on quests", Material.BOOK) {
+			@Override
+			protected void onInteract(Player player) {
+				onInteractWithOpenQuestLogButton(player);
+			}
+		};
+		OPEN_SKILL_TREE_BUTTON = new Button(ChatColor.YELLOW + "Skill Tree",
+				ChatColor.GRAY + "Unlock and upgrade powerful skills", Material.OAK_SAPLING) {
+			@Override
+			protected void onInteract(Player player) {
+				onInteractWithOpenSkillTreeButton(player);
+			}
+		};
+		CHANGE_CHARACTER_BUTTON = new Button(ChatColor.YELLOW + "Change Character",
+				ChatColor.GRAY + "Save and return to character selection", Material.PLAYER_HEAD) {
+			@Override
+			protected void onInteract(Player player) {
+				onInteractWithChangeCharacterButton(player);
+			}
+		};
 		MENU_INVENTORY = Bukkit.createInventory(null, 9, "Menu");
-		MENU_INVENTORY.setItem(1, OPEN_QUEST_LOG_ITEM_STACK);
-		MENU_INVENTORY.setItem(4, OPEN_SKILL_TREE_ITEM_STACK);
-		MENU_INVENTORY.setItem(7, CHANGE_CHARACTER_SELECTION_ITEM_STACK);
+		MENU_INVENTORY.setItem(1, OPEN_QUEST_LOG_BUTTON.getItemStack());
+		MENU_INVENTORY.setItem(4, OPEN_SKILL_TREE_BUTTON.getItemStack());
+		MENU_INVENTORY.setItem(7, CHANGE_CHARACTER_BUTTON.getItemStack());
 
 		PLAYER_CLASS_SELECT_INVENTORY = Bukkit.createInventory(null, 9, "Select a Class");
-		ItemStack selectFighterItemStack = ItemFactory.createItemStack(ChatColor.GOLD + "Fighter",
+		ItemStack selectFighterItemStack = BukkitUtility.createItemStack(ChatColor.GOLD + "Fighter",
 				ChatColor.GRAY + "Excels at martial combat", Material.IRON_SWORD);
-		ItemStack selectMageItemStack = ItemFactory.createItemStack(ChatColor.GOLD + "Mage",
+		ItemStack selectMageItemStack = BukkitUtility.createItemStack(ChatColor.GOLD + "Mage",
 				ChatColor.GRAY + "Uses magic and excels at ranged combat", Material.STICK);
 		PLAYER_CLASS_SELECT_INVENTORY.setItem(2, selectFighterItemStack);
 		PLAYER_CLASS_SELECT_INVENTORY.setItem(6, selectMageItemStack);
 		PLAYER_CLASS_SELECT_INVENTORY.setItem(8, GO_BACK_ITEM_STACK);
 
 		DELETE_CONFIRM_INVENTORY = Bukkit.createInventory(null, 9, "Are you sure?");
-		ItemStack confirmItemStack = ItemFactory.createItemStack(ChatColor.GREEN + "Confirm",
+		ItemStack confirmItemStack = BukkitUtility.createItemStack(ChatColor.GREEN + "Confirm",
 				ChatColor.GRAY + "Yes, delete this character", Material.EMERALD);
-		ItemStack cancelItemStack = ItemFactory.createItemStack(ChatColor.RED + "Cancel",
+		ItemStack cancelItemStack = BukkitUtility.createItemStack(ChatColor.RED + "Cancel",
 				ChatColor.GRAY + "No, do not delete this character", Material.BARRIER);
 		DELETE_CONFIRM_INVENTORY.setItem(2, confirmItemStack);
 		DELETE_CONFIRM_INVENTORY.setItem(6, cancelItemStack);
@@ -159,7 +177,7 @@ public class PlayerCharacterSelectionListener implements Listener {
 		credits3.setVisible(true);
 	}
 
-	private void sendToCharacterSelection(Player player) {
+	private static void sendToCharacterSelection(Player player) {
 		player.addPotionEffect(INVISIBILITY);
 		player.setHealth(20);
 		player.setFoodLevel(20);
@@ -169,7 +187,7 @@ public class PlayerCharacterSelectionListener implements Listener {
 		player.teleport(CHARACTER_SELECTION_LOCATION);
 		Inventory inventory = player.getInventory();
 		player.getInventory().clear();
-		inventory.addItem(OPEN_CHARACTER_SELECT_ITEM_STACK);
+		inventory.addItem(OPEN_CHARACTER_SELECTION_BUTTON.getItemStack());
 		File playerFolder = getPlayerFolder(player);
 		if (!playerFolder.exists()) {
 			playerFolder.mkdir();
@@ -201,53 +219,47 @@ public class PlayerCharacterSelectionListener implements Listener {
 		profileMap.remove(player);
 	}
 
-	@EventHandler
-	private void onInteractWithMenu(StaticInteractableEvent event) {
-		ItemStack interactable = event.getInteractable();
-		if (interactable.equals(OPEN_MENU_ITEM_STACK)) {
-			Player player = event.getPlayer();
-			CLICK_NOISE.play(player);
-			player.openInventory(MENU_INVENTORY);
-			PlayerCharacter pc = PlayerCharacter.forPlayer(player);
-			PlayerCharacterOpenMenuEvent openMenuEvent = new PlayerCharacterOpenMenuEvent(pc);
-			EventManager.callEvent(openMenuEvent);
-		} else if (interactable.equals(OPEN_QUEST_LOG_ITEM_STACK)) {
-			Player player = event.getPlayer();
-			CLICK_NOISE.play(player);
-			PlayerCharacter pc = PlayerCharacter.forPlayer(player);
-			pc.getQuestLog().open();
-		} else if (interactable.equals(OPEN_SKILL_TREE_ITEM_STACK)) {
-			Player player = event.getPlayer();
-			CLICK_NOISE.play(player);
-			PlayerCharacter pc = PlayerCharacter.forPlayer(player);
-			pc.getPlayerClass().getSkillTree().open(pc);
-		} else if (interactable.equals(CHANGE_CHARACTER_SELECTION_ITEM_STACK)) {
-			Player player = event.getPlayer();
-			player.sendMessage(ChatColor.GRAY + "Logging out...");
-			PlayerCharacter pc = PlayerCharacter.forPlayer(player);
-			pc.remove();
-			savePlayerCharacter(pc);
-			player.closeInventory();
-			player.getInventory().clear();
-			sendToCharacterSelection(player);
-			CHARACTER_TRANSITION_NOISE.play(player);
-		}
+	public static void onInteractWithOpenMenuButton(Player player) {
+		Noise.CLICK.play(player);
+		player.openInventory(MENU_INVENTORY);
+		PlayerCharacter pc = PlayerCharacter.forPlayer(player);
+		PlayerCharacterOpenMenuEvent openMenuEvent = new PlayerCharacterOpenMenuEvent(pc);
+		EventManager.callEvent(openMenuEvent);
 	}
 
-	@EventHandler
-	private void onOpenCharacterSelectInventory(StaticInteractableEvent event) {
-		if (event.getInteractable().equals(OPEN_CHARACTER_SELECT_ITEM_STACK)) {
-			Player player = event.getPlayer();
-			CLICK_NOISE.play(player);
-			openCharacterSelectInventory(player);
-		}
+	private static void onInteractWithOpenQuestLogButton(Player player) {
+		Noise.CLICK.play(player);
+		PlayerCharacter pc = PlayerCharacter.forPlayer(player);
+		pc.getQuestLog().open();
 	}
 
-	private File getPlayerFolder(Player player) {
+	private static void onInteractWithOpenSkillTreeButton(Player player) {
+		Noise.CLICK.play(player);
+		PlayerCharacter pc = PlayerCharacter.forPlayer(player);
+		pc.getPlayerClass().getSkillTree().open(pc);
+	}
+
+	private static void onInteractWithChangeCharacterButton(Player player) {
+		player.sendMessage(ChatColor.GRAY + "Logging out...");
+		PlayerCharacter pc = PlayerCharacter.forPlayer(player);
+		pc.remove();
+		savePlayerCharacter(pc);
+		player.closeInventory();
+		player.getInventory().clear();
+		sendToCharacterSelection(player);
+		CHARACTER_TRANSITION_NOISE.play(player);
+	}
+
+	private static void onInteractWithOpenCharacterSelectionButton(Player player) {
+		Noise.CLICK.play(player);
+		openCharacterSelectInventory(player);
+	}
+
+	private static File getPlayerFolder(Player player) {
 		return new File(PLAYER_CHARACTER_DATA_DIRECTORY, player.getName());
 	}
 
-	private Inventory getCharacterSelectInventory(Player player) {
+	private static Inventory getCharacterSelectInventory(Player player) {
 		Inventory inventory = Bukkit.createInventory(player, 9, "Select Character");
 		inventory.setItem(0, getCharacterSelectItemStack(player, 1));
 		inventory.setItem(2, getCharacterSelectItemStack(player, 2));
@@ -257,13 +269,13 @@ public class PlayerCharacterSelectionListener implements Listener {
 		return inventory;
 	}
 
-	private ItemStack getCharacterSelectItemStack(Player player, int characterSlot) {
+	private static ItemStack getCharacterSelectItemStack(Player player, int characterSlot) {
 		ItemStack itemStack;
 		PlayerCharacterSelectionProfile profile = profileMap.get(player);
 		PersistentPlayerCharacterDataContainer data = profile.getCharacterData(characterSlot);
 		String title = ChatColor.GREEN + "Character " + characterSlot;
 		if (data == null) {
-			itemStack = ItemFactory.createItemStack(title, ChatColor.GRAY + "Create new character", Material.GLASS);
+			itemStack = BukkitUtility.createItemStack(title, ChatColor.GRAY + "Create new character", Material.GLASS);
 		} else {
 			PlayerClass playerClass = data.getPlayerClass();
 			Material material = materialForPlayerClass(playerClass);
@@ -274,7 +286,7 @@ public class PlayerCharacterSelectionListener implements Listener {
 			String lore = ChatColor.GOLD + "Level " + level + " " + playerClass.getName() + "\n" + data.getZone()
 					+ ChatColor.GRAY + "\nPlay time: " + playTimeHours + "H " + playTimeMinutes
 					+ "M\n\nClick to play this character";
-			itemStack = ItemFactory.createItemStack(title, lore, material);
+			itemStack = BukkitUtility.createItemStack(title, lore, material);
 		}
 		itemStack.setAmount(characterSlot);
 		return itemStack;
@@ -286,20 +298,20 @@ public class PlayerCharacterSelectionListener implements Listener {
 		PersistentPlayerCharacterDataContainer data = profile.getCharacterData(characterSlot);
 		String title = ChatColor.RED + "Character " + characterSlot;
 		if (data == null) {
-			itemStack = ItemFactory.createItemStack(title, ChatColor.GRAY + "No character created", Material.GLASS);
+			itemStack = BukkitUtility.createItemStack(title, ChatColor.GRAY + "No character created", Material.GLASS);
 		} else {
 			PlayerClass playerClass = data.getPlayerClass();
 			Material material = Material.BARRIER;
 			int level = PlayerCharacter.xpToLevel(data.getXP());
 			String lore = ChatColor.GOLD + "Level " + level + " " + playerClass.getName() + "\n" + data.getZone()
 					+ ChatColor.GRAY + "\n\nClick to delete this character";
-			itemStack = ItemFactory.createItemStack(title, lore, material);
+			itemStack = BukkitUtility.createItemStack(title, lore, material);
 		}
 		itemStack.setAmount(characterSlot);
 		return itemStack;
 	}
 
-	private Material materialForPlayerClass(PlayerClass playerClass) {
+	private static Material materialForPlayerClass(PlayerClass playerClass) {
 		String playerClassName = playerClass.getName();
 		if (playerClassName.equals("Fighter")) {
 			return Material.IRON_SWORD;
@@ -348,25 +360,25 @@ public class PlayerCharacterSelectionListener implements Listener {
 			if (clickedSlot == 8) {
 				// go back
 				openCharacterSelectInventory(player);
-				CLICK_NOISE.play(player);
+				Noise.CLICK.play(player);
 			} else if (clickedSlot % 2 == 0) {
 				int characterSlot = clickedSlot / 2 + 1;
 				if (profile.getCharacterData(characterSlot) == null) {
 					player.sendMessage(ChatColor.GRAY + "No character created");
-					CLICK_NOISE.play(player);
+					Noise.CLICK.play(player);
 				} else {
 					profile.setOpenMenu(Menu.CONFIRM_DELETION);
 					profile.setCurrentCharacterSlot(characterSlot);
 					player.openInventory(DELETE_CONFIRM_INVENTORY);
-					CLICK_NOISE.play(player);
+					Noise.CLICK.play(player);
 				}
 			}
 		} else if (openMenu == Menu.SELECT_CHARACTER) {
 			if (clickedSlot == 8) {
 				openCharacterDeleteInventory(player);
-				CLICK_NOISE.play(player);
+				Noise.CLICK.play(player);
 			} else if (clickedSlot % 2 == 0) {
-				CLICK_NOISE.play(player);
+				Noise.CLICK.play(player);
 				int characterSlot = clickedSlot / 2 + 1;
 				profile.setCurrentCharacterSlot(characterSlot);
 				PersistentPlayerCharacterDataContainer data = profile.getCharacterData(characterSlot);
@@ -430,7 +442,7 @@ public class PlayerCharacterSelectionListener implements Listener {
 		profile.updateCharacterData(characterSlot);
 	}
 
-	private void openCharacterSelectInventory(Player player) {
+	private static void openCharacterSelectInventory(Player player) {
 		PlayerCharacterSelectionProfile profile = profileMap.get(player);
 		profile.setOpenMenu(Menu.SELECT_CHARACTER);
 		Inventory inventory = getCharacterSelectInventory(player);
@@ -450,10 +462,10 @@ public class PlayerCharacterSelectionListener implements Listener {
 		inventory.clear();
 		PlayerCharacter.registerPlayerCharacter(player, data);
 		player.removePotionEffect(PotionEffectType.INVISIBILITY);
-		inventory.setItem(8, OPEN_MENU_ITEM_STACK);
+		inventory.setItem(8, OPEN_MENU_BUTTON.getItemStack());
 	}
 
-	private void savePlayerCharacter(PlayerCharacter pc) {
+	private static void savePlayerCharacter(PlayerCharacter pc) {
 		Player player = pc.getPlayer();
 		PlayerCharacterSelectionProfile profile = profileMap.get(player);
 		int characterSlot = profile.getCurrentCharacterSlot();
@@ -470,7 +482,7 @@ public class PlayerCharacterSelectionListener implements Listener {
 			return;
 		}
 		if (event.getNewSlot() == 8) {
-			CLICK_NOISE.play(player);
+			Noise.CLICK.play(player);
 			player.openInventory(MENU_INVENTORY);
 			PlayerCharacterOpenMenuEvent openMenuEvent = new PlayerCharacterOpenMenuEvent(pc);
 			EventManager.callEvent(openMenuEvent);

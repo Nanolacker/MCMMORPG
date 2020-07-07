@@ -10,9 +10,11 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import com.mcmmorpg.common.character.NonPlayerCharacter;
+import com.mcmmorpg.common.event.EventManager;
 import com.mcmmorpg.common.item.LootChest;
 import com.mcmmorpg.common.time.Clock;
 import com.mcmmorpg.common.ui.EssentialCommands;
+import com.mcmmorpg.common.ui.PlayerInteractionListener;
 
 /**
  * The center of an MCMMORPG implementation that will handle the essential start
@@ -30,6 +32,7 @@ public abstract class MMORPGPlugin extends JavaPlugin {
 		Clock.start();
 		NonPlayerCharacter.startNPCSpawner();
 		LootChest.init();
+		EventManager.registerEvents(new PlayerInteractionListener());
 		onMMORPGStart();
 		isInitialized = true;
 	}

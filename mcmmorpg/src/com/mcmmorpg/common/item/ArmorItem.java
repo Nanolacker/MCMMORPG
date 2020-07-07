@@ -5,6 +5,7 @@ import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
 import com.mcmmorpg.common.playerClass.PlayerClass;
+import com.mcmmorpg.common.util.BukkitUtility;
 
 /**
  * An item that can be equipped by a player character to provide protections.
@@ -49,7 +50,7 @@ public class ArmorItem extends Item {
 			lore.append(ChatColor.RESET + description + "\n\n");
 		}
 		lore.append(ChatColor.GRAY + "Shift-click to equip/unequip");
-		return ItemFactory.createItemStack(rarity.getColor() + getName(), lore.toString(), getIcon());
+		return BukkitUtility.createItemStack(rarity.getColor() + getName(), lore.toString(), getIcon());
 	}
 
 	/**

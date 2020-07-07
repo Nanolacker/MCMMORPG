@@ -5,6 +5,7 @@ import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
 import com.mcmmorpg.common.playerClass.PlayerClass;
+import com.mcmmorpg.common.util.BukkitUtility;
 
 /**
  * An item to be wielded in the main hand of player characters.
@@ -47,7 +48,7 @@ public class Weapon extends Item {
 			lore.append(ChatColor.RESET + description + "\n\n");
 		}
 		lore.append(ChatColor.GRAY + "Shift-click to equip");
-		return ItemFactory.createItemStack(rarity.getColor() + getName(), lore.toString(), getIcon());
+		return BukkitUtility.createItemStack(rarity.getColor() + getName(), lore.toString(), getIcon());
 	}
 
 	/**

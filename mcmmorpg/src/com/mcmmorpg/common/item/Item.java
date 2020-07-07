@@ -9,6 +9,8 @@ import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.inventory.ItemStack;
 
+import com.mcmmorpg.common.util.BukkitUtility;
+
 /**
  * Represents an item that a player character can own. Items take the forms of
  * item stacks in player inventories.
@@ -47,7 +49,7 @@ public class Item {
 		if (description != null) {
 			lore.append(ChatColor.RESET + "\n\n" + description + "\n\n");
 		}
-		return ItemFactory.createItemStack(rarity.getColor() + getName(), lore.toString(), getIcon());
+		return BukkitUtility.createItemStack(rarity.getColor() + getName(), lore.toString(), getIcon());
 
 	}
 

@@ -1,13 +1,11 @@
-package com.mcmmorpg.common.item;
+package com.mcmmorpg.common.ui;
 
 import java.util.HashSet;
 import java.util.Set;
 
 import org.bukkit.ChatColor;
-import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Sound;
-import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -15,7 +13,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityPickupItemEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.event.player.PlayerAnimationEvent;
 import org.bukkit.event.player.PlayerAnimationType;
@@ -31,23 +28,21 @@ import org.bukkit.inventory.PlayerInventory;
 import com.mcmmorpg.common.character.PlayerCharacter;
 import com.mcmmorpg.common.event.EventManager;
 import com.mcmmorpg.common.event.PlayerCharacterDropItemEvent;
-import com.mcmmorpg.common.event.PlayerCharacterLootItemEvent;
-import com.mcmmorpg.common.event.PlayerCharacterOpenLootChestEvent;
 import com.mcmmorpg.common.event.PlayerCharacterPickUpItemEvent;
 import com.mcmmorpg.common.event.PlayerCharacterUseConsumableItemEvent;
 import com.mcmmorpg.common.event.PlayerCharacterUseWeaponEvent;
-import com.mcmmorpg.common.event.StaticInteractableEvent;
+import com.mcmmorpg.common.item.ArmorItem;
+import com.mcmmorpg.common.item.ConsumableItem;
+import com.mcmmorpg.common.item.Item;
+import com.mcmmorpg.common.item.Weapon;
 import com.mcmmorpg.common.navigation.PlayerCharacterMap;
 import com.mcmmorpg.common.playerClass.PlayerClass;
 import com.mcmmorpg.common.sound.Noise;
 import com.mcmmorpg.common.time.DelayedTask;
 
-class ItemListener implements Listener {
+public class PlayerInteractionListener implements Listener {
 
-	private static final Noise CLICK_NOISE = new Noise(Sound.BLOCK_LEVER_CLICK);
 	private static final Noise EQUIP_NOISE = new Noise(Sound.ITEM_ARMOR_EQUIP_CHAIN);
-	private static final Noise LOOT_CHEST_OPEN_NOISE = new Noise(Sound.BLOCK_CHEST_OPEN);
-	private static final Noise LOOT_CHEST_CLOSE_NOISE = new Noise(Sound.BLOCK_CHEST_CLOSE);
 
 	/**
 	 * Used to ensure that players only use weapons once when intended.
@@ -107,10 +102,10 @@ class ItemListener implements Listener {
 		ItemStack itemStack = event.getItem();
 		Action action = event.getAction();
 
-		if (ItemFactory.staticInteractables.contains(itemStack)) {
+		Button button = Button.forItemStack(itemStack);
+		if (button != null) {
 			if (action == Action.RIGHT_CLICK_AIR || action == Action.RIGHT_CLICK_BLOCK) {
-				StaticInteractableEvent staticInteractableEvent = new StaticInteractableEvent(player, itemStack);
-				EventManager.callEvent(staticInteractableEvent);
+				button.onInteract(player);
 			}
 			return;
 		}
@@ -128,10 +123,13 @@ class ItemListener implements Listener {
 	private void onDropItem(PlayerDropItemEvent event) {
 		org.bukkit.entity.Item itemEntity = event.getItemDrop();
 		ItemStack itemStack = itemEntity.getItemStack();
-		if (ItemFactory.staticInteractables.contains(itemStack)) {
+
+		Button button = Button.forItemStack(itemStack);
+		if (button != null) {
 			event.setCancelled(true);
 			return;
 		}
+
 		Item item = Item.forItemStack(itemStack);
 		if (item == null) {
 			itemEntity.remove();
@@ -199,11 +197,12 @@ class ItemListener implements Listener {
 		Player player = (Player) event.getWhoClicked();
 		ItemStack clickedItemStack = event.getCurrentItem();
 		ItemStack cursorItemStack = event.getCursor();
-		if (ItemFactory.staticInteractables.contains(clickedItemStack)) {
+
+		Button button = Button.forItemStack(clickedItemStack);
+		if (button != null) {
 			event.setCancelled(true);
 			if (cursorItemStack.getType() == Material.AIR) {
-				StaticInteractableEvent staticInteractableEvent = new StaticInteractableEvent(player, clickedItemStack);
-				EventManager.callEvent(staticInteractableEvent);
+				button.onInteract(player);
 				return;
 			}
 		}
@@ -252,7 +251,7 @@ class ItemListener implements Listener {
 						EQUIP_NOISE.play(pc);
 					}
 				}
-				CLICK_NOISE.play(player);
+				Noise.CLICK.play(player);
 			} else if (clickedItem instanceof ArmorItem) {
 				ArmorItem armorItem = (ArmorItem) clickedItem;
 				Inventory inventory = player.getInventory();
@@ -301,7 +300,7 @@ class ItemListener implements Listener {
 						inventory.setItem(slot, currentArmorItemStack);
 					}
 				}
-				CLICK_NOISE.play(player);
+				Noise.CLICK.play(player);
 			}
 		}
 	}
@@ -351,88 +350,11 @@ class ItemListener implements Listener {
 					consumable);
 			EventManager.callEvent(consumableEvent);
 		}
-		CLICK_NOISE.play(pc);
+		Noise.CLICK.play(pc);
 	}
 
 	@EventHandler
-	private void onOpenLootChest(PlayerInteractEvent event) {
-		if (event.getAction() != Action.RIGHT_CLICK_BLOCK) {
-			return;
-		}
-		Player player = event.getPlayer();
-		PlayerCharacter pc = PlayerCharacter.forPlayer(player);
-		if (pc == null) {
-			return;
-		}
-		Block block = event.getClickedBlock();
-		if (block == null) {
-			return;
-		}
-		Location location = block.getLocation();
-		LootChest chest = LootChest.forLocation(location);
-		if (chest == null) {
-			return;
-		}
-		chest.open(pc);
-		LOOT_CHEST_OPEN_NOISE.play(location);
-		chest.remove();
-		PlayerCharacterOpenLootChestEvent openLootChestEvent = new PlayerCharacterOpenLootChestEvent(pc, chest);
-		EventManager.callEvent(openLootChestEvent);
-	}
-
-	@EventHandler
-	private void onClickInLootChest(InventoryClickEvent event) {
-		Inventory inventory = event.getInventory();
-		Inventory clickedInventory = event.getClickedInventory();
-		if (LootChest.inventories.contains(inventory)) {
-			event.setCancelled(true);
-		}
-		if (LootChest.inventories.contains(clickedInventory)) {
-			ItemStack itemStack = event.getCurrentItem();
-			if (itemStack == null) {
-				return;
-			}
-			int slot = event.getSlot();
-			clickedInventory.setItem(slot, null);
-			Player player = (Player) event.getWhoClicked();
-			PlayerCharacter pc = PlayerCharacter.forPlayer(player);
-			// pc should never be null
-			Item item = Item.forItemStack(itemStack);
-			int amount = itemStack.getAmount();
-			pc.giveItem(item, amount);
-			CLICK_NOISE.play(pc);
-			boolean empty = inventoryIsEmpty(clickedInventory);
-			if (empty) {
-				player.closeInventory();
-				LOOT_CHEST_CLOSE_NOISE.play(player);
-			}
-			PlayerCharacterLootItemEvent lootItemEvent = new PlayerCharacterLootItemEvent(pc, item, amount);
-			EventManager.callEvent(lootItemEvent);
-		}
-	}
-
-	private boolean inventoryIsEmpty(Inventory inventory) {
-		ItemStack[] contents = inventory.getContents();
-		for (ItemStack itemStack : contents) {
-			if (itemStack != null) {
-				return false;
-			}
-		}
-		return true;
-	}
-
-	@EventHandler
-	private void onCloseLootChest(InventoryCloseEvent event) {
-		Inventory inventory = event.getInventory();
-		if (LootChest.inventories.contains(inventory)) {
-			LootChest.inventories.remove(inventory);
-			Player player = (Player) event.getPlayer();
-			LOOT_CHEST_CLOSE_NOISE.play(player);
-		}
-	}
-
-	@EventHandler
-	private void onSwapHands(PlayerSwapHandItemsEvent event) {
+	private void onPressF(PlayerSwapHandItemsEvent event) {
 		event.setCancelled(true);
 		Player player = event.getPlayer();
 		PlayerInventory inventory = player.getInventory();

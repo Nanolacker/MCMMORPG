@@ -6,6 +6,9 @@ import org.bukkit.entity.Player;
 import com.mcmmorpg.common.character.PlayerCharacter;
 import com.mcmmorpg.common.time.DelayedTask;
 
+/**
+ * Class that contains static methods pertaining to tutorials.
+ */
 public class Tutorial {
 
 	private Tutorial() {

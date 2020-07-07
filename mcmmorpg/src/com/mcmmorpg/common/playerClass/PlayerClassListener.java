@@ -3,7 +3,6 @@ package com.mcmmorpg.common.playerClass;
 import java.util.List;
 
 import org.bukkit.ChatColor;
-import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -28,8 +27,6 @@ import com.mcmmorpg.common.time.RepeatingTask;
  * navigation.
  */
 class PlayerClassListener implements Listener {
-
-	private static final Noise CLICK_NOISE = new Noise(Sound.BLOCK_LEVER_CLICK);
 
 	PlayerClassListener() {
 		new RepeatingTask(0.1) {
@@ -83,16 +80,16 @@ class PlayerClassListener implements Listener {
 		}
 
 		if (pc.isSilenced()) {
-			CLICK_NOISE.play(player);
+			Noise.CLICK.play(player);
 		} else if (skill.isOnCooldown(pc)) {
 			pc.sendMessage(ChatColor.GREEN + skill.getName() + ChatColor.GRAY + " is on cooldown (" + ChatColor.YELLOW
 					+ (int) Math.ceil(skill.getCooldown(pc)) + ChatColor.GRAY + ")");
-			CLICK_NOISE.play(player);
+			Noise.CLICK.play(player);
 		} else if (pc.getCurrentMana() < skill.getManaCost()) {
 			pc.sendMessage(ChatColor.GREEN + skill.getName() + ChatColor.GRAY + " requires more " + ChatColor.AQUA
 					+ "MP " + ChatColor.GRAY + "(" + ChatColor.AQUA + (int) Math.ceil(skill.getManaCost())
 					+ ChatColor.GRAY + ")");
-			CLICK_NOISE.play(player);
+			Noise.CLICK.play(player);
 		} else {
 			skill.use(pc);
 		}
@@ -203,7 +200,7 @@ class PlayerClassListener implements Listener {
 
 		if (!skill.prerequisitesAreMet(pc)) {
 			pc.sendMessage(ChatColor.GREEN + skill.getName() + ChatColor.GRAY + " is not available yet");
-			CLICK_NOISE.play(player);
+			Noise.CLICK.play(player);
 			return;
 		}
 
@@ -259,7 +256,7 @@ class PlayerClassListener implements Listener {
 				}
 			}
 		}
-		CLICK_NOISE.play(player);
+		Noise.CLICK.play(player);
 	}
 
 }
