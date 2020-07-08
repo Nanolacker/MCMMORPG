@@ -110,7 +110,7 @@ public class FlintonMayor extends StaticHuman {
 					break;
 				case 7:
 					pc.sendMessage(ChatColor.GREEN
-							+ "Thank you for playing the MCMMORPG demo! More content is planned the future.");
+							+ "Thank you for playing the MCMMORPG demo! More content is planned for the future.");
 					break;
 				}
 			}

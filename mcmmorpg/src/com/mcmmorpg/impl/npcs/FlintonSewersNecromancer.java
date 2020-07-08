@@ -35,9 +35,9 @@ public class FlintonSewersNecromancer extends AbstractCultist {
 	private static final Noise FIREBALL_EXPLODE_2_NOISE = new Noise(Sound.BLOCK_FIRE_AMBIENT);
 	private static final String SUMMON_UNDEAD = "Summon Undead";
 	private static final String FIREBALL = "Fireball";
-	private static final double SUMMON_UNDEAD_CHANNEL_DURATION = 4;
+	private static final double SUMMON_UNDEAD_CHANNEL_DURATION = 3;
 	private static final double FIREBALL_DAMAGE_AMOUNT = 20;
-	private static final double FIREBALL_CHANNEL_DURATION = 4;
+	private static final double FIREBALL_CHANNEL_DURATION = 3;
 
 	private FlintonSewersUndead spawnedUndead;
 
