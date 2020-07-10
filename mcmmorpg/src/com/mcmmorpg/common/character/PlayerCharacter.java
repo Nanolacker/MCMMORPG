@@ -31,8 +31,8 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
 
-import com.mcmmorpg.common.ai.MovementSynchronizer;
-import com.mcmmorpg.common.ai.MovementSynchronizer.MovementSynchronizerMode;
+import com.mcmmorpg.common.ai.MotionSynchronizer;
+import com.mcmmorpg.common.ai.MotionSynchronizer.MotionSynchronizerMode;
 import com.mcmmorpg.common.event.CharacterKillEvent;
 import com.mcmmorpg.common.event.EventManager;
 import com.mcmmorpg.common.event.PlayerCharacterLevelUpEvent;
@@ -117,7 +117,7 @@ public final class PlayerCharacter extends AbstractCharacter {
 	private final PlayerCharacterSoundtrackPlayer soundtrackPlayer;
 	private final PlayerCharacterMap map;
 	private CharacterCollider hitbox;
-	private final MovementSynchronizer movementSyncer;
+	private final MotionSynchronizer motionSyncer;
 	private DelayedTask undisarmTask;
 	private DelayedTask unsilenceTask;
 	private boolean isDisarmed;
@@ -167,9 +167,9 @@ public final class PlayerCharacter extends AbstractCharacter {
 		this.map = new PlayerCharacterMap(this);
 		this.hitbox = new PlayerCharacterCollider(this);
 
-		this.movementSyncer = new MovementSynchronizer(this, MovementSynchronizerMode.CHARACTER_FOLLOWS_ENTITY);
-		movementSyncer.setEntity(player);
-		movementSyncer.setEnabled(true);
+		this.motionSyncer = new MotionSynchronizer(this, MotionSynchronizerMode.CHARACTER_FOLLOWS_ENTITY);
+		motionSyncer.setEntity(player);
+		motionSyncer.setEnabled(true);
 
 		undisarmTask = null;
 		unsilenceTask = null;
@@ -1171,7 +1171,7 @@ public final class PlayerCharacter extends AbstractCharacter {
 		unhidePlayerNameplate();
 		soundtrackPlayer.setSoundtrack(null);
 		map.close();
-		movementSyncer.setEnabled(false);
+		motionSyncer.setEnabled(false);
 		pcs.remove(this);
 		playerMap.remove(player);
 		PlayerCharacterRemoveEvent event = new PlayerCharacterRemoveEvent(this);

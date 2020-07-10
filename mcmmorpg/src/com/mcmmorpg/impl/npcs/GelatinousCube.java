@@ -20,8 +20,8 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
 
-import com.mcmmorpg.common.ai.MovementSynchronizer;
-import com.mcmmorpg.common.ai.MovementSynchronizer.MovementSynchronizerMode;
+import com.mcmmorpg.common.ai.MotionSynchronizer;
+import com.mcmmorpg.common.ai.MotionSynchronizer.MotionSynchronizerMode;
 import com.mcmmorpg.common.character.AbstractCharacter;
 import com.mcmmorpg.common.character.CharacterCollider;
 import com.mcmmorpg.common.character.NonPlayerCharacter;
@@ -64,7 +64,7 @@ public class GelatinousCube extends NonPlayerCharacter {
 
 	private final Location spawnLocation;
 	private final CharacterCollider hitbox;
-	private final MovementSynchronizer movementSyncer;
+	private final MotionSynchronizer motionSyncer;
 	private Slime entity;
 	private ProgressBar acidSprayProgressBar;
 	private boolean canUseAcidSpray;
@@ -128,7 +128,7 @@ public class GelatinousCube extends NonPlayerCharacter {
 		super.setHeight(HEIGHT);
 		this.spawnLocation = spawnLocation;
 		hitbox = new CharacterCollider(this, spawnLocation, WIDTH, WIDTH, WIDTH);
-		movementSyncer = new MovementSynchronizer(this, MovementSynchronizerMode.CHARACTER_FOLLOWS_ENTITY);
+		motionSyncer = new MotionSynchronizer(this, MotionSynchronizerMode.CHARACTER_FOLLOWS_ENTITY);
 		canUseAcidSpray = true;
 		respawning = true;
 		canAttack = true;
@@ -143,8 +143,8 @@ public class GelatinousCube extends NonPlayerCharacter {
 		entity.setSize(ENTITY_SIZE);
 		entity.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, Integer.MAX_VALUE, SLOWNESS));
 		entity.setRemoveWhenFarAway(false);
-		movementSyncer.setEntity(entity);
-		movementSyncer.setEnabled(true);
+		motionSyncer.setEntity(entity);
+		motionSyncer.setEnabled(true);
 		entityMap.put(entity, this);
 	}
 
@@ -152,7 +152,7 @@ public class GelatinousCube extends NonPlayerCharacter {
 	public void despawn() {
 		super.despawn();
 		hitbox.setActive(false);
-		movementSyncer.setEnabled(false);
+		motionSyncer.setEnabled(false);
 		entityMap.remove(entity);
 		entity.remove();
 	}
@@ -241,7 +241,7 @@ public class GelatinousCube extends NonPlayerCharacter {
 			Quests.SAMPLING_SLUDGE.getObjective(0).addProgress(pc, 1);
 		}
 		hitbox.setActive(false);
-		movementSyncer.setEnabled(false);
+		motionSyncer.setEnabled(false);
 		entityMap.remove(entity);
 		entity.remove();
 		if (acidSprayProgressBar != null) {

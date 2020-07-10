@@ -17,8 +17,8 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
 
-import com.mcmmorpg.common.ai.MovementSynchronizer;
-import com.mcmmorpg.common.ai.MovementSynchronizer.MovementSynchronizerMode;
+import com.mcmmorpg.common.ai.MotionSynchronizer;
+import com.mcmmorpg.common.ai.MotionSynchronizer.MotionSynchronizerMode;
 import com.mcmmorpg.common.character.CharacterCollider;
 import com.mcmmorpg.common.character.NonPlayerCharacter;
 import com.mcmmorpg.common.character.PlayerCharacter;
@@ -43,7 +43,7 @@ public abstract class AbstractSpider extends NonPlayerCharacter {
 	private final int speed;
 	private final int xpReward;
 	private final CharacterCollider hitbox;
-	private final MovementSynchronizer movementSyncer;
+	private final MotionSynchronizer motionSyncer;
 	private final Collider surroundings;
 	private PlayerCharacter target;
 	protected Spider entity;
@@ -84,7 +84,7 @@ public abstract class AbstractSpider extends NonPlayerCharacter {
 		this.speed = speed;
 		this.xpReward = xpReward;
 		hitbox = new CharacterCollider(this, spawnLocation, lengthX, lengthY, lengthZ);
-		movementSyncer = new MovementSynchronizer(this, MovementSynchronizerMode.CHARACTER_FOLLOWS_ENTITY);
+		motionSyncer = new MotionSynchronizer(this, MotionSynchronizerMode.CHARACTER_FOLLOWS_ENTITY);
 		surroundings = new Collider(spawnLocation, 15, 15, 15) {
 			@Override
 			protected void onCollisionEnter(Collider other) {
@@ -121,8 +121,8 @@ public abstract class AbstractSpider extends NonPlayerCharacter {
 		if (vehicle != null) {
 			vehicle.remove();
 		}
-		movementSyncer.setEntity(entity);
-		movementSyncer.setEnabled(true);
+		motionSyncer.setEntity(entity);
+		motionSyncer.setEnabled(true);
 		PotionEffect speedEffect = new PotionEffect(PotionEffectType.SPEED, Integer.MAX_VALUE, speed);
 		entity.addPotionEffect(speedEffect);
 		entityMap.put(entity, this);
@@ -133,7 +133,7 @@ public abstract class AbstractSpider extends NonPlayerCharacter {
 	protected void despawn() {
 		super.despawn();
 		hitbox.setActive(false);
-		movementSyncer.setEnabled(false);
+		motionSyncer.setEnabled(false);
 		surroundings.setActive(false);
 		entity.remove();
 		entityMap.remove(entity);
@@ -168,7 +168,7 @@ public abstract class AbstractSpider extends NonPlayerCharacter {
 	protected void onDeath() {
 		super.onDeath();
 		hitbox.setActive(false);
-		movementSyncer.setEnabled(false);
+		motionSyncer.setEnabled(false);
 		surroundings.setActive(false);
 		entity.remove();
 		entityMap.remove(entity);

@@ -17,8 +17,8 @@ import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
 
 import com.mcmmorpg.common.ai.HumanEntity;
-import com.mcmmorpg.common.ai.MovementSynchronizer;
-import com.mcmmorpg.common.ai.MovementSynchronizer.MovementSynchronizerMode;
+import com.mcmmorpg.common.ai.MotionSynchronizer;
+import com.mcmmorpg.common.ai.MotionSynchronizer.MotionSynchronizerMode;
 import com.mcmmorpg.common.character.CharacterCollider;
 import com.mcmmorpg.common.character.NonPlayerCharacter;
 import com.mcmmorpg.common.character.PlayerCharacter;
@@ -41,7 +41,7 @@ public abstract class AbstractHumanEnemy extends NonPlayerCharacter {
 	protected final double respawnTime;
 	private int speed;
 	protected final CharacterCollider hitbox;
-	protected final MovementSynchronizer aiSyncer;
+	protected final MotionSynchronizer aiSyncer;
 	protected Zombie ai;
 
 	static {
@@ -83,7 +83,7 @@ public abstract class AbstractHumanEnemy extends NonPlayerCharacter {
 		this.speed = speed;
 		this.entity = new HumanEntity(spawnLocation, textureData, textureSignature);
 		this.hitbox = new CharacterCollider(this, spawnLocation.clone().add(0, 1, 0), 1, 2, 1);
-		this.aiSyncer = new MovementSynchronizer(this, MovementSynchronizerMode.CHARACTER_FOLLOWS_ENTITY);
+		this.aiSyncer = new MotionSynchronizer(this, MotionSynchronizerMode.CHARACTER_FOLLOWS_ENTITY);
 	}
 
 	@Override

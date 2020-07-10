@@ -10,27 +10,27 @@ import com.mcmmorpg.common.character.AbstractCharacter;
 import com.mcmmorpg.common.time.RepeatingTask;
 
 /**
- * Synchronizes the movement of a character and an entity. A movement
+ * Synchronizes the motion of a character and an entity. A motion
  * synchronizers mode determines its follow behavior.
  */
-public class MovementSynchronizer {
+public class MotionSynchronizer {
 
 	private static final double SYNC_PERIOD = 0.1;
 	private static final double SIGNIFICANT_POSITION_OFFSET_SQUARED = 0.01;
 	private static final double SIGNIFICANT_ANGLE_OFF_SET = Math.toRadians(5);
 
-	private static final List<MovementSynchronizer> activeSynchronizer = new ArrayList<>();
+	private static final List<MotionSynchronizer> activeSynchronizers = new ArrayList<>();
 
 	private AbstractCharacter character;
 	private Entity entity;
-	private MovementSynchronizerMode mode;
+	private MotionSynchronizerMode mode;
 
 	static {
 		RepeatingTask synchronizerTask = new RepeatingTask(SYNC_PERIOD) {
 			@Override
 			protected void run() {
-				for (int i = 0; i < activeSynchronizer.size(); i++) {
-					MovementSynchronizer synchronizer = activeSynchronizer.get(i);
+				for (int i = 0; i < activeSynchronizers.size(); i++) {
+					MotionSynchronizer synchronizer = activeSynchronizers.get(i);
 					synchronizer.updateLocation();
 				}
 			}
@@ -41,7 +41,7 @@ public class MovementSynchronizer {
 	/**
 	 * Creates a new movement synchronizer for the specified character.
 	 */
-	public MovementSynchronizer(AbstractCharacter character, MovementSynchronizerMode syncMode) {
+	public MotionSynchronizer(AbstractCharacter character, MotionSynchronizerMode syncMode) {
 		this.character = character;
 		this.entity = null;
 		this.mode = syncMode;
@@ -79,7 +79,7 @@ public class MovementSynchronizer {
 	 * Returns whether this movement synchronizer is active and synchronizing.
 	 */
 	public boolean isEnabled() {
-		return activeSynchronizer.contains(this);
+		return activeSynchronizers.contains(this);
 	}
 
 	/**
@@ -87,23 +87,23 @@ public class MovementSynchronizer {
 	 */
 	public void setEnabled(boolean enabled) {
 		if (enabled) {
-			activeSynchronizer.add(this);
+			activeSynchronizers.add(this);
 		} else {
-			activeSynchronizer.remove(this);
+			activeSynchronizers.remove(this);
 		}
 	}
 
 	/**
 	 * Sets the mode of this movement synchronizer.
 	 */
-	public void setMode(MovementSynchronizerMode syncMode) {
+	public void setMode(MotionSynchronizerMode syncMode) {
 		this.mode = syncMode;
 	}
 
 	/**
 	 * Returns the mode of this movement synchronizer.
 	 */
-	public MovementSynchronizerMode getMode() {
+	public MotionSynchronizerMode getMode() {
 		return mode;
 	}
 
@@ -134,9 +134,9 @@ public class MovementSynchronizer {
 	}
 
 	/**
-	 * Modes by which to synchronize character and entity movement.
+	 * Modes by which to synchronize character and entity motion.
 	 */
-	public static enum MovementSynchronizerMode {
+	public static enum MotionSynchronizerMode {
 		/**
 		 * The character will follow the entity.
 		 */

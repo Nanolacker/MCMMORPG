@@ -18,8 +18,8 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
-import com.mcmmorpg.common.ai.MovementSynchronizer;
-import com.mcmmorpg.common.ai.MovementSynchronizer.MovementSynchronizerMode;
+import com.mcmmorpg.common.ai.MotionSynchronizer;
+import com.mcmmorpg.common.ai.MotionSynchronizer.MotionSynchronizerMode;
 import com.mcmmorpg.common.character.CharacterCollider;
 import com.mcmmorpg.common.character.NonPlayerCharacter;
 import com.mcmmorpg.common.character.PlayerCharacter;
@@ -44,7 +44,7 @@ public class WildBoar extends NonPlayerCharacter {
 
 	private final Location spawnLocation;
 	private final CharacterCollider hitbox;
-	private final MovementSynchronizer aiSyncer;
+	private final MotionSynchronizer aiSyncer;
 	private Pig entity;
 	private PolarBear ai;
 
@@ -76,7 +76,7 @@ public class WildBoar extends NonPlayerCharacter {
 		super.setHeight(1.25);
 		this.spawnLocation = spawnLocation;
 		hitbox = new CharacterCollider(this, spawnLocation.clone().add(0, 0.5, 0), 2, 1, 2);
-		aiSyncer = new MovementSynchronizer(this, MovementSynchronizerMode.CHARACTER_FOLLOWS_ENTITY);
+		aiSyncer = new MotionSynchronizer(this, MotionSynchronizerMode.CHARACTER_FOLLOWS_ENTITY);
 	}
 
 	@Override

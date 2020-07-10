@@ -15,8 +15,8 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.util.Vector;
 
-import com.mcmmorpg.common.ai.MovementSynchronizer;
-import com.mcmmorpg.common.ai.MovementSynchronizer.MovementSynchronizerMode;
+import com.mcmmorpg.common.ai.MotionSynchronizer;
+import com.mcmmorpg.common.ai.MotionSynchronizer.MotionSynchronizerMode;
 import com.mcmmorpg.common.character.CharacterCollider;
 import com.mcmmorpg.common.character.NonPlayerCharacter;
 import com.mcmmorpg.common.character.PlayerCharacter;
@@ -35,7 +35,7 @@ public abstract class AbstractUndead extends NonPlayerCharacter {
 
 	private final Location spawnLocation;
 	private final CharacterCollider hitbox;
-	private final MovementSynchronizer movementSyncer;
+	private final MotionSynchronizer motionSyncer;
 	private final double respawnTime;
 	private final EntityType entityType;
 	private Zombie entity;
@@ -73,7 +73,7 @@ public abstract class AbstractUndead extends NonPlayerCharacter {
 		super.setMaxHealth(maxHealth());
 		this.spawnLocation = spawnLocation;
 		this.hitbox = new CharacterCollider(this, spawnLocation.clone().add(0, 1.25, 0), 1, 2.5, 1);
-		this.movementSyncer = new MovementSynchronizer(this, MovementSynchronizerMode.CHARACTER_FOLLOWS_ENTITY);
+		this.motionSyncer = new MotionSynchronizer(this, MotionSynchronizerMode.CHARACTER_FOLLOWS_ENTITY);
 		this.respawnTime = respawnTime;
 		this.entityType = entityType;
 	}
@@ -100,8 +100,8 @@ public abstract class AbstractUndead extends NonPlayerCharacter {
 			vehicle.remove();
 		}
 		entity.setInvulnerable(true);
-		movementSyncer.setEntity(entity);
-		movementSyncer.setEnabled(true);
+		motionSyncer.setEntity(entity);
+		motionSyncer.setEnabled(true);
 		entityMap.put(entity, this);
 	}
 
@@ -109,7 +109,7 @@ public abstract class AbstractUndead extends NonPlayerCharacter {
 	public void despawn() {
 		super.despawn();
 		hitbox.setActive(false);
-		movementSyncer.setEnabled(false);
+		motionSyncer.setEnabled(false);
 		entity.remove();
 		entityMap.remove(entity);
 	}

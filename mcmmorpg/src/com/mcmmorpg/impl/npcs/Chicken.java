@@ -5,20 +5,20 @@ import org.bukkit.Location;
 import org.bukkit.entity.EntityType;
 
 import com.mcmmorpg.common.util.BukkitUtility;
-import com.mcmmorpg.common.ai.MovementSynchronizer;
-import com.mcmmorpg.common.ai.MovementSynchronizer.MovementSynchronizerMode;
+import com.mcmmorpg.common.ai.MotionSynchronizer;
+import com.mcmmorpg.common.ai.MotionSynchronizer.MotionSynchronizerMode;
 import com.mcmmorpg.common.character.NonPlayerCharacter;
 
 public class Chicken extends NonPlayerCharacter {
 
 	private final Location spawnLocation;
-	private final MovementSynchronizer movementSyncer;
+	private final MotionSynchronizer motionSyncer;
 	private org.bukkit.entity.Chicken entity;
 
 	public Chicken(Location spawnLocation) {
 		super(ChatColor.GREEN + "Chicken", 1, spawnLocation);
 		this.spawnLocation = spawnLocation;
-		this.movementSyncer = new MovementSynchronizer(this, MovementSynchronizerMode.CHARACTER_FOLLOWS_ENTITY);
+		this.motionSyncer = new MotionSynchronizer(this, MotionSynchronizerMode.CHARACTER_FOLLOWS_ENTITY);
 		super.setHeight(1);
 	}
 
@@ -30,14 +30,14 @@ public class Chicken extends NonPlayerCharacter {
 		entity.setInvulnerable(true);
 		entity.setAdult();
 		entity.setRemoveWhenFarAway(false);
-		movementSyncer.setEntity(entity);
-		movementSyncer.setEnabled(true);
+		motionSyncer.setEntity(entity);
+		motionSyncer.setEnabled(true);
 	}
 
 	@Override
 	protected void despawn() {
 		super.despawn();
-		movementSyncer.setEnabled(false);
+		motionSyncer.setEnabled(false);
 		entity.remove();
 	}
 

@@ -21,8 +21,8 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
 
-import com.mcmmorpg.common.ai.MovementSynchronizer;
-import com.mcmmorpg.common.ai.MovementSynchronizer.MovementSynchronizerMode;
+import com.mcmmorpg.common.ai.MotionSynchronizer;
+import com.mcmmorpg.common.ai.MotionSynchronizer.MotionSynchronizerMode;
 import com.mcmmorpg.common.character.AbstractCharacter;
 import com.mcmmorpg.common.character.CharacterCollider;
 import com.mcmmorpg.common.character.NonPlayerCharacter;
@@ -65,7 +65,7 @@ public class ColossalGelatinousCube extends NonPlayerCharacter {
 	private final CharacterCollider hitbox;
 	private final Collider surroundings;
 	private final BossBar bossBar;
-	private final MovementSynchronizer movementSyncer;
+	private final MotionSynchronizer motionSyncer;
 	private Slime entity;
 	private ProgressBar splitProgressBar;
 	private boolean canUseSplit;
@@ -96,7 +96,7 @@ public class ColossalGelatinousCube extends NonPlayerCharacter {
 			}
 		};
 		bossBar = Bukkit.createBossBar(getName(), BarColor.RED, BarStyle.SEGMENTED_10);
-		movementSyncer = new MovementSynchronizer(this, MovementSynchronizerMode.CHARACTER_FOLLOWS_ENTITY);
+		motionSyncer = new MotionSynchronizer(this, MotionSynchronizerMode.CHARACTER_FOLLOWS_ENTITY);
 		canUseSplit = true;
 		childCount = 0;
 
@@ -170,8 +170,8 @@ public class ColossalGelatinousCube extends NonPlayerCharacter {
 		entity.setSize(ENTITY_SIZE);
 		entity.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, Integer.MAX_VALUE, SLOWNESS));
 		entity.setRemoveWhenFarAway(false);
-		movementSyncer.setEntity(entity);
-		movementSyncer.setEnabled(true);
+		motionSyncer.setEntity(entity);
+		motionSyncer.setEnabled(true);
 	}
 
 	@Override
@@ -179,7 +179,7 @@ public class ColossalGelatinousCube extends NonPlayerCharacter {
 		super.despawn();
 		hitbox.setActive(false);
 		surroundings.setActive(false);
-		movementSyncer.setEnabled(false);
+		motionSyncer.setEnabled(false);
 		entity.remove();
 	}
 
@@ -270,7 +270,7 @@ public class ColossalGelatinousCube extends NonPlayerCharacter {
 		Items.COLOSSAL_SLUDGE.drop(location, giantSludgeAmount);
 		hitbox.setActive(false);
 		surroundings.setActive(false);
-		movementSyncer.setEnabled(false);
+		motionSyncer.setEnabled(false);
 		entity.remove();
 		if (splitProgressBar != null) {
 			splitProgressBar.dispose();

@@ -14,8 +14,8 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.util.Vector;
 
-import com.mcmmorpg.common.ai.MovementSynchronizer;
-import com.mcmmorpg.common.ai.MovementSynchronizer.MovementSynchronizerMode;
+import com.mcmmorpg.common.ai.MotionSynchronizer;
+import com.mcmmorpg.common.ai.MotionSynchronizer.MotionSynchronizerMode;
 import com.mcmmorpg.common.character.CharacterCollider;
 import com.mcmmorpg.common.character.NonPlayerCharacter;
 import com.mcmmorpg.common.character.PlayerCharacter;
@@ -37,7 +37,7 @@ public class Rat extends NonPlayerCharacter {
 	private final double damageAmount;
 	private final int xpReward;
 	private final CharacterCollider hitbox;
-	private final MovementSynchronizer movementSyncer;
+	private final MotionSynchronizer motionSyncer;
 	private Silverfish entity;
 	static {
 		Listener listener = new Listener() {
@@ -74,7 +74,7 @@ public class Rat extends NonPlayerCharacter {
 		this.damageAmount = damageAmount;
 		this.xpReward = xpReward;
 		this.hitbox = new CharacterCollider(this, spawnLocation.clone().add(0, 0.25, 0), 1.25, 0.5, 1.25);
-		this.movementSyncer = new MovementSynchronizer(this, MovementSynchronizerMode.CHARACTER_FOLLOWS_ENTITY);
+		this.motionSyncer = new MotionSynchronizer(this, MotionSynchronizerMode.CHARACTER_FOLLOWS_ENTITY);
 	}
 
 	@Override
@@ -98,8 +98,8 @@ public class Rat extends NonPlayerCharacter {
 		entity.setSilent(true);
 		entity.setInvulnerable(true);
 		entity.setRemoveWhenFarAway(false);
-		movementSyncer.setEntity(entity);
-		movementSyncer.setEnabled(true);
+		motionSyncer.setEntity(entity);
+		motionSyncer.setEnabled(true);
 		entityMap.put(entity, this);
 	}
 
@@ -107,7 +107,7 @@ public class Rat extends NonPlayerCharacter {
 	protected void despawn() {
 		super.despawn();
 		hitbox.setActive(false);
-		movementSyncer.setEnabled(false);
+		motionSyncer.setEnabled(false);
 		entity.remove();
 		entityMap.remove(entity);
 	}
@@ -116,7 +116,7 @@ public class Rat extends NonPlayerCharacter {
 	protected void onDeath() {
 		super.onDeath();
 		hitbox.setActive(false);
-		movementSyncer.setEnabled(false);
+		motionSyncer.setEnabled(false);
 		entity.remove();
 		entityMap.remove(entity);
 		Location deathLocation = getLocation();

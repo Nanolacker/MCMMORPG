@@ -16,8 +16,8 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.util.Vector;
 
-import com.mcmmorpg.common.ai.MovementSynchronizer;
-import com.mcmmorpg.common.ai.MovementSynchronizer.MovementSynchronizerMode;
+import com.mcmmorpg.common.ai.MotionSynchronizer;
+import com.mcmmorpg.common.ai.MotionSynchronizer.MotionSynchronizerMode;
 import com.mcmmorpg.common.character.AbstractCharacter;
 import com.mcmmorpg.common.character.CharacterCollider;
 import com.mcmmorpg.common.character.NonPlayerCharacter;
@@ -47,7 +47,7 @@ public class SmallGelatinousCube extends NonPlayerCharacter {
 
 	private final Location spawnLocation;
 	private final CharacterCollider hitbox;
-	private final MovementSynchronizer movementSyncer;
+	private final MotionSynchronizer motionSyncer;
 	private final PlayerCharacter cause;
 	private Slime entity;
 	private boolean canAttack;
@@ -88,7 +88,7 @@ public class SmallGelatinousCube extends NonPlayerCharacter {
 		super.setHeight(HEIGHT);
 		this.spawnLocation = spawnLocation;
 		hitbox = new CharacterCollider(this, spawnLocation, WIDTH, WIDTH, WIDTH);
-		movementSyncer = new MovementSynchronizer(this, MovementSynchronizerMode.CHARACTER_FOLLOWS_ENTITY);
+		motionSyncer = new MotionSynchronizer(this, MotionSynchronizerMode.CHARACTER_FOLLOWS_ENTITY);
 		this.cause = cause;
 		int count = FlintonSewersListener.smallGelatinousCubeCounts.get(cause) + 1;
 		FlintonSewersListener.smallGelatinousCubeCounts.put(cause, count);
@@ -103,8 +103,8 @@ public class SmallGelatinousCube extends NonPlayerCharacter {
 		entity = (Slime) BukkitUtility.spawnNonpersistentEntity(spawnLocation, EntityType.SLIME);
 		entity.setSize(ENTITY_SIZE);
 		entity.setRemoveWhenFarAway(false);
-		movementSyncer.setEntity(entity);
-		movementSyncer.setEnabled(true);
+		motionSyncer.setEntity(entity);
+		motionSyncer.setEnabled(true);
 		entityMap.put(entity, this);
 	}
 
@@ -112,7 +112,7 @@ public class SmallGelatinousCube extends NonPlayerCharacter {
 	public void despawn() {
 		super.despawn();
 		hitbox.setActive(false);
-		movementSyncer.setEnabled(false);
+		motionSyncer.setEnabled(false);
 		entityMap.remove(entity);
 		entity.remove();
 	}
@@ -147,7 +147,7 @@ public class SmallGelatinousCube extends NonPlayerCharacter {
 		int sludgeAmount = (int) (Math.random() * 1.25);
 		Items.SLUDGE.drop(location, sludgeAmount);
 		hitbox.setActive(false);
-		movementSyncer.setEnabled(false);
+		motionSyncer.setEnabled(false);
 		int count = FlintonSewersListener.smallGelatinousCubeCounts.get(cause) - 1;
 		FlintonSewersListener.smallGelatinousCubeCounts.put(cause, count);
 		entityMap.remove(entity);
