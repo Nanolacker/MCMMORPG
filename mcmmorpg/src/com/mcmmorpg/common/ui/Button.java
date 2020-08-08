@@ -14,7 +14,7 @@ import com.mcmmorpg.common.util.BukkitUtility;
  */
 public abstract class Button {
 
-	static Map<ItemStack, Button> buttonMap = new HashMap<>();
+	private static Map<ItemStack, Button> buttonMap = new HashMap<>();
 
 	private final ItemStack itemStack;
 

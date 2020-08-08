@@ -4,31 +4,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.bukkit.Location;
-import org.bukkit.Particle;
 import org.bukkit.World;
 import org.bukkit.util.BoundingBox;
 
-import com.mcmmorpg.common.time.RepeatingTask;
 import com.mcmmorpg.common.util.MathUtility;
 
 /**
  * Represents an axis-aligned box collider.
  */
 public class Collider {
-
-	/**
-	 * The default particle used to draw colliders.
-	 */
-	private static final Particle DEFAULT_DRAW_PARTICLE = Particle.CRIT;
-	/**
-	 * The period by which colliders will be drawn when made visible.
-	 */
-	private static final double DRAW_PERIOD = 0.1;
-	/**
-	 * How thick layers of particles used to draw colliders will be. The greater
-	 * this value, the less space there is between particles used to draw colliders.
-	 */
-	private static final double DRAW_THICKNESS = 4.0;
 
 	/**
 	 * Whether this collider will collide and respond to other colliders.
@@ -50,41 +34,6 @@ public class Collider {
 	 * The colliders that this collider is currently colliding with.
 	 */
 	private List<Collider> collidingColliders;
-	/**
-	 * Whether this collider should be "drawn" in its Minecraft world using
-	 * particles to visualize its location and size.
-	 */
-	private boolean visible;
-	/**
-	 * The type of pattern in which this collider will be drawn when
-	 * {@code drawingEnabled} is true. The default mode is
-	 * {@code ColliderDrawMode.WIREFRAME}.
-	 */
-	private ColliderDrawMode drawMode;
-	/**
-	 * The particle that will be used to draw this collider if
-	 * {@code drawingEnabled} is true.
-	 */
-	private Particle drawParticle;
-	/**
-	 * The repeating task that is used to draw this collider.
-	 */
-	private RepeatingTask drawTask;
-
-	/**
-	 * Represents a type of pattern by which colliders can be drawn.
-	 */
-	public static enum ColliderDrawMode {
-		/**
-		 * Results in a wireframe visual representation of a collider when it is drawn
-		 * using this mode.
-		 */
-		WIREFRAME,
-		/**
-		 * The entirety of collider will be filled when it is drawn using this mode.
-		 */
-		FILL
-	}
 
 	/**
 	 * Constructs a new axis-aligned, cuboid collider. The max value on any axis
@@ -116,10 +65,6 @@ public class Collider {
 		this.zMax = zMax;
 
 		active = false;
-		visible = false;
-		drawMode = ColliderDrawMode.WIREFRAME;
-		drawParticle = DEFAULT_DRAW_PARTICLE;
-		drawTask = null;
 		occupiedBuckets = new ArrayList<ColliderBucket>();
 		collidingColliders = new ArrayList<Collider>();
 	}
@@ -155,8 +100,9 @@ public class Collider {
 	 *             if any of the lengths are negative
 	 */
 	public Collider(Location center, double lengthX, double lengthY, double lengthZ) {
-		this(center.getWorld(), center.getX() - lengthX / 2, center.getY() - lengthY / 2, center.getZ() - lengthZ / 2,
-				center.getX() + lengthX / 2, center.getY() + lengthY / 2, center.getZ() + lengthZ / 2);
+		this(center.getWorld(), center.getX() - lengthX / 2.0, center.getY() - lengthY / 2.0,
+				center.getZ() - lengthZ / 2.0, center.getX() + lengthX / 2.0, center.getY() + lengthY / 2.0,
+				center.getZ() + lengthZ / 2.0);
 	}
 
 	/**
@@ -303,9 +249,9 @@ public class Collider {
 	 * box.
 	 */
 	public final Location getCenter() {
-		double x = (xMin + xMax) / 2;
-		double y = (yMin + yMax) / 2;
-		double z = (zMin + zMax) / 2;
+		double x = (xMin + xMax) / 2.0;
+		double y = (yMin + yMax) / 2.0;
+		double z = (zMin + zMax) / 2.0;
 		Location center = new Location(world, x, y, z);
 		return center;
 	}
@@ -327,15 +273,15 @@ public class Collider {
 
 	private final void updateBounds(Location newCenter) {
 		double xMid = newCenter.getX();
-		double halfLengthX = getLengthX() / 2;
+		double halfLengthX = getLengthX() / 2.0;
 		xMin = xMid - halfLengthX;
 		xMax = xMid + halfLengthX;
 		double yMid = newCenter.getY();
-		double halfLengthY = getLengthY() / 2;
+		double halfLengthY = getLengthY() / 2.0;
 		yMin = yMid - halfLengthY;
 		yMax = yMid + halfLengthY;
 		double zMid = newCenter.getZ();
-		double halfLengthZ = getLengthZ() / 2;
+		double halfLengthZ = getLengthZ() / 2.0;
 		zMin = zMid - halfLengthZ;
 		zMax = zMid + halfLengthZ;
 	}
@@ -400,16 +346,16 @@ public class Collider {
 	}
 
 	private final void updateBounds(double newLengthX, double newLengthY, double newLengthZ) {
-		double xMid = (xMin + xMax) / 2;
-		double halfLengthX = newLengthX / 2;
+		double xMid = (xMin + xMax) / 2.0;
+		double halfLengthX = newLengthX / 2.0;
 		xMin = xMid - halfLengthX;
 		xMax = xMid + halfLengthX;
-		double yMid = (yMin + yMax) / 2;
-		double halfLengthY = newLengthY / 2;
+		double yMid = (yMin + yMax) / 2.0;
+		double halfLengthY = newLengthY / 2.0;
 		yMin = yMid - halfLengthY;
 		yMax = yMid + halfLengthY;
-		double zMid = (zMin + zMax) / 2;
-		double halfLengthZ = newLengthZ / 2;
+		double zMid = (zMin + zMax) / 2.0;
+		double halfLengthZ = newLengthZ / 2.0;
 		zMin = zMid - halfLengthZ;
 		zMax = zMid + halfLengthZ;
 	}
@@ -582,160 +528,6 @@ public class Collider {
 	 *            the other collider in the collision
 	 */
 	protected void onCollisionExit(Collider other) {
-	}
-
-	/**
-	 * Enabling drawing will result in a visual representation of this collider to
-	 * be rendered in game using particles. As creating so many particles is very
-	 * costly, this should only be invoked for debugging purposes.
-	 */
-	public final void setVisible(boolean visible) {
-		boolean redundant = this.visible == visible;
-		if (redundant) {
-			return;
-		}
-		this.visible = visible;
-		if (visible) {
-			if (drawTask == null) {
-				assignDrawTask();
-			}
-			drawTask.schedule();
-		} else {
-			drawTask.cancel();
-		}
-	}
-
-	/**
-	 * Changes the mode, or pattern, used to draw this collider.
-	 * 
-	 * @param mode
-	 *            the mode with which this collider will be drawn
-	 */
-	public final void setDrawMode(ColliderDrawMode mode) {
-		drawMode = mode;
-		if (visible) {
-			drawTask.cancel();
-		}
-		assignDrawTask();
-		if (visible) {
-			drawTask.schedule();
-		}
-	}
-
-	public final Particle getDrawParticle() {
-		return drawParticle;
-	}
-
-	/**
-	 * Changes the particle used to draw this collider when drawing is enabled.
-	 * 
-	 * @param particle
-	 *            the particle to be used in drawing this collider
-	 */
-	public final void setDrawParticle(Particle particle) {
-		drawParticle = particle;
-	}
-
-	/**
-	 * Assigns {@code drawTask}, the task used to draw this collider.
-	 */
-	private final void assignDrawTask() {
-		drawTask = new RepeatingTask(DRAW_PERIOD) {
-			@Override
-			protected void run() {
-				switch (drawMode) {
-				case WIREFRAME:
-					drawWireframe();
-					break;
-				case FILL:
-					drawFill();
-					break;
-				default:
-					break;
-				}
-			}
-		};
-	}
-
-	/**
-	 * Draws this collider in a wireframe pattern.
-	 */
-	private final void drawWireframe() {
-		// distance between particles used to draw
-		double spaceDistance = 1 / DRAW_THICKNESS;
-		World world = getWorld();
-		// represents whether xCount has reached reached its maximum
-		boolean xFinished = false;
-		for (double xCount = xMin; xCount <= xMax && !xFinished; xCount += spaceDistance) {
-			// represents whether yCount has reached reached its maximum
-			boolean yFinished = false;
-			for (double yCount = yMin; yCount <= yMax && !yFinished; yCount += spaceDistance) {
-				// represents whether zCount has reached reached its maximum
-				boolean zFinished = false;
-				for (double zCount = zMin; zCount <= zMax && !zFinished; zCount += spaceDistance) {
-					int validCount = 0;
-					if (xCount == xMin) {
-						validCount++;
-					}
-					if (xCount > xMax - spaceDistance) {
-						validCount++;
-						xFinished = true;
-					}
-					if (yCount == yMin) {
-						validCount++;
-					}
-					if (yCount > yMax - spaceDistance) {
-						validCount++;
-						yFinished = true;
-					}
-					if (zCount == zMin) {
-						validCount++;
-					}
-					if (zCount > zMax - spaceDistance) {
-						validCount++;
-						zFinished = true;
-					}
-					boolean validPoint = validCount >= 2;
-					if (validPoint) {
-						Location point = new Location(world, xCount, yCount, zCount);
-						world.spawnParticle(drawParticle, point, 0);
-					}
-				}
-			}
-		}
-	}
-
-	/**
-	 * Draws this collider in a fill pattern (i.e. the drawing is completely filled
-	 * with particles).
-	 */
-	private final void drawFill() {
-		// distance between particles used to draw
-		double spaceDistance = 1 / DRAW_THICKNESS;
-		for (double xCount = xMin; xCount <= xMax; xCount += spaceDistance) {
-			for (double yCount = yMin; yCount <= yMax; yCount += spaceDistance) {
-				for (double zCount = zMin; zCount <= zMax; zCount += spaceDistance) {
-					Location point = new Location(world, xCount, yCount, zCount);
-					world.spawnParticle(drawParticle, point, 0);
-				}
-			}
-		}
-	}
-
-	/**
-	 * Draws this collider in a fill pattern (i.e. the drawing is completely filled
-	 * with particles) with the specified particle density.
-	 */
-	public void drawFill(Particle particle, double particleDensity) {
-		double spaceDistance = 1 / particleDensity;
-		for (double xCount = xMin; xCount <= xMax; xCount += spaceDistance) {
-			for (double yCount = yMin; yCount <= yMax; yCount += spaceDistance) {
-				for (double zCount = zMin; zCount <= zMax; zCount += spaceDistance) {
-					Location point = new Location(world, xCount, yCount, zCount);
-					world.spawnParticle(particle, point, 0);
-				}
-			}
-		}
 	}
 
 }
