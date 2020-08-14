@@ -394,7 +394,7 @@ public abstract class AbstractCharacter implements Source {
 	@OverridingMethodsMustInvokeSuper
 	public void speak(String dialogue, double radius) {
 		String formattedDialogue = formatDialogue(dialogue);
-		PlayerCharacter.sendMessageToAllNearby(formattedDialogue, getLocation(), radius);
+		PlayerCharacter.broadcastMessage(formattedDialogue, getLocation(), radius);
 	}
 
 }

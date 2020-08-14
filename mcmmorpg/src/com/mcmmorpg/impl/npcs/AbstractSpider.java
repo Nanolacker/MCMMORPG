@@ -195,11 +195,11 @@ public abstract class AbstractSpider extends NonPlayerCharacter {
 
 	protected void onExitRange(PlayerCharacter pc) {
 		if (pc == target) {
-			Collider[] colliders = surroundings.getCollidingColliders();
-			for (int i = 0; i < colliders.length; i++) {
-				Collider collider = colliders[i];
-				if (collider instanceof PlayerCharacterCollider) {
-					target = ((PlayerCharacterCollider) collider).getCharacter();
+			Collider[] contacts = surroundings.getContacts();
+			for (int i = 0; i < contacts.length; i++) {
+				Collider contact = contacts[i];
+				if (contact instanceof PlayerCharacterCollider) {
+					target = ((PlayerCharacterCollider) contact).getCharacter();
 					entity.setTarget(target.getPlayer());
 					return;
 				}

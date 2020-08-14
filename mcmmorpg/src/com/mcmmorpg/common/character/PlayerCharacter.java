@@ -322,11 +322,11 @@ public final class PlayerCharacter extends AbstractCharacter {
 		double diameter = radius * 2;
 		Collider bounds = new Collider(location, diameter, diameter, diameter);
 		bounds.setActive(true);
-		Collider[] collidingColliders = bounds.getCollidingColliders();
+		Collider[] contacts = bounds.getContacts();
 		bounds.setActive(false);
-		for (Collider collider : collidingColliders) {
-			if (collider instanceof PlayerCharacterCollider) {
-				PlayerCharacter pc = ((PlayerCharacterCollider) collider).getCharacter();
+		for (Collider contact : contacts) {
+			if (contact instanceof PlayerCharacterCollider) {
+				PlayerCharacter pc = ((PlayerCharacterCollider) contact).getCharacter();
 				pcs.add(pc);
 			}
 		}
@@ -986,7 +986,7 @@ public final class PlayerCharacter extends AbstractCharacter {
 		silence(4);
 		TitleText deathMessage = new TitleText(ChatColor.RED + "YOU DIED", null);
 		deathMessage.apply(player);
-		sendMessageToAllNearby(formatName() + ChatColor.GRAY + " died", getLocation(), 25);
+		broadcastMessage(formatName() + ChatColor.GRAY + " died", getLocation(), 25);
 		PotionEffect veilEffect = new PotionEffect(PotionEffectType.BLINDNESS, 80, 1);
 		PotionEffect invisibiltyEffect = new PotionEffect(PotionEffectType.INVISIBILITY, 40, 1);
 		PotionEffect slownessEffect = new PotionEffect(PotionEffectType.SLOW, 40, 5);
@@ -1042,14 +1042,14 @@ public final class PlayerCharacter extends AbstractCharacter {
 	/**
 	 * Sends the specified message to player characters nearby the location.
 	 */
-	public static void sendMessageToAllNearby(String message, Location location, double radius) {
+	public static void broadcastMessage(String message, Location location, double radius) {
 		double diameter = radius * 2;
 		Collider area = new Collider(location, diameter, diameter, diameter);
 		area.setActive(true);
-		Collider[] colliders = area.getCollidingColliders();
-		for (Collider collider : colliders) {
-			if (collider instanceof PlayerCharacterCollider) {
-				PlayerCharacter pc = ((PlayerCharacterCollider) collider).getCharacter();
+		Collider[] contacts = area.getContacts();
+		for (Collider contact : contacts) {
+			if (contact instanceof PlayerCharacterCollider) {
+				PlayerCharacter pc = ((PlayerCharacterCollider) contact).getCharacter();
 				pc.sendMessage(message);
 			}
 		}

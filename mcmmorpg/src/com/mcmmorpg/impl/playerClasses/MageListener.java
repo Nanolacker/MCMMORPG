@@ -288,10 +288,10 @@ public class MageListener implements Listener {
 			@Override
 			protected void run() {
 				drawWhirlwind(target);
-				Collider[] colliders = hitbox.getCollidingColliders();
-				for (Collider collider : colliders) {
-					if (collider instanceof CharacterCollider) {
-						AbstractCharacter character = ((CharacterCollider) collider).getCharacter();
+				Collider[] contacts = hitbox.getContacts();
+				for (Collider contact : contacts) {
+					if (contact instanceof CharacterCollider) {
+						AbstractCharacter character = ((CharacterCollider) contact).getCharacter();
 						if (!character.isFriendly(pc)) {
 							character.damage(damagePerTick, pc);
 							WHIRLWIND_HIT_NOISE.play(character.getLocation());
@@ -349,10 +349,10 @@ public class MageListener implements Listener {
 				}
 				if (count % 5 == 0) {
 					EARTHQUAKE_NOISE.play(center);
-					Collider[] colliders = hitbox.getCollidingColliders();
-					for (Collider collider : colliders) {
-						if (collider instanceof CharacterCollider) {
-							AbstractCharacter character = ((CharacterCollider) collider).getCharacter();
+					Collider[] contacts = hitbox.getContacts();
+					for (Collider contact : contacts) {
+						if (contact instanceof CharacterCollider) {
+							AbstractCharacter character = ((CharacterCollider) contact).getCharacter();
 							if (!character.isFriendly(pc)) {
 								character.damage(damagePerTick, pc);
 							}

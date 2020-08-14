@@ -33,12 +33,12 @@ final class ColliderBucket {
 	}
 
 	/**
-	 * The {@link Collider}s that are encompassed entirely or partially by this
+	 * The colliders that are encompassed entirely or partially by this
 	 * bucket.
 	 */
 	private List<Collider> activeColliders;
 	/**
-	 * Not a {@code Location} in the traditional sense.
+	 * Not a location in the traditional sense.
 	 */
 	private Location address;
 
@@ -57,7 +57,7 @@ final class ColliderBucket {
 		return bucket;
 	}
 
-	static void deleteBucket(Location address) {
+	static void removeBucket(Location address) {
 		bucketMap.remove(address);
 	}
 

@@ -41,9 +41,9 @@ public class MelcherTavernRat extends Rat {
 				if (other instanceof PlayerCharacterCollider) {
 					PlayerCharacter pc = ((PlayerCharacterCollider) other).getCharacter();
 					pc.getMap().setMapSegment(Maps.ELADRADOR);
-					Collider[] collidingColliders = getCollidingColliders();
-					for (Collider collider : collidingColliders) {
-						if (collider instanceof PlayerCharacterCollider) {
+					Collider[] contacts = getContacts();
+					for (Collider contact : contacts) {
+						if (contact instanceof PlayerCharacterCollider) {
 							return;
 						}
 					}

@@ -16,6 +16,9 @@ import com.mcmmorpg.common.physics.Collider;
 import com.mcmmorpg.common.physics.Ray;
 import com.mcmmorpg.common.time.DelayedTask;
 
+/**
+ * Provides static methods that ease the development and debugging process.
+ */
 public class Debug {
 
 	private static final double DRAWING_PARTICLE_SPACE_DISTANCE = 0.25;
@@ -38,8 +41,8 @@ public class Debug {
 	 * trace element from which this method was called for ease of debugging.
 	 */
 	public static void logf(String format, Object... args) {
-		StackTraceElement caller = Thread.currentThread().getStackTrace()[2];
 		String message = String.format(format, args);
+		StackTraceElement caller = Thread.currentThread().getStackTrace()[2];
 		log0(message, caller);
 	}
 
@@ -76,8 +79,8 @@ public class Debug {
 	}
 
 	/**
-	 * Returns the first online player this method finds. Provides a convenient way
-	 * to find a player for testing purposes.
+	 * Returns the first online player found. Provides a convenient way to find a
+	 * player for testing purposes.
 	 */
 	public static Player getAPlayer() {
 		Collection<? extends Player> players = Bukkit.getOnlinePlayers();
@@ -107,35 +110,35 @@ public class Debug {
 		World world = collider.getWorld();
 		// whether xCount has reached reached its maximum
 		boolean xFinished = false;
-		for (double xCount = collider.getXMin(); xCount <= collider.getXMax()
+		for (double xCount = collider.getMinX(); xCount <= collider.getMaxX()
 				&& !xFinished; xCount += DRAWING_PARTICLE_SPACE_DISTANCE) {
 			// whether yCount has reached reached its maximum
 			boolean yFinished = false;
-			for (double yCount = collider.getYMin(); yCount <= collider.getYMax()
+			for (double yCount = collider.getMinY(); yCount <= collider.getMaxY()
 					&& !yFinished; yCount += DRAWING_PARTICLE_SPACE_DISTANCE) {
 				// whether zCount has reached reached its maximum
 				boolean zFinished = false;
-				for (double zCount = collider.getZMin(); zCount <= collider.getZMax()
+				for (double zCount = collider.getMinZ(); zCount <= collider.getMaxZ()
 						&& !zFinished; zCount += DRAWING_PARTICLE_SPACE_DISTANCE) {
 					int validCount = 0;
-					if (xCount == collider.getXMin()) {
+					if (xCount == collider.getMinX()) {
 						validCount++;
 					}
-					if (xCount > collider.getXMax() - DRAWING_PARTICLE_SPACE_DISTANCE) {
+					if (xCount > collider.getMaxX() - DRAWING_PARTICLE_SPACE_DISTANCE) {
 						validCount++;
 						xFinished = true;
 					}
-					if (yCount == collider.getYMin()) {
+					if (yCount == collider.getMinY()) {
 						validCount++;
 					}
-					if (yCount > collider.getYMax() - DRAWING_PARTICLE_SPACE_DISTANCE) {
+					if (yCount > collider.getMaxY() - DRAWING_PARTICLE_SPACE_DISTANCE) {
 						validCount++;
 						yFinished = true;
 					}
-					if (zCount == collider.getZMin()) {
+					if (zCount == collider.getMinZ()) {
 						validCount++;
 					}
-					if (zCount > collider.getZMax() - DRAWING_PARTICLE_SPACE_DISTANCE) {
+					if (zCount > collider.getMaxZ() - DRAWING_PARTICLE_SPACE_DISTANCE) {
 						validCount++;
 						zFinished = true;
 					}

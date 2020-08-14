@@ -274,10 +274,10 @@ public class FlintonSewersListener implements Listener {
 					count = 0;
 				}
 				count++;
-				Collider[] colliders = innerBounds.getCollidingColliders();
-				for (Collider collider : colliders) {
-					if (collider instanceof PlayerCharacterCollider) {
-						PlayerCharacter pc = ((PlayerCharacterCollider) collider).getCharacter();
+				Collider[] contacts = innerBounds.getContacts();
+				for (Collider contact : contacts) {
+					if (contact instanceof PlayerCharacterCollider) {
+						PlayerCharacter pc = ((PlayerCharacterCollider) contact).getCharacter();
 						Location location = pc.getLocation();
 						World world = location.getWorld();
 						Block current = world.getBlockAt(location);

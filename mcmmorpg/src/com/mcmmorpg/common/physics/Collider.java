@@ -10,7 +10,10 @@ import org.bukkit.util.BoundingBox;
 import com.mcmmorpg.common.util.MathUtility;
 
 /**
- * Represents an axis-aligned box collider.
+ * Represents an axis-aligned box collider. Instances of this class should
+ * override the onCollisionEnter() and onCollisionExit() methods to add
+ * collision behavior. Colliders will not interact with other colliders until
+ * setActive() has been called.
  */
 public class Collider {
 
@@ -23,59 +26,47 @@ public class Collider {
 	 */
 	private World world;
 	/**
-	 * Represents the bounds of this collider.
+	 * Represents the lower and upper bounds of this collider.
 	 */
-	private double xMin, yMin, zMin, xMax, yMax, zMax;
+	private double minX, minY, minZ, maxX, maxY, maxZ;
 	/**
 	 * The collider buckets that this collider occupies.
 	 */
-	private List<ColliderBucket> occupiedBuckets;
+	private final List<ColliderBucket> occupiedBuckets;
 	/**
-	 * The colliders that this collider is currently colliding with.
+	 * The colliders that this collider is currently contacting.
 	 */
-	private List<Collider> collidingColliders;
+	private final List<Collider> contacts;
 
 	/**
-	 * Constructs a new axis-aligned, cuboid collider. The max value on any axis
-	 * must be greater than that axis's min value. Be sure to invoke
-	 * {@code setActive} to activate this collider after construction.
-	 * 
-	 * @param world
-	 *            the world this collider will exist in
-	 * @param xMin
-	 *            the minimum x value that exists within this collider
-	 * @param xMax
-	 *            the maximum x value that exists within this collider
-	 * @param yMin
-	 *            the minimum y value that exists within this collider
-	 * @param yMax
-	 *            the maximum y value that exists within this collider
-	 * @param zMin
-	 *            the minimum z value that exists within this collider
-	 * @param zMax
-	 *            the maximum z value that exists within this collider
+	 * Constructs a new collider from the specified lower and upper bounds. This
+	 * constructor assumes that all max bounds are greater than their corresponding
+	 * min bounds.
 	 */
-	public Collider(World world, double xMin, double yMin, double zMin, double xMax, double yMax, double zMax) {
+	public Collider(World world, double minX, double minY, double minZ, double maxX, double maxY, double maxZ) {
 		this.world = world;
-		this.xMin = xMin;
-		this.xMax = xMax;
-		this.yMin = yMin;
-		this.yMax = yMax;
-		this.zMin = zMin;
-		this.zMax = zMax;
-
+		this.minX = minX;
+		this.minY = minY;
+		this.minZ = minZ;
+		this.maxX = maxX;
+		this.maxY = maxY;
+		this.maxZ = maxZ;
 		active = false;
 		occupiedBuckets = new ArrayList<ColliderBucket>();
-		collidingColliders = new ArrayList<Collider>();
+		contacts = new ArrayList<Collider>();
 	}
 
 	/**
-	 * Constructs a new {@code Collider} from the specified {@link BoundingBox}.
-	 * 
-	 * @param world
-	 *            the world this collider will exist in
-	 * @param boundingBox
-	 *            the collider used to construct this {@code Collider}
+	 * Constructs a new collider from the specified lower and upper bounds. This
+	 * constructor assumes that all max bounds are greater than their corresponding
+	 * min bounds.
+	 */
+	public Collider(Location min, Location max) {
+		this(min.getWorld(), min.getX(), min.getY(), min.getZ(), max.getX(), max.getY(), max.getZ());
+	}
+
+	/**
+	 * Constructs a new collider from the specified bounding box.
 	 */
 	public Collider(World world, BoundingBox boundingBox) {
 		this(world, boundingBox.getMinX(), boundingBox.getMinY(), boundingBox.getMinZ(), boundingBox.getMaxX(),
@@ -83,21 +74,8 @@ public class Collider {
 	}
 
 	/**
-	 * Constructs a new axis-aligned collider. Any length of this collider should
-	 * not be negative. Be sure to invoke {@code setActive} to activate collider
-	 * after construction.
-	 * 
-	 * @param center
-	 *            the location, including the world, at the center of this collider
-	 * @param lengthX
-	 *            the length of this collider on the x-axis
-	 * @param lengthY
-	 *            the length of this collider on the y-axis
-	 * @param lengthZ
-	 *            the length of this collider on the z-axis
-	 * 
-	 * @throws IllegalArgumentException
-	 *             if any of the lengths are negative
+	 * Constructs a new axis-aligned collider. This constructor assumes that no
+	 * length is negative.
 	 */
 	public Collider(Location center, double lengthX, double lengthY, double lengthZ) {
 		this(center.getWorld(), center.getX() - lengthX / 2.0, center.getY() - lengthY / 2.0,
@@ -106,14 +84,14 @@ public class Collider {
 	}
 
 	/**
-	 * Returns whether this collider will interact with other colliders.
+	 * Returns whether this collider interacts with other colliders.
 	 */
 	public final boolean isActive() {
 		return active;
 	}
 
 	/**
-	 * Sets whether this collider will interact with other colliders.
+	 * Sets whether this collider interacts with other colliders.
 	 */
 	public final void setActive(boolean active) {
 		this.active = active;
@@ -122,9 +100,9 @@ public class Collider {
 			checkForCollision();
 		} else {
 			// need to copy to prevent comodification in handleCollisionExit()
-			List<Collider> collidingCollidersCopy = new ArrayList<>(collidingColliders);
-			for (Collider collidingWith : collidingCollidersCopy) {
-				handleCollisionExit(collidingWith);
+			List<Collider> contactsCopy = new ArrayList<>(contacts);
+			for (Collider contact : contactsCopy) {
+				handleCollisionExit(contact);
 			}
 			for (ColliderBucket bucket : occupiedBuckets) {
 				bucket.removeCollider(this);
@@ -141,10 +119,7 @@ public class Collider {
 	}
 
 	/**
-	 * Sets the world that this collider will exist in.
-	 * 
-	 * @param world
-	 *            the world this collider will exist in
+	 * Sets the world that this collider exists in.
 	 */
 	public final void setWorld(World world) {
 		this.world = world;
@@ -155,29 +130,81 @@ public class Collider {
 	}
 
 	/**
-	 * Returns the minimum x value that exists inside this collider.
+	 * Sets the minimum x, y, and z values that exist inside this collider.
 	 */
-	public final double getXMin() {
-		return xMin;
-	}
-
-	public final void setXMin(double xMin) {
-		this.xMin = xMin;
+	public final void setMin(double minX, double minY, double minZ) {
+		this.minX = minX;
+		this.minY = minY;
+		this.minZ = minZ;
 		if (active) {
 			updateOccupiedBuckets();
 			checkForCollision();
 		}
+	}
+
+	/**
+	 * Returns the minimum location that exists inside this collider.
+	 */
+	public final Location getMin() {
+		return new Location(world, minX, minY, minZ);
+	}
+
+	/**
+	 * Sets the minimum location that exists inside this collider.
+	 */
+	public final void setMin(Location min) {
+		setMin(min.getX(), min.getY(), min.getZ());
+	}
+
+	/**
+	 * Returns the minimum x value that exists inside this collider.
+	 */
+	public final double getMinX() {
+		return minX;
+	}
+
+	/**
+	 * Sets the minimum x value that exists inside this collider.
+	 */
+	public final void setMinX(double minX) {
+		setMin(minX, this.minY, this.minZ);
 	}
 
 	/**
 	 * Returns the minimum y value that exists inside this collider.
 	 */
-	public final double getYMin() {
-		return yMin;
+	public final double getMinY() {
+		return minY;
 	}
 
-	public final void setYMin(double yMin) {
-		this.yMin = yMin;
+	/**
+	 * Sets the minimum y value that exists inside this collider.
+	 */
+	public final void setMinY(double minY) {
+		setMin(this.minX, minY, this.minZ);
+	}
+
+	/**
+	 * Returns the minimum z value that exists inside this collider.
+	 */
+	public final double getMinZ() {
+		return minZ;
+	}
+
+	/**
+	 * Sets the minimum z value that exists inside this collider.
+	 */
+	public final void setMinZ(double minZ) {
+		setMin(this.minX, this.minY, minZ);
+	}
+
+	/**
+	 * Sets the maximum location that exists inside this collider.
+	 */
+	public final void setMax(double maxX, double maxY, double maxZ) {
+		this.maxX = maxX;
+		this.maxY = maxY;
+		this.maxZ = maxZ;
 		if (active) {
 			updateOccupiedBuckets();
 			checkForCollision();
@@ -185,59 +212,59 @@ public class Collider {
 	}
 
 	/**
-	 * Returns the minimum z value that exists inside this collider.
+	 * Returns the maximum location that exists inside this collider.
 	 */
-	public final double getZMin() {
-		return zMin;
+	public final Location getMax() {
+		return new Location(world, minX, minY, minZ);
 	}
 
-	public final void setZMin(double zMin) {
-		this.zMin = zMin;
-		if (active) {
-			updateOccupiedBuckets();
-			checkForCollision();
-		}
+	/**
+	 * Sets the maximum location that exists inside this collider.
+	 */
+	public final void setMax(Location max) {
+		setMin(max.getX(), max.getY(), max.getZ());
 	}
 
 	/**
 	 * Returns the maximum x value that exists inside this collider.
 	 */
-	public final double getXMax() {
-		return xMax;
+	public final double getMaxX() {
+		return maxX;
 	}
 
-	public final void setXMax(double xMax) {
-		this.xMax = xMax;
-		if (active) {
-			updateOccupiedBuckets();
-			checkForCollision();
-		}
+	/**
+	 * Sets the maximum x value that exists inside this collider.
+	 */
+	public final void setMaxX(double maxX) {
+		setMax(maxX, this.maxY, this.maxZ);
 	}
 
 	/**
 	 * Returns the minimum y value that exists inside this collider.
 	 */
-	public final double getYMax() {
-		return yMax;
+	public final double getMaxY() {
+		return maxY;
 	}
 
-	public final void setYMax(double yMax) {
-		this.yMax = yMax;
-		if (active) {
-			updateOccupiedBuckets();
-			checkForCollision();
-		}
+	/**
+	 * Sets the maximum y value that exists inside this collider.
+	 */
+	public final void setMaxY(double maxY) {
+		setMax(this.maxX, maxY, this.maxZ);
 	}
 
 	/**
 	 * Returns the minimum z value that exists inside this collider.
 	 */
-	public final double getZMax() {
-		return zMax;
+	public final double getMaxZ() {
+		return maxZ;
 	}
 
-	public final void setZMax(double zMax) {
-		this.zMax = zMax;
+	/**
+	 * Sets the maximum z value that exists inside this collider.
+	 */
+	public final void setMaxZ(double zMax) {
+		this.maxZ = zMax;
 		if (active) {
 			updateOccupiedBuckets();
 			checkForCollision();
@@ -249,18 +276,15 @@ public class Collider {
 	 * box.
 	 */
 	public final Location getCenter() {
-		double x = (xMin + xMax) / 2.0;
-		double y = (yMin + yMax) / 2.0;
-		double z = (zMin + zMax) / 2.0;
+		double x = (minX + maxX) / 2.0;
+		double y = (minY + maxY) / 2.0;
+		double z = (minZ + maxZ) / 2.0;
 		Location center = new Location(world, x, y, z);
 		return center;
 	}
 
 	/**
 	 * Sets the center of this collider and updates all bounds accordingly.
-	 * 
-	 * @param center
-	 *            the new center of this collider
 	 */
 	public final void setCenter(Location center) {
 		world = center.getWorld();
@@ -272,34 +296,34 @@ public class Collider {
 	}
 
 	private final void updateBounds(Location newCenter) {
-		double xMid = newCenter.getX();
+		double midX = newCenter.getX();
 		double halfLengthX = getLengthX() / 2.0;
-		xMin = xMid - halfLengthX;
-		xMax = xMid + halfLengthX;
-		double yMid = newCenter.getY();
+		minX = midX - halfLengthX;
+		maxX = midX + halfLengthX;
+		double midY = newCenter.getY();
 		double halfLengthY = getLengthY() / 2.0;
-		yMin = yMid - halfLengthY;
-		yMax = yMid + halfLengthY;
-		double zMid = newCenter.getZ();
+		minY = midY - halfLengthY;
+		maxY = midY + halfLengthY;
+		double midZ = newCenter.getZ();
 		double halfLengthZ = getLengthZ() / 2.0;
-		zMin = zMid - halfLengthZ;
-		zMax = zMid + halfLengthZ;
+		minZ = midZ - halfLengthZ;
+		maxZ = midZ + halfLengthZ;
 	}
 
 	/**
 	 * Translates this collider. Translating this collider so that it overlaps with
-	 * another colliders will result in {@link Collider#onCollisionEnter} being
-	 * called for each collider. Conversely, translating this collider so that it
-	 * does not overlap with any colliders that it previously overlapped with will
-	 * result in {@link Collider#onCollisionExit} being called for each collider.
+	 * other colliders will result in onCollisionEnter being called for each
+	 * collider. Conversely, translating this collider so that it does not overlap
+	 * with any colliders that it previously overlapped with will result in
+	 * onCollisionExit being called for each collider.
 	 */
 	public final void translate(double x, double y, double z) {
-		xMin += x;
-		xMax += x;
-		yMin += y;
-		yMax += y;
-		zMin += z;
-		zMax += z;
+		minX += x;
+		maxX += x;
+		minY += y;
+		maxY += y;
+		minZ += z;
+		maxZ += z;
 		if (active) {
 			updateOccupiedBuckets();
 			checkForCollision();
@@ -310,28 +334,25 @@ public class Collider {
 	 * Returns the length of this collider on the x-axis.
 	 */
 	public final double getLengthX() {
-		return xMax - xMin;
+		return maxX - minX;
 	}
 
 	/**
 	 * Returns the length of this collider on the y-axis.
 	 */
 	public final double getLengthY() {
-		return yMax - yMin;
+		return maxY - minY;
 	}
 
 	/**
 	 * Returns the length of this collider on the z-axis.
 	 */
 	public final double getLengthZ() {
-		return zMax - zMin;
+		return maxZ - minZ;
 	}
 
 	/**
 	 * Sets the dimensions of the collider.
-	 * 
-	 * @param dimensions
-	 *            the new dimensions of this collider
 	 */
 	public final void setDimensions(double lengthX, double lengthY, double lengthZ) {
 		updateBounds(lengthX, lengthY, lengthZ);
@@ -341,27 +362,30 @@ public class Collider {
 		}
 	}
 
+	/**
+	 * Returns a bounding box characterized by the bounds of this collider.
+	 */
 	public final BoundingBox toBoundingBox() {
-		return new BoundingBox(xMin, yMin, zMin, xMax, yMax, zMax);
+		return new BoundingBox(minX, minY, minZ, maxX, maxY, maxZ);
 	}
 
 	private final void updateBounds(double newLengthX, double newLengthY, double newLengthZ) {
-		double xMid = (xMin + xMax) / 2.0;
+		double midX = (minX + maxX) / 2.0;
 		double halfLengthX = newLengthX / 2.0;
-		xMin = xMid - halfLengthX;
-		xMax = xMid + halfLengthX;
-		double yMid = (yMin + yMax) / 2.0;
+		minX = midX - halfLengthX;
+		maxX = midX + halfLengthX;
+		double midY = (minY + maxY) / 2.0;
 		double halfLengthY = newLengthY / 2.0;
-		yMin = yMid - halfLengthY;
-		yMax = yMid + halfLengthY;
-		double zMid = (zMin + zMax) / 2.0;
+		minY = midY - halfLengthY;
+		maxY = midY + halfLengthY;
+		double midZ = (minZ + maxZ) / 2.0;
 		double halfLengthZ = newLengthZ / 2.0;
-		zMin = zMid - halfLengthZ;
-		zMax = zMid + halfLengthZ;
+		minZ = midZ - halfLengthZ;
+		maxZ = midZ + halfLengthZ;
 	}
 
 	/**
-	 * Determines what collider buckets this collider should exist in to ensure
+	 * Determines what collider buckets this collider should occupy to ensure
 	 * efficient and accurate collision detection. Bounds must be current to update
 	 * properly.
 	 */
@@ -370,17 +394,17 @@ public class Collider {
 		occupiedBuckets.clear();
 		int bucketSize = ColliderBucket.BUCKET_SIZE;
 
-		int bucketXMin = (int) (xMin / bucketSize);
-		int bucketYMin = (int) (yMin / bucketSize);
-		int bucketZMin = (int) (zMin / bucketSize);
+		int bucketMinX = (int) (minX / bucketSize);
+		int bucketMinY = (int) (minY / bucketSize);
+		int bucketMinZ = (int) (minZ / bucketSize);
 
-		int bucketXMax = (int) (xMax / bucketSize);
-		int bucketYMax = (int) (yMax / bucketSize);
-		int bucketZMax = (int) (zMax / bucketSize);
+		int bucketMaxX = (int) (maxX / bucketSize);
+		int bucketMaxY = (int) (maxY / bucketSize);
+		int bucketMaxZ = (int) (maxZ / bucketSize);
 
-		for (int xCount = bucketXMin; xCount <= bucketXMax; xCount++) {
-			for (int yCount = bucketYMin; yCount <= bucketYMax; yCount++) {
-				for (int zCount = bucketZMin; zCount <= bucketZMax; zCount++) {
+		for (int xCount = bucketMinX; xCount <= bucketMaxX; xCount++) {
+			for (int yCount = bucketMinY; yCount <= bucketMaxY; yCount++) {
+				for (int zCount = bucketMinZ; zCount <= bucketMaxZ; zCount++) {
 					Location bucketAddress = new Location(world, xCount, yCount, zCount);
 					ColliderBucket bucket = ColliderBucket.forAddress(bucketAddress);
 					if (bucket == null) {
@@ -401,27 +425,22 @@ public class Collider {
 				bucket.removeCollider(this);
 				if (bucket.getActiveColliders().isEmpty()) {
 					Location address = bucket.getAddress();
-					ColliderBucket.deleteBucket(address);
+					ColliderBucket.removeBucket(address);
 				}
 			}
 		}
 	}
 
 	/**
-	 * Returns whether this collider encompasses a point (in other words, whether
-	 * this point exists within the volume of this collider).
-	 * 
-	 * @param point
-	 *            location of the point to be checked
-	 * @return whether this collider encompasses the point
+	 * Returns whether the bounds of this collider encompass a point.
 	 */
 	public final boolean encompasses(Location point) {
 		World world = point.getWorld();
 		double x = point.getX();
 		double y = point.getY();
 		double z = point.getZ();
-		return world.equals(this.world) && MathUtility.isBetween(x, xMin, true, xMax, true)
-				&& MathUtility.isBetween(y, yMin, true, yMax, true) && MathUtility.isBetween(z, zMin, true, zMax, true);
+		return world.equals(this.world) && MathUtility.isBetween(x, minX, true, maxX, true)
+				&& MathUtility.isBetween(y, minY, true, maxY, true) && MathUtility.isBetween(z, minZ, true, maxZ, true);
 	}
 
 	/**
@@ -435,8 +454,8 @@ public class Collider {
 			for (int j = 0; j < neighboringColliders.size(); j++) {
 				Collider neighboringCollider = neighboringColliders.get(j);
 				if (neighboringCollider != this) {
-					boolean collides = isCollidingWith(neighboringCollider);
-					if (collidingColliders.contains(neighboringCollider)) {
+					boolean collides = isContacting(neighboringCollider);
+					if (contacts.contains(neighboringCollider)) {
 						if (!collides) {
 							handleCollisionExit(neighboringCollider);
 						}
@@ -448,84 +467,66 @@ public class Collider {
 				}
 			}
 		}
-		outerloop: for (int i = 0; i < collidingColliders.size(); i++) {
-			Collider collidingCollider = collidingColliders.get(i);
+		outerloop: for (int i = 0; i < contacts.size(); i++) {
+			Collider contact = contacts.get(i);
 			for (int j = 0; j < occupiedBuckets.size(); j++) {
 				ColliderBucket bucket = occupiedBuckets.get(j);
-				if (bucket.getActiveColliders().contains(collidingCollider)) {
+				if (bucket.getActiveColliders().contains(contact)) {
 					continue outerloop;
 				}
 			}
-			handleCollisionExit(collidingCollider);
+			handleCollisionExit(contact);
 		}
 	}
 
 	/**
-	 * Responds to this collider and another collider colliding with each other.
-	 * Called when two colliders that were colliding no longer overlap each other.
-	 * {@code onCollisionEnter} is called from each of the bounding boxes.
-	 * 
-	 * @param other
-	 *            the other collider in the collision
+	 * Responds to this collider and another collider entering a collision. Called
+	 * when two colliders that were colliding no longer overlap each other.
+	 * onCollisionEnter is called from each of the colliders.
 	 */
 	private final void handleCollisionEnter(Collider other) {
-		this.collidingColliders.add(other);
-		other.collidingColliders.add(this);
+		this.contacts.add(other);
+		other.contacts.add(this);
 		this.onCollisionEnter(other);
 		other.onCollisionEnter(this);
 	}
 
 	/**
-	 * Responds to this collider and another collider retracting from a collision.
-	 * Called when two colliders that were colliding no longer overlap each other.
-	 * {@code onCollisionExit} is called from each of the colliders.
-	 * 
-	 * @param other
-	 *            the other collider in the collision
+	 * Responds to this collider and another collider exiting a collision. Called
+	 * when two colliders that were colliding no longer overlap each other.
+	 * onCollisionExit is called on each of the colliders.
 	 */
 	private final void handleCollisionExit(Collider other) {
-		collidingColliders.remove(other);
-		other.collidingColliders.remove(this);
+		contacts.remove(other);
+		other.contacts.remove(this);
 		this.onCollisionExit(other);
 		other.onCollisionExit(this);
 	}
 
 	/**
-	 * Returns whether this {@code Collider} is colliding with the specified
-	 * {@code Collider}.
-	 * 
-	 * @param other
-	 *            the other {@code Collider}
-	 * @return whether the two {@code Collider}s are colliding
+	 * Returns whether this collider is contacting the other collider.
 	 */
-	public final boolean isCollidingWith(Collider other) {
-		return (this.getXMin() <= other.getXMax() && this.getXMax() >= other.getXMin())
-				&& (this.getYMin() <= other.getYMax() && this.getYMax() >= other.getYMin())
-				&& (this.getZMin() <= other.getZMax() && this.getZMax() >= other.getZMin());
+	public final boolean isContacting(Collider other) {
+		return (this.getMinX() <= other.getMaxX() && this.getMaxX() >= other.getMinX())
+				&& (this.getMinY() <= other.getMaxY() && this.getMaxY() >= other.getMinY())
+				&& (this.getMinZ() <= other.getMaxZ() && this.getMaxZ() >= other.getMinZ());
 	}
 
 	/**
-	 * Returns an array of colliders which this collider is currently colliding
-	 * with.
+	 * Returns an array of colliders that this collider is currently contacting.
 	 */
-	public final Collider[] getCollidingColliders() {
-		return collidingColliders.toArray(new Collider[collidingColliders.size()]);
+	public final Collider[] getContacts() {
+		return contacts.toArray(new Collider[contacts.size()]);
 	}
 
 	/**
 	 * Called when this collider enters a collision with another collider.
-	 * 
-	 * @param other
-	 *            the other collider in the collision
 	 */
 	protected void onCollisionEnter(Collider other) {
 	}
 
 	/**
 	 * Called when this collider exits a collision with another collider.
-	 * 
-	 * @param other
-	 *            the other collider in the collision
 	 */
 	protected void onCollisionExit(Collider other) {
 	}
