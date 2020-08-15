@@ -10,8 +10,8 @@ import com.mcmmorpg.common.character.AbstractCharacter;
 import com.mcmmorpg.common.time.RepeatingTask;
 
 /**
- * Synchronizes the motion of a character and an entity. A motion
- * synchronizers mode determines its follow behavior.
+ * Synchronizes the motion of a character and an entity. A motion synchronizers
+ * mode determines its follow behavior.
  */
 public class MotionSynchronizer {
 

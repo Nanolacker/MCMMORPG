@@ -4,9 +4,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.bukkit.Location;
+import org.bukkit.Particle;
 import org.bukkit.World;
 import org.bukkit.util.BoundingBox;
 
+import com.mcmmorpg.common.time.RepeatingTask;
 import com.mcmmorpg.common.util.MathUtility;
 
 /**
@@ -17,26 +19,18 @@ import com.mcmmorpg.common.util.MathUtility;
  */
 public class Collider {
 
-	/**
-	 * Whether this collider will collide and respond to other colliders.
-	 */
+	private static final Particle DEFAULT_DRAWING_PARTICLE = Particle.CRIT;
+	private static final double DRAWING_PARTICLE_SPACE_DISTANCE = 0.25;
+	private static final double DRAWING_PERIOD = 0.1;
+
 	private boolean active;
-	/**
-	 * The world that this collider exists in.
-	 */
 	private World world;
-	/**
-	 * Represents the lower and upper bounds of this collider.
-	 */
 	private double minX, minY, minZ, maxX, maxY, maxZ;
-	/**
-	 * The collider buckets that this collider occupies.
-	 */
 	private final List<ColliderBucket> occupiedBuckets;
-	/**
-	 * The colliders that this collider is currently contacting.
-	 */
 	private final List<Collider> contacts;
+	private boolean visible;
+	private Particle drawingParticle;
+	private RepeatingTask drawingTask;
 
 	/**
 	 * Constructs a new collider from the specified lower and upper bounds. This
@@ -51,9 +45,12 @@ public class Collider {
 		this.maxX = maxX;
 		this.maxY = maxY;
 		this.maxZ = maxZ;
-		active = false;
-		occupiedBuckets = new ArrayList<ColliderBucket>();
-		contacts = new ArrayList<Collider>();
+		this.active = false;
+		this.occupiedBuckets = new ArrayList<ColliderBucket>();
+		this.contacts = new ArrayList<Collider>();
+		this.visible = false;
+		this.drawingParticle = DEFAULT_DRAWING_PARTICLE;
+		this.drawingTask = null;
 	}
 
 	/**
@@ -215,14 +212,14 @@ public class Collider {
 	 * Returns the maximum location that exists inside this collider.
 	 */
 	public final Location getMax() {
-		return new Location(world, minX, minY, minZ);
+		return new Location(world, maxX, maxY, maxZ);
 	}
 
 	/**
 	 * Sets the maximum location that exists inside this collider.
 	 */
 	public final void setMax(Location max) {
-		setMin(max.getX(), max.getY(), max.getZ());
+		setMax(max.getX(), max.getY(), max.getZ());
 	}
 
 	/**
@@ -240,7 +237,7 @@ public class Collider {
 	}
 
 	/**
-	 * Returns the minimum y value that exists inside this collider.
+	 * Returns the maximum y value that exists inside this collider.
 	 */
 	public final double getMaxY() {
 		return maxY;
@@ -272,8 +269,7 @@ public class Collider {
 	}
 
 	/**
-	 * Returns the location of the point that exists at the center of this bounding
-	 * box.
+	 * Returns the location of the point that exists at the center of this collider.
 	 */
 	public final Location getCenter() {
 		double x = (minX + maxX) / 2.0;
@@ -288,26 +284,22 @@ public class Collider {
 	 */
 	public final void setCenter(Location center) {
 		world = center.getWorld();
-		updateBounds(center);
+		double centerX = center.getX();
+		double semiLengthX = getLengthX() / 2.0;
+		minX = centerX - semiLengthX;
+		maxX = centerX + semiLengthX;
+		double centerY = center.getY();
+		double semiLengthY = getLengthY() / 2.0;
+		minY = centerY - semiLengthY;
+		maxY = centerY + semiLengthY;
+		double centerZ = center.getZ();
+		double semiLengthZ = getLengthZ() / 2.0;
+		minZ = centerZ - semiLengthZ;
+		maxZ = centerZ + semiLengthZ;
 		if (active) {
 			updateOccupiedBuckets();
 			checkForCollision();
 		}
-	}
-
-	private final void updateBounds(Location newCenter) {
-		double midX = newCenter.getX();
-		double halfLengthX = getLengthX() / 2.0;
-		minX = midX - halfLengthX;
-		maxX = midX + halfLengthX;
-		double midY = newCenter.getY();
-		double halfLengthY = getLengthY() / 2.0;
-		minY = midY - halfLengthY;
-		maxY = midY + halfLengthY;
-		double midZ = newCenter.getZ();
-		double halfLengthZ = getLengthZ() / 2.0;
-		minZ = midZ - halfLengthZ;
-		maxZ = midZ + halfLengthZ;
 	}
 
 	/**
@@ -355,7 +347,18 @@ public class Collider {
 	 * Sets the dimensions of the collider.
 	 */
 	public final void setDimensions(double lengthX, double lengthY, double lengthZ) {
-		updateBounds(lengthX, lengthY, lengthZ);
+		double midX = (minX + maxX) / 2.0;
+		double semiLengthX = lengthX / 2.0;
+		minX = midX - semiLengthX;
+		maxX = midX + semiLengthX;
+		double midY = (minY + maxY) / 2.0;
+		double semiLengthY = lengthY / 2.0;
+		minY = midY - semiLengthY;
+		maxY = midY + semiLengthY;
+		double midZ = (minZ + maxZ) / 2.0;
+		double semiLengthZ = lengthZ / 2.0;
+		minZ = midZ - semiLengthZ;
+		maxZ = midZ + semiLengthZ;
 		if (active) {
 			updateOccupiedBuckets();
 			checkForCollision();
@@ -367,21 +370,6 @@ public class Collider {
 	 */
 	public final BoundingBox toBoundingBox() {
 		return new BoundingBox(minX, minY, minZ, maxX, maxY, maxZ);
-	}
-
-	private final void updateBounds(double newLengthX, double newLengthY, double newLengthZ) {
-		double midX = (minX + maxX) / 2.0;
-		double halfLengthX = newLengthX / 2.0;
-		minX = midX - halfLengthX;
-		maxX = midX + halfLengthX;
-		double midY = (minY + maxY) / 2.0;
-		double halfLengthY = newLengthY / 2.0;
-		minY = midY - halfLengthY;
-		maxY = midY + halfLengthY;
-		double midZ = (minZ + maxZ) / 2.0;
-		double halfLengthZ = newLengthZ / 2.0;
-		minZ = midZ - halfLengthZ;
-		maxZ = midZ + halfLengthZ;
 	}
 
 	/**
@@ -482,7 +470,7 @@ public class Collider {
 	/**
 	 * Responds to this collider and another collider entering a collision. Called
 	 * when two colliders that were colliding no longer overlap each other.
-	 * onCollisionEnter is called from each of the colliders.
+	 * onCollisionEnter() is called from each of the colliders.
 	 */
 	private final void handleCollisionEnter(Collider other) {
 		this.contacts.add(other);
@@ -494,7 +482,7 @@ public class Collider {
 	/**
 	 * Responds to this collider and another collider exiting a collision. Called
 	 * when two colliders that were colliding no longer overlap each other.
-	 * onCollisionExit is called on each of the colliders.
+	 * onCollisionExit() is called on each of the colliders.
 	 */
 	private final void handleCollisionExit(Collider other) {
 		contacts.remove(other);
@@ -517,6 +505,82 @@ public class Collider {
 	 */
 	public final Collider[] getContacts() {
 		return contacts.toArray(new Collider[contacts.size()]);
+	}
+
+	/**
+	 * Sets whether this collider is visible (rendered using particles).
+	 */
+	public final void setVisible(boolean visible) {
+		boolean redundant = this.visible == visible;
+		if (redundant) {
+			return;
+		}
+		this.visible = visible;
+		if (visible) {
+			drawingTask = new RepeatingTask(DRAWING_PERIOD) {
+				@Override
+				protected void run() {
+					draw();
+				}
+			};
+			drawingTask.schedule();
+		} else {
+			drawingTask.cancel();
+			drawingTask = null;
+		}
+	}
+
+	/**
+	 * Sets the particle used to draw this colldier when it is visible.
+	 */
+	public final void setDrawParticle(Particle particle) {
+		this.drawingParticle = particle;
+	}
+
+	/**
+	 * Draws this collider using particles in a wireframe pattern.
+	 */
+	private final void draw() {
+		World world = getWorld();
+		// represents whether xCount has reached reached its maximum
+		boolean xFinished = false;
+		for (double xCount = minX; xCount <= maxX && !xFinished; xCount += DRAWING_PARTICLE_SPACE_DISTANCE) {
+			// represents whether yCount has reached reached its maximum
+			boolean yFinished = false;
+			for (double yCount = minY; yCount <= maxY && !yFinished; yCount += DRAWING_PARTICLE_SPACE_DISTANCE) {
+				// represents whether zCount has reached reached its maximum
+				boolean zFinished = false;
+				for (double zCount = minZ; zCount <= maxZ && !zFinished; zCount += DRAWING_PARTICLE_SPACE_DISTANCE) {
+					int validCount = 0;
+					if (xCount == minX) {
+						validCount++;
+					}
+					if (xCount > maxX - DRAWING_PARTICLE_SPACE_DISTANCE) {
+						validCount++;
+						xFinished = true;
+					}
+					if (yCount == minY) {
+						validCount++;
+					}
+					if (yCount > maxY - DRAWING_PARTICLE_SPACE_DISTANCE) {
+						validCount++;
+						yFinished = true;
+					}
+					if (zCount == minZ) {
+						validCount++;
+					}
+					if (zCount > maxZ - DRAWING_PARTICLE_SPACE_DISTANCE) {
+						validCount++;
+						zFinished = true;
+					}
+					boolean validPoint = validCount >= 2;
+					if (validPoint) {
+						Location point = new Location(world, xCount, yCount, zCount);
+						world.spawnParticle(drawingParticle, point, 0);
+					}
+				}
+			}
+		}
 	}
 
 	/**

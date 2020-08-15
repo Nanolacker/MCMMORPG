@@ -388,6 +388,15 @@ public final class PlayerCharacter extends AbstractCharacter {
 		updateActionBar();
 	}
 
+	/**
+	 * Returns the direction that the player is looking in.
+	 * 
+	 * @return
+	 */
+	public Vector getLookDirection() {
+		return player.getLocation().getDirection();
+	}
+
 	public float getYaw() {
 		return player.getLocation().getYaw();
 	}
@@ -425,9 +434,9 @@ public final class PlayerCharacter extends AbstractCharacter {
 	 */
 	public Location getHandLocation() {
 		Location handLocation = getLocation().add(0, 1, 0);
-		Vector direction = handLocation.getDirection();
-		direction.rotateAroundY(-Math.PI / 4);
-		return handLocation.add(direction.multiply(0.5));
+		Vector lookDirection = getLookDirection();
+		lookDirection.rotateAroundY(-Math.PI / 4.0);
+		return handLocation.add(lookDirection.multiply(0.5));
 	}
 
 	/**

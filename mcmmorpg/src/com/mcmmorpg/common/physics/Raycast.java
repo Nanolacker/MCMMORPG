@@ -98,10 +98,10 @@ public final class Raycast {
 			Location hitLocation1 = hit1.getHitLocation();
 			Location hitLocation2 = hit2.getHitLocation();
 
-			double distance1 = hitLocation1.distanceSquared(rayStart);
-			double distance2 = hitLocation2.distanceSquared(rayStart);
+			double distanceSquared1 = hitLocation1.distanceSquared(rayStart);
+			double distanceSquared2 = hitLocation2.distanceSquared(rayStart);
 
-			return (int) (distance1 - distance2);
+			return (int) (distanceSquared1 - distanceSquared2);
 		}
 
 	}

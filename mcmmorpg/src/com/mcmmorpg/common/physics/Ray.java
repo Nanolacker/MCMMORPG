@@ -7,7 +7,7 @@ import org.bukkit.util.RayTraceResult;
 import org.bukkit.util.Vector;
 
 /**
- * A finite ray that can be used for raycasting.
+ * A finite segment of a ray, with a start and end location, that can be used for raycasting.
  */
 public final class Ray {
 
