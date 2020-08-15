@@ -35,6 +35,7 @@ import com.mcmmorpg.common.time.RepeatingTask;
 import com.mcmmorpg.common.ui.ProgressBar;
 import com.mcmmorpg.common.ui.ProgressBar.ProgressBarColor;
 import com.mcmmorpg.common.util.BukkitUtility;
+import com.mcmmorpg.common.util.ParticleEffects;
 import com.mcmmorpg.impl.constants.Items;
 import com.mcmmorpg.impl.constants.Quests;
 
@@ -222,7 +223,7 @@ public class GelatinousCube extends NonPlayerCharacter {
 				}
 			}
 		};
-		acidSprayHitbox.drawFill(Particle.SNEEZE, 0.5);
+		ParticleEffects.box(Particle.SNEEZE, 2, acidSprayHitbox.getMin(), acidSprayHitbox.getMax());
 		acidSprayHitbox.setActive(true);
 		acidSprayHitbox.setActive(false);
 		entity.removePotionEffect(PotionEffectType.SLOW);

@@ -1,6 +1,15 @@
 package com.mcmmorpg.common.util;
 
+import org.bukkit.util.Vector;
+
 public class MathUtility {
+
+	public static final Vector LEFT_VECTOR = new Vector(-1, 0, 0);
+	public static final Vector DOWN_VECTOR = new Vector(0, -1, 0);
+	public static final Vector BACK_VECTOR = new Vector(0, 0, -1);
+	public static final Vector RIGHT_VECTOR = new Vector(1, 0, 0);
+	public static final Vector UP_VECTOR = new Vector(0, 1, 0);
+	public static final Vector FORWARD_VECTOR = new Vector(0, 0, 1);
 
 	private MathUtility() {
 	}
@@ -15,25 +24,6 @@ public class MathUtility {
 			return max;
 		}
 		return num;
-	}
-
-	/**
-	 * Returns whether num is between the two endpoints.
-	 */
-	public static boolean isBetween(double num, double min, boolean includeMin, double max, boolean includeMax) {
-		if (includeMin) {
-			if (includeMax) {
-				return num >= min && num <= max;
-			} else {
-				return num >= min && num < max;
-			}
-		} else {
-			if (includeMax) {
-				return num > min && num <= max;
-			} else {
-				return num > min && num < max;
-			}
-		}
 	}
 
 	/**
