@@ -47,7 +47,6 @@ import com.mcmmorpg.common.navigation.CardinalDirection;
 import com.mcmmorpg.common.navigation.PlayerCharacterMap;
 import com.mcmmorpg.common.persistence.PersistentPlayerCharacterDataContainer;
 import com.mcmmorpg.common.physics.Collider;
-import com.mcmmorpg.common.physics.Ray;
 import com.mcmmorpg.common.physics.Raycast;
 import com.mcmmorpg.common.physics.RaycastHit;
 import com.mcmmorpg.common.playerClass.PlayerClass;
@@ -1232,9 +1231,9 @@ public final class PlayerCharacter extends AbstractCharacter {
 			if (pc == null || interactingPlayers.contains(pc)) {
 				return;
 			}
-			Location start = pc.getLocation().add(0, 1.5, 0);
-			Ray ray = new Ray(start, start.getDirection(), INTERACT_RANGE);
-			Raycast raycast = new Raycast(ray, PlayerCharacterInteractionCollider.class);
+			Location start = player.getLocation().add(0, 1.5, 0);
+			Raycast raycast = new Raycast(start, start.getDirection(), INTERACT_RANGE,
+					PlayerCharacterInteractionCollider.class);
 			List<RaycastHit> hits = raycast.getHits();
 			if (hits.size() > 0) {
 				RaycastHit hit = hits.get(0);

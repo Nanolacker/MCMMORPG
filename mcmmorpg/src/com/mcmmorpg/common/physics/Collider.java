@@ -9,6 +9,7 @@ import org.bukkit.World;
 import org.bukkit.util.BoundingBox;
 
 import com.mcmmorpg.common.time.RepeatingTask;
+import com.mcmmorpg.common.util.ParticleEffects;
 
 /**
  * Represents an axis-aligned box collider. Instances of this class should
@@ -19,7 +20,7 @@ import com.mcmmorpg.common.time.RepeatingTask;
 public class Collider {
 
 	private static final Particle DEFAULT_DRAWING_PARTICLE = Particle.CRIT;
-	private static final double DRAWING_PARTICLE_SPACE_DISTANCE = 0.25;
+	private static final double DRAWING_PARTICLE_DENSITY = 4.0;
 	private static final double DRAWING_PERIOD = 0.1;
 
 	private boolean active;
@@ -268,7 +269,7 @@ public class Collider {
 	}
 
 	/**
-	 * Returns the location of the point that exists at the center of this collider.
+	 * Returns the location of the center of this collider.
 	 */
 	public final Location getCenter() {
 		double x = (minX + maxX) / 2.0;
@@ -419,13 +420,13 @@ public class Collider {
 	}
 
 	/**
-	 * Returns whether the bounds of this collider encompass a point.
+	 * Returns whether the bounds of this collider encompass a location.
 	 */
-	public final boolean encompasses(Location point) {
-		World world = point.getWorld();
-		double x = point.getX();
-		double y = point.getY();
-		double z = point.getZ();
+	public final boolean encompasses(Location location) {
+		World world = location.getWorld();
+		double x = location.getX();
+		double y = location.getY();
+		double z = location.getZ();
 		return world.equals(this.world) && minX <= x && x <= maxX && minY <= y && y <= maxY && minZ <= z && z <= maxZ;
 	}
 
@@ -539,46 +540,9 @@ public class Collider {
 	 * Draws this collider using particles in a wireframe pattern.
 	 */
 	private final void draw() {
-		World world = getWorld();
-		// represents whether xCount has reached reached its maximum
-		boolean xFinished = false;
-		for (double xCount = minX; xCount <= maxX && !xFinished; xCount += DRAWING_PARTICLE_SPACE_DISTANCE) {
-			// represents whether yCount has reached reached its maximum
-			boolean yFinished = false;
-			for (double yCount = minY; yCount <= maxY && !yFinished; yCount += DRAWING_PARTICLE_SPACE_DISTANCE) {
-				// represents whether zCount has reached reached its maximum
-				boolean zFinished = false;
-				for (double zCount = minZ; zCount <= maxZ && !zFinished; zCount += DRAWING_PARTICLE_SPACE_DISTANCE) {
-					int validCount = 0;
-					if (xCount == minX) {
-						validCount++;
-					}
-					if (xCount > maxX - DRAWING_PARTICLE_SPACE_DISTANCE) {
-						validCount++;
-						xFinished = true;
-					}
-					if (yCount == minY) {
-						validCount++;
-					}
-					if (yCount > maxY - DRAWING_PARTICLE_SPACE_DISTANCE) {
-						validCount++;
-						yFinished = true;
-					}
-					if (zCount == minZ) {
-						validCount++;
-					}
-					if (zCount > maxZ - DRAWING_PARTICLE_SPACE_DISTANCE) {
-						validCount++;
-						zFinished = true;
-					}
-					boolean validPoint = validCount >= 2;
-					if (validPoint) {
-						Location point = new Location(world, xCount, yCount, zCount);
-						world.spawnParticle(drawingParticle, point, 0);
-					}
-				}
-			}
-		}
+		Location min = getMin();
+		Location max = getMax();
+		ParticleEffects.wireframeBox(drawingParticle, DRAWING_PARTICLE_DENSITY, min, max);
 	}
 
 	/**

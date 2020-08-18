@@ -19,6 +19,7 @@ import org.bukkit.util.Vector;
 import com.mcmmorpg.common.character.PlayerCharacter;
 import com.mcmmorpg.common.item.Item;
 import com.mcmmorpg.common.navigation.CardinalDirection;
+import com.mcmmorpg.common.physics.Collider;
 import com.mcmmorpg.common.quest.Quest;
 import com.mcmmorpg.common.quest.QuestObjective;
 import com.mcmmorpg.common.time.DelayedTask;
@@ -29,7 +30,6 @@ import com.mcmmorpg.common.util.Debug;
 import com.mcmmorpg.common.util.Head;
 import com.mcmmorpg.common.util.IOUtility;
 import com.mcmmorpg.common.util.StringUtility;
-import com.mcmmorpg.impl.constants.RespawnLocations;
 
 /**
  * Class for registering commands useful for development.
@@ -43,11 +43,6 @@ public class DeveloperCommands {
 	 */
 	public static void registerDeveloperCommands() {
 		Debug.log("Registering developer commands");
-
-		LOCATION_MAP.put("Melcher", RespawnLocations.MELCHER);
-		LOCATION_MAP.put("Broodmother", RespawnLocations.BROODMOTHER_LAIR);
-		LOCATION_MAP.put("Flinton Sewers", RespawnLocations.FLINTON_SEWERS);
-		LOCATION_MAP.put("Flinton", RespawnLocations.FLINTON);
 
 		Command printLocation = new Command("printlocation") {
 			@Override
@@ -264,6 +259,12 @@ public class DeveloperCommands {
 				}.schedule();
 			}
 		};
+		Command sphere = new Command("particle") {
+			@Override
+			protected void execute(CommandSender sender, String[] args) {
+				Player player = (Player) sender;
+			}
+		};
 
 		CommandManager.registerCommand(printLocation);
 		CommandManager.registerCommand(heal);
@@ -279,6 +280,7 @@ public class DeveloperCommands {
 		CommandManager.registerCommand(reloadmmorpg);
 		CommandManager.registerCommand(goTo);
 		CommandManager.registerCommand(spawnHead);
+		CommandManager.registerCommand(sphere);
 	}
 
 }

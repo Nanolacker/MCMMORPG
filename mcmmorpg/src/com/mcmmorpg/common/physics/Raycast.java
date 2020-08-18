@@ -7,6 +7,7 @@ import java.util.List;
 
 import org.bukkit.Location;
 import org.bukkit.World;
+import org.bukkit.util.RayTraceResult;
 import org.bukkit.util.Vector;
 
 /**
@@ -17,26 +18,27 @@ public final class Raycast {
 	private final List<RaycastHit> hits;
 
 	/**
-	 * Creates a raycast with the specified ray. The raycast will only target
-	 * colliders of the specified class.
+	 * The raycast will only target colliders of the specified class.
 	 */
-	public Raycast(Ray ray, Class<? extends Collider> target) {
+	public Raycast(Location start, Vector direction, double maxDistance, Class<? extends Collider> target) {
+		World world = start.getWorld();
+		direction = direction.clone();
+		if (!direction.isNormalized()) {
+			direction.normalize();
+		}
+		Vector startAsVector = start.toVector();
+		Vector endAsVector = startAsVector.clone().add(direction.multiply(maxDistance));
+		Vector min = Vector.getMinimum(startAsVector, endAsVector);
+		Vector max = Vector.getMaximum(startAsVector, endAsVector);
 		List<ColliderBucket> nearbyBuckets = new ArrayList<>();
-		double bucketSize = ColliderBucket.BUCKET_SIZE;
-		Location startLocation = ray.getStart();
-		World world = startLocation.getWorld();
-		Vector start = startLocation.toVector();
-		Vector end = ray.getEnd().toVector();
-		Vector min = Vector.getMinimum(start, end);
-		Vector max = Vector.getMaximum(start, end);
 
-		int bucketMinX = (int) (min.getX() / bucketSize);
-		int bucketMinY = (int) (min.getY() / bucketSize);
-		int bucketMinZ = (int) (min.getZ() / bucketSize);
+		int bucketMinX = (int) (min.getX() / ColliderBucket.BUCKET_SIZE);
+		int bucketMinY = (int) (min.getY() / ColliderBucket.BUCKET_SIZE);
+		int bucketMinZ = (int) (min.getZ() / ColliderBucket.BUCKET_SIZE);
 
-		int bucketMaxX = (int) (max.getX() / bucketSize);
-		int bucketMaxY = (int) (max.getY() / bucketSize);
-		int bucketMaxZ = (int) (max.getZ() / bucketSize);
+		int bucketMaxX = (int) (max.getX() / ColliderBucket.BUCKET_SIZE);
+		int bucketMaxY = (int) (max.getY() / ColliderBucket.BUCKET_SIZE);
+		int bucketMaxZ = (int) (max.getZ() / ColliderBucket.BUCKET_SIZE);
 
 		for (int x = bucketMinX; x <= bucketMaxX; x++) {
 			for (int y = bucketMinY; y <= bucketMaxY; y++) {
@@ -62,23 +64,28 @@ public final class Raycast {
 
 		hits = new ArrayList<>();
 		for (Collider collider : nearbyColliders) {
-			Location hitLocation = ray.getIntsersection(collider);
-			if (hitLocation != null) {
-				RaycastHit hit = new RaycastHit(collider, hitLocation);
+			Location intersection = getRayIntersection(start, direction, maxDistance, collider);
+			if (intersection != null) {
+				RaycastHit hit = new RaycastHit(collider, intersection);
 				hits.add(hit);
 			}
 		}
 
-		RaycastHitComparator comparator = new RaycastHitComparator(startLocation);
+		RaycastHitComparator comparator = new RaycastHitComparator(start);
 		Collections.sort(hits, comparator);
 	}
 
-	/**
-	 * Creates a raycast with the specified ray. The raycast will target colliders
-	 * of all classes.
-	 */
-	public Raycast(Ray ray) {
-		this(ray, Collider.class);
+	public Raycast(Location start, Location end, Class<? extends Collider> target) {
+		this(start, end.toVector().subtract(start.toVector()).normalize(), start.distance(end), target);
+	}
+
+	private Location getRayIntersection(Location start, Vector direction, double maxDistance, Collider collider) {
+		RayTraceResult result = collider.toBoundingBox().rayTrace(start.toVector(), direction, maxDistance);
+		if (result == null) {
+			return null;
+		} else {
+			return result.getHitPosition().toLocation(start.getWorld());
+		}
 	}
 
 	public List<RaycastHit> getHits() {

@@ -1,9 +1,0 @@
-{
-	"name": "Apprentice Staff",
-	"rarity": "COMMON",
-	"icon": "WOODEN_HOE",
-	"description": null,
-	"playerClass": "Mage",
-	"level": 1,
-	"baseDamage": 4
-}

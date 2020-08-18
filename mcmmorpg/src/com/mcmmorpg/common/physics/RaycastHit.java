@@ -2,7 +2,7 @@ package com.mcmmorpg.common.physics;
 
 import org.bukkit.Location;
 
-public class RaycastHit {
+public final class RaycastHit {
 
 	private final Collider collider;
 	private final Location hitLocation;

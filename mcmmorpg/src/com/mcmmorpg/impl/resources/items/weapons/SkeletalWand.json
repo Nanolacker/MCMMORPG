@@ -1,9 +1,0 @@
-{
-	"name": "Skeletal Wand",
-	"rarity": "UNCOMMON",
-	"icon": "BONE",
-	"description": null,
-	"playerClass": "Mage",
-	"level": 10,
-	"baseDamage": 14
-}

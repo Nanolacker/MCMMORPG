@@ -1,9 +1,0 @@
-{
-	"name": "Bandit's Battle Axe",
-	"rarity": "UNCOMMON",
-	"icon": "IRON_AXE",
-	"description": null,
-	"playerClass": "Fighter",
-	"level": 10,
-	"baseDamage": 15
-}
