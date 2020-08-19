@@ -35,7 +35,8 @@ public abstract class CommonTask {
 	}
 
 	/**
-	 * Stops this task from running.
+	 * Stops this task from running. This task can be rescheduled after being
+	 * cancelled.
 	 */
 	public void cancel() {
 		if (!scheduled) {

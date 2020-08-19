@@ -1,5 +1,7 @@
 package com.mcmmorpg.common.ui;
 
+import java.util.List;
+
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.defaults.BukkitCommand;
 
@@ -21,17 +23,24 @@ public abstract class Command {
 	}
 
 	/**
-	 * Set the description for this command.
+	 * Set the description of this command.
 	 */
 	public void setDescription(String description) {
 		bukkitCommand.setDescription(description);
 	}
 
 	/**
-	 * Set the usage message for this command.
+	 * Set the usage message of this command.
 	 */
 	public void setUsageMessage(String usageMessage) {
 		bukkitCommand.setUsage(usageMessage);
+	}
+
+	/**
+	 * Set the aliases of this command.
+	 */
+	public void setAliases(List<String> aliases) {
+		bukkitCommand.setAliases(aliases);
 	}
 
 	/**

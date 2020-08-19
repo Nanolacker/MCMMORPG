@@ -221,86 +221,88 @@ public class PlayerInteractionListener implements Listener {
 
 		Item clickedItem = Item.forItemStack(clickedItemStack);
 		if (event.isShiftClick()) {
-			event.setCancelled(true);
-			if (clickedItem instanceof ConsumableItem) {
-				ConsumableItem consumable = (ConsumableItem) clickedItem;
-				handlePlayerCharacterUseConsumable(pc, consumable, clickedItemStack);
-			} else if (clickedItem instanceof Weapon) {
-				if (rawSlot == 36 || clickedItem == pc.getWeapon()) {
-					pc.sendMessage(clickedItem.toString() + ChatColor.GRAY + " is already equipped");
-				} else {
-					Weapon weapon = (Weapon) clickedItem;
-					PlayerClass weaponPlayerClass = weapon.getPlayerClass();
-					int weaponLevel = weapon.getLevel();
-					if (pc.getPlayerClass() != weaponPlayerClass) {
-						pc.sendMessage(ChatColor.GRAY + "Only " + ChatColor.GOLD + weaponPlayerClass.getName() + "s "
-								+ ChatColor.GRAY + "can wield " + weapon);
-					} else if (pc.getLevel() < weaponLevel) {
-						pc.sendMessage(ChatColor.GRAY + "You must be " + ChatColor.GOLD + "level " + weaponLevel
-								+ ChatColor.GRAY + " to wield " + weapon);
+			if (event.getClickedInventory() == player.getInventory()) {
+				event.setCancelled(true);
+				if (clickedItem instanceof ConsumableItem) {
+					ConsumableItem consumable = (ConsumableItem) clickedItem;
+					handlePlayerCharacterUseConsumable(pc, consumable, clickedItemStack);
+				} else if (clickedItem instanceof Weapon) {
+					if (rawSlot == 36 || clickedItem == pc.getWeapon()) {
+						pc.sendMessage(clickedItem.toString() + ChatColor.GRAY + " is already equipped");
 					} else {
-						pc.getMap().close();
-						// equip new weapon
-						Inventory inventory = player.getInventory();
-						// must go back to non-raw slots here
-						int slot = event.getSlot();
-						ItemStack currentWeaponItemStack = inventory.getItem(0);
-						inventory.setItem(0, clickedItemStack);
-						inventory.setItem(slot, currentWeaponItemStack);
-						pc.sendMessage(ChatColor.GRAY + "Equipped " + weapon);
-						EQUIP_NOISE.play(pc);
-					}
-				}
-				Noise.CLICK.play(player);
-			} else if (clickedItem instanceof ArmorItem) {
-				ArmorItem armorItem = (ArmorItem) clickedItem;
-				Inventory inventory = player.getInventory();
-				int slot = event.getSlot();
-				if (rawSlot >= 5 && rawSlot < 9) {
-					// 5-8 = armor
-					// unequip
-					inventory.setItem(slot, null);
-					inventory.addItem(clickedItemStack);
-					pc.sendMessage(ChatColor.GRAY + "Unequipped " + armorItem);
-					EQUIP_NOISE.play(pc);
-				} else {
-					// equip
-					PlayerClass armorPlayerClass = armorItem.getPlayerClass();
-					int weaponLevel = armorItem.getLevel();
-					if (pc.getPlayerClass() != armorPlayerClass) {
-						pc.sendMessage(ChatColor.GRAY + "Only " + ChatColor.GOLD + armorPlayerClass.getName() + "s "
-								+ ChatColor.GRAY + "can equip " + armorItem);
-					} else if (pc.getLevel() < weaponLevel) {
-						pc.sendMessage(ChatColor.GRAY + "You must be " + ChatColor.GOLD + "level " + weaponLevel
-								+ ChatColor.GRAY + " to equip " + armorItem);
-					} else {
-						inventory.setItem(slot, null);
-						int armorSlot;
-						switch (armorItem.getType()) {
-						case FEET:
-							armorSlot = 36;
-							break;
-						case LEGS:
-							armorSlot = 37;
-							break;
-						case CHEST:
-							armorSlot = 38;
-							break;
-						case HEAD:
-							armorSlot = 39;
-							break;
-						default:
-							armorSlot = -1;
-							break;
+						Weapon weapon = (Weapon) clickedItem;
+						PlayerClass weaponPlayerClass = weapon.getPlayerClass();
+						int weaponLevel = weapon.getLevel();
+						if (pc.getPlayerClass() != weaponPlayerClass) {
+							pc.sendMessage(ChatColor.GRAY + "Only " + ChatColor.GOLD + weaponPlayerClass.getName()
+									+ "s " + ChatColor.GRAY + "can wield " + weapon);
+						} else if (pc.getLevel() < weaponLevel) {
+							pc.sendMessage(ChatColor.GRAY + "You must be " + ChatColor.GOLD + "level " + weaponLevel
+									+ ChatColor.GRAY + " to wield " + weapon);
+						} else {
+							pc.getMap().close();
+							// equip new weapon
+							Inventory inventory = player.getInventory();
+							// must go back to non-raw slots here
+							int slot = event.getSlot();
+							ItemStack currentWeaponItemStack = inventory.getItem(0);
+							inventory.setItem(0, clickedItemStack);
+							inventory.setItem(slot, currentWeaponItemStack);
+							pc.sendMessage(ChatColor.GRAY + "Equipped " + weapon);
+							EQUIP_NOISE.play(pc);
 						}
-						ItemStack currentArmorItemStack = inventory.getItem(armorSlot);
-						inventory.setItem(armorSlot, clickedItemStack);
-						pc.sendMessage(ChatColor.GRAY + "Equipped " + armorItem);
-						EQUIP_NOISE.play(pc);
-						inventory.setItem(slot, currentArmorItemStack);
 					}
+					Noise.CLICK.play(player);
+				} else if (clickedItem instanceof ArmorItem) {
+					ArmorItem armorItem = (ArmorItem) clickedItem;
+					Inventory inventory = player.getInventory();
+					int slot = event.getSlot();
+					if (rawSlot >= 5 && rawSlot < 9) {
+						// 5-8 = armor
+						// unequip
+						inventory.setItem(slot, null);
+						inventory.addItem(clickedItemStack);
+						pc.sendMessage(ChatColor.GRAY + "Unequipped " + armorItem);
+						EQUIP_NOISE.play(pc);
+					} else {
+						// equip
+						PlayerClass armorPlayerClass = armorItem.getPlayerClass();
+						int weaponLevel = armorItem.getLevel();
+						if (pc.getPlayerClass() != armorPlayerClass) {
+							pc.sendMessage(ChatColor.GRAY + "Only " + ChatColor.GOLD + armorPlayerClass.getName() + "s "
+									+ ChatColor.GRAY + "can equip " + armorItem);
+						} else if (pc.getLevel() < weaponLevel) {
+							pc.sendMessage(ChatColor.GRAY + "You must be " + ChatColor.GOLD + "level " + weaponLevel
+									+ ChatColor.GRAY + " to equip " + armorItem);
+						} else {
+							inventory.setItem(slot, null);
+							int armorSlot;
+							switch (armorItem.getType()) {
+							case FEET:
+								armorSlot = 36;
+								break;
+							case LEGS:
+								armorSlot = 37;
+								break;
+							case CHEST:
+								armorSlot = 38;
+								break;
+							case HEAD:
+								armorSlot = 39;
+								break;
+							default:
+								armorSlot = -1;
+								break;
+							}
+							ItemStack currentArmorItemStack = inventory.getItem(armorSlot);
+							inventory.setItem(armorSlot, clickedItemStack);
+							pc.sendMessage(ChatColor.GRAY + "Equipped " + armorItem);
+							EQUIP_NOISE.play(pc);
+							inventory.setItem(slot, currentArmorItemStack);
+						}
+					}
+					Noise.CLICK.play(player);
 				}
-				Noise.CLICK.play(player);
 			}
 		}
 	}

@@ -7,16 +7,14 @@ import com.mcmmorpg.common.time.RepeatingTask;
 
 public class StateMachine {
 
-	private static final double UPDATE_PERIOD = 0.1;
-
 	private final List<State> states;
 	private RepeatingTask updateTask;
 	private int currentStateIndex;
 	private int previousStateIndex;
 
-	public StateMachine() {
+	public StateMachine(double updatePeriod) {
 		states = new ArrayList<>();
-		updateTask = new RepeatingTask(UPDATE_PERIOD) {
+		updateTask = new RepeatingTask(updatePeriod) {
 			@Override
 			protected void run() {
 				update();
@@ -24,8 +22,11 @@ public class StateMachine {
 		};
 	}
 
-	public void start(int state) {
-		this.currentStateIndex = state;
+	public void start(int stateIndex) {
+		this.currentStateIndex = stateIndex;
+		if (!states.isEmpty()) {
+			states.get(stateIndex).initialize(this);
+		}
 		updateTask.schedule();
 	}
 
@@ -36,19 +37,31 @@ public class StateMachine {
 			previousState.terminate(this);
 			currentState.initialize(this);
 		}
+		currentState.update(this);
 		previousStateIndex = currentStateIndex;
 	}
 
+	public double getUpdatePeriod() {
+		return updateTask.getPeriod();
+	}
+
+	public void setUpdatePeriod(double updatePeriod) {
+		updateTask.setPeriod(updatePeriod);
+	}
+
 	public void stop() {
+		if (!states.isEmpty()) {
+			states.get(0).terminate(this);
+		}
 		updateTask.cancel();
 	}
 
-	public void addState(State state) {
-		states.add(state);
+	public void addState(int stateIndex, State state) {
+		states.add(stateIndex, state);
 	}
 
-	public void setState(int state) {
-		this.currentStateIndex = state;
+	public void setState(int stateIndex) {
+		this.currentStateIndex = stateIndex;
 	}
 
 }

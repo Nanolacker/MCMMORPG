@@ -11,23 +11,35 @@ import com.mcmmorpg.common.util.MathUtility;
  */
 public abstract class RepeatingTask extends CommonTask {
 
-	private double periodSeconds;
+	private double period;
 
 	/**
 	 * A task that will repeat with the specified period.
 	 */
-	public RepeatingTask(double periodSeconds) {
-		this.periodSeconds = periodSeconds;
+	public RepeatingTask(double period) {
+		this.period = period;
 	}
 
 	@Override
 	protected final void scheduleBukkitTask() {
 		BukkitScheduler scheduler = Bukkit.getScheduler();
-		MMORPGPlugin plugin = MMORPGPlugin.getPlugin(MMORPGPlugin.class);
+		MMORPGPlugin plugin = MMORPGPlugin.getInstance();
 		Runnable runnable = () -> run();
-		long periodTicks = MathUtility.secondsToTicks(periodSeconds);
+		long periodTicks = MathUtility.secondsToTicks(period);
 		int bukkitTaskID = scheduler.scheduleSyncRepeatingTask(plugin, runnable, 0L, periodTicks);
 		setBukkitTaskID(bukkitTaskID);
+	}
+
+	public double getPeriod() {
+		return period;
+	}
+
+	public void setPeriod(double period) {
+		this.period = period;
+		if (isScheduled()) {
+			cancel();
+			schedule();
+		}
 	}
 
 }

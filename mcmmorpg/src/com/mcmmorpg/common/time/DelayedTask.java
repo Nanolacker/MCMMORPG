@@ -11,13 +11,13 @@ import com.mcmmorpg.common.MMORPGPlugin;
  */
 public abstract class DelayedTask extends CommonTask {
 
-	private double delaySeconds;
+	private double delay;
 
 	/**
 	 * A task that will run after the specified delay.
 	 */
-	public DelayedTask(double delaySeconds) {
-		this.delaySeconds = delaySeconds;
+	public DelayedTask(double delay) {
+		this.delay = delay;
 	}
 
 	/**
@@ -30,9 +30,9 @@ public abstract class DelayedTask extends CommonTask {
 	@Override
 	protected final void scheduleBukkitTask() {
 		BukkitScheduler scheduler = Bukkit.getScheduler();
-		Plugin plugin = MMORPGPlugin.getPlugin(MMORPGPlugin.class);
+		Plugin plugin = MMORPGPlugin.getInstance();
 		Runnable runnable = () -> run();
-		long delayTicks = (long) (delaySeconds * 20);
+		long delayTicks = (long) (delay * 20);
 		int bukkitTaskID = scheduler.scheduleSyncDelayedTask(plugin, runnable, delayTicks);
 		setBukkitTaskID(bukkitTaskID);
 	}

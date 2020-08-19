@@ -5,6 +5,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import com.mcmmorpg.common.character.PlayerCharacter;
+import com.mcmmorpg.common.social.Party;
 
 /**
  * Registers commands that are essential to any implementation of MCMMORPG.
@@ -36,9 +37,46 @@ public class EssentialCommands {
 			}
 		};
 		killMe.setDescription("If your character is stuck, use this to respawn elsewhere.");
+		Command partyCreate = new Command("partycreate") {
+			@Override
+			protected void execute(CommandSender sender, String[] args) {
+				if (sender instanceof Player) {
+					Player player = (Player) sender;
+					PlayerCharacter pc = PlayerCharacter.forPlayer(player);
+					if (pc == null) {
+						player.sendMessage(ChatColor.RED + "You cannot use this command right now.");
+					} else {
+						Party.create(pc);
+					}
+				}
+			}
+		};
+		Command partyDisband = new Command("partydisband") {
+			@Override
+			protected void execute(CommandSender sender, String[] args) {
+				if (sender instanceof Player) {
+					Player player = (Player) sender;
+					PlayerCharacter pc = PlayerCharacter.forPlayer(player);
+					if (pc == null) {
+						player.sendMessage(ChatColor.RED + "You cannot use this command right now.");
+					} else {
+						Party party = pc.getParty();
+						if (party == null) {
+							player.sendMessage(ChatColor.RED + "You are not in a party right now.");
+						} else if (pc != party.getLeader()) {
+							player.sendMessage(ChatColor.RED + "Only the leader can disband the party.");
+						} else {
+							party.disband();
+						}
+					}
+				}
+			}
+		};
 
 		CommandManager.registerCommand(help);
 		CommandManager.registerCommand(killMe);
+		CommandManager.registerCommand(partyCreate);
+		CommandManager.registerCommand(partyDisband);
 	}
 
 }

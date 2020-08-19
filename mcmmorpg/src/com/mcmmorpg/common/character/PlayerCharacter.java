@@ -49,13 +49,14 @@ import com.mcmmorpg.common.persistence.PersistentPlayerCharacterDataContainer;
 import com.mcmmorpg.common.physics.Collider;
 import com.mcmmorpg.common.physics.Raycast;
 import com.mcmmorpg.common.physics.RaycastHit;
-import com.mcmmorpg.common.playerClass.PlayerClass;
 import com.mcmmorpg.common.playerClass.PlayerCharacterSkillData;
 import com.mcmmorpg.common.playerClass.PlayerCharacterSkillManager;
+import com.mcmmorpg.common.playerClass.PlayerClass;
 import com.mcmmorpg.common.quest.PlayerCharacterQuestData;
 import com.mcmmorpg.common.quest.PlayerCharacterQuestManager;
 import com.mcmmorpg.common.quest.Quest;
 import com.mcmmorpg.common.quest.QuestLog;
+import com.mcmmorpg.common.social.Party;
 import com.mcmmorpg.common.sound.Noise;
 import com.mcmmorpg.common.sound.PlayerCharacterSoundtrackPlayer;
 import com.mcmmorpg.common.time.Clock;
@@ -121,6 +122,7 @@ public final class PlayerCharacter extends AbstractCharacter {
 	private DelayedTask unsilenceTask;
 	private boolean isDisarmed;
 	private boolean isSilenced;
+	private Party party;
 
 	static {
 		pcs = new ArrayList<>();
@@ -156,26 +158,27 @@ public final class PlayerCharacter extends AbstractCharacter {
 		this.questLog = new QuestLog(this);
 		this.skillStatusManager = new PlayerCharacterSkillManager(this, skillData);
 		this.skillStatusManager.init();
-		player.getInventory().setContents(inventoryContents);
+		this.player.getInventory().setContents(inventoryContents);
 		this.tags = new ArrayList<>(Arrays.asList(tags));
 		this.previousPlayTime = playTime;
 		this.playSessionStartTime = Clock.getTime();
 
-		player.teleport(getLocation());
-		soundtrackPlayer = new PlayerCharacterSoundtrackPlayer(this);
+		this.player.teleport(getLocation());
+		this.soundtrackPlayer = new PlayerCharacterSoundtrackPlayer(this);
 		this.map = new PlayerCharacterMap(this);
 		this.hitbox = new PlayerCharacterCollider(this);
 
 		this.motionSyncer = new MotionSynchronizer(this, MotionSynchronizerMode.CHARACTER_FOLLOWS_ENTITY);
-		motionSyncer.setEntity(player);
-		motionSyncer.setEnabled(true);
+		this.motionSyncer.setEntity(player);
+		this.motionSyncer.setEnabled(true);
 
-		undisarmTask = null;
-		unsilenceTask = null;
-		isDisarmed = false;
-		isSilenced = false;
+		this.undisarmTask = null;
+		this.unsilenceTask = null;
+		this.isDisarmed = false;
+		this.isSilenced = false;
+		this.party = null;
 
-		active = true;
+		this.active = true;
 		setAlive(true);
 		super.setCurrentHealth(currentHealth);
 		pcs.add(this);
@@ -1169,6 +1172,21 @@ public final class PlayerCharacter extends AbstractCharacter {
 	}
 
 	/**
+	 * Returns the party that this player character is currently in, or null if this
+	 * player character is not in a party.
+	 */
+	public Party getParty() {
+		return party;
+	}
+
+	/**
+	 * Only for use within the Party class.
+	 */
+	public void setParty(Party party) {
+		this.party = party;
+	}
+
+	/**
 	 * This needs to be invoked when the player abandons this player character.
 	 */
 	public void remove() {
@@ -1180,6 +1198,9 @@ public final class PlayerCharacter extends AbstractCharacter {
 		soundtrackPlayer.setSoundtrack(null);
 		map.close();
 		motionSyncer.setEnabled(false);
+		if (party != null) {
+			party.remove(this);
+		}
 		pcs.remove(this);
 		playerMap.remove(player);
 		PlayerCharacterRemoveEvent event = new PlayerCharacterRemoveEvent(this);
