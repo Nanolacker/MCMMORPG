@@ -9,7 +9,6 @@ import com.mcmmorpg.common.ai.State;
 import com.mcmmorpg.common.ai.StateMachine;
 import com.mcmmorpg.common.character.NonPlayerCharacter;
 import com.mcmmorpg.common.util.BukkitUtility;
-import com.mcmmorpg.common.util.Debug;
 
 public class AiTestNpc extends NonPlayerCharacter {
 
@@ -20,7 +19,6 @@ public class AiTestNpc extends NonPlayerCharacter {
 
 	protected AiTestNpc(Location spawnLocation) {
 		super("AI Test", 1, spawnLocation);
-		StateMachine ai = new StateMachine(0.05);
 		State roam = new State() {
 			Location targetLocation;
 
@@ -49,8 +47,8 @@ public class AiTestNpc extends NonPlayerCharacter {
 				targetLocation = null;
 			}
 		};
-		ai.addState(0, roam);
-		ai.start(0);
+		StateMachine ai = new StateMachine(roam, 0.05);
+		ai.start();
 	}
 
 	@Override
