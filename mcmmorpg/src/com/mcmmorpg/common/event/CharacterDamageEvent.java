@@ -3,7 +3,7 @@ package com.mcmmorpg.common.event;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
-import com.mcmmorpg.common.character.AbstractCharacter;
+import com.mcmmorpg.common.character.Character;
 import com.mcmmorpg.common.character.Source;
 
 /**
@@ -13,11 +13,11 @@ public class CharacterDamageEvent extends Event {
 
 	private static final HandlerList handlers = new HandlerList();
 
-	private final AbstractCharacter damaged;
+	private final Character damaged;
 	private final double amount;
 	private final Source source;
 
-	public CharacterDamageEvent(AbstractCharacter damaged, double amount, Source source) {
+	public CharacterDamageEvent(Character damaged, double amount, Source source) {
 		this.damaged = damaged;
 		this.amount = amount;
 		this.source = source;
@@ -35,7 +35,7 @@ public class CharacterDamageEvent extends Event {
 	/**
 	 * Returns the character damaged in the event.
 	 */
-	public AbstractCharacter getDamaged() {
+	public Character getDamaged() {
 		return damaged;
 	}
 

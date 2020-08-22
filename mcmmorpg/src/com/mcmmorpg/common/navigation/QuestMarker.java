@@ -5,7 +5,7 @@ import java.util.List;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 
-import com.mcmmorpg.common.character.AbstractCharacter;
+import com.mcmmorpg.common.character.Character;
 import com.mcmmorpg.common.character.PlayerCharacter;
 import com.mcmmorpg.common.quest.Quest;
 import com.mcmmorpg.common.quest.QuestStatus;
@@ -36,7 +36,7 @@ public abstract class QuestMarker {
 	 * display in the overworld and also on maps if added to a map segment. The
 	 * location is determined by the character's height.
 	 */
-	public QuestMarker(Quest quest, AbstractCharacter character) {
+	public QuestMarker(Quest quest, Character character) {
 		this(quest, character.getLocation().add(0, character.getHeight() + 0.25, 0));
 	}
 

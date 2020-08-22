@@ -3,7 +3,7 @@ package com.mcmmorpg.common.event;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
-import com.mcmmorpg.common.character.AbstractCharacter;
+import com.mcmmorpg.common.character.Character;
 import com.mcmmorpg.common.character.Source;
 
 /**
@@ -13,11 +13,11 @@ public class CharacterHealEvent extends Event {
 
 	private static final HandlerList handlers = new HandlerList();
 
-	private final AbstractCharacter healed;
+	private final Character healed;
 	private final double amount;
 	private final Source source;
 
-	public CharacterHealEvent(AbstractCharacter healed, double amount, Source source) {
+	public CharacterHealEvent(Character healed, double amount, Source source) {
 		this.healed = healed;
 		this.amount = amount;
 		this.source = source;
@@ -35,7 +35,7 @@ public class CharacterHealEvent extends Event {
 	/**
 	 * Returns the character healed in the event.
 	 */
-	public AbstractCharacter getHealed() {
+	public Character getHealed() {
 		return healed;
 	}
 

@@ -3,7 +3,7 @@ package com.mcmmorpg.common.event;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
-import com.mcmmorpg.common.character.AbstractCharacter;
+import com.mcmmorpg.common.character.Character;
 
 /**
  * An event called whenever a character dies.
@@ -12,9 +12,9 @@ public class CharacterDeathEvent extends Event {
 
 	private static final HandlerList handlers = new HandlerList();
 
-	private final AbstractCharacter character;
+	private final Character character;
 
-	public CharacterDeathEvent(AbstractCharacter character) {
+	public CharacterDeathEvent(Character character) {
 		this.character = character;
 	}
 
@@ -30,7 +30,7 @@ public class CharacterDeathEvent extends Event {
 	/**
 	 * Returns the character that died in the event.
 	 */
-	public AbstractCharacter getCharacter() {
+	public Character getCharacter() {
 		return character;
 	}
 

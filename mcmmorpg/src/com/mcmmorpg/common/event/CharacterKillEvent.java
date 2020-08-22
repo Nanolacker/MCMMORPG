@@ -3,7 +3,7 @@ package com.mcmmorpg.common.event;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
-import com.mcmmorpg.common.character.AbstractCharacter;
+import com.mcmmorpg.common.character.Character;
 import com.mcmmorpg.common.character.Source;
 
 /**
@@ -13,10 +13,10 @@ public class CharacterKillEvent extends Event {
 
 	private static final HandlerList handlers = new HandlerList();
 
-	private final AbstractCharacter killed;
+	private final Character killed;
 	private final Source killer;
 
-	public CharacterKillEvent(AbstractCharacter killed, Source killer) {
+	public CharacterKillEvent(Character killed, Source killer) {
 		this.killed = killed;
 		this.killer = killer;
 	}
@@ -33,7 +33,7 @@ public class CharacterKillEvent extends Event {
 	/**
 	 * Returns the character that was killed in the event.
 	 */
-	public AbstractCharacter getKilled() {
+	public Character getKilled() {
 		return killed;
 	}
 

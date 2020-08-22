@@ -20,7 +20,7 @@ import com.mcmmorpg.common.util.MathUtility;
  * and height. This class should be extended to create custom characters.
  * Methods in subclasses which override methods in this class must invoke super.
  */
-public abstract class AbstractCharacter implements Source {
+public abstract class Character implements Source {
 
 	private String name;
 	private int level;
@@ -36,7 +36,7 @@ public abstract class AbstractCharacter implements Source {
 	 * Constructs a character initialized with max health. By default, the character
 	 * will not be alive.
 	 */
-	protected AbstractCharacter(String name, int level, Location location) {
+	protected Character(String name, int level, Location location) {
 		this.name = name;
 		this.level = level;
 		this.location = location;
@@ -346,7 +346,7 @@ public abstract class AbstractCharacter implements Source {
 	 * character. Override in subclasses to provide specific behavior. Returns false
 	 * by default.
 	 */
-	public boolean isFriendly(AbstractCharacter other) {
+	public boolean isFriendly(Character other) {
 		return false;
 	}
 

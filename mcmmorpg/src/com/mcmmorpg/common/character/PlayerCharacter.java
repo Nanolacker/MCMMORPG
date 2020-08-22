@@ -70,7 +70,7 @@ import com.mcmmorpg.common.util.MathUtility;
 /**
  * Represents a player character.
  */
-public final class PlayerCharacter extends AbstractCharacter {
+public final class PlayerCharacter extends Character {
 
 	/**
 	 * The value at index 0 is the amount of xp it takes to level up from level 1 to
@@ -1023,7 +1023,7 @@ public final class PlayerCharacter extends AbstractCharacter {
 	 * Returns true if the other character is also a player character.
 	 */
 	@Override
-	public boolean isFriendly(AbstractCharacter other) {
+	public boolean isFriendly(Character other) {
 		return other instanceof PlayerCharacter;
 	}
 
@@ -1222,7 +1222,7 @@ public final class PlayerCharacter extends AbstractCharacter {
 
 		@EventHandler
 		private void onKillPlayerCharacter(CharacterKillEvent event) {
-			AbstractCharacter killed = event.getKilled();
+			Character killed = event.getKilled();
 			if (killed instanceof PlayerCharacter) {
 				Source killer = event.getKiller();
 				((PlayerCharacter) killed).sendMessage(ChatColor.GRAY + "Killed by " + killer.getName());

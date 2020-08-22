@@ -6,7 +6,7 @@ import java.util.List;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 
-import com.mcmmorpg.common.character.AbstractCharacter;
+import com.mcmmorpg.common.character.Character;
 import com.mcmmorpg.common.time.RepeatingTask;
 
 /**
@@ -21,7 +21,7 @@ public class MotionSynchronizer {
 
 	private static final List<MotionSynchronizer> activeSynchronizers = new ArrayList<>();
 
-	private AbstractCharacter character;
+	private Character character;
 	private Entity entity;
 	private MotionSynchronizerMode mode;
 
@@ -41,7 +41,7 @@ public class MotionSynchronizer {
 	/**
 	 * Creates a new movement synchronizer for the specified character.
 	 */
-	public MotionSynchronizer(AbstractCharacter character, MotionSynchronizerMode syncMode) {
+	public MotionSynchronizer(Character character, MotionSynchronizerMode syncMode) {
 		this.character = character;
 		this.entity = null;
 		this.mode = syncMode;
@@ -50,14 +50,14 @@ public class MotionSynchronizer {
 	/**
 	 * Returns the character associated with this movement synchronizer.
 	 */
-	public AbstractCharacter getCharacter() {
+	public Character getCharacter() {
 		return character;
 	}
 
 	/**
 	 * Sets the character associated with this movement synchronizer.
 	 */
-	public void setCharacter(AbstractCharacter character) {
+	public void setCharacter(Character character) {
 		this.character = character;
 	}
 
