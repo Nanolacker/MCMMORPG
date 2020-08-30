@@ -102,8 +102,8 @@ public final class Raycast {
 
 		@Override
 		public int compare(RaycastHit hit1, RaycastHit hit2) {
-			Location hitLocation1 = hit1.getHitLocation();
-			Location hitLocation2 = hit2.getHitLocation();
+			Location hitLocation1 = hit1.getLocation();
+			Location hitLocation2 = hit2.getLocation();
 
 			double distanceSquared1 = hitLocation1.distanceSquared(rayStart);
 			double distanceSquared2 = hitLocation2.distanceSquared(rayStart);

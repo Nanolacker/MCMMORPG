@@ -91,6 +91,10 @@ public class Collider {
 	 * Sets whether this collider interacts with other colliders.
 	 */
 	public final void setActive(boolean active) {
+		boolean redundant = this.active == active;
+		if (redundant) {
+			return;
+		}
 		this.active = active;
 		if (active) {
 			updateOccupiedBuckets();

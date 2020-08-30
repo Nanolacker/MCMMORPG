@@ -4,13 +4,6 @@ import org.bukkit.util.Vector;
 
 public class MathUtility {
 
-	public static final Vector LEFT_VECTOR = new Vector(-1, 0, 0);
-	public static final Vector DOWN_VECTOR = new Vector(0, -1, 0);
-	public static final Vector BACK_VECTOR = new Vector(0, 0, -1);
-	public static final Vector RIGHT_VECTOR = new Vector(1, 0, 0);
-	public static final Vector UP_VECTOR = new Vector(0, 1, 0);
-	public static final Vector FORWARD_VECTOR = new Vector(0, 0, 1);
-
 	private MathUtility() {
 	}
 
@@ -22,8 +15,9 @@ public class MathUtility {
 			return min;
 		} else if (num > max) {
 			return max;
+		} else {
+			return num;
 		}
-		return num;
 	}
 
 	/**
@@ -45,6 +39,11 @@ public class MathUtility {
 	 */
 	public static double lerp(double a, double b, double t) {
 		return a + (b - a) * t;
+	}
+
+	public static Vector lerp(Vector a, Vector b, double t) {
+		return new Vector(a.getX() + (b.getX() - a.getX()) * t, a.getY() + (b.getY() - a.getY()) * t,
+				a.getZ() + (b.getZ() - a.getZ()) * t);
 	}
 
 }
