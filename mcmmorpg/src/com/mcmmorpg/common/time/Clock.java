@@ -5,28 +5,30 @@ package com.mcmmorpg.common.time;
  */
 public class Clock {
 
-	private static boolean started;
-	private static long startTimeMilis;
+	private static final double UPDATE_PERIOD = 0.05;
+
+	private static double time;
 
 	private Clock() {
 		// no instances
 	}
 
 	public static void start() {
-		if (started) {
-			throw new IllegalStateException("Clock already started.");
-		}
-		started = true;
-		startTimeMilis = System.currentTimeMillis();
+		time = 0;
+		RepeatingTask updateTask = new RepeatingTask(UPDATE_PERIOD) {
+			@Override
+			protected void run() {
+				time += UPDATE_PERIOD;
+			}
+		};
+		updateTask.schedule();
 	}
 
 	/**
-	 * Returns the number of seconds that have passed since the starting of the
-	 * server.
+	 * Returns the number of seconds that have passed since the server started.
 	 */
 	public static double getTime() {
-		long currentTimeMilis = System.currentTimeMillis();
-		return (currentTimeMilis - startTimeMilis) / 1000.0;
+		return time;
 	}
 
 }

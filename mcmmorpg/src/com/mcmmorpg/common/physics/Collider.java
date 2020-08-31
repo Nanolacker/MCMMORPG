@@ -384,15 +384,14 @@ public class Collider {
 	private final void updateOccupiedBuckets() {
 		List<ColliderBucket> occupiedBucketsOld = new ArrayList<ColliderBucket>(occupiedBuckets);
 		occupiedBuckets.clear();
-		int bucketSize = ColliderBucket.BUCKET_SIZE;
 
-		int bucketMinX = (int) (minX / bucketSize);
-		int bucketMinY = (int) (minY / bucketSize);
-		int bucketMinZ = (int) (minZ / bucketSize);
+		int bucketMinX = (int) (minX / ColliderBucket.BUCKET_SIZE);
+		int bucketMinY = (int) (minY / ColliderBucket.BUCKET_SIZE);
+		int bucketMinZ = (int) (minZ / ColliderBucket.BUCKET_SIZE);
 
-		int bucketMaxX = (int) (maxX / bucketSize);
-		int bucketMaxY = (int) (maxY / bucketSize);
-		int bucketMaxZ = (int) (maxZ / bucketSize);
+		int bucketMaxX = (int) (maxX / ColliderBucket.BUCKET_SIZE);
+		int bucketMaxY = (int) (maxY / ColliderBucket.BUCKET_SIZE);
+		int bucketMaxZ = (int) (maxZ / ColliderBucket.BUCKET_SIZE);
 
 		for (int xCount = bucketMinX; xCount <= bucketMaxX; xCount++) {
 			for (int yCount = bucketMinY; yCount <= bucketMaxY; yCount++) {
