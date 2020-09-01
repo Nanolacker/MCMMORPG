@@ -1,4 +1,4 @@
-package com.mcmmorpg.common.navigation;
+package com.mcmmorpg.common.util;
 
 import org.bukkit.util.Vector;
 

@@ -31,12 +31,12 @@ import com.mcmmorpg.common.character.PlayerCharacter;
 import com.mcmmorpg.common.event.EventManager;
 import com.mcmmorpg.common.event.PlayerCharacterLootItemEvent;
 import com.mcmmorpg.common.event.PlayerCharacterOpenLootChestEvent;
-import com.mcmmorpg.common.navigation.CardinalDirection;
 import com.mcmmorpg.common.sound.Noise;
 import com.mcmmorpg.common.time.DelayedTask;
 import com.mcmmorpg.common.time.RepeatingTask;
 import com.mcmmorpg.common.ui.TextPanel;
 import com.mcmmorpg.common.util.BukkitUtility;
+import com.mcmmorpg.common.util.CardinalDirection;
 
 /**
  * Place chests that player characters can loot.
@@ -70,7 +70,10 @@ public class LootChest {
 		lootChests.add(this);
 	}
 
-	public static void init() {
+	/**
+	 * Starts spawning loot chests. This is only used by the MMORPGPlugin class.
+	 */
+	public static void startSpawner() {
 		EventManager.registerEvents(new LootChestListener());
 		RepeatingTask update = new RepeatingTask(UPDATE_PERIOD_SECONDS) {
 			@Override

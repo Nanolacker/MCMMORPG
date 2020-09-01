@@ -4,7 +4,6 @@ import java.util.Collection;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.Server;
 import org.bukkit.entity.Player;
 import com.mcmmorpg.common.MMORPGPlugin;
 import com.mcmmorpg.common.time.DelayedTask;
@@ -54,16 +53,15 @@ public class Debug {
 
 	private static void log0(Object message, StackTraceElement caller) {
 		boolean initialized = MMORPGPlugin.isInitialized();
-		Server server = Bukkit.getServer();
 		String formattedMessage = ChatColor.AQUA + "[DEBUG]: " + ChatColor.RESET + message + "\n" + ChatColor.AQUA
 				+ caller.toString();
 		if (initialized) {
-			server.broadcastMessage(formattedMessage);
+			Bukkit.broadcastMessage(formattedMessage);
 		} else {
 			new DelayedTask() {
 				@Override
 				protected void run() {
-					server.broadcastMessage(formattedMessage);
+					Bukkit.broadcastMessage(formattedMessage);
 				}
 			}.schedule();
 		}

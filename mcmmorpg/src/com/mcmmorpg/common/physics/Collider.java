@@ -423,17 +423,6 @@ public class Collider {
 	}
 
 	/**
-	 * Returns whether the bounds of this collider encompass a location.
-	 */
-	public final boolean encompasses(Location location) {
-		World world = location.getWorld();
-		double x = location.getX();
-		double y = location.getY();
-		double z = location.getZ();
-		return world.equals(this.world) && minX <= x && x <= maxX && minY <= y && y <= maxY && minZ <= z && z <= maxZ;
-	}
-
-	/**
 	 * Detects the presence and absence of collisions between this collider and
 	 * other colliders and responds appropriately.
 	 */
@@ -491,6 +480,17 @@ public class Collider {
 		other.contacts.remove(this);
 		this.onCollisionExit(other);
 		other.onCollisionExit(this);
+	}
+
+	/**
+	 * Returns whether the bounds of this collider encompass a location.
+	 */
+	public final boolean encompasses(Location location) {
+		World world = location.getWorld();
+		double x = location.getX();
+		double y = location.getY();
+		double z = location.getZ();
+		return world.equals(this.world) && minX <= x && x <= maxX && minY <= y && y <= maxY && minZ <= z && z <= maxZ;
 	}
 
 	/**

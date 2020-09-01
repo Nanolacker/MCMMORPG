@@ -13,6 +13,9 @@ public class Clock {
 		// no instances
 	}
 
+	/**
+	 * Starts the clock at time = 0. This is only used by the MMORPGPlugin class.
+	 */
 	public static void start() {
 		time = 0;
 		RepeatingTask updateTask = new RepeatingTask(UPDATE_PERIOD) {
@@ -25,7 +28,7 @@ public class Clock {
 	}
 
 	/**
-	 * Returns the number of seconds that have passed since the server started.
+	 * Returns how many seconds have passed since the MMORPG plugin was enabled.
 	 */
 	public static double getTime() {
 		return time;

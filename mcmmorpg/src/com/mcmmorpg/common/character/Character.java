@@ -41,10 +41,10 @@ public abstract class Character implements Source {
 		this.level = level;
 		this.location = location;
 		this.alive = false;
-		this.currentHealth = 0;
-		this.maxHealth = 1;
+		this.currentHealth = 0.0;
+		this.maxHealth = 1.0;
 		// Assume humanoid height.
-		this.height = 2;
+		this.height = 2.0;
 		Location nameplateLocation = getNameplateLocation();
 		this.nameplate = new TextPanel(nameplateLocation, name);
 		this.nameplate.setLineLength(25);
@@ -136,7 +136,7 @@ public abstract class Character implements Source {
 			onDeath();
 		} else if (!wasAlive && alive) {
 			this.currentHealth = maxHealth;
-			onLive();
+			onLife();
 		}
 		updateHealthBarText();
 	}
@@ -175,7 +175,7 @@ public abstract class Character implements Source {
 			return;
 		}
 		// Don't damage negative amount.
-		amount = Math.max(amount, 0);
+		amount = Math.max(amount, 0.0);
 		double newHealth = currentHealth - amount;
 		setCurrentHealth(newHealth);
 		EventManager.callEvent(new CharacterDamageEvent(this, amount, source));
@@ -190,7 +190,7 @@ public abstract class Character implements Source {
 	@OverridingMethodsMustInvokeSuper
 	public void heal(double amount, Source source) {
 		// Don't heal negative amount.
-		amount = Math.max(amount, 0);
+		amount = Math.max(amount, 0.0);
 		setCurrentHealth(currentHealth + amount);
 		CharacterHealEvent event = new CharacterHealEvent(this, amount, source);
 		EventManager.callEvent(event);
@@ -219,7 +219,7 @@ public abstract class Character implements Source {
 	 * specified in subclasses. Overriding methods must invoke super.
 	 */
 	@OverridingMethodsMustInvokeSuper
-	protected void onLive() {
+	protected void onLife() {
 	}
 
 	/**

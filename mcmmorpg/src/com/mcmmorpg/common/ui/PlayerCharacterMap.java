@@ -1,4 +1,4 @@
-package com.mcmmorpg.common.navigation;
+package com.mcmmorpg.common.ui;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;

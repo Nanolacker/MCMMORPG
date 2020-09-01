@@ -1,4 +1,4 @@
-package com.mcmmorpg.common.navigation;
+package com.mcmmorpg.common.ui;
 
 import java.util.List;
 
@@ -9,7 +9,6 @@ import com.mcmmorpg.common.character.Character;
 import com.mcmmorpg.common.character.PlayerCharacter;
 import com.mcmmorpg.common.quest.Quest;
 import com.mcmmorpg.common.quest.QuestStatus;
-import com.mcmmorpg.common.ui.TextPanel;
 
 /**
  * A marker that guides player characters toward quest-related locations.

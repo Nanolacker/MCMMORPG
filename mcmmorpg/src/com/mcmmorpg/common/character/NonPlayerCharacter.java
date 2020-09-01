@@ -27,9 +27,9 @@ public abstract class NonPlayerCharacter extends Character {
 	private boolean isSpawned;
 
 	/**
-	 * Invoked when plugin is enabled.
+	 * Starts spawning NPCs. This is only used by the MMORPGPlugin class.
 	 */
-	public static void startNPCSpawner() {
+	public static void startSpawner() {
 		RepeatingTask npcSpawner = new RepeatingTask(SPAWN_PERIOD_SECONDS) {
 			@Override
 			public void run() {
@@ -113,8 +113,8 @@ public abstract class NonPlayerCharacter extends Character {
 	 */
 	@OverridingMethodsMustInvokeSuper
 	@Override
-	protected void onLive() {
-		super.onLive();
+	protected void onLife() {
+		super.onLife();
 		aliveNpcs.add(this);
 	}
 

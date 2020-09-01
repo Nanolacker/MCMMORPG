@@ -43,8 +43,6 @@ import com.mcmmorpg.common.event.PlayerCharacterRemoveItemEvent;
 import com.mcmmorpg.common.item.ArmorItem;
 import com.mcmmorpg.common.item.Item;
 import com.mcmmorpg.common.item.Weapon;
-import com.mcmmorpg.common.navigation.CardinalDirection;
-import com.mcmmorpg.common.navigation.PlayerCharacterMap;
 import com.mcmmorpg.common.persistence.PersistentPlayerCharacterDataContainer;
 import com.mcmmorpg.common.physics.Collider;
 import com.mcmmorpg.common.physics.Raycast;
@@ -63,8 +61,10 @@ import com.mcmmorpg.common.time.Clock;
 import com.mcmmorpg.common.time.DelayedTask;
 import com.mcmmorpg.common.time.RepeatingTask;
 import com.mcmmorpg.common.ui.ActionBarText;
+import com.mcmmorpg.common.ui.PlayerCharacterMap;
 import com.mcmmorpg.common.ui.SidebarText;
 import com.mcmmorpg.common.ui.TitleText;
+import com.mcmmorpg.common.util.CardinalDirection;
 import com.mcmmorpg.common.util.MathUtility;
 
 /**

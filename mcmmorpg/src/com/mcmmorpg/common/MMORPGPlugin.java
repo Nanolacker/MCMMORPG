@@ -30,8 +30,8 @@ public abstract class MMORPGPlugin extends JavaPlugin {
 		removeAllEntities();
 		EssentialCommands.registerEssentialCommands();
 		Clock.start();
-		NonPlayerCharacter.startNPCSpawner();
-		LootChest.init();
+		NonPlayerCharacter.startSpawner();
+		LootChest.startSpawner();
 		EventManager.registerEvents(new PlayerInteractionListener());
 		onMMORPGStart();
 		isInitialized = true;

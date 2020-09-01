@@ -35,7 +35,6 @@ import com.mcmmorpg.common.item.ArmorItem;
 import com.mcmmorpg.common.item.ConsumableItem;
 import com.mcmmorpg.common.item.Item;
 import com.mcmmorpg.common.item.Weapon;
-import com.mcmmorpg.common.navigation.PlayerCharacterMap;
 import com.mcmmorpg.common.playerClass.PlayerClass;
 import com.mcmmorpg.common.sound.Noise;
 import com.mcmmorpg.common.time.DelayedTask;

@@ -1,4 +1,4 @@
-package com.mcmmorpg.common.navigation;
+package com.mcmmorpg.common.ui;
 
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
@@ -10,8 +10,9 @@ import org.bukkit.map.MapCursorCollection;
 import org.bukkit.map.MinecraftFont;
 
 import com.mcmmorpg.common.character.PlayerCharacter;
-import com.mcmmorpg.common.navigation.QuestMarker.QuestMarkerIcon;
 import com.mcmmorpg.common.quest.Quest;
+import com.mcmmorpg.common.ui.QuestMarker.QuestMarkerIcon;
+import com.mcmmorpg.common.util.CardinalDirection;
 import com.mcmmorpg.common.util.StringUtility;
 
 /**
