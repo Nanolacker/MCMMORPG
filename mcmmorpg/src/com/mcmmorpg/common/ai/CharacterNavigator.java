@@ -19,7 +19,9 @@ public class CharacterNavigator {
 	private double speed;
 	private double stepHeight;
 	private double jumpLength;
-
+	private boolean canClimbLadders;
+	private Path path;
+	
 	public CharacterNavigator(Character character) {
 		this.character = character;
 		this.collider = new CharacterNavigationCollider(this);
@@ -32,8 +34,12 @@ public class CharacterNavigator {
 	public void setDestination(Location destination) {
 
 	}
+	
+	public Path getPath() {
+		return path;
+	}
 
-	private List<Location> getPath() {
+	private void calculatePath() {
 		List<Location> openNodes = new ArrayList<>();
 		List<Location> closedNodes = new ArrayList<>();
 
@@ -46,7 +52,6 @@ public class CharacterNavigator {
 			closedNodes.add(currentNode);
 
 			if (currentNodeIsTarget) {
-				return openNodes;
 			}
 
 			Location[] neighborNodes = {};

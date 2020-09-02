@@ -9,7 +9,7 @@ import com.mcmmorpg.common.util.MathUtility;
 /**
  * A task that will repeat with a specified period.
  */
-public abstract class RepeatingTask extends CommonTask {
+public abstract class RepeatingTask extends Task {
 
 	private double period;
 

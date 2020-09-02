@@ -5,11 +5,12 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitScheduler;
 
 import com.mcmmorpg.common.MMORPGPlugin;
+import com.mcmmorpg.common.util.MathUtility;
 
 /**
  * A task that will execute after a specified duration.
  */
-public abstract class DelayedTask extends CommonTask {
+public abstract class DelayedTask extends Task {
 
 	private double delay;
 
@@ -32,7 +33,7 @@ public abstract class DelayedTask extends CommonTask {
 		BukkitScheduler scheduler = Bukkit.getScheduler();
 		Plugin plugin = MMORPGPlugin.getInstance();
 		Runnable runnable = () -> run();
-		long delayTicks = (long) (delay * 20);
+		long delayTicks = MathUtility.secondsToTicks(delay);
 		int bukkitTaskID = scheduler.scheduleSyncDelayedTask(plugin, runnable, delayTicks);
 		setBukkitTaskID(bukkitTaskID);
 	}

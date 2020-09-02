@@ -6,12 +6,12 @@ import org.bukkit.scheduler.BukkitScheduler;
 /**
  * Superclass for delayed tasks and repeating tasks.
  */
-public abstract class CommonTask {
+public abstract class Task {
 
 	private int bukkitTaskID;
 	private boolean scheduled;
 
-	CommonTask() {
+	Task() {
 		bukkitTaskID = -1;
 		scheduled = false;
 	}

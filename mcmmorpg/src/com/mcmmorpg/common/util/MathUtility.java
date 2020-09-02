@@ -31,7 +31,7 @@ public class MathUtility {
 	 * Converts from ticks to seconds exactly.
 	 */
 	public static double ticksToSeconds(int ticks) {
-		return ticks / 20.0;
+		return ticks * 0.05;
 	}
 
 	/**
