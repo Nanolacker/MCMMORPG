@@ -1,19 +1,30 @@
 package com.mcmmorpg.common.ai;
 
 import org.bukkit.Location;
+import org.bukkit.Material;
+
+import com.mcmmorpg.common.util.Debug;
 
 public class PathNode {
 
+	private static final double SQRT_TWO = Math.sqrt(2.0);
+	private static final double SQRT_THREE = Math.sqrt(3.0);
+
 	private final Path path;
 	private final Location location;
-	private final double gCost;
-	private final double hCost;
+	private PathNode parent;
+	private double gCost;
+	private double hCost;
 
 	public PathNode(Path path, Location location) {
 		this.path = path;
-		this.location = location;
+		this.location = convertToNodeLocation(location);
 		this.gCost = 0.0;
 		this.hCost = 0.0;
+	}
+
+	private Location convertToNodeLocation(Location location) {
+		return new Location(location.getWorld(), location.getBlockX(), location.getBlockY(), location.getBlockZ());
 	}
 
 	public Path getPath() {
@@ -24,6 +35,14 @@ public class PathNode {
 		return location;
 	}
 
+	public PathNode getParent() {
+		return parent;
+	}
+
+	public void setParent(PathNode parent) {
+		this.parent = parent;
+	}
+
 	public double getFCost() {
 		return gCost + hCost;
 	}
@@ -32,12 +51,21 @@ public class PathNode {
 		return gCost;
 	}
 
+	public void setGCost(double gCost) {
+		this.gCost = gCost;
+	}
+
 	public double getHCost() {
 		return hCost;
 	}
 
+	public void setHCost(double hCost) {
+		this.hCost = hCost;
+	}
+
 	public boolean isTraversable() {
-		return false;
+		return location.clone().subtract(0, 1, 0).getBlock().getType().isSolid()
+				&& location.getBlock().getType().isAir() && location.clone().add(0, 1, 0).getBlock().getType().isAir();
 	}
 
 	public PathNode[] getNeighbors() {
@@ -60,6 +88,20 @@ public class PathNode {
 			}
 		}
 		return neighbors;
+	}
+
+	public double distance(PathNode other) {
+		Location otherLocation = other.getLocation();
+		double distanceX = Math.abs(location.getX() - otherLocation.getX());
+		double distanceY = Math.abs(location.getY() - otherLocation.getY());
+		double distanceZ = Math.abs(location.getZ() - otherLocation.getZ());
+
+		double maxDistance = Math.max(Math.max(distanceX, distanceY), distanceZ);
+		double midDistance = Math.max(Math.min(distanceX, distanceY),
+				Math.min(Math.max(distanceX, distanceY), distanceZ));
+		double minDistance = Math.min(Math.min(distanceX, distanceY), distanceZ);
+
+		return minDistance * SQRT_THREE + (midDistance - minDistance) * SQRT_TWO + (maxDistance - minDistance);
 	}
 
 }

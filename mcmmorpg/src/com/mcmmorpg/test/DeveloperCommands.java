@@ -16,6 +16,7 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
+import com.mcmmorpg.common.ai.PathNode;
 import com.mcmmorpg.common.character.PlayerCharacter;
 import com.mcmmorpg.common.item.Item;
 import com.mcmmorpg.common.physics.Collider;
@@ -265,6 +266,13 @@ public class DeveloperCommands {
 				Player player = (Player) sender;
 			}
 		};
+		Command node = new Command("node") {
+			@Override
+			protected void execute(CommandSender sender, String[] args) {
+				Player player = (Player) sender;
+				new AiTestNpc(player.getLocation()).setAlive(true);
+			}
+		};
 
 		CommandManager.registerCommand(printLocation);
 		CommandManager.registerCommand(heal);
@@ -281,6 +289,7 @@ public class DeveloperCommands {
 		CommandManager.registerCommand(goTo);
 		CommandManager.registerCommand(spawnHead);
 		CommandManager.registerCommand(sphere);
+		CommandManager.registerCommand(node);
 	}
 
 }

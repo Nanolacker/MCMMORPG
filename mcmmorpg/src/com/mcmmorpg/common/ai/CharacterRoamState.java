@@ -10,7 +10,7 @@ public class CharacterRoamState extends State {
 
 	private static final double EPSILON = 0.01;
 
-	private final Character character;
+	private Character character;
 	private Location center;
 	private double radiusSquared;
 	private double speed;
@@ -20,10 +20,6 @@ public class CharacterRoamState extends State {
 	private Location targetLocation;
 	private Vector velocity;
 	private Location subTargetLocation;
-
-	public CharacterRoamState(Character character, double speed, Location center, double radius) {
-		this.radiusSquared = radius * radius;
-	}
 
 	@Override
 	protected void initialize(StateMachine stateMachine) {

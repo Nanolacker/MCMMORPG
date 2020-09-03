@@ -3,52 +3,34 @@ package com.mcmmorpg.test;
 import org.bukkit.Location;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Villager;
-import org.bukkit.util.Vector;
 
-import com.mcmmorpg.common.ai.State;
-import com.mcmmorpg.common.ai.StateMachine;
+import com.mcmmorpg.common.ai.CharacterNavigator;
 import com.mcmmorpg.common.character.NonPlayerCharacter;
+import com.mcmmorpg.common.time.RepeatingTask;
 import com.mcmmorpg.common.util.BukkitUtility;
+import com.mcmmorpg.common.util.Debug;
 
 public class AiTestNpc extends NonPlayerCharacter {
 
-	private static final double SPEED = .1;
-	private static final double MAX_TARGET_DISTANCE = 25;
+	private static final double SPEED = 5;
 
 	private Villager entity;
 
 	protected AiTestNpc(Location spawnLocation) {
 		super("AI Test", 1, spawnLocation);
-		State roam = new State() {
-			Location targetLocation;
-
+		CharacterNavigator navigator = new CharacterNavigator(this, SPEED);
+		new RepeatingTask(0.05) {
 			@Override
-			protected void initialize(StateMachine stateMachine) {
-				Location currentLocation = getLocation();
-				targetLocation = currentLocation.add(Math.random() * MAX_TARGET_DISTANCE - MAX_TARGET_DISTANCE / 2, 0,
-						Math.random() * MAX_TARGET_DISTANCE - MAX_TARGET_DISTANCE / 2);
+			protected void run() {
+				navigator.update();
 			}
-
+		}.schedule();
+		new RepeatingTask(0.5) {
 			@Override
-			protected void update(StateMachine stateMachine) {
-				Location currentLocation = getLocation();
-				Vector direction = targetLocation.clone().subtract(currentLocation).toVector().normalize();
-				Location newLocation = currentLocation.add(direction.multiply(SPEED));
-				newLocation.setDirection(direction);
-				setLocation(newLocation);
-				if (newLocation.distanceSquared(targetLocation) < 0.1) {
-					targetLocation = currentLocation.add(Math.random() * MAX_TARGET_DISTANCE - MAX_TARGET_DISTANCE / 2,
-							0, Math.random() * MAX_TARGET_DISTANCE - MAX_TARGET_DISTANCE / 2);
-				}
+			protected void run() {
+				navigator.setDestination(Debug.getAPlayer().getLocation());
 			}
-
-			@Override
-			protected void terminate(StateMachine stateMachine) {
-				targetLocation = null;
-			}
-		};
-		StateMachine ai = new StateMachine(roam, 0.05);
-		ai.start();
+		}.schedule();
 	}
 
 	@Override

@@ -39,7 +39,7 @@ public abstract class Character implements Source {
 	protected Character(String name, int level, Location location) {
 		this.name = name;
 		this.level = level;
-		this.location = location;
+		this.location = location.clone();
 		this.alive = false;
 		this.currentHealth = 0.0;
 		this.maxHealth = 1.0;

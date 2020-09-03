@@ -7,8 +7,6 @@ import org.bukkit.Location;
 
 public class Path {
 
-	private Location start;
-	private Location end;
 	private List<PathNode> nodes;
 	private PathStatus status;
 
@@ -30,7 +28,7 @@ public class Path {
 				return node;
 			}
 		}
-		return null;
+		return new PathNode(this, location);
 	}
 
 	public static enum PathStatus {
