@@ -61,6 +61,7 @@ import com.mcmmorpg.common.time.Clock;
 import com.mcmmorpg.common.time.DelayedTask;
 import com.mcmmorpg.common.time.RepeatingTask;
 import com.mcmmorpg.common.ui.ActionBarText;
+import com.mcmmorpg.common.ui.PlayerCharacterInteractionCollider;
 import com.mcmmorpg.common.ui.PlayerCharacterMap;
 import com.mcmmorpg.common.ui.SidebarText;
 import com.mcmmorpg.common.ui.TitleText;

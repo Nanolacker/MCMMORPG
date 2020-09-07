@@ -1,7 +1,8 @@
-package com.mcmmorpg.common.character;
+package com.mcmmorpg.common.ui;
 
 import org.bukkit.Location;
 
+import com.mcmmorpg.common.character.PlayerCharacter;
 import com.mcmmorpg.common.physics.Collider;
 
 /**
@@ -20,6 +21,6 @@ public abstract class PlayerCharacterInteractionCollider extends Collider {
 	/**
 	 * Called when a player character interacts with this collider.
 	 */
-	protected abstract void onInteract(PlayerCharacter pc);
+	public abstract void onInteract(PlayerCharacter pc);
 
 }

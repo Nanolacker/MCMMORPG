@@ -1,12 +1,19 @@
 package com.mcmmorpg.common.util;
 
 import java.util.Collection;
+import java.util.List;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Location;
+import org.bukkit.Particle;
 import org.bukkit.entity.Player;
+
 import com.mcmmorpg.common.MMORPGPlugin;
+import com.mcmmorpg.common.ai.Path;
+import com.mcmmorpg.common.ai.PathNode;
 import com.mcmmorpg.common.time.DelayedTask;
+import com.mcmmorpg.common.time.RepeatingTask;
 
 /**
  * Provides static methods that ease the development and debugging process.
@@ -77,6 +84,32 @@ public class Debug {
 			return null;
 		}
 		return (Player) players.toArray()[0];
+	}
+
+	public static void drawPath(Path path, Particle particle, double duration) {
+		RepeatingTask drawTask = new RepeatingTask(0.1) {
+			@Override
+			protected void run() {
+				List<PathNode> nodes = path.getNodes();
+				if (nodes.size() < 2) {
+					return;
+				}
+				Location lineStart = nodes.get(0).getLocation().clone().add(0.0, 0.1, 0.0);
+				for (int i = 1; i < nodes.size(); i++) {
+					Location lineEnd = nodes.get(i).getLocation().clone().add(0.0, 0.1, 0.0);
+					ParticleEffects.line(particle, 4.0, lineStart, lineEnd);
+					lineStart = lineEnd;
+				}
+			}
+		};
+		drawTask.schedule();
+		DelayedTask cancelTask = new DelayedTask(duration) {
+			@Override
+			protected void run() {
+				drawTask.cancel();
+			}
+		};
+		cancelTask.schedule();
 	}
 
 }

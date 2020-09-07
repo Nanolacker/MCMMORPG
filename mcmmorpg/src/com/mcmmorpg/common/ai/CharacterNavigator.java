@@ -28,6 +28,7 @@ public class CharacterNavigator {
 	private boolean canClimbLadders;
 	private Path path;
 	private int currentPathNodeIndex;
+	private boolean calculatingPath;
 
 	public CharacterNavigator(Character character, double speed) {
 		this.character = character;
@@ -41,7 +42,9 @@ public class CharacterNavigator {
 
 	public void setDestination(Location destination) {
 		this.destination = destination;
+		calculatingPath = true;
 		path = calculatePath();
+		calculatingPath = false;
 		currentPathNodeIndex = 0;
 	}
 
@@ -50,6 +53,9 @@ public class CharacterNavigator {
 	}
 
 	public void update() {
+		if (calculatingPath) {
+			return;
+		}
 		if (path.getNodes().isEmpty()) {
 			return;
 		}
@@ -57,13 +63,14 @@ public class CharacterNavigator {
 		if (currentLocation.distance(destination) < 0.2) {
 			return;
 		}
-		Location nextNodeLocation = path.getNodes().get(currentPathNodeIndex).getLocation();
-		Vector direction = nextNodeLocation.clone().subtract(currentLocation).toVector().normalize();
-		Vector velocity = direction.multiply(speed);
+		Location nextTargetLocation = path.getNodes().get(currentPathNodeIndex).getLocation().clone().add(0.5, 0.0,
+				0.5);
+		Vector velocity = nextTargetLocation.clone().subtract(currentLocation).toVector().normalize().multiply(speed);
 		Location nextLocation = currentLocation.add(velocity.multiply(UPDATE_PERIOD));
+		Vector direction = destination.clone().subtract(nextLocation).toVector().normalize();
 		nextLocation.setDirection(direction);
 		character.setLocation(nextLocation);
-		if (nextLocation.distanceSquared(nextNodeLocation) < 0.1) {
+		if (nextLocation.distanceSquared(nextTargetLocation) < 0.1) {
 			if (currentPathNodeIndex != path.getNodes().size() - 1) {
 				currentPathNodeIndex++;
 			}
@@ -103,9 +110,6 @@ public class CharacterNavigator {
 					currentNode = currentNode.getParent();
 				}
 				Collections.reverse(path.getNodes());
-				for (PathNode node : path.getNodes()) {
-					Debug.log(node.getLocation());
-				}
 				return path;
 			}
 

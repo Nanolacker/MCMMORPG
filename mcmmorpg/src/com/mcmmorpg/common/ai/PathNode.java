@@ -24,7 +24,8 @@ public class PathNode {
 	}
 
 	private Location convertToNodeLocation(Location location) {
-		return new Location(location.getWorld(), location.getBlockX(), location.getBlockY(), location.getBlockZ());
+		return new Location(location.getWorld(), location.getBlockX() + 0.5, location.getBlockY(),
+				location.getBlockZ() + 0.5);
 	}
 
 	public Path getPath() {
