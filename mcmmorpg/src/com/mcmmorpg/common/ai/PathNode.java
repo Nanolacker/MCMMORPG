@@ -7,8 +7,8 @@ import com.mcmmorpg.common.util.Debug;
 
 public class PathNode {
 
-	private static final double SQRT_TWO = Math.sqrt(2.0);
-	private static final double SQRT_THREE = Math.sqrt(3.0);
+	private static final double SQRT_TWO = 1; // Math.sqrt(2.0);
+	private static final double SQRT_THREE = 1; // Math.sqrt(3.0);
 
 	private final Path path;
 	private final Location location;
@@ -101,6 +101,10 @@ public class PathNode {
 		double midDistance = Math.max(Math.min(distanceX, distanceY),
 				Math.min(Math.max(distanceX, distanceY), distanceZ));
 		double minDistance = Math.min(Math.min(distanceX, distanceY), distanceZ);
+
+		Debug.log("min: " + minDistance);
+		Debug.log("mid: " + midDistance);
+		Debug.log("max: " + maxDistance);
 
 		return minDistance * SQRT_THREE + (midDistance - minDistance) * SQRT_TWO + (maxDistance - minDistance);
 	}

@@ -88,6 +88,8 @@ public class CharacterNavigator {
 		PathNode startNode = new PathNode(path, startLocation);
 		PathNode targetNode = new PathNode(path, destination);
 
+		Debug.log(startNode.distance(targetNode));
+
 		List<PathNode> pathNodes = path.getNodes();
 		pathNodes.add(startNode);
 		pathNodes.add(targetNode);
@@ -96,12 +98,8 @@ public class CharacterNavigator {
 
 		while (!openNodes.isEmpty() && pathNodes.size() < 10000) {
 			// Find the current node in open set with lowest f-cost.
-			PathNode currentNode = openNodes.get(0);
-			
-			ParticleEffects.wireframeBox(Particle.CRIT, 4, currentNode.getLocation().clone().subtract(0.5, 0.0, 0.5),
-					currentNode.getLocation().clone().add(0.5, 1.0, 0.5));
-			
 			int currentNodeIndex = 0;
+			PathNode currentNode = openNodes.get(currentNodeIndex);
 			for (int i = 1; i < openNodes.size(); i++) {
 				PathNode node = openNodes.get(i);
 				if (node.getFCost() < currentNode.getFCost()) {
@@ -126,21 +124,17 @@ public class CharacterNavigator {
 			PathNode[] neighborNodes = currentNode.getNeighbors();
 			for (PathNode neighborNode : neighborNodes) {
 				pathNodes.add(neighborNode);
-				if (closedNodes.contains(neighborNode) || !neighborNode.isTraversable()) {
+				if (!neighborNode.isTraversable() || closedNodes.contains(neighborNode)) {
 					continue;
 				}
-				if (!openNodes.contains(neighborNode)) {
+				double newGCost = currentNode.getGCost() + currentNode.distance(neighborNode);
+				if (newGCost < neighborNode.getGCost() || !openNodes.contains(neighborNode)) {
 					openNodes.add(neighborNode);
-					neighborNode.setGCost(currentNode.getGCost() + currentNode.distance(neighborNode));
+					neighborNode.setGCost(newGCost);
 					neighborNode.setHCost(neighborNode.distance(targetNode));
 					neighborNode.setParent(currentNode);
-				} else {
-					double neighborNodeGCost = neighborNode.getGCost();
-					double newGCost = currentNode.getGCost() + currentNode.distance(neighborNode);
-					if (newGCost < neighborNodeGCost) {
-						neighborNode.setGCost(newGCost);
-						neighborNode.setHCost(neighborNode.distance(targetNode));
-						neighborNode.setParent(currentNode);
+					if (!openNodes.contains(neighborNodes)) {
+						openNodes.add(neighborNode);
 					}
 				}
 			}
