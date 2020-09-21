@@ -27,7 +27,12 @@ public class AiTestNpc extends NonPlayerCharacter {
 				navigator.update();
 			}
 		}.schedule();
-		Debug.log("drawing");
+		new RepeatingTask(1) {
+			@Override
+			protected void run() {
+				navigator.setDestination(Debug.getAPlayer().getLocation());
+			}
+		}.schedule();
 		Debug.drawPath(navigator.getPath(), Particle.CRIT, 10);
 	}
 

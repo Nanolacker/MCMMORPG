@@ -4,14 +4,14 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-import org.bukkit.craftbukkit.v1_15_R1.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_16_R2.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 
 import com.mcmmorpg.common.time.RepeatingTask;
 
-import net.minecraft.server.v1_15_R1.ChatMessageType;
-import net.minecraft.server.v1_15_R1.IChatBaseComponent.ChatSerializer;
-import net.minecraft.server.v1_15_R1.PacketPlayOutChat;
+import net.md_5.bungee.api.ChatMessageType;
+import net.md_5.bungee.api.chat.BaseComponent;
+import net.md_5.bungee.api.chat.TextComponent;
 
 /**
  * Display text on a player's action bar.
@@ -36,13 +36,13 @@ public class ActionBarText {
 		applyTask.schedule();
 	}
 
-	private PacketPlayOutChat packet;
+	private BaseComponent[] text;
 
 	/**
 	 * Display text on a player's action bar.
 	 */
 	public ActionBarText(String text) {
-		packet = new PacketPlayOutChat(ChatSerializer.a("{\"text\":\"" + text + "\"}"), ChatMessageType.a((byte) 2));
+		this.text = TextComponent.fromLegacyText(text);
 	}
 
 	/**
@@ -51,12 +51,12 @@ public class ActionBarText {
 	 */
 	public void apply(Player player) {
 		actionBarMap.put(player, this);
-		// Need that initial manual application.
+		// Needs initial manual application.
 		apply0(player);
 	}
 
 	private void apply0(Player player) {
-		((CraftPlayer) player).getHandle().playerConnection.sendPacket(packet);
+		player.spigot().sendMessage(ChatMessageType.ACTION_BAR, text);
 	}
 
 	/**

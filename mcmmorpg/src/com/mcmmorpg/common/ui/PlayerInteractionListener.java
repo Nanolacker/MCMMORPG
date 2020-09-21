@@ -19,6 +19,8 @@ import org.bukkit.event.player.PlayerAnimationType;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerItemHeldEvent;
+import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerSwapHandItemsEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.Inventory;
@@ -55,7 +57,7 @@ public class PlayerInteractionListener implements Listener {
 	/**
 	 * Removes the player character after a very short duration.
 	 */
-	private void addPCToSet(Set<PlayerCharacter> set, PlayerCharacter pc) {
+	private void tempAddPCToSet(Set<PlayerCharacter> set, PlayerCharacter pc) {
 		set.add(pc);
 		new DelayedTask(0.1) {
 			@Override
@@ -114,7 +116,7 @@ public class PlayerInteractionListener implements Listener {
 		}
 
 		if (action != Action.LEFT_CLICK_AIR && action != Action.LEFT_CLICK_BLOCK) {
-			addPCToSet(falseAttackers, pc);
+			tempAddPCToSet(falseAttackers, pc);
 		}
 	}
 
@@ -135,7 +137,7 @@ public class PlayerInteractionListener implements Listener {
 		} else {
 			Player player = event.getPlayer();
 			PlayerCharacter pc = PlayerCharacter.forPlayer(player);
-			addPCToSet(falseAttackers, pc);
+			tempAddPCToSet(falseAttackers, pc);
 			if (player.getInventory().getItem(0) == null) {
 				// when the player tries to throw their weapon
 				event.setCancelled(true);
@@ -182,7 +184,7 @@ public class PlayerInteractionListener implements Listener {
 		if (swingingHands.contains(pc)) {
 			return;
 		}
-		addPCToSet(swingingHands, pc);
+		tempAddPCToSet(swingingHands, pc);
 		if (pc.isDisarmed()) {
 			return;
 		}
@@ -373,6 +375,16 @@ public class PlayerInteractionListener implements Listener {
 		} else {
 			map.open();
 		}
+	}
+
+	@EventHandler
+	private void onPlayerJoin(PlayerJoinEvent event) {
+		event.setJoinMessage(null);
+	}
+
+	@EventHandler
+	private void onPlayerQuit(PlayerQuitEvent event) {
+		event.setQuitMessage(null);
 	}
 
 }

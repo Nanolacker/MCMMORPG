@@ -5,15 +5,11 @@ import java.util.Collections;
 import java.util.List;
 
 import org.bukkit.Location;
-import org.bukkit.Particle;
 import org.bukkit.util.Vector;
 
 import com.mcmmorpg.common.character.Character;
 import com.mcmmorpg.common.physics.Collider;
-import com.mcmmorpg.common.time.DelayedTask;
-import com.mcmmorpg.common.time.RepeatingTask;
 import com.mcmmorpg.common.util.Debug;
-import com.mcmmorpg.common.util.ParticleEffects;
 
 public class CharacterNavigator {
 
@@ -142,67 +138,6 @@ public class CharacterNavigator {
 		pathNodes.clear();
 		Debug.log("FAIL");
 		return path;
-	}
-
-	private Path findPath0() {
-		return null;
-//		Location startLocation = character.getLocation();
-//		Path path = new Path();
-//		PathNode startNode = new PathNode(path, startLocation);
-//		PathNode targetNode = new PathNode(path, destination);
-//
-//		path.getNodes().add(startNode);
-//
-//		List<PathNode> openNodes = new ArrayList<>();
-//		Set<PathNode> closedNodes = new HashSet<>();
-//		openNodes.add(startNode);
-//
-//		while (openNodes.size() > 0 && openNodes.size() < 10000) {
-//			PathNode currentNode = openNodes.get(0);
-//			double currentFCost = currentNode.getFCost();
-//			for (int i = 1; i < openNodes.size(); i++) {
-//				PathNode node = openNodes.get(i);
-//				double fCost = node.getFCost();
-//				if (fCost < currentFCost || fCost == currentFCost && node.getHCost() < currentNode.getHCost()) {
-//					currentNode = node;
-//				}
-//			}
-//			openNodes.remove(currentNode);
-//			closedNodes.add(currentNode);
-//
-//			if (currentNode.getLocation().equals(targetNode.getLocation())) {
-//				path.getNodes().clear();
-//				while (currentNode != startNode) {
-//					path.getNodes().add(currentNode);
-//					currentNode = currentNode.getParent();
-//				}
-//				Collections.reverse(path.getNodes());
-//				return path;
-//			}
-//
-//			PathNode[] neighbors = currentNode.getNeighbors();
-//			for (PathNode neighborNode : neighbors) {
-//				boolean traversable = neighborNode.isTraversable();
-//				if (!traversable || closedNodes.contains(neighborNode)) {
-//					continue;
-//				}
-//
-//				double gCostToNeighbor = currentNode.getGCost() + currentNode.distance(neighborNode);
-//				if (gCostToNeighbor < neighborNode.getGCost() || !openNodes.contains(neighborNode)) {
-//					neighborNode.setGCost(gCostToNeighbor);
-//					double hCost = neighborNode.distance(targetNode);
-//					neighborNode.setHCost(hCost);
-//					neighborNode.setParent(currentNode);
-//
-//					if (!openNodes.contains(neighborNode)) {
-//						openNodes.add(neighborNode);
-//					}
-//				}
-//			}
-//		}
-//		Debug.log("didn't work");
-//		path.getNodes().remove(targetNode);
-//		return path;
 	}
 
 	// ensure that navigators don't go inside other characters

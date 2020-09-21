@@ -12,7 +12,6 @@ import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Sound;
 import org.bukkit.World;
-import org.bukkit.craftbukkit.v1_15_R1.entity.CraftArmorStand;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
@@ -520,7 +519,7 @@ public final class PlayerCharacter extends Character {
 		// adding an armor stand passenger to a player hides their nameplate
 		Location location = getLocation();
 		ArmorStand passenger = (ArmorStand) location.getWorld().spawnEntity(location, EntityType.ARMOR_STAND);
-		((CraftArmorStand) passenger).getHandle().setInvisible(true);
+		passenger.setVisible(false);
 		passenger.setSmall(true);
 		passenger.setMarker(true);
 		passenger.setInvulnerable(true);

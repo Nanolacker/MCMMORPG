@@ -102,10 +102,6 @@ public class PathNode {
 				Math.min(Math.max(distanceX, distanceY), distanceZ));
 		double minDistance = Math.min(Math.min(distanceX, distanceY), distanceZ);
 
-		Debug.log("min: " + minDistance);
-		Debug.log("mid: " + midDistance);
-		Debug.log("max: " + maxDistance);
-
 		return minDistance * SQRT_THREE + (midDistance - minDistance) * SQRT_TWO + (maxDistance - minDistance);
 	}
 

@@ -1,7 +1,7 @@
 package com.mcmmorpg.common.ui;
 
 import org.bukkit.Bukkit;
-import org.bukkit.craftbukkit.v1_15_R1.CraftServer;
+import org.bukkit.craftbukkit.v1_16_R2.CraftServer;
 
 /**
  * Used to register commands.
