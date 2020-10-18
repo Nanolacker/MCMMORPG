@@ -16,6 +16,7 @@ import com.mcmmorpg.common.event.PlayerCharacterRegisterEvent;
 import com.mcmmorpg.common.event.PlayerCharacterRemoveItemEvent;
 import com.mcmmorpg.common.event.QuestObjectiveAccessibilityChangeEvent;
 import com.mcmmorpg.common.item.Item;
+import com.mcmmorpg.common.time.DelayedTask;
 
 class QuestObjectiveListener implements Listener {
 
@@ -33,8 +34,7 @@ class QuestObjectiveListener implements Listener {
 		Set<Item> items = ITEMS_TO_ITEM_COLLECTION_OBJECTIVES.keySet();
 		for (Item item : items) {
 			QuestObjective objective = ITEMS_TO_ITEM_COLLECTION_OBJECTIVES.get(item);
-			int itemCount = pc.getItemCount(item);
-			objective.setProgress(pc, itemCount);
+			updateItemCollectionObjectiveProgress(pc, objective, item);
 		}
 	}
 
@@ -46,8 +46,7 @@ class QuestObjectiveListener implements Listener {
 			return;
 		}
 		PlayerCharacter pc = event.getPlayerCharacter();
-		int amount = event.getAmount();
-		objective.addProgress(pc, amount);
+		updateItemCollectionObjectiveProgress(pc, objective, item);
 	}
 
 	@EventHandler
@@ -58,8 +57,7 @@ class QuestObjectiveListener implements Listener {
 			return;
 		}
 		PlayerCharacter pc = event.getPlayerCharacter();
-		int amount = event.getAmount();
-		objective.addProgress(pc, amount);
+		updateItemCollectionObjectiveProgress(pc, objective, item);
 	}
 
 	@EventHandler
@@ -70,8 +68,7 @@ class QuestObjectiveListener implements Listener {
 			return;
 		}
 		PlayerCharacter pc = event.getPlayerCharacter();
-		int amount = event.getAmount();
-		objective.addProgress(pc, amount);
+		updateItemCollectionObjectiveProgress(pc, objective, item);
 	}
 
 	@EventHandler
@@ -82,8 +79,7 @@ class QuestObjectiveListener implements Listener {
 			return;
 		}
 		PlayerCharacter pc = event.getPlayerCharacter();
-		int amount = event.getAmount();
-		objective.addProgress(pc, -amount);
+		updateItemCollectionObjectiveProgress(pc, objective, item);
 	}
 
 	@EventHandler
@@ -94,8 +90,7 @@ class QuestObjectiveListener implements Listener {
 			return;
 		}
 		PlayerCharacter pc = event.getPlayerCharacter();
-		int amount = event.getAmount();
-		objective.addProgress(pc, -amount);
+		updateItemCollectionObjectiveProgress(pc, objective, item);
 	}
 
 	@EventHandler
@@ -113,8 +108,14 @@ class QuestObjectiveListener implements Listener {
 	}
 
 	private void updateItemCollectionObjectiveProgress(PlayerCharacter pc, QuestObjective objective, Item item) {
-		int itemCount = pc.getItemCount(item);
-		objective.setProgress(pc, itemCount);
+		// delayed to wait for next tick
+		new DelayedTask() {
+			@Override
+			protected void run() {
+				int itemCount = pc.getItemCount(item);
+				objective.setProgress(pc, itemCount);
+			}
+		}.schedule();
 	}
 
 }
