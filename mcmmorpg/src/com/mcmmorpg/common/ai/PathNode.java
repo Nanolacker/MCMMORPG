@@ -1,9 +1,6 @@
 package com.mcmmorpg.common.ai;
 
 import org.bukkit.Location;
-import org.bukkit.Material;
-
-import com.mcmmorpg.common.util.Debug;
 
 public class PathNode {
 

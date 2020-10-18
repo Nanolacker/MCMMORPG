@@ -1,39 +1,38 @@
 package com.mcmmorpg.test;
 
 import org.bukkit.Location;
-import org.bukkit.Particle;
 import org.bukkit.entity.EntityType;
+import org.bukkit.entity.Player;
 import org.bukkit.entity.Villager;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerInteractEvent;
 
 import com.mcmmorpg.common.ai.CharacterNavigator;
 import com.mcmmorpg.common.character.NonPlayerCharacter;
-import com.mcmmorpg.common.time.RepeatingTask;
+import com.mcmmorpg.common.event.EventManager;
 import com.mcmmorpg.common.util.BukkitUtility;
-import com.mcmmorpg.common.util.Debug;
 
 public class AiTestNpc extends NonPlayerCharacter {
 
-	private static final double SPEED = 5;
+	private static final double SPEED = 2;
 
 	private Villager entity;
 
 	protected AiTestNpc(Location spawnLocation) {
-		super("AI Test", 1, spawnLocation);
-		CharacterNavigator navigator = new CharacterNavigator(this, SPEED);
-		navigator.setDestination(Constants.TEST_SPAWN_LOCATION);
-		new RepeatingTask(0.05) {
-			@Override
-			protected void run() {
-				navigator.update();
+		super("AI Test", 2, spawnLocation);
+		CharacterNavigator navigator = new CharacterNavigator(this);
+		navigator.setSpeed(SPEED);
+		navigator.setEnabled(true);
+
+		Listener listener = new Listener() {
+			@EventHandler
+			private void onRightClick(PlayerInteractEvent event) {
+				Player player = event.getPlayer();
+				navigator.setDestination(player.getLocation());
 			}
-		}.schedule();
-		new RepeatingTask(1) {
-			@Override
-			protected void run() {
-				navigator.setDestination(Debug.getAPlayer().getLocation());
-			}
-		}.schedule();
-		Debug.drawPath(navigator.getPath(), Particle.CRIT, 10);
+		};
+		EventManager.registerEvents(listener);
 	}
 
 	@Override

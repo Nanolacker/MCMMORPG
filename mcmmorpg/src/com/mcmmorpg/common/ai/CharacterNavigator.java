@@ -9,6 +9,7 @@ import org.bukkit.util.Vector;
 
 import com.mcmmorpg.common.character.Character;
 import com.mcmmorpg.common.physics.Collider;
+import com.mcmmorpg.common.time.RepeatingTask;
 import com.mcmmorpg.common.util.Debug;
 
 public class CharacterNavigator {
@@ -28,18 +29,49 @@ public class CharacterNavigator {
 	private int currentPathNodeIndex;
 	private boolean calculatingPath;
 
-	public CharacterNavigator(Character character, double speed) {
+	private RepeatingTask updateTask;
+
+	public CharacterNavigator(Character character) {
 		this.character = character;
 		this.collider = new CharacterNavigationCollider(this);
+		this.speed = 0.0;
+		updateTask = new RepeatingTask(UPDATE_PERIOD) {
+			@Override
+			protected void run() {
+				update();
+			}
+		};
+	}
+
+	public double getSpeed() {
+		return speed;
+	}
+
+	public void setSpeed(double speed) {
 		this.speed = speed;
 	}
 
+	public void setEnabled(boolean enabled) {
+		if (enabled) {
+			if (!updateTask.isScheduled()) {
+				updateTask.schedule();
+			}
+		} else {
+			if (updateTask.isScheduled()) {
+				updateTask.cancel();
+			}
+		}
+	}
+
 	public Location getDestination() {
-		return null;
+		return destination;
 	}
 
 	public void setDestination(Location destination) {
 		this.destination = destination;
+		if (calculatingPath) {
+			return;
+		}
 		calculatingPath = true;
 		path = findPath();
 		calculatingPath = false;
@@ -50,19 +82,15 @@ public class CharacterNavigator {
 		return path;
 	}
 
-	public void update() {
-		if (calculatingPath) {
-			return;
-		}
-		if (path.getNodes().isEmpty()) {
+	private void update() {
+		if (calculatingPath || path == null || path.getNodes().isEmpty()) {
 			return;
 		}
 		Location currentLocation = character.getLocation();
-		if (currentLocation.distance(destination) < 0.2) {
+		if (currentLocation.distanceSquared(destination) < 1) {
 			return;
 		}
-		Location nextTargetLocation = path.getNodes().get(currentPathNodeIndex).getLocation().clone().add(0.5, 0.0,
-				0.5);
+		Location nextTargetLocation = path.getNodes().get(currentPathNodeIndex).getLocation();
 		Vector velocity = nextTargetLocation.clone().subtract(currentLocation).toVector().normalize().multiply(speed);
 		Location nextLocation = currentLocation.add(velocity.multiply(UPDATE_PERIOD));
 		Vector direction = destination.clone().subtract(nextLocation).toVector().normalize();
@@ -83,8 +111,6 @@ public class CharacterNavigator {
 		Location startLocation = character.getLocation();
 		PathNode startNode = new PathNode(path, startLocation);
 		PathNode targetNode = new PathNode(path, destination);
-
-		Debug.log(startNode.distance(targetNode));
 
 		List<PathNode> pathNodes = path.getNodes();
 		pathNodes.add(startNode);
@@ -129,7 +155,7 @@ public class CharacterNavigator {
 					neighborNode.setGCost(newGCost);
 					neighborNode.setHCost(neighborNode.distance(targetNode));
 					neighborNode.setParent(currentNode);
-					if (!openNodes.contains(neighborNodes)) {
+					if (!openNodes.contains(neighborNode)) {
 						openNodes.add(neighborNode);
 					}
 				}

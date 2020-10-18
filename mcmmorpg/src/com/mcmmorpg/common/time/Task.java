@@ -17,7 +17,8 @@ public abstract class Task {
 	}
 
 	/**
-	 * Schedule this task to run.
+	 * Schedule this task to run. Throws an IllegalStateException if this task is
+	 * already scheduled.
 	 */
 	public void schedule() {
 		if (scheduled) {
@@ -35,8 +36,9 @@ public abstract class Task {
 	}
 
 	/**
-	 * Stops this task from running. This task can be rescheduled after being
-	 * cancelled.
+	 * Stops this task from running, rendering it not scheduled. Throws an
+	 * IllegalStateException if this task is not currently scheduled. This task can
+	 * be rescheduled after being cancelled.
 	 */
 	public void cancel() {
 		if (!scheduled) {
