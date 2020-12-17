@@ -1,4 +1,4 @@
-package com.mcmmorpg.common.sound;
+package com.mcmmorpg.common.audio;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -6,15 +6,15 @@ import java.util.List;
 /**
  * A sequence of sounds that can be played with a sound sequence player.
  */
-public class SoundSequence {
+public class AudioSequence {
 
-	private List<SoundSequenceNode> nodes;
+	private List<AudioSequenceNode> nodes;
 	private double duration;
 
 	/**
 	 * Creates a sound sequence with the specified duration in seconds.
 	 */
-	public SoundSequence(double duration) {
+	public AudioSequence(double duration) {
 		nodes = new ArrayList<>();
 		this.duration = duration;
 	}
@@ -22,11 +22,11 @@ public class SoundSequence {
 	/**
 	 * Adds a sound to this sequence at the specified time in seconds.
 	 */
-	public void add(Noise sound, double time) {
+	public void add(AudioSource sound, double time) {
 		if (time > duration) {
 			throw new IllegalArgumentException("Time is greater than duration");
 		}
-		SoundSequenceNode node = new SoundSequenceNode(sound, time);
+		AudioSequenceNode node = new AudioSequenceNode(sound, time);
 		nodes.add(node);
 	}
 
@@ -37,21 +37,21 @@ public class SoundSequence {
 		return duration;
 	}
 
-	List<SoundSequenceNode> getNodes() {
+	List<AudioSequenceNode> getNodes() {
 		return nodes;
 	}
 
-	static class SoundSequenceNode {
-		private final Noise sound;
+	static class AudioSequenceNode {
+		private final AudioSource audioSource;
 		private final double time;
 
-		SoundSequenceNode(Noise sound, double timeSeconds) {
-			this.sound = sound;
+		AudioSequenceNode(AudioSource audioSource, double timeSeconds) {
+			this.audioSource = audioSource;
 			this.time = timeSeconds;
 		}
 
-		Noise getSound() {
-			return sound;
+		AudioSource getAudioSource() {
+			return audioSource;
 		}
 
 		/**

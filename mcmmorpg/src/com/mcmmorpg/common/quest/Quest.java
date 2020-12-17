@@ -8,11 +8,12 @@ import java.util.Map;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Sound;
+
+import com.mcmmorpg.common.audio.AudioSource;
 import com.mcmmorpg.common.character.PlayerCharacter;
 import com.mcmmorpg.common.event.EventManager;
 import com.mcmmorpg.common.event.PlayerCharacterCompleteQuestEvent;
 import com.mcmmorpg.common.event.PlayerCharacterStartQuestEvent;
-import com.mcmmorpg.common.sound.Noise;
 
 /**
  * Represents a sequence of tasks to be completed by a player character. Usually
@@ -20,7 +21,7 @@ import com.mcmmorpg.common.sound.Noise;
  */
 public class Quest {
 
-	private static final Noise COMPLETE_NOISE = new Noise(Sound.ENTITY_PLAYER_LEVELUP);
+	private static final AudioSource COMPLETE_NOISE = new AudioSource(Sound.ENTITY_PLAYER_LEVELUP);
 
 	private static final Map<String, Quest> quests;
 

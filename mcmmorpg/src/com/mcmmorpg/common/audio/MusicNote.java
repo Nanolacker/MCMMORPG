@@ -1,4 +1,4 @@
-package com.mcmmorpg.common.sound;
+package com.mcmmorpg.common.audio;
 
 /**
  * Music notes whose pitches can be easily obtained.

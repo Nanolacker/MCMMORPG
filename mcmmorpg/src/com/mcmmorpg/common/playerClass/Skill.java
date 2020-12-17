@@ -5,11 +5,11 @@ import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.inventory.ItemStack;
 
+import com.mcmmorpg.common.audio.AudioSource;
 import com.mcmmorpg.common.character.PlayerCharacter;
 import com.mcmmorpg.common.event.EventManager;
 import com.mcmmorpg.common.event.PlayerCharacterUpgradeSkillEvent;
 import com.mcmmorpg.common.event.PlayerCharacterUseSkillEvent;
-import com.mcmmorpg.common.sound.Noise;
 import com.mcmmorpg.common.time.RepeatingTask;
 import com.mcmmorpg.common.util.BukkitUtility;
 
@@ -20,7 +20,7 @@ public final class Skill {
 
 	private static final double COOLDOWN_UPDATE_PERIOD_SECONDS = 0.1;
 	private static final Material LOCKED_MATERIAL = Material.BARRIER;
-	private static final Noise UPGRADE_NOISE = new Noise(Sound.ENTITY_EXPERIENCE_ORB_PICKUP);
+	private static final AudioSource UPGRADE_NOISE = new AudioSource(Sound.ENTITY_EXPERIENCE_ORB_PICKUP);
 	static final Material DISABLED_MATERIAL = Material.BARRIER;
 
 	private final String name;
@@ -289,7 +289,7 @@ public final class Skill {
 	}
 
 	void use(PlayerCharacter pc) {
-		Noise.CLICK.play(pc);
+		AudioSource.CLICK.play(pc);
 		pc.sendMessage(ChatColor.GRAY + "Used " + ChatColor.GREEN + name + " " + ChatColor.GRAY + "(" + ChatColor.AQUA
 				+ -(int) Math.ceil(manaCost) + " MP" + ChatColor.GRAY + ")");
 		pc.setCurrentMana(pc.getCurrentMana() - manaCost);

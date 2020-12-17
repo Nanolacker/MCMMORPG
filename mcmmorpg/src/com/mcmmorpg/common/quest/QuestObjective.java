@@ -3,12 +3,12 @@ package com.mcmmorpg.common.quest;
 import org.bukkit.ChatColor;
 import org.bukkit.Sound;
 
+import com.mcmmorpg.common.audio.AudioSource;
 import com.mcmmorpg.common.character.PlayerCharacter;
 import com.mcmmorpg.common.event.EventManager;
 import com.mcmmorpg.common.event.QuestObjectiveAccessibilityChangeEvent;
 import com.mcmmorpg.common.event.QuestObjectiveChangeProgressEvent;
 import com.mcmmorpg.common.item.Item;
-import com.mcmmorpg.common.sound.Noise;
 import com.mcmmorpg.common.util.MathUtility;
 
 /**
@@ -17,7 +17,7 @@ import com.mcmmorpg.common.util.MathUtility;
  */
 public class QuestObjective {
 
-	private static final Noise OBJECTIVE_COMPLETE_NOISE = new Noise(Sound.ENTITY_EXPERIENCE_ORB_PICKUP);
+	private static final AudioSource OBJECTIVE_COMPLETE_NOISE = new AudioSource(Sound.ENTITY_EXPERIENCE_ORB_PICKUP);
 
 	private final int goal;
 	private final String description;

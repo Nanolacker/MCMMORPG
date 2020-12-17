@@ -15,11 +15,11 @@ import org.bukkit.event.player.PlayerItemHeldEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
+import com.mcmmorpg.common.audio.AudioSource;
 import com.mcmmorpg.common.character.PlayerCharacter;
 import com.mcmmorpg.common.event.EventManager;
 import com.mcmmorpg.common.event.PlayerCharacterAddSkillToHotbarEvent;
 import com.mcmmorpg.common.event.PlayerCharacterCloseSkillTreeEvent;
-import com.mcmmorpg.common.sound.Noise;
 import com.mcmmorpg.common.time.RepeatingTask;
 
 /**
@@ -80,16 +80,16 @@ class PlayerClassListener implements Listener {
 		}
 
 		if (pc.isSilenced()) {
-			Noise.CLICK.play(player);
+			AudioSource.CLICK.play(player);
 		} else if (skill.isOnCooldown(pc)) {
 			pc.sendMessage(ChatColor.GREEN + skill.getName() + ChatColor.GRAY + " is on cooldown (" + ChatColor.YELLOW
 					+ (int) Math.ceil(skill.getCooldown(pc)) + ChatColor.GRAY + ")");
-			Noise.CLICK.play(player);
+			AudioSource.CLICK.play(player);
 		} else if (pc.getCurrentMana() < skill.getManaCost()) {
 			pc.sendMessage(ChatColor.GREEN + skill.getName() + ChatColor.GRAY + " requires more " + ChatColor.AQUA
 					+ "MP " + ChatColor.GRAY + "(" + ChatColor.AQUA + (int) Math.ceil(skill.getManaCost())
 					+ ChatColor.GRAY + ")");
-			Noise.CLICK.play(player);
+			AudioSource.CLICK.play(player);
 		} else {
 			skill.use(pc);
 		}
@@ -200,7 +200,7 @@ class PlayerClassListener implements Listener {
 
 		if (!skill.prerequisitesAreMet(pc)) {
 			pc.sendMessage(ChatColor.GREEN + skill.getName() + ChatColor.GRAY + " is not available yet");
-			Noise.CLICK.play(player);
+			AudioSource.CLICK.play(player);
 			return;
 		}
 
@@ -256,7 +256,7 @@ class PlayerClassListener implements Listener {
 				}
 			}
 		}
-		Noise.CLICK.play(player);
+		AudioSource.CLICK.play(player);
 	}
 
 }

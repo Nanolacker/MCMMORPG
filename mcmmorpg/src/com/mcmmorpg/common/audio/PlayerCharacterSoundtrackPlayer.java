@@ -1,4 +1,4 @@
-package com.mcmmorpg.common.sound;
+package com.mcmmorpg.common.audio;
 
 import com.mcmmorpg.common.character.PlayerCharacter;
 
@@ -9,7 +9,7 @@ import com.mcmmorpg.common.character.PlayerCharacter;
 public class PlayerCharacterSoundtrackPlayer {
 
 	private final PlayerCharacter pc;
-	private SoundSequencePlayer noisePlayer;
+	private AudioSequencePlayer audioSequencePlayer;
 
 	/**
 	 * Create a new soundtrack player for the specified player character.
@@ -22,18 +22,18 @@ public class PlayerCharacterSoundtrackPlayer {
 	 * Set the soundtrack to play to the player character, or null to stop playing
 	 * music.
 	 */
-	public void setSoundtrack(SoundSequence soundtrack) {
-		if (noisePlayer != null && soundtrack != noisePlayer.getSequence()) {
-			noisePlayer.stop();
+	public void setSoundtrack(AudioSequence soundtrack) {
+		if (audioSequencePlayer != null && soundtrack != audioSequencePlayer.getAudioSequence()) {
+			audioSequencePlayer.stop();
 		}
 		if (soundtrack == null) {
-			noisePlayer = null;
-		} else if (noisePlayer != null && soundtrack == noisePlayer.getSequence()) {
+			audioSequencePlayer = null;
+		} else if (audioSequencePlayer != null && soundtrack == audioSequencePlayer.getAudioSequence()) {
 			return;
 		} else {
-			noisePlayer = new SoundSequencePlayer(soundtrack, pc);
-			noisePlayer.setLooping(true);
-			noisePlayer.play();
+			audioSequencePlayer = new AudioSequencePlayer(soundtrack, pc);
+			audioSequencePlayer.setLooping(true);
+			audioSequencePlayer.play();
 		}
 	}
 
