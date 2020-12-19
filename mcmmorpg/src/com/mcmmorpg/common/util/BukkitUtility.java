@@ -19,7 +19,6 @@ public class BukkitUtility {
 	 * Preferred method of spawning Bukkit entities, as this method prevents entity
 	 * persistence errors from occurring.
 	 **/
-	@SuppressWarnings("deprecation")
 	public static Entity spawnNonpersistentEntity(Location location, EntityType entityType) {
 		Entity entity = location.getWorld().spawnEntity(location, entityType);
 		entity.setPersistent(false);

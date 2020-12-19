@@ -231,7 +231,6 @@ public final class TextPanel {
 		}
 	}
 
-	@SuppressWarnings("deprecation")
 	private void addEntity(int index) {
 		Location entityLocation = new Location(location.getWorld(), location.getX(),
 				location.getY() - index * LINE_SEPEARATION_DISTANCE, location.getZ());

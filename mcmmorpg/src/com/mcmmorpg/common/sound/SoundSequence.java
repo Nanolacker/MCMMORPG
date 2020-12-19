@@ -8,26 +8,15 @@ import java.util.List;
  */
 public class SoundSequence {
 
-	private List<SoundSequenceNode> nodes;
-	private double duration;
+	private final double duration;
+	private final List<Node> sounds;
 
 	/**
 	 * Creates a sound sequence with the specified duration in seconds.
 	 */
 	public SoundSequence(double duration) {
-		nodes = new ArrayList<>();
 		this.duration = duration;
-	}
-
-	/**
-	 * Adds a sound to this sequence at the specified time in seconds.
-	 */
-	public void add(Noise sound, double time) {
-		if (time > duration) {
-			throw new IllegalArgumentException("Time is greater than duration");
-		}
-		SoundSequenceNode node = new SoundSequenceNode(sound, time);
-		nodes.add(node);
+		sounds = new ArrayList<>();
 	}
 
 	/**
@@ -37,21 +26,28 @@ public class SoundSequence {
 		return duration;
 	}
 
-	List<SoundSequenceNode> getNodes() {
-		return nodes;
+	/**
+	 * Adds a sound to this sequence at the specified time in seconds.
+	 */
+	public void add(Noise sound, double time) {
+		if (time > duration) {
+			throw new IllegalArgumentException("Time is greater than duration");
+		}
+		Node node = new Node(sound, time);
+		sounds.add(node);
 	}
 
-	static class SoundSequenceNode {
-		private final Noise sound;
-		private final double time;
+	List<Node> getNodes() {
+		return sounds;
+	}
 
-		SoundSequenceNode(Noise sound, double timeSeconds) {
+	static class Node {
+		private final double time;
+		private final Noise sound;
+
+		Node(Noise sound, double timeSeconds) {
 			this.sound = sound;
 			this.time = timeSeconds;
-		}
-
-		Noise getSound() {
-			return sound;
 		}
 
 		/**
@@ -59,6 +55,10 @@ public class SoundSequence {
 		 */
 		double getTime() {
 			return time;
+		}
+
+		Noise getSound() {
+			return sound;
 		}
 	}
 

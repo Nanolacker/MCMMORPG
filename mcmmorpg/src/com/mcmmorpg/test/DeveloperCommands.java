@@ -16,10 +16,8 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
-import com.mcmmorpg.common.ai.PathNode;
 import com.mcmmorpg.common.character.PlayerCharacter;
 import com.mcmmorpg.common.item.Item;
-import com.mcmmorpg.common.physics.Collider;
 import com.mcmmorpg.common.quest.Quest;
 import com.mcmmorpg.common.quest.QuestObjective;
 import com.mcmmorpg.common.time.DelayedTask;

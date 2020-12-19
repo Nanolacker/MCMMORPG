@@ -20,8 +20,8 @@ public final class Skill {
 
 	private static final double COOLDOWN_UPDATE_PERIOD_SECONDS = 0.1;
 	private static final Material LOCKED_MATERIAL = Material.BARRIER;
-	private static final Noise UPGRADE_NOISE = new Noise(Sound.ENTITY_EXPERIENCE_ORB_PICKUP);
 	static final Material DISABLED_MATERIAL = Material.BARRIER;
+	private static final Noise UPGRADE_NOISE = new Noise(Sound.ENTITY_EXPERIENCE_ORB_PICKUP);
 
 	private final String name;
 	private final String description;

@@ -5,7 +5,6 @@ import org.bukkit.Material;
 import com.mcmmorpg.common.MMORPGPlugin;
 import com.mcmmorpg.common.event.EventManager;
 import com.mcmmorpg.common.item.ConsumableItem;
-import com.mcmmorpg.common.item.Item;
 import com.mcmmorpg.common.item.ItemRarity;
 import com.mcmmorpg.common.item.LootChest;
 import com.mcmmorpg.common.util.Debug;

@@ -42,7 +42,7 @@ import com.mcmmorpg.common.event.PlayerCharacterRemoveItemEvent;
 import com.mcmmorpg.common.item.ArmorItem;
 import com.mcmmorpg.common.item.Item;
 import com.mcmmorpg.common.item.Weapon;
-import com.mcmmorpg.common.persistence.PersistentPlayerCharacterDataContainer;
+import com.mcmmorpg.common.persistence.PersistentPlayerCharacterData;
 import com.mcmmorpg.common.physics.Collider;
 import com.mcmmorpg.common.physics.Raycast;
 import com.mcmmorpg.common.physics.RaycastHit;
@@ -278,7 +278,7 @@ public final class PlayerCharacter extends Character {
 	 * Creates a new player character from the specified save data.
 	 */
 	public static PlayerCharacter registerPlayerCharacter(Player player,
-			PersistentPlayerCharacterDataContainer saveData) {
+			PersistentPlayerCharacterData saveData) {
 		boolean fresh = saveData.isFresh();
 		PlayerClass playerClass = saveData.getPlayerClass();
 		String zone = saveData.getZone();

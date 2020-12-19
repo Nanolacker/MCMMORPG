@@ -42,7 +42,19 @@ public class Noise {
 	public Noise(Sound type, float volume, MusicNote note) {
 		this(type, volume, note.getPitch());
 	}
+	
+	public Sound getType() {
+		return type;
+	}
 
+	public float getVolume() {
+		return volume;
+	}
+	
+	public float getPitch() {
+		return pitch;
+	}
+	
 	/**
 	 * Play this noise ambiently at the specified source.
 	 */

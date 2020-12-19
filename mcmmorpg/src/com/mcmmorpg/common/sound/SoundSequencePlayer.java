@@ -8,7 +8,7 @@ import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
 import com.mcmmorpg.common.character.PlayerCharacter;
-import com.mcmmorpg.common.sound.SoundSequence.SoundSequenceNode;
+import com.mcmmorpg.common.sound.SoundSequence.Node;
 import com.mcmmorpg.common.time.DelayedTask;
 import com.mcmmorpg.common.time.Clock;
 
@@ -131,8 +131,8 @@ public class SoundSequencePlayer {
 		isPlaying = true;
 		startTime = Clock.getTime();
 
-		List<SoundSequenceNode> nodes = sequence.getNodes();
-		for (SoundSequenceNode node : nodes) {
+		List<Node> nodes = sequence.getNodes();
+		for (Node node : nodes) {
 			double time = node.getTime();
 			if (time < timeStamp) {
 				continue;
