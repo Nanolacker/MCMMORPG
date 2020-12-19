@@ -1,4 +1,4 @@
-package com.mcmmorpg.common.audio;
+package com.mcmmorpg.common.sound;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -7,18 +7,18 @@ import java.util.function.Consumer;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
-import com.mcmmorpg.common.audio.AudioSequence.AudioSequenceNode;
 import com.mcmmorpg.common.character.PlayerCharacter;
+import com.mcmmorpg.common.sound.SoundSequence.SoundSequenceNode;
 import com.mcmmorpg.common.time.DelayedTask;
 import com.mcmmorpg.common.time.Clock;
 
 /**
- * Plays an audio sequence ambiently or to a specific player.
+ * Plays a sound sequence ambiently or to a specific player.
  */
-public class AudioSequencePlayer {
+public class SoundSequencePlayer {
 
-	private final AudioSequence audioSequence;
-	private final Consumer<AudioSource> audioPlayer;
+	private final SoundSequence sequence;
+	private final Consumer<Noise> noisePlayer;
 	private final List<DelayedTask> playTasks;
 	private boolean loop;
 	private boolean isPlaying;
@@ -32,73 +32,73 @@ public class AudioSequencePlayer {
 	private double startTime;
 
 	/**
-	 * Create an audio sequence player to play strictly to the specific player.
+	 * Create a sound sequence player to play strictly to the specific player.
 	 */
-	public AudioSequencePlayer(AudioSequence sequence, Player player) {
-		this(sequence, audioSource -> audioSource.play(player));
+	public SoundSequencePlayer(SoundSequence sequence, Player player) {
+		this(sequence, noise -> noise.play(player));
 	}
 
 	/**
-	 * Create an audio sequence player to play strictly to the specific player
+	 * Create a sound sequence player to play strictly to the specific player
 	 * character.
 	 */
-	public AudioSequencePlayer(AudioSequence sequence, PlayerCharacter pc) {
+	public SoundSequencePlayer(SoundSequence sequence, PlayerCharacter pc) {
 		this(sequence, pc.getPlayer());
 	}
 
 	/**
-	 * Create an audio sequence player to play strictly to the specific player from
+	 * Create a sound sequence player to play strictly to the specific player from
 	 * the specified source.
 	 */
-	public AudioSequencePlayer(AudioSequence sequence, Player player, Location source) {
-		this(sequence, audioSource -> audioSource.play(player, source));
+	public SoundSequencePlayer(SoundSequence sequence, Player player, Location source) {
+		this(sequence, noise -> noise.play(player, source));
 	}
 
 	/**
-	 * Create an audio sequence player to play strictly to the specific player
+	 * Create a sound sequence player to play strictly to the specific player
 	 * character from the specified source.
 	 */
-	public AudioSequencePlayer(AudioSequence audioSequence, PlayerCharacter pc, Location source) {
-		this(audioSequence, pc.getPlayer(), source);
+	public SoundSequencePlayer(SoundSequence sequence, PlayerCharacter pc, Location source) {
+		this(sequence, pc.getPlayer(), source);
 	}
 
 	/**
-	 * Create an audio sequence player to play from the specified source.
+	 * Create a sound sequence player to play from the specified source.
 	 */
-	public AudioSequencePlayer(AudioSequence audioSequence, Location source) {
-		this(audioSequence, audioSource -> audioSource.play(source));
+	public SoundSequencePlayer(SoundSequence sequence, Location source) {
+		this(sequence, noise -> noise.play(source));
 	}
 
-	private AudioSequencePlayer(AudioSequence audioSequence, Consumer<AudioSource> audioPlayer) {
-		this.audioSequence = audioSequence;
-		this.audioPlayer = audioPlayer;
+	private SoundSequencePlayer(SoundSequence sequence, Consumer<Noise> noisePlayer) {
+		this.sequence = sequence;
+		this.noisePlayer = noisePlayer;
 		playTasks = new ArrayList<>();
 		this.timeStamp = 0;
 	}
 
 	/**
-	 * Returns the audio sequence played.
+	 * Returns the sound sequence played.
 	 */
-	public AudioSequence getAudioSequence() {
-		return audioSequence;
+	public SoundSequence getSequence() {
+		return sequence;
 	}
 
 	/**
-	 * Returns whether or not this audio sequence player will loop (i.e. repeat).
+	 * Returns whether or not this sound sequence player will loop (i.e. repeat).
 	 */
 	public boolean isLooping() {
 		return loop;
 	}
 
 	/**
-	 * Sets whether or not this audio sequence player will loop (i.e. repeat).
+	 * Sets whether or not this sound sequence player will loop (i.e. repeat).
 	 */
 	public void setLooping(boolean loop) {
 		this.loop = loop;
 	}
 
 	/**
-	 * Returns whether or not this audio sequence player is playing.
+	 * Returns whether or not this sound sequence player is playing.
 	 */
 	public boolean isPlaying() {
 		return isPlaying;
@@ -122,7 +122,7 @@ public class AudioSequencePlayer {
 	}
 
 	/**
-	 * Play the audio sequence.
+	 * Play the sound sequence.
 	 */
 	public void play() {
 		if (isPlaying) {
@@ -131,25 +131,25 @@ public class AudioSequencePlayer {
 		isPlaying = true;
 		startTime = Clock.getTime();
 
-		List<AudioSequenceNode> nodes = audioSequence.getNodes();
-		for (AudioSequenceNode node : nodes) {
+		List<SoundSequenceNode> nodes = sequence.getNodes();
+		for (SoundSequenceNode node : nodes) {
 			double time = node.getTime();
 			if (time < timeStamp) {
 				continue;
 			}
-			AudioSource audioSource = node.getAudioSource();
+			Noise noise = node.getSound();
 			double delay = time - timeStamp;
 			DelayedTask playTask = new DelayedTask(delay) {
 				@Override
 				protected void run() {
-					audioPlayer.accept(audioSource);
+					noisePlayer.accept(noise);
 				}
 			};
 			playTasks.add(playTask);
 			playTask.schedule();
 		}
 
-		double duration = audioSequence.getDuration();
+		double duration = sequence.getDuration();
 		DelayedTask finishTask = new DelayedTask(duration) {
 			@Override
 			public void run() {
@@ -164,7 +164,7 @@ public class AudioSequencePlayer {
 	}
 
 	/**
-	 * Pause this audio sequence player, maintaining the time in the sequence.
+	 * Pause this sound sequence player, maintaining the time in the sequence.
 	 */
 	public void pause() {
 		timeStamp = getCurrentTime();
@@ -176,7 +176,7 @@ public class AudioSequencePlayer {
 	}
 
 	/**
-	 * Stop this audio sequence player. The time of this audio sequence player is
+	 * Stop this sound sequence player. The time of this sound sequence player is
 	 * reset to the beginning of the sequence.
 	 */
 	public void stop() {

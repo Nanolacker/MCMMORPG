@@ -32,8 +32,6 @@ import org.bukkit.util.Vector;
 
 import com.mcmmorpg.common.ai.MotionSynchronizer;
 import com.mcmmorpg.common.ai.MotionSynchronizer.MotionSynchronizerMode;
-import com.mcmmorpg.common.audio.AudioSource;
-import com.mcmmorpg.common.audio.PlayerCharacterSoundtrackPlayer;
 import com.mcmmorpg.common.event.CharacterKillEvent;
 import com.mcmmorpg.common.event.EventManager;
 import com.mcmmorpg.common.event.PlayerCharacterLevelUpEvent;
@@ -44,7 +42,7 @@ import com.mcmmorpg.common.event.PlayerCharacterRemoveItemEvent;
 import com.mcmmorpg.common.item.ArmorItem;
 import com.mcmmorpg.common.item.Item;
 import com.mcmmorpg.common.item.Weapon;
-import com.mcmmorpg.common.persistence.PersistentPlayerCharacterData;
+import com.mcmmorpg.common.persistence.PersistentPlayerCharacterDataContainer;
 import com.mcmmorpg.common.physics.Collider;
 import com.mcmmorpg.common.physics.Raycast;
 import com.mcmmorpg.common.physics.RaycastHit;
@@ -56,6 +54,8 @@ import com.mcmmorpg.common.quest.PlayerCharacterQuestManager;
 import com.mcmmorpg.common.quest.Quest;
 import com.mcmmorpg.common.quest.QuestLog;
 import com.mcmmorpg.common.social.Party;
+import com.mcmmorpg.common.sound.Noise;
+import com.mcmmorpg.common.sound.PlayerCharacterSoundtrackPlayer;
 import com.mcmmorpg.common.time.Clock;
 import com.mcmmorpg.common.time.DelayedTask;
 import com.mcmmorpg.common.time.RepeatingTask;
@@ -80,8 +80,8 @@ public final class PlayerCharacter extends Character {
 	private static final int[] XP_REQS = { 100, 150, 225, 325, 450, 600, 775, 975, 1200, 1450, 1725, 2025, 2350, 2700,
 			3075, 3475, 3900, 4350, 4825 };
 	private static final int MAX_XP = determineMaxXp();
-	private static final AudioSource HURT_NOISE = new AudioSource(Sound.ENTITY_PLAYER_HURT);
-	private static final AudioSource DEATH_NOISE = new AudioSource(Sound.ENTITY_WITHER_SPAWN);
+	private static final Noise HURT_NOISE = new Noise(Sound.ENTITY_PLAYER_HURT);
+	private static final Noise DEATH_NOISE = new Noise(Sound.ENTITY_WITHER_SPAWN);
 	private static final double HEIGHT = 2.0;
 	private static final double MAX_DISPLACEMENT_WITHOUT_TELEPORT_SQUARED = 25.0;
 	private static final double INTERACT_RANGE = 4.0;
@@ -278,7 +278,7 @@ public final class PlayerCharacter extends Character {
 	 * Creates a new player character from the specified save data.
 	 */
 	public static PlayerCharacter registerPlayerCharacter(Player player,
-			PersistentPlayerCharacterData saveData) {
+			PersistentPlayerCharacterDataContainer saveData) {
 		boolean fresh = saveData.isFresh();
 		PlayerClass playerClass = saveData.getPlayerClass();
 		String zone = saveData.getZone();
@@ -648,7 +648,7 @@ public final class PlayerCharacter extends Character {
 		setSkillUpgradePoints(skillUpgradePoints + 1);
 		PlayerCharacterLevelUpEvent event = new PlayerCharacterLevelUpEvent(this, newLevel);
 		EventManager.callEvent(event);
-		AudioSource levelUpNoise = new AudioSource(Sound.ENTITY_PLAYER_LEVELUP);
+		Noise levelUpNoise = new Noise(Sound.ENTITY_PLAYER_LEVELUP);
 		levelUpNoise.play(player);
 		sendMessage(ChatColor.GRAY + "Level increased to " + ChatColor.GOLD + newLevel + ChatColor.GRAY + "!");
 	}

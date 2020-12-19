@@ -27,7 +27,6 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 
-import com.mcmmorpg.common.audio.AudioSource;
 import com.mcmmorpg.common.character.PlayerCharacter;
 import com.mcmmorpg.common.event.EventManager;
 import com.mcmmorpg.common.event.PlayerCharacterDropItemEvent;
@@ -39,11 +38,12 @@ import com.mcmmorpg.common.item.ConsumableItem;
 import com.mcmmorpg.common.item.Item;
 import com.mcmmorpg.common.item.Weapon;
 import com.mcmmorpg.common.playerClass.PlayerClass;
+import com.mcmmorpg.common.sound.Noise;
 import com.mcmmorpg.common.time.DelayedTask;
 
 public class PlayerInteractionListener implements Listener {
 
-	private static final AudioSource EQUIP_NOISE = new AudioSource(Sound.ITEM_ARMOR_EQUIP_CHAIN);
+	private static final Noise EQUIP_NOISE = new Noise(Sound.ITEM_ARMOR_EQUIP_CHAIN);
 
 	/**
 	 * Used to ensure that players only use weapons once when intended.
@@ -253,7 +253,7 @@ public class PlayerInteractionListener implements Listener {
 							EQUIP_NOISE.play(pc);
 						}
 					}
-					AudioSource.CLICK.play(player);
+					Noise.CLICK.play(player);
 				} else if (clickedItem instanceof ArmorItem) {
 					ArmorItem armorItem = (ArmorItem) clickedItem;
 					Inventory inventory = player.getInventory();
@@ -302,7 +302,7 @@ public class PlayerInteractionListener implements Listener {
 							inventory.setItem(slot, currentArmorItemStack);
 						}
 					}
-					AudioSource.CLICK.play(player);
+					Noise.CLICK.play(player);
 				}
 			}
 		}
@@ -353,7 +353,7 @@ public class PlayerInteractionListener implements Listener {
 					consumable);
 			EventManager.callEvent(consumableEvent);
 		}
-		AudioSource.CLICK.play(pc);
+		Noise.CLICK.play(pc);
 	}
 
 	@EventHandler

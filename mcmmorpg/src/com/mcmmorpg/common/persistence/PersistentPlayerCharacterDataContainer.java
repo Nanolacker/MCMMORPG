@@ -18,7 +18,7 @@ import com.mcmmorpg.common.quest.Quest;
 /**
  * A representation of player character data that can be serialized.
  */
-public class PersistentPlayerCharacterData {
+public class PersistentPlayerCharacterDataContainer {
 
 	private final boolean fresh;
 	private final String playerClassName;
@@ -38,7 +38,7 @@ public class PersistentPlayerCharacterData {
 	private final String[] tags;
 	private final double totalPlayTime;
 
-	private PersistentPlayerCharacterData(boolean fresh, PlayerClass playerClass, String zone,
+	private PersistentPlayerCharacterDataContainer(boolean fresh, PlayerClass playerClass, String zone,
 			Location location, Location respawnLocation, int xp, int skillUpgradePoints, int currency, double maxHealth,
 			double currentHealth, double healthRegenRate, double maxMana, double currentMana, double manaRegenRate,
 			List<Quest> completedQuests, PlayerCharacterQuestData[] questData, PlayerCharacterSkillData[] skillData,
@@ -71,7 +71,7 @@ public class PersistentPlayerCharacterData {
 	/**
 	 * Creates a data container for the specified player character.
 	 */
-	public static PersistentPlayerCharacterData createSaveData(PlayerCharacter pc) {
+	public static PersistentPlayerCharacterDataContainer createSaveData(PlayerCharacter pc) {
 		if (pc.isActive()) {
 			throw new IllegalStateException("Pc was not removed");
 		}
@@ -95,7 +95,7 @@ public class PersistentPlayerCharacterData {
 		ItemStack[] inventoryContents = pc.getPlayer().getInventory().getContents();
 		String[] tags = pc.getTags();
 		double totalPlayTime = pc.getTotalPlayTime();
-		return new PersistentPlayerCharacterData(false, playerClass, zone, location, respawnLocation, xp,
+		return new PersistentPlayerCharacterDataContainer(false, playerClass, zone, location, respawnLocation, xp,
 				skillUpgradePoints, currency, maxHealth, currentHealth, healthRegenRate, maxMana, currentMana,
 				manaRegenRate, completedQuests, allQuestData, skillData, inventoryContents, tags, totalPlayTime);
 	}
@@ -103,7 +103,7 @@ public class PersistentPlayerCharacterData {
 	/**
 	 * Creates a data container for a brand new character.
 	 */
-	public static PersistentPlayerCharacterData createFreshSaveData(Player player, PlayerClass playerClass,
+	public static PersistentPlayerCharacterDataContainer createFreshSaveData(Player player, PlayerClass playerClass,
 			String startZone, Location startLocation, Weapon startWeapon) {
 		Location respawnLocation = startLocation;
 		int xp = 0;
@@ -120,7 +120,7 @@ public class PersistentPlayerCharacterData {
 		ItemStack[] inventoryContents = { startWeapon.getItemStack() };
 		String[] tags = {};
 		double totalPlayTime = 0;
-		return new PersistentPlayerCharacterData(true, playerClass, startZone, startLocation, respawnLocation,
+		return new PersistentPlayerCharacterDataContainer(true, playerClass, startZone, startLocation, respawnLocation,
 				xp, skillUpgradePoints, currency, maxHealth, currentHealth, healthRegenRate, maxMana, currentMana,
 				manaRegenRate, new ArrayList<>(), questData, skillData, inventoryContents, tags, totalPlayTime);
 	}

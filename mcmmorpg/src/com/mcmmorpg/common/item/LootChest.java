@@ -27,11 +27,11 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 
-import com.mcmmorpg.common.audio.AudioSource;
 import com.mcmmorpg.common.character.PlayerCharacter;
 import com.mcmmorpg.common.event.EventManager;
 import com.mcmmorpg.common.event.PlayerCharacterLootItemEvent;
 import com.mcmmorpg.common.event.PlayerCharacterOpenLootChestEvent;
+import com.mcmmorpg.common.sound.Noise;
 import com.mcmmorpg.common.time.DelayedTask;
 import com.mcmmorpg.common.time.RepeatingTask;
 import com.mcmmorpg.common.ui.TextPanel;
@@ -271,7 +271,7 @@ public class LootChest {
 				return;
 			}
 			chest.open(pc);
-			AudioSource.CHEST_OPEN.play(location);
+			Noise.CHEST_OPEN.play(location);
 			chest.remove();
 			PlayerCharacterOpenLootChestEvent openLootChestEvent = new PlayerCharacterOpenLootChestEvent(pc, chest);
 			EventManager.callEvent(openLootChestEvent);
@@ -297,11 +297,11 @@ public class LootChest {
 				Item item = Item.forItemStack(itemStack);
 				int amount = itemStack.getAmount();
 				pc.giveItem(item, amount);
-				AudioSource.CLICK.play(pc);
+				Noise.CLICK.play(pc);
 				boolean empty = BukkitUtility.inventoryIsEmpty(clickedInventory);
 				if (empty) {
 					player.closeInventory();
-					AudioSource.CHEST_CLOSE.play(player);
+					Noise.CHEST_CLOSE.play(player);
 				}
 				PlayerCharacterLootItemEvent lootItemEvent = new PlayerCharacterLootItemEvent(pc, item, amount);
 				EventManager.callEvent(lootItemEvent);
@@ -314,7 +314,7 @@ public class LootChest {
 			if (LootChest.inventories.contains(inventory)) {
 				LootChest.inventories.remove(inventory);
 				Player player = (Player) event.getPlayer();
-				AudioSource.CHEST_CLOSE.play(player);
+				Noise.CHEST_CLOSE.play(player);
 			}
 		}
 
