@@ -42,8 +42,7 @@ public class MathUtility {
 	}
 
 	public static Vector lerp(Vector a, Vector b, double t) {
-		return new Vector(a.getX() + (b.getX() - a.getX()) * t, a.getY() + (b.getY() - a.getY()) * t,
-				a.getZ() + (b.getZ() - a.getZ()) * t);
+		return new Vector(lerp(a.getX(), b.getX(), t), lerp(a.getY(), b.getY(), t), lerp(a.getZ(), b.getZ(), t));
 	}
 
 }
