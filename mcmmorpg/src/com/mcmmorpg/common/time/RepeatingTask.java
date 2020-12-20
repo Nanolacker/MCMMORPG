@@ -1,8 +1,5 @@
 package com.mcmmorpg.common.time;
 
-import org.bukkit.Bukkit;
-import org.bukkit.scheduler.BukkitScheduler;
-
 import com.mcmmorpg.common.MMORPGPlugin;
 import com.mcmmorpg.common.util.MathUtility;
 
@@ -21,20 +18,16 @@ public abstract class RepeatingTask extends Task {
 	}
 
 	@Override
-	protected final void scheduleBukkitTask() {
-		BukkitScheduler scheduler = Bukkit.getScheduler();
-		MMORPGPlugin plugin = MMORPGPlugin.getInstance();
-		Runnable runnable = () -> run();
-		long periodTicks = MathUtility.secondsToTicks(period);
-		int bukkitTaskID = scheduler.scheduleSyncRepeatingTask(plugin, runnable, 0L, periodTicks);
-		setBukkitTaskID(bukkitTaskID);
+	public final void schedule() {
+		super.schedule();
+		runnable.runTaskTimer(MMORPGPlugin.getInstance(), 0L, MathUtility.secondsToTicks(period));
 	}
 
-	public double getPeriod() {
+	public final double getPeriod() {
 		return period;
 	}
 
-	public void setPeriod(double period) {
+	public final void setPeriod(double period) {
 		this.period = period;
 		if (isScheduled()) {
 			cancel();

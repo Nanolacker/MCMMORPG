@@ -26,16 +26,8 @@ public class EventManager {
 	/**
 	 * Unregisters events of the specified type from the specified listener.
 	 */
-	public static void unregisterEvents(Class<? extends Event> eventClass, Listener listener) {
-		HandlerList handlers;
-		try {
-			handlers = (HandlerList) eventClass.getMethod("getHandlers").invoke(null);
-			handlers.unregister(listener);
-		} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException
-				| SecurityException e) {
-			throw new RuntimeException(e);
-		}
-		handlers.unregister(listener);
+	public static void unregisterEvents(Listener listener) {
+		HandlerList.unregisterAll(listener);
 	}
 
 	/**

@@ -1,19 +1,23 @@
 package com.mcmmorpg.common.time;
 
-import org.bukkit.Bukkit;
-import org.bukkit.scheduler.BukkitScheduler;
+import org.bukkit.scheduler.BukkitRunnable;
 
 /**
  * Superclass for delayed tasks and repeating tasks.
  */
 public abstract class Task {
 
-	private int bukkitTaskID;
 	private boolean scheduled;
+	BukkitRunnable runnable;
 
 	Task() {
-		bukkitTaskID = -1;
 		scheduled = false;
+		runnable = new BukkitRunnable() {
+			@Override
+			public void run() {
+				Task.this.run();
+			}
+		};
 	}
 
 	/**
@@ -25,13 +29,12 @@ public abstract class Task {
 			throw new IllegalStateException("Already scheduled");
 		}
 		scheduled = true;
-		scheduleBukkitTask();
 	}
 
 	/**
 	 * Returns whether this task is scheduled to run.
 	 */
-	public boolean isScheduled() {
+	public final boolean isScheduled() {
 		return scheduled;
 	}
 
@@ -40,20 +43,13 @@ public abstract class Task {
 	 * IllegalStateException if this task is not currently scheduled. This task can
 	 * be rescheduled after being cancelled.
 	 */
-	public void cancel() {
+	public final void cancel() {
 		if (!scheduled) {
 			throw new IllegalStateException("Cannot cancel a task that isn't scheduled");
 		}
+		runnable.cancel();
 		scheduled = false;
-		BukkitScheduler scheduler = Bukkit.getScheduler();
-		scheduler.cancelTask(bukkitTaskID);
 	}
-
-	protected void setBukkitTaskID(int bukkitTaskID) {
-		this.bukkitTaskID = bukkitTaskID;
-	}
-
-	protected abstract void scheduleBukkitTask();
 
 	/**
 	 * What will be run when this task executes.

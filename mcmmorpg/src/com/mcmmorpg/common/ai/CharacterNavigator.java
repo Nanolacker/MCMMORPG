@@ -27,12 +27,12 @@ public class CharacterNavigator {
 	private boolean canClimbLadders;
 	private Path path;
 	private int currentPathNodeIndex;
-	private boolean calculatingPath;
 
 	private RepeatingTask updateTask;
 
 	public CharacterNavigator(Character character) {
 		this.character = character;
+		this.destination = character.getLocation();
 		this.collider = new CharacterNavigationCollider(this);
 		this.speed = 0.0;
 		updateTask = new RepeatingTask(UPDATE_PERIOD) {
@@ -69,12 +69,7 @@ public class CharacterNavigator {
 
 	public void setDestination(Location destination) {
 		this.destination = destination;
-		if (calculatingPath) {
-			return;
-		}
-		calculatingPath = true;
 		path = findPath();
-		calculatingPath = false;
 		currentPathNodeIndex = 0;
 	}
 
@@ -83,7 +78,7 @@ public class CharacterNavigator {
 	}
 
 	private void update() {
-		if (calculatingPath || path == null || path.getNodes().isEmpty()) {
+		if (path == null || path.getNodes().isEmpty()) {
 			return;
 		}
 		Location currentLocation = character.getLocation();

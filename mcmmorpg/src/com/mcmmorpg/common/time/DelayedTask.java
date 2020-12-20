@@ -1,9 +1,5 @@
 package com.mcmmorpg.common.time;
 
-import org.bukkit.Bukkit;
-import org.bukkit.plugin.Plugin;
-import org.bukkit.scheduler.BukkitScheduler;
-
 import com.mcmmorpg.common.MMORPGPlugin;
 import com.mcmmorpg.common.util.MathUtility;
 
@@ -29,13 +25,9 @@ public abstract class DelayedTask extends Task {
 	}
 
 	@Override
-	protected final void scheduleBukkitTask() {
-		BukkitScheduler scheduler = Bukkit.getScheduler();
-		Plugin plugin = MMORPGPlugin.getInstance();
-		Runnable runnable = () -> run();
-		long delayTicks = MathUtility.secondsToTicks(delay);
-		int bukkitTaskID = scheduler.scheduleSyncDelayedTask(plugin, runnable, delayTicks);
-		setBukkitTaskID(bukkitTaskID);
+	public final void schedule() {
+		super.schedule();
+		runnable.runTaskLater(MMORPGPlugin.getInstance(), MathUtility.secondsToTicks(delay));
 	}
 
 }
