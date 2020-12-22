@@ -2,39 +2,26 @@ package com.mcmmorpg.common.ai;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.bukkit.Location;
-import org.bukkit.util.Vector;
 
-import com.mcmmorpg.common.character.Character;
-import com.mcmmorpg.common.physics.Collider;
 import com.mcmmorpg.common.time.RepeatingTask;
 import com.mcmmorpg.common.util.Debug;
 
 public class CharacterNavigator {
 
-	private static final double UPDATE_PERIOD = 0.05;
+	private static final double UPDATE_PERIOD = 1.0;
 
-	private final Character character;
+	private final CharacterPathFollower pathFollower;
 	private Location destination;
-	private final CharacterNavigationCollider collider;
-	private double radius;
-	private double height;
-	private double speed;
-	private double stepHeight;
-	private double jumpLength;
-	private boolean canClimbLadders;
-	private Path path;
-	private int currentPathNodeIndex;
-
 	private RepeatingTask updateTask;
 
-	public CharacterNavigator(Character character) {
-		this.character = character;
-		this.destination = character.getLocation();
-		this.collider = new CharacterNavigationCollider(this);
-		this.speed = 0.0;
+	public CharacterNavigator(CharacterPathFollower pathFollower) {
+		this.pathFollower = pathFollower;
+		this.destination = null;
 		updateTask = new RepeatingTask(UPDATE_PERIOD) {
 			@Override
 			protected void run() {
@@ -43,12 +30,13 @@ public class CharacterNavigator {
 		};
 	}
 
-	public double getSpeed() {
-		return speed;
+	private void update() {
+		Path path = findPath();
+		pathFollower.followPath(path);
 	}
 
-	public void setSpeed(double speed) {
-		this.speed = speed;
+	public boolean isEnabled() {
+		return updateTask.isScheduled();
 	}
 
 	public void setEnabled(boolean enabled) {
@@ -69,51 +57,19 @@ public class CharacterNavigator {
 
 	public void setDestination(Location destination) {
 		this.destination = destination;
-		path = findPath();
-		currentPathNodeIndex = 0;
-	}
-
-	public Path getPath() {
-		return path;
-	}
-
-	private void update() {
-		if (path == null || path.getNodes().isEmpty()) {
-			return;
-		}
-		Location currentLocation = character.getLocation();
-		if (currentLocation.distanceSquared(destination) < 1) {
-			return;
-		}
-		Location nextTargetLocation = path.getNodes().get(currentPathNodeIndex).getLocation();
-		Vector velocity = nextTargetLocation.clone().subtract(currentLocation).toVector().normalize().multiply(speed);
-		Location nextLocation = currentLocation.add(velocity.multiply(UPDATE_PERIOD));
-		Vector direction = destination.clone().subtract(nextLocation).toVector().normalize();
-		nextLocation.setDirection(direction);
-		character.setLocation(nextLocation);
-		if (nextLocation.distanceSquared(nextTargetLocation) < 0.1) {
-			if (currentPathNodeIndex != path.getNodes().size() - 1) {
-				currentPathNodeIndex++;
-			}
-		}
 	}
 
 	private Path findPath() {
-		List<PathNode> openNodes = new ArrayList<>();
-		List<PathNode> closedNodes = new ArrayList<>();
+		Map<Location, Costs> costs = new HashMap<>();
+		List<Location> openNodes = new ArrayList<>();
+		List<Location> closedNodes = new ArrayList<>();
 
-		Path path = new Path();
-		Location startLocation = character.getLocation();
-		PathNode startNode = new PathNode(path, startLocation);
-		PathNode targetNode = new PathNode(path, destination);
+		List<Location> waypoints = new ArrayList<>();
 
-		List<PathNode> pathNodes = path.getNodes();
-		pathNodes.add(startNode);
-		pathNodes.add(targetNode);
+		Location start = pathFollower.getCharacter().getLocation();
+		openNodes.add(start);
 
-		openNodes.add(startNode);
-
-		while (!openNodes.isEmpty() && pathNodes.size() < 10000) {
+		while (!openNodes.isEmpty() && waypoints.size() < 10000) {
 			// Find the current node in open set with lowest f-cost.
 			int currentNodeIndex = 0;
 			PathNode currentNode = openNodes.get(currentNodeIndex);
@@ -156,20 +112,16 @@ public class CharacterNavigator {
 				}
 			}
 		}
-		pathNodes.clear();
-		Debug.log("FAIL");
-		return path;
+		return new Path(waypoints.toArray(new Location[waypoints.size()]));
 	}
 
-	// ensure that navigators don't go inside other characters
+	private static class Costs {
+		int gCost;
+		int hCost;
 
-	private static class CharacterNavigationCollider extends Collider {
-
-		public CharacterNavigationCollider(CharacterNavigator navigator) {
-			super(navigator.character.getLocation().add(0, navigator.height * 0.5, 0), navigator.radius,
-					navigator.radius, navigator.radius);
+		int getFCost() {
+			return gCost + hCost;
 		}
-
 	}
 
 }

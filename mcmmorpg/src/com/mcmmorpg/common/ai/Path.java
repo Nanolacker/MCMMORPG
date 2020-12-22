@@ -1,38 +1,46 @@
 package com.mcmmorpg.common.ai;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Arrays;
 
 import org.bukkit.Location;
 
 public class Path {
 
-	private List<PathNode> nodes;
-	private PathStatus status;
+	private final Location[] waypoints;
 
-	public Path() {
-		this.nodes = new ArrayList<>();
+	public Path(Location... waypoints) {
+		this.waypoints = waypoints;
 	}
 
-	public List<PathNode> getNodes() {
-		return nodes;
+	public Location[] getWaypoints() {
+		return waypoints;
 	}
 
-	public PathStatus getStatus() {
-		return status;
-	}
-
-	public PathNode nodeForLocation(Location location) {
-		for (PathNode node : nodes) {
-			if (node.getLocation().equals(location)) {
-				return node;
-			}
+	public Location getStart() {
+		if (waypoints.length == 0) {
+			return null;
 		}
-		return new PathNode(this, location);
+		return waypoints[0];
 	}
 
-	public static enum PathStatus {
-		PATH_COMPLETE, PATH_PARTIAL, PATH_INVALID
+	public Location getDestination() {
+		if (waypoints.length == 0) {
+			return null;
+		}
+		return waypoints[waypoints.length - 1];
+	}
+
+	public int getWaypointCount() {
+		return waypoints.length;
+	}
+
+	public boolean isEmpty() {
+		return getWaypointCount() == 0;
+	}
+
+	public Path getSubpath() {
+		Location[] waypoints = Arrays.copyOfRange(this.waypoints, 1, this.waypoints.length);
+		return new Path(waypoints);
 	}
 
 }

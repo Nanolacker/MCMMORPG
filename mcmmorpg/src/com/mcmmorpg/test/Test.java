@@ -7,7 +7,6 @@ import com.mcmmorpg.common.event.EventManager;
 import com.mcmmorpg.common.item.ConsumableItem;
 import com.mcmmorpg.common.item.ItemRarity;
 import com.mcmmorpg.common.item.LootChest;
-import com.mcmmorpg.common.util.Debug;
 
 public class Test extends MMORPGPlugin {
 
@@ -15,8 +14,7 @@ public class Test extends MMORPGPlugin {
 	protected void onMMORPGStart() {
 		DeveloperCommands.registerDeveloperCommands();
 		EventManager.registerEvents(new TestListener());
-		Debug.log(Constants.TEST_SPAWN_LOCATION);
-		//new AiTestNpc(Constants.TEST_SPAWN_LOCATION).setAlive(true);
+		new AiTestNpc(Constants.TEST_SPAWN_LOCATION).setAlive(true);
 		ConsumableItem consumable = new ConsumableItem("Test Consumable", ItemRarity.EPIC, Material.GLASS_BOTTLE, null,
 				1);
 		consumable.initialize();

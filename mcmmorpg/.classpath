@@ -7,6 +7,6 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="lib" path="libraries/gson-2.8.5.jar"/>
-	<classpathentry kind="lib" path="libraries/spigot-1.16.3.jar"/>
+	<classpathentry kind="lib" path="libraries/spigot-1.16.4.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

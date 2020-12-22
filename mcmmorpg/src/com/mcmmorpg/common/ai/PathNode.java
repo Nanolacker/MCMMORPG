@@ -7,13 +7,13 @@ public class PathNode {
 	private static final double SQRT_TWO = 1; // Math.sqrt(2.0);
 	private static final double SQRT_THREE = 1; // Math.sqrt(3.0);
 
-	private final Path path;
+	private final PathOld path;
 	private final Location location;
 	private PathNode parent;
 	private double gCost;
 	private double hCost;
 
-	public PathNode(Path path, Location location) {
+	public PathNode(PathOld path, Location location) {
 		this.path = path;
 		this.location = convertToNodeLocation(location);
 		this.gCost = 0.0;
@@ -25,7 +25,7 @@ public class PathNode {
 				location.getBlockZ() + 0.5);
 	}
 
-	public Path getPath() {
+	public PathOld getPath() {
 		return path;
 	}
 

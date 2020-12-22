@@ -30,8 +30,8 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
 
-import com.mcmmorpg.common.ai.MotionSynchronizer;
-import com.mcmmorpg.common.ai.MotionSynchronizer.MotionSynchronizerMode;
+import com.mcmmorpg.common.ai.LocationSynchronizer;
+import com.mcmmorpg.common.ai.LocationSynchronizer.Mode;
 import com.mcmmorpg.common.event.CharacterKillEvent;
 import com.mcmmorpg.common.event.EventManager;
 import com.mcmmorpg.common.event.PlayerCharacterLevelUpEvent;
@@ -117,7 +117,7 @@ public final class PlayerCharacter extends Character {
 	private final PlayerCharacterSoundtrackPlayer soundtrackPlayer;
 	private final PlayerCharacterMap map;
 	private CharacterCollider hitbox;
-	private final MotionSynchronizer motionSyncer;
+	private final LocationSynchronizer motionSyncer;
 	private DelayedTask undisarmTask;
 	private DelayedTask unsilenceTask;
 	private boolean isDisarmed;
@@ -168,7 +168,7 @@ public final class PlayerCharacter extends Character {
 		this.map = new PlayerCharacterMap(this);
 		this.hitbox = new PlayerCharacterCollider(this);
 
-		this.motionSyncer = new MotionSynchronizer(this, MotionSynchronizerMode.CHARACTER_FOLLOWS_ENTITY);
+		this.motionSyncer = new LocationSynchronizer(this, Mode.CHARACTER_FOLLOWS_ENTITY);
 		this.motionSyncer.setEntity(player);
 		this.motionSyncer.setEnabled(true);
 

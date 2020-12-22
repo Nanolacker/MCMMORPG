@@ -10,7 +10,7 @@ import org.bukkit.Particle;
 import org.bukkit.entity.Player;
 
 import com.mcmmorpg.common.MMORPGPlugin;
-import com.mcmmorpg.common.ai.Path;
+import com.mcmmorpg.common.ai.PathOld;
 import com.mcmmorpg.common.ai.PathNode;
 import com.mcmmorpg.common.time.DelayedTask;
 import com.mcmmorpg.common.time.RepeatingTask;
@@ -86,7 +86,7 @@ public class Debug {
 		return (Player) players.toArray()[0];
 	}
 
-	public static void drawPath(Path path, Particle particle, double duration) {
+	public static void drawPath(PathOld path, Particle particle, double duration) {
 		RepeatingTask drawTask = new RepeatingTask(0.1) {
 			@Override
 			protected void run() {

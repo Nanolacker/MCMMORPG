@@ -8,28 +8,33 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerInteractEvent;
 
-import com.mcmmorpg.common.ai.CharacterNavigator;
+import com.mcmmorpg.common.ai.CharacterPathFollower;
+import com.mcmmorpg.common.ai.Path;
 import com.mcmmorpg.common.character.NonPlayerCharacter;
 import com.mcmmorpg.common.event.EventManager;
 import com.mcmmorpg.common.util.BukkitUtility;
 
 public class AiTestNpc extends NonPlayerCharacter {
 
-	private static final double SPEED = 2;
+	private static final double SPEED = 10;
 
 	private Villager entity;
 
 	protected AiTestNpc(Location spawnLocation) {
 		super("AI Test", 2, spawnLocation);
-		CharacterNavigator navigator = new CharacterNavigator(this);
-		navigator.setSpeed(SPEED);
-		navigator.setEnabled(true);
+//		CharacterNavigator navigator = new CharacterNavigator(this);
+//		navigator.setSpeed(SPEED);
+//		navigator.setEnabled(true);
+		CharacterPathFollower pathFollower = new CharacterPathFollower(this);
 
 		Listener listener = new Listener() {
 			@EventHandler
 			private void onRightClick(PlayerInteractEvent event) {
 				Player player = event.getPlayer();
-				navigator.setDestination(player.getLocation());
+				Location destination = player.getTargetBlock(null, 200).getLocation();
+				Path path = new Path(destination);
+				pathFollower.followPath(path);
+				// navigator.setDestination(player.getLocation());
 			}
 		};
 		EventManager.registerEvents(listener);
@@ -40,6 +45,7 @@ public class AiTestNpc extends NonPlayerCharacter {
 		super.spawn();
 		entity = (Villager) BukkitUtility.spawnNonpersistentEntity(getLocation(), EntityType.VILLAGER);
 		entity.setAI(false);
+		entity.setSilent(true);
 	}
 
 	@Override

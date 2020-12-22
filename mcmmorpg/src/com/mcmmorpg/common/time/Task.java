@@ -12,12 +12,6 @@ public abstract class Task {
 
 	Task() {
 		scheduled = false;
-		runnable = new BukkitRunnable() {
-			@Override
-			public void run() {
-				Task.this.run();
-			}
-		};
 	}
 
 	/**
@@ -29,6 +23,12 @@ public abstract class Task {
 			throw new IllegalStateException("Already scheduled");
 		}
 		scheduled = true;
+		runnable = new BukkitRunnable() {
+			@Override
+			public void run() {
+				Task.this.run();
+			}
+		};
 	}
 
 	/**
