@@ -3,8 +3,10 @@ package com.mcmmorpg.common.ai;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.bukkit.Location;
 
@@ -39,88 +41,124 @@ public class CharacterNavigator {
 		return updateTask.isScheduled();
 	}
 
-	public void setEnabled(boolean enabled) {
-		if (enabled) {
-			if (!updateTask.isScheduled()) {
-				updateTask.schedule();
-			}
-		} else {
-			if (updateTask.isScheduled()) {
-				updateTask.cancel();
-			}
-		}
-	}
-
 	public Location getDestination() {
 		return destination;
 	}
 
 	public void setDestination(Location destination) {
 		this.destination = destination;
+		if (destination == null) {
+			if (updateTask.isScheduled()) {
+				updateTask.cancel();
+			}
+		} else {
+			if (!updateTask.isScheduled()) {
+				updateTask.schedule();
+			}
+		}
 	}
 
 	private Path findPath() {
-		Map<Location, Costs> costs = new HashMap<>();
-		List<Location> openNodes = new ArrayList<>();
-		List<Location> closedNodes = new ArrayList<>();
+		Location blockDestination = destination.getBlock().getLocation();
+		Map<Location, Node> nodes = new HashMap<>();
+		List<Node> openNodes = new ArrayList<>();
+		Set<Node> closedNodes = new HashSet<>();
 
-		List<Location> waypoints = new ArrayList<>();
+		Location blockStart = pathFollower.getCharacter().getLocation().getBlock().getLocation();
+		Node startNode = new Node(blockStart);
+		nodes.put(blockStart, startNode);
+		openNodes.add(startNode);
 
-		Location start = pathFollower.getCharacter().getLocation();
-		openNodes.add(start);
+		while (!openNodes.isEmpty() && openNodes.size() < 1000) {
+			Node current = nodeWithLowestFCost(openNodes);
+			openNodes.remove(current);
+			closedNodes.add(current);
 
-		while (!openNodes.isEmpty() && waypoints.size() < 10000) {
-			// Find the current node in open set with lowest f-cost.
-			int currentNodeIndex = 0;
-			PathNode currentNode = openNodes.get(currentNodeIndex);
-			for (int i = 1; i < openNodes.size(); i++) {
-				PathNode node = openNodes.get(i);
-				if (node.getFCost() < currentNode.getFCost()) {
-					currentNode = node;
-					currentNodeIndex = i;
-				}
+			if (current.location.equals(blockDestination)) {
+				return retracePath(current);
 			}
 
-			openNodes.remove(currentNodeIndex);
-			closedNodes.add(currentNode);
-
-			if (currentNode == targetNode) {
-				pathNodes.clear();
-				while (currentNode != null) {
-					pathNodes.add(currentNode);
-					currentNode = currentNode.getParent();
-				}
-				Collections.reverse(pathNodes);
-				return path;
-			}
-
-			PathNode[] neighborNodes = currentNode.getNeighbors();
-			for (PathNode neighborNode : neighborNodes) {
-				pathNodes.add(neighborNode);
-				if (!neighborNode.isTraversable() || closedNodes.contains(neighborNode)) {
+			Node[] neighbors = current.getNeighbors(nodes);
+			for (Node neighbor : neighbors) {
+				if (!isTraversable(neighbor) || closedNodes.contains(neighbor)) {
 					continue;
 				}
-				double newGCost = currentNode.getGCost() + currentNode.distance(neighborNode);
-				if (newGCost < neighborNode.getGCost() || !openNodes.contains(neighborNode)) {
-					openNodes.add(neighborNode);
-					neighborNode.setGCost(newGCost);
-					neighborNode.setHCost(neighborNode.distance(targetNode));
-					neighborNode.setParent(currentNode);
-					if (!openNodes.contains(neighborNode)) {
-						openNodes.add(neighborNode);
+
+				double costToNeighbor = current.gCost + current.location.distanceSquared(neighbor.location);
+				if (costToNeighbor < neighbor.gCost || !openNodes.contains(neighbor)) {
+					neighbor.gCost = costToNeighbor;
+					neighbor.hCost = neighbor.location.distanceSquared(blockDestination);
+					neighbor.parent = current;
+
+					if (!openNodes.contains(neighbor)) {
+						openNodes.add(neighbor);
 					}
 				}
 			}
 		}
+		return null;
+	}
+
+	private Path retracePath(Node endNode) {
+		List<Location> waypoints = new ArrayList<>();
+		Node current = endNode;
+		while (current.parent != null) {
+			waypoints.add(current.location);
+			current = current.parent;
+		}
+		Collections.reverse(waypoints);
 		return new Path(waypoints.toArray(new Location[waypoints.size()]));
 	}
 
-	private static class Costs {
-		int gCost;
-		int hCost;
+	private Node nodeWithLowestFCost(List<Node> nodes) {
+		Node nodeWithLowestCost = nodes.get(0);
+		for (int i = 1; i < nodes.size(); i++) {
+			Node node = nodes.get(i);
+			if (node.getFCost() < nodeWithLowestCost.getFCost()) {
+				nodeWithLowestCost = node;
+			}
+		}
+		return nodeWithLowestCost;
+	}
 
-		int getFCost() {
+	private boolean isTraversable(Node node) {
+		return node.location.getBlock().isPassable();
+	}
+
+	private static class Node {
+		Location location;
+		Node parent;
+		double gCost;
+		double hCost;
+
+		Node(Location location) {
+			this.location = location;
+		}
+
+		double getFCost() {
 			return gCost + hCost;
+		}
+
+		Node[] getNeighbors(Map<Location, Node> nodes) {
+			Node[] neighbors = new Node[26];
+			int index = 0;
+			for (int x = -1; x <= 1; x++) {
+				for (int y = -1; y <= 1; y++) {
+					for (int z = -1; z <= 1; z++) {
+						if (x == 0 && y == 0 && z == 0) {
+							continue;
+						}
+						Location neighborLocation = location.clone().add(x, y, z);
+						if (!nodes.containsKey(neighborLocation)) {
+							nodes.put(neighborLocation, new Node(neighborLocation));
+						}
+						Node node = nodes.get(neighborLocation);
+						neighbors[index] = node;
+						index++;
+					}
+				}
+			}
+			return neighbors;
 		}
 	}
 

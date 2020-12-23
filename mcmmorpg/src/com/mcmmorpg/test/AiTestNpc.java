@@ -8,6 +8,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerInteractEvent;
 
+import com.mcmmorpg.common.ai.CharacterNavigator;
 import com.mcmmorpg.common.ai.CharacterPathFollower;
 import com.mcmmorpg.common.ai.Path;
 import com.mcmmorpg.common.character.NonPlayerCharacter;
@@ -22,19 +23,16 @@ public class AiTestNpc extends NonPlayerCharacter {
 
 	protected AiTestNpc(Location spawnLocation) {
 		super("AI Test", 2, spawnLocation);
-//		CharacterNavigator navigator = new CharacterNavigator(this);
-//		navigator.setSpeed(SPEED);
-//		navigator.setEnabled(true);
 		CharacterPathFollower pathFollower = new CharacterPathFollower(this);
+		pathFollower.setStoppingDistance(3);
+		CharacterNavigator navigator = new CharacterNavigator(pathFollower);
 
 		Listener listener = new Listener() {
 			@EventHandler
 			private void onRightClick(PlayerInteractEvent event) {
 				Player player = event.getPlayer();
-				Location destination = player.getTargetBlock(null, 200).getLocation();
-				Path path = new Path(destination);
-				pathFollower.followPath(path);
-				// navigator.setDestination(player.getLocation());
+				Location destination = player.getLocation();
+				navigator.setDestination(destination);
 			}
 		};
 		EventManager.registerEvents(listener);

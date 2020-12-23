@@ -5,6 +5,7 @@ import org.bukkit.util.Vector;
 
 import com.mcmmorpg.common.character.Character;
 import com.mcmmorpg.common.time.RepeatingTask;
+import com.mcmmorpg.common.util.Debug;
 
 public class CharacterPathFollower {
 
@@ -40,25 +41,35 @@ public class CharacterPathFollower {
 
 	public void followPath(Path path) {
 		this.path = path;
-		if (!updateTask.isScheduled() && path != null && !path.isEmpty()) {
-			updateTask.schedule();
+		if (path == null || path.isEmpty()) {
+			if (updateTask.isScheduled()) {
+				updateTask.cancel();
+			}
+		} else {
+			if (!updateTask.isScheduled()) {
+				updateTask.schedule();
+			}
 		}
 	}
 
 	private void update() {
 		Location currentLocation = character.getLocation();
 		Location nextWaypointLocation = path.getWaypoints()[0];
-		Vector velocity = nextWaypointLocation.clone().subtract(currentLocation).toVector().normalize().multiply(speed);
-		Location nextLocation = currentLocation.add(velocity.multiply(UPDATE_PERIOD));
-		Vector direction = path.getDestination().clone().subtract(nextLocation).toVector().normalize();
-		nextLocation.setDirection(direction);
-		character.setLocation(nextLocation);
-		if (nextLocation.distanceSquared(nextWaypointLocation) < stoppingDistanceSquared) {
+		Debug.log((int) currentLocation.distanceSquared(nextWaypointLocation) + "vs. " + stoppingDistanceSquared);
+		if (currentLocation.distanceSquared(nextWaypointLocation) <= stoppingDistanceSquared) {
 			path = path.getSubpath();
 			if (path.isEmpty()) {
 				updateTask.cancel();
+				return;
 			}
+		} else {
+			System.out.println(path.getWaypointCount());
 		}
+		Vector velocity = nextWaypointLocation.clone().subtract(currentLocation).toVector().normalize().multiply(speed);
+		Location nextLocation = currentLocation.add(velocity.multiply(UPDATE_PERIOD));
+		Vector direction = path.getDestination().clone().subtract(currentLocation).toVector().normalize();
+		nextLocation.setDirection(direction);
+		character.setLocation(nextLocation);
 	}
 
 	public double getSpeed() {
