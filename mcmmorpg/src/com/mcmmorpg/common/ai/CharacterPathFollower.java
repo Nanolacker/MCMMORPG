@@ -1,6 +1,7 @@
 package com.mcmmorpg.common.ai;
 
 import org.bukkit.Location;
+import org.bukkit.Particle;
 import org.bukkit.util.Vector;
 
 import com.mcmmorpg.common.character.Character;
@@ -10,19 +11,15 @@ import com.mcmmorpg.common.util.Debug;
 public class CharacterPathFollower {
 
 	private static final double UPDATE_PERIOD = 0.05;
-	private static final double DEFAULT_SPEED = 4.0;
-	private static final double DEFAULT_STOPPING_DISTANCE_SQUARED = 0.05;
 
 	private final Character character;
 	private final RepeatingTask updateTask;
 	private Path path;
-	private double speed;
-	private double stoppingDistanceSquared;
+	private double speed = 4.0;
+	private double stoppingDistanceSquared = 0.05;
 
 	public CharacterPathFollower(Character character) {
 		this.character = character;
-		this.speed = DEFAULT_SPEED;
-		this.stoppingDistanceSquared = DEFAULT_STOPPING_DISTANCE_SQUARED;
 		updateTask = new RepeatingTask(UPDATE_PERIOD) {
 			@Override
 			protected void run() {
@@ -40,6 +37,9 @@ public class CharacterPathFollower {
 	}
 
 	public void followPath(Path path) {
+		if (path != null) {
+			Debug.drawPath(path, Particle.CRIT, 1);
+		}
 		this.path = path;
 		if (path == null || path.isEmpty()) {
 			if (updateTask.isScheduled()) {
@@ -54,16 +54,18 @@ public class CharacterPathFollower {
 
 	private void update() {
 		Location currentLocation = character.getLocation();
+		if (currentLocation.distanceSquared(path.getDestination()) <= stoppingDistanceSquared) {
+			updateTask.cancel();
+			return;
+		}
+
 		Location nextWaypointLocation = path.getWaypoints()[0];
-		Debug.log((int) currentLocation.distanceSquared(nextWaypointLocation) + "vs. " + stoppingDistanceSquared);
 		if (currentLocation.distanceSquared(nextWaypointLocation) <= stoppingDistanceSquared) {
 			path = path.getSubpath();
 			if (path.isEmpty()) {
 				updateTask.cancel();
 				return;
 			}
-		} else {
-			System.out.println(path.getWaypointCount());
 		}
 		Vector velocity = nextWaypointLocation.clone().subtract(currentLocation).toVector().normalize().multiply(speed);
 		Location nextLocation = currentLocation.add(velocity.multiply(UPDATE_PERIOD));

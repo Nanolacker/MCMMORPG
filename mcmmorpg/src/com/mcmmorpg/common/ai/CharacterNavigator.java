@@ -9,6 +9,8 @@ import java.util.Map;
 import java.util.Set;
 
 import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.block.Block;
 
 import com.mcmmorpg.common.time.RepeatingTask;
 import com.mcmmorpg.common.util.Debug;
@@ -20,6 +22,8 @@ public class CharacterNavigator {
 	private final CharacterPathFollower pathFollower;
 	private Location destination;
 	private RepeatingTask updateTask;
+	private double jumpHeight = 1.25;
+	private boolean canClimbLadders = true;;
 
 	public CharacterNavigator(CharacterPathFollower pathFollower) {
 		this.pathFollower = pathFollower;
@@ -59,12 +63,12 @@ public class CharacterNavigator {
 	}
 
 	private Path findPath() {
-		Location blockDestination = destination.getBlock().getLocation();
+		Location blockDestination = destination.getBlock().getLocation().add(0.5, 0.0, 0.5);
 		Map<Location, Node> nodes = new HashMap<>();
 		List<Node> openNodes = new ArrayList<>();
 		Set<Node> closedNodes = new HashSet<>();
 
-		Location blockStart = pathFollower.getCharacter().getLocation().getBlock().getLocation();
+		Location blockStart = pathFollower.getCharacter().getLocation().getBlock().getLocation().add(0.5, 0.0, 0.5);
 		Node startNode = new Node(blockStart);
 		nodes.put(blockStart, startNode);
 		openNodes.add(startNode);
@@ -80,7 +84,8 @@ public class CharacterNavigator {
 
 			Node[] neighbors = current.getNeighbors(nodes);
 			for (Node neighbor : neighbors) {
-				if (!isTraversable(neighbor) || closedNodes.contains(neighbor)) {
+				boolean traversable = isTraversable(neighbor, current);
+				if (!traversable || closedNodes.contains(neighbor)) {
 					continue;
 				}
 
@@ -121,8 +126,29 @@ public class CharacterNavigator {
 		return nodeWithLowestCost;
 	}
 
-	private boolean isTraversable(Node node) {
-		return node.location.getBlock().isPassable();
+	private boolean isTraversable(Node node, Node previousNode) {
+		Location location = node.location;
+		Location previousLocation = previousNode.location;
+		Block block = location.getBlock();
+		if (block.getType() == Material.LADDER) {
+			return canClimbLadders;
+		}
+		if (location.getX() != previousLocation.getX() && location.getZ() != previousLocation.getZ()) {
+			// diagnol movement
+			double height = Math.ceil(pathFollower.getCharacter().getHeight());
+			for (int y = 0; y < height; y++) {
+				// if (there is a block occupying
+				Location l1 = new Location(location.getWorld(), previousLocation.getX(), previousLocation.getY() + y,
+						location.getZ());
+				Location l2 = new Location(location.getWorld(), location.getX(), previousLocation.getY() + y,
+						previousLocation.getZ());
+				if (!l1.getBlock().isPassable() || !l2.getBlock().isPassable()) {
+					return false;
+				}
+			}
+		}
+		return node.location.getBlock().isPassable()
+				&& !node.location.clone().subtract(0, 1, 0).getBlock().isPassable();
 	}
 
 	private static class Node {

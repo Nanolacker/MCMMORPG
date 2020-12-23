@@ -10,14 +10,11 @@ import org.bukkit.event.player.PlayerInteractEvent;
 
 import com.mcmmorpg.common.ai.CharacterNavigator;
 import com.mcmmorpg.common.ai.CharacterPathFollower;
-import com.mcmmorpg.common.ai.Path;
 import com.mcmmorpg.common.character.NonPlayerCharacter;
 import com.mcmmorpg.common.event.EventManager;
 import com.mcmmorpg.common.util.BukkitUtility;
 
 public class AiTestNpc extends NonPlayerCharacter {
-
-	private static final double SPEED = 10;
 
 	private Villager entity;
 
@@ -30,6 +27,9 @@ public class AiTestNpc extends NonPlayerCharacter {
 		Listener listener = new Listener() {
 			@EventHandler
 			private void onRightClick(PlayerInteractEvent event) {
+				if (!isSpawned()) {
+					return;
+				}
 				Player player = event.getPlayer();
 				Location destination = player.getLocation();
 				navigator.setDestination(destination);
