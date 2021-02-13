@@ -8,12 +8,10 @@ import org.bukkit.craftbukkit.v1_16_R3.CraftServer;
  *
  */
 public class CommandManager {
-
-	/**
-	 * Registers the command, allowing it to be used.
-	 */
-	public static void registerCommand(Command command) {
-		((CraftServer) Bukkit.getServer()).getCommandMap().register("", command.bukkitCommand);
-	}
-
+    /**
+     * Registers the command, allowing it to be used.
+     */
+    public static void register(Command command) {
+        ((CraftServer) Bukkit.getServer()).getCommandMap().register("", command.bukkitCommand);
+    }
 }

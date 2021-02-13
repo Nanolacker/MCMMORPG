@@ -19,103 +19,101 @@ import com.mcmmorpg.common.item.Item;
 import com.mcmmorpg.common.time.DelayedTask;
 
 class QuestObjectiveListener implements Listener {
+    private static final Map<Item, QuestObjective> ITEMS_TO_ITEM_COLLECTION_OBJECTIVES = new HashMap<>();
+    private static final Map<QuestObjective, Item> ITEM_COLLECTION_OBJECTIVES_TO_ITEMS = new HashMap<>();
 
-	private static final Map<Item, QuestObjective> ITEMS_TO_ITEM_COLLECTION_OBJECTIVES = new HashMap<>();
-	private static final Map<QuestObjective, Item> ITEM_COLLECTION_OBJECTIVES_TO_ITEMS = new HashMap<>();
+    static void registerItemCollectionObjective(Item item, QuestObjective objective) {
+        ITEMS_TO_ITEM_COLLECTION_OBJECTIVES.put(item, objective);
+        ITEM_COLLECTION_OBJECTIVES_TO_ITEMS.put(objective, item);
+    }
 
-	static void registerItemCollectionObjective(Item item, QuestObjective objective) {
-		ITEMS_TO_ITEM_COLLECTION_OBJECTIVES.put(item, objective);
-		ITEM_COLLECTION_OBJECTIVES_TO_ITEMS.put(objective, item);
-	}
+    @EventHandler
+    private void onRegisterPc(PlayerCharacterRegisterEvent event) {
+        PlayerCharacter pc = event.getPlayerCharacter();
+        Set<Item> items = ITEMS_TO_ITEM_COLLECTION_OBJECTIVES.keySet();
+        for (Item item : items) {
+            QuestObjective objective = ITEMS_TO_ITEM_COLLECTION_OBJECTIVES.get(item);
+            updateItemCollectionObjectiveProgress(pc, objective, item);
+        }
+    }
 
-	@EventHandler
-	private void onRegisterPc(PlayerCharacterRegisterEvent event) {
-		PlayerCharacter pc = event.getPlayerCharacter();
-		Set<Item> items = ITEMS_TO_ITEM_COLLECTION_OBJECTIVES.keySet();
-		for (Item item : items) {
-			QuestObjective objective = ITEMS_TO_ITEM_COLLECTION_OBJECTIVES.get(item);
-			updateItemCollectionObjectiveProgress(pc, objective, item);
-		}
-	}
+    @EventHandler
+    private void onLootItem(PlayerCharacterLootItemEvent event) {
+        Item item = event.getItem();
+        QuestObjective objective = ITEMS_TO_ITEM_COLLECTION_OBJECTIVES.get(item);
+        if (objective == null) {
+            return;
+        }
+        PlayerCharacter pc = event.getPlayerCharacter();
+        updateItemCollectionObjectiveProgress(pc, objective, item);
+    }
 
-	@EventHandler
-	private void onLootItem(PlayerCharacterLootItemEvent event) {
-		Item item = event.getItem();
-		QuestObjective objective = ITEMS_TO_ITEM_COLLECTION_OBJECTIVES.get(item);
-		if (objective == null) {
-			return;
-		}
-		PlayerCharacter pc = event.getPlayerCharacter();
-		updateItemCollectionObjectiveProgress(pc, objective, item);
-	}
+    @EventHandler
+    private void onPickUpItem(PlayerCharacterPickUpItemEvent event) {
+        Item item = event.getItem();
+        QuestObjective objective = ITEMS_TO_ITEM_COLLECTION_OBJECTIVES.get(item);
+        if (objective == null) {
+            return;
+        }
+        PlayerCharacter pc = event.getPlayerCharacter();
+        updateItemCollectionObjectiveProgress(pc, objective, item);
+    }
 
-	@EventHandler
-	private void onPickUpItem(PlayerCharacterPickUpItemEvent event) {
-		Item item = event.getItem();
-		QuestObjective objective = ITEMS_TO_ITEM_COLLECTION_OBJECTIVES.get(item);
-		if (objective == null) {
-			return;
-		}
-		PlayerCharacter pc = event.getPlayerCharacter();
-		updateItemCollectionObjectiveProgress(pc, objective, item);
-	}
+    @EventHandler
+    private void onReceiveItem(PlayerCharacterReceiveItemEvent event) {
+        Item item = event.getItem();
+        QuestObjective objective = ITEMS_TO_ITEM_COLLECTION_OBJECTIVES.get(item);
+        if (objective == null) {
+            return;
+        }
+        PlayerCharacter pc = event.getPlayerCharacter();
+        updateItemCollectionObjectiveProgress(pc, objective, item);
+    }
 
-	@EventHandler
-	private void onReceiveItem(PlayerCharacterReceiveItemEvent event) {
-		Item item = event.getItem();
-		QuestObjective objective = ITEMS_TO_ITEM_COLLECTION_OBJECTIVES.get(item);
-		if (objective == null) {
-			return;
-		}
-		PlayerCharacter pc = event.getPlayerCharacter();
-		updateItemCollectionObjectiveProgress(pc, objective, item);
-	}
+    @EventHandler
+    private void onDropItem(PlayerCharacterDropItemEvent event) {
+        Item item = event.getItem();
+        QuestObjective objective = ITEMS_TO_ITEM_COLLECTION_OBJECTIVES.get(item);
+        if (objective == null) {
+            return;
+        }
+        PlayerCharacter pc = event.getPlayerCharacter();
+        updateItemCollectionObjectiveProgress(pc, objective, item);
+    }
 
-	@EventHandler
-	private void onDropItem(PlayerCharacterDropItemEvent event) {
-		Item item = event.getItem();
-		QuestObjective objective = ITEMS_TO_ITEM_COLLECTION_OBJECTIVES.get(item);
-		if (objective == null) {
-			return;
-		}
-		PlayerCharacter pc = event.getPlayerCharacter();
-		updateItemCollectionObjectiveProgress(pc, objective, item);
-	}
+    @EventHandler
+    private void onRemoveItem(PlayerCharacterRemoveItemEvent event) {
+        Item item = event.getItem();
+        QuestObjective objective = ITEMS_TO_ITEM_COLLECTION_OBJECTIVES.get(item);
+        if (objective == null) {
+            return;
+        }
+        PlayerCharacter pc = event.getPlayerCharacter();
+        updateItemCollectionObjectiveProgress(pc, objective, item);
+    }
 
-	@EventHandler
-	private void onRemoveItem(PlayerCharacterRemoveItemEvent event) {
-		Item item = event.getItem();
-		QuestObjective objective = ITEMS_TO_ITEM_COLLECTION_OBJECTIVES.get(item);
-		if (objective == null) {
-			return;
-		}
-		PlayerCharacter pc = event.getPlayerCharacter();
-		updateItemCollectionObjectiveProgress(pc, objective, item);
-	}
+    @EventHandler
+    private void onObjectiveChangeAccessibility(QuestObjectiveAccessibilityChangeEvent event) {
+        if (!event.objectiveIsAccessible()) {
+            return;
+        }
+        QuestObjective objective = event.getObjective();
+        Item item = ITEM_COLLECTION_OBJECTIVES_TO_ITEMS.get(objective);
+        if (item == null) {
+            return;
+        }
+        PlayerCharacter pc = event.getPlayerCharacter();
+        updateItemCollectionObjectiveProgress(pc, objective, item);
+    }
 
-	@EventHandler
-	private void onObjectiveChangeAccessibility(QuestObjectiveAccessibilityChangeEvent event) {
-		if (!event.objectiveIsAccessible()) {
-			return;
-		}
-		QuestObjective objective = event.getObjective();
-		Item item = ITEM_COLLECTION_OBJECTIVES_TO_ITEMS.get(objective);
-		if (item == null) {
-			return;
-		}
-		PlayerCharacter pc = event.getPlayerCharacter();
-		updateItemCollectionObjectiveProgress(pc, objective, item);
-	}
-
-	private void updateItemCollectionObjectiveProgress(PlayerCharacter pc, QuestObjective objective, Item item) {
-		// delayed to wait for next tick
-		new DelayedTask() {
-			@Override
-			protected void run() {
-				int itemCount = pc.getItemCount(item);
-				objective.setProgress(pc, itemCount);
-			}
-		}.schedule();
-	}
-
+    private void updateItemCollectionObjectiveProgress(PlayerCharacter pc, QuestObjective objective, Item item) {
+        // delayed to wait for next tick
+        new DelayedTask() {
+            @Override
+            protected void run() {
+                int itemCount = pc.getItemCount(item);
+                objective.setProgress(pc, itemCount);
+            }
+        }.schedule();
+    }
 }

@@ -10,38 +10,36 @@ import com.mcmmorpg.common.quest.Quest;
  * An event called when a player character starts a quest.
  */
 public class PlayerCharacterStartQuestEvent extends Event {
+    private static final HandlerList handlers = new HandlerList();
 
-	private static final HandlerList handlers = new HandlerList();
+    private final PlayerCharacter pc;
+    private final Quest quest;
 
-	private final PlayerCharacter pc;
-	private final Quest quest;
+    public PlayerCharacterStartQuestEvent(PlayerCharacter pc, Quest quest) {
+        this.pc = pc;
+        this.quest = quest;
+    }
 
-	public PlayerCharacterStartQuestEvent(PlayerCharacter pc, Quest quest) {
-		this.pc = pc;
-		this.quest = quest;
-	}
+    public static HandlerList getHandlerList() {
+        return handlers;
+    }
 
-	public static HandlerList getHandlerList() {
-		return handlers;
-	}
+    @Override
+    public HandlerList getHandlers() {
+        return handlers;
+    }
 
-	@Override
-	public HandlerList getHandlers() {
-		return handlers;
-	}
+    /**
+     * Returns the player character that started the quest.
+     */
+    public PlayerCharacter getPlayerCharacter() {
+        return pc;
+    }
 
-	/**
-	 * Returns the player character that started the quest.
-	 */
-	public PlayerCharacter getPlayerCharacter() {
-		return pc;
-	}
-
-	/**
-	 * Returns the started quest.
-	 */
-	public Quest getQuest() {
-		return quest;
-	}
-
+    /**
+     * Returns the started quest.
+     */
+    public Quest getQuest() {
+        return quest;
+    }
 }

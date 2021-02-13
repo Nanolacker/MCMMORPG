@@ -10,29 +10,27 @@ import com.mcmmorpg.common.character.PlayerCharacter;
  * character leaves the game).
  */
 public class PlayerCharacterRemoveEvent extends Event {
+    private static final HandlerList handlers = new HandlerList();
 
-	private static final HandlerList handlers = new HandlerList();
+    private final PlayerCharacter pc;
 
-	private final PlayerCharacter pc;
+    public PlayerCharacterRemoveEvent(PlayerCharacter pc) {
+        this.pc = pc;
+    }
 
-	public PlayerCharacterRemoveEvent(PlayerCharacter pc) {
-		this.pc = pc;
-	}
+    public static HandlerList getHandlerList() {
+        return handlers;
+    }
 
-	public static HandlerList getHandlerList() {
-		return handlers;
-	}
+    @Override
+    public HandlerList getHandlers() {
+        return handlers;
+    }
 
-	@Override
-	public HandlerList getHandlers() {
-		return handlers;
-	}
-
-	/**
-	 * Returns the removed player character.
-	 */
-	public PlayerCharacter getPlayerCharacter() {
-		return pc;
-	}
-
+    /**
+     * Returns the removed player character.
+     */
+    public PlayerCharacter getPlayerCharacter() {
+        return pc;
+    }
 }

@@ -6,26 +6,24 @@ import org.bukkit.event.HandlerList;
 import com.mcmmorpg.common.character.PlayerCharacter;
 
 public class PlayerCharacterCloseMapEvent extends Event {
+    private static final HandlerList handlers = new HandlerList();
 
-	private static final HandlerList handlers = new HandlerList();
+    private final PlayerCharacter pc;
 
-	private final PlayerCharacter pc;
+    public PlayerCharacterCloseMapEvent(PlayerCharacter pc) {
+        this.pc = pc;
+    }
 
-	public PlayerCharacterCloseMapEvent(PlayerCharacter pc) {
-		this.pc = pc;
-	}
+    public static HandlerList getHandlerList() {
+        return handlers;
+    }
 
-	public static HandlerList getHandlerList() {
-		return handlers;
-	}
+    @Override
+    public HandlerList getHandlers() {
+        return handlers;
+    }
 
-	@Override
-	public HandlerList getHandlers() {
-		return handlers;
-	}
-
-	public PlayerCharacter getPlayerCharacter() {
-		return pc;
-	}
-
+    public PlayerCharacter getPlayerCharacter() {
+        return pc;
+    }
 }

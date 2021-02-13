@@ -7,47 +7,45 @@ import com.mcmmorpg.common.character.PlayerCharacter;
 import com.mcmmorpg.common.quest.QuestObjective;
 
 public class QuestObjectiveAccessibilityChangeEvent extends Event {
+    private static final HandlerList handlers = new HandlerList();
 
-	private static final HandlerList handlers = new HandlerList();
+    private final PlayerCharacter pc;
+    private final QuestObjective objective;
+    private final boolean accessible;
 
-	private final PlayerCharacter pc;
-	private final QuestObjective objective;
-	private final boolean accessible;
+    public QuestObjectiveAccessibilityChangeEvent(PlayerCharacter pc, QuestObjective objective, boolean accessible) {
+        this.pc = pc;
+        this.objective = objective;
+        this.accessible = accessible;
+    }
 
-	public QuestObjectiveAccessibilityChangeEvent(PlayerCharacter pc, QuestObjective objective, boolean accessible) {
-		this.pc = pc;
-		this.objective = objective;
-		this.accessible = accessible;
-	}
+    public static HandlerList getHandlerList() {
+        return handlers;
+    }
 
-	public static HandlerList getHandlerList() {
-		return handlers;
-	}
+    @Override
+    public HandlerList getHandlers() {
+        return handlers;
+    }
 
-	@Override
-	public HandlerList getHandlers() {
-		return handlers;
-	}
+    /**
+     * Return the player for which the objective's accessibility was modified.
+     */
+    public PlayerCharacter getPlayerCharacter() {
+        return pc;
+    }
 
-	/**
-	 * Return the player for which the objective's accessibility was modified.
-	 */
-	public PlayerCharacter getPlayerCharacter() {
-		return pc;
-	}
+    /**
+     * Returns the objective whose accessibility was modified.
+     */
+    public QuestObjective getObjective() {
+        return objective;
+    }
 
-	/**
-	 * Returns the objective whose accessibility was modified.
-	 */
-	public QuestObjective getObjective() {
-		return objective;
-	}
-
-	/**
-	 * Returns whether the quest objective was made accessible.
-	 */
-	public boolean objectiveIsAccessible() {
-		return accessible;
-	}
-
+    /**
+     * Returns whether the quest objective was made accessible.
+     */
+    public boolean objectiveIsAccessible() {
+        return accessible;
+    }
 }

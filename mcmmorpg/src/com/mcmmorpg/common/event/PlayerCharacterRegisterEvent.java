@@ -10,29 +10,27 @@ import com.mcmmorpg.common.character.PlayerCharacter;
  * character joins the game).
  */
 public class PlayerCharacterRegisterEvent extends Event {
+    private static final HandlerList handlers = new HandlerList();
 
-	private static final HandlerList handlers = new HandlerList();
+    private final PlayerCharacter pc;
 
-	private final PlayerCharacter pc;
+    public PlayerCharacterRegisterEvent(PlayerCharacter pc) {
+        this.pc = pc;
+    }
 
-	public PlayerCharacterRegisterEvent(PlayerCharacter pc) {
-		this.pc = pc;
-	}
+    public static HandlerList getHandlerList() {
+        return handlers;
+    }
 
-	public static HandlerList getHandlerList() {
-		return handlers;
-	}
+    @Override
+    public HandlerList getHandlers() {
+        return handlers;
+    }
 
-	@Override
-	public HandlerList getHandlers() {
-		return handlers;
-	}
-
-	/**
-	 * Returns the registered player character.
-	 */
-	public PlayerCharacter getPlayerCharacter() {
-		return pc;
-	}
-
+    /**
+     * Returns the registered player character.
+     */
+    public PlayerCharacter getPlayerCharacter() {
+        return pc;
+    }
 }

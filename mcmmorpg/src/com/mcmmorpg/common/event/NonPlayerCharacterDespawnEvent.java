@@ -9,29 +9,27 @@ import com.mcmmorpg.common.character.NonPlayerCharacter;
  * An event called when an NPC despawns;
  */
 public class NonPlayerCharacterDespawnEvent extends Event {
+    private static final HandlerList handlers = new HandlerList();
 
-	private static final HandlerList handlers = new HandlerList();
+    private final NonPlayerCharacter npc;
 
-	private final NonPlayerCharacter npc;
+    public NonPlayerCharacterDespawnEvent(NonPlayerCharacter npc) {
+        this.npc = npc;
+    }
 
-	public NonPlayerCharacterDespawnEvent(NonPlayerCharacter npc) {
-		this.npc = npc;
-	}
+    public static HandlerList getHandlerList() {
+        return handlers;
+    }
 
-	public static HandlerList getHandlerList() {
-		return handlers;
-	}
+    @Override
+    public HandlerList getHandlers() {
+        return handlers;
+    }
 
-	@Override
-	public HandlerList getHandlers() {
-		return handlers;
-	}
-
-	/**
-	 * Returns the NPC that despawned in this event.
-	 */
-	public NonPlayerCharacter getNpc() {
-		return npc;
-	}
-
+    /**
+     * Returns the NPC that despawned in this event.
+     */
+    public NonPlayerCharacter getNpc() {
+        return npc;
+    }
 }

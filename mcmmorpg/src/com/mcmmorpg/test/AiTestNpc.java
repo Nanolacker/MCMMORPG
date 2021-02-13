@@ -15,49 +15,47 @@ import com.mcmmorpg.common.event.EventManager;
 import com.mcmmorpg.common.util.BukkitUtility;
 
 public class AiTestNpc extends NonPlayerCharacter {
+    private Villager entity;
 
-	private Villager entity;
+    protected AiTestNpc(Location spawnLocation) {
+        super("AI Test", 2, spawnLocation);
+        CharacterPathFollower pathFollower = new CharacterPathFollower(this);
+        pathFollower.setStoppingDistance(3);
+        CharacterNavigator navigator = new CharacterNavigator(pathFollower);
 
-	protected AiTestNpc(Location spawnLocation) {
-		super("AI Test", 2, spawnLocation);
-		CharacterPathFollower pathFollower = new CharacterPathFollower(this);
-		pathFollower.setStoppingDistance(3);
-		CharacterNavigator navigator = new CharacterNavigator(pathFollower);
+        Listener listener = new Listener() {
+            @EventHandler
+            private void onRightClick(PlayerInteractEvent event) {
+                if (!isSpawned()) {
+                    return;
+                }
+                Player player = event.getPlayer();
+                Location destination = player.getLocation();
+                navigator.setDestination(destination);
+            }
+        };
+        EventManager.registerEvents(listener);
+    }
 
-		Listener listener = new Listener() {
-			@EventHandler
-			private void onRightClick(PlayerInteractEvent event) {
-				if (!isSpawned()) {
-					return;
-				}
-				Player player = event.getPlayer();
-				Location destination = player.getLocation();
-				navigator.setDestination(destination);
-			}
-		};
-		EventManager.registerEvents(listener);
-	}
+    @Override
+    protected void spawn() {
+        super.spawn();
+        entity = (Villager) BukkitUtility.spawnNonpersistentEntity(getLocation(), EntityType.VILLAGER);
+        entity.setAI(false);
+        entity.setSilent(true);
+    }
 
-	@Override
-	protected void spawn() {
-		super.spawn();
-		entity = (Villager) BukkitUtility.spawnNonpersistentEntity(getLocation(), EntityType.VILLAGER);
-		entity.setAI(false);
-		entity.setSilent(true);
-	}
+    @Override
+    protected void despawn() {
+        super.despawn();
+        entity.remove();
+    }
 
-	@Override
-	protected void despawn() {
-		super.despawn();
-		entity.remove();
-	}
-
-	@Override
-	public void setLocation(Location location) {
-		super.setLocation(location);
-		if (isSpawned()) {
-			entity.teleport(location);
-		}
-	}
-
+    @Override
+    public void setLocation(Location location) {
+        super.setLocation(location);
+        if (isSpawned()) {
+            entity.teleport(location);
+        }
+    }
 }

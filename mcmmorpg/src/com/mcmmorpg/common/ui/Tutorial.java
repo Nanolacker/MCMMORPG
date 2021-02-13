@@ -10,31 +10,29 @@ import com.mcmmorpg.common.time.DelayedTask;
  * Class that contains static methods pertaining to tutorials.
  */
 public class Tutorial {
+    private Tutorial() {
+    }
 
-	private Tutorial() {
-	}
+    public static void message(PlayerCharacter pc, String message) {
+        message(pc.getPlayer(), message);
+    }
 
-	public static void message(PlayerCharacter pc, String message) {
-		message(pc.getPlayer(), message);
-	}
+    public static void message(Player player, String message) {
+        message = ChatColor.GRAY + "[" + ChatColor.GREEN + "Tutorial" + ChatColor.GRAY + "]: " + ChatColor.WHITE
+                + message;
+        player.sendMessage(message);
+    }
 
-	public static void message(Player player, String message) {
-		message = ChatColor.GRAY + "[" + ChatColor.GREEN + "Tutorial" + ChatColor.GRAY + "]: " + ChatColor.WHITE
-				+ message;
-		player.sendMessage(message);
-	}
+    public static void message(PlayerCharacter pc, String message, double delay) {
+        message(pc.getPlayer(), message, delay);
+    }
 
-	public static void message(PlayerCharacter pc, String message, double delay) {
-		message(pc.getPlayer(), message, delay);
-	}
-
-	public static void message(Player player, String message, double delay) {
-		new DelayedTask(delay) {
-			@Override
-			protected void run() {
-				message(player, message);
-			}
-		}.schedule();
-	}
-
+    public static void message(Player player, String message, double delay) {
+        new DelayedTask(delay) {
+            @Override
+            protected void run() {
+                message(player, message);
+            }
+        }.schedule();
+    }
 }

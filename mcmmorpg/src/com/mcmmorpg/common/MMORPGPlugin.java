@@ -21,76 +21,74 @@ import com.mcmmorpg.common.ui.PlayerInteractionListener;
  * up and shut down procedures.
  */
 public abstract class MMORPGPlugin extends JavaPlugin {
+    private static boolean isInitialized;
 
-	private static boolean isInitialized;
+    @Override
+    public final void onEnable() {
+        isInitialized = false;
+        removeAllEntities();
+        EssentialCommands.registerEssentialCommands();
+        Clock.start();
+        NonPlayerCharacter.startSpawner();
+        LootChest.startSpawner();
+        EventManager.registerEvents(new PlayerInteractionListener());
+        onMMORPGStart();
+        isInitialized = true;
+    }
 
-	@Override
-	public final void onEnable() {
-		isInitialized = false;
-		removeAllEntities();
-		EssentialCommands.registerEssentialCommands();
-		Clock.start();
-		NonPlayerCharacter.startSpawner();
-		LootChest.startSpawner();
-		EventManager.registerEvents(new PlayerInteractionListener());
-		onMMORPGStart();
-		isInitialized = true;
-	}
+    @Override
+    public final void onDisable() {
+        onMMORPGStop();
+        kickAllPlayers();
+        NonPlayerCharacter.despawnAll();
+        LootChest.removeAll();
+    }
 
-	@Override
-	public final void onDisable() {
-		onMMORPGStop();
-		kickAllPlayers();
-		NonPlayerCharacter.despawnAll();
-		LootChest.removeAll();
-	}
+    /**
+     * Remove all spawned entities for cleanup.
+     */
+    private static void removeAllEntities() {
+        List<World> worlds = Bukkit.getWorlds();
+        for (World world : worlds) {
+            List<Entity> entities = world.getEntities();
+            for (Entity entity : entities) {
+                entity.remove();
+            }
+        }
+    }
 
-	/**
-	 * Remove all spawned entities for cleanup.
-	 */
-	private static void removeAllEntities() {
-		List<World> worlds = Bukkit.getWorlds();
-		for (World world : worlds) {
-			List<Entity> entities = world.getEntities();
-			for (Entity entity : entities) {
-				entity.remove();
-			}
-		}
-	}
+    /**
+     * Removes all players from the server so that it can properly shut down. This
+     * is mostly only important for development.
+     */
+    private void kickAllPlayers() {
+        Collection<? extends Player> players = Bukkit.getOnlinePlayers();
+        for (Player player : players) {
+            player.kickPlayer("Reloading Server");
+        }
+    }
 
-	/**
-	 * Removes all players from the server so that it can properly shut down. This
-	 * is mostly only important for development.
-	 */
-	private void kickAllPlayers() {
-		Collection<? extends Player> players = Bukkit.getOnlinePlayers();
-		for (Player player : players) {
-			player.kickPlayer("Reloading Server");
-		}
-	}
+    /**
+     * Returns whether or not the plugin has fully started up.
+     */
+    public static boolean isInitialized() {
+        return isInitialized;
+    }
 
-	/**
-	 * Returns whether or not the plugin has fully started up.
-	 */
-	public static boolean isInitialized() {
-		return isInitialized;
-	}
+    /**
+     * Returns the MCMMORPG plugin in use.
+     */
+    public static MMORPGPlugin getInstance() {
+        return getPlugin(MMORPGPlugin.class);
+    }
 
-	/**
-	 * Returns the MCMMORPG plugin in use.
-	 */
-	public static MMORPGPlugin getInstance() {
-		return getPlugin(MMORPGPlugin.class);
-	}
+    /**
+     * Invoked after the plugin starts up.
+     */
+    protected abstract void onMMORPGStart();
 
-	/**
-	 * Invoked after the plugin starts up.
-	 */
-	protected abstract void onMMORPGStart();
-
-	/**
-	 * Invoked before the plugin shuts down.
-	 */
-	protected abstract void onMMORPGStop();
-
+    /**
+     * Invoked before the plugin shuts down.
+     */
+    protected abstract void onMMORPGStop();
 }

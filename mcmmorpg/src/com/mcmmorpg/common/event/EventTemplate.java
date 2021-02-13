@@ -7,22 +7,20 @@ import org.bukkit.event.HandlerList;
  * This is a template for writing events.
  */
 public class EventTemplate extends Event {
+    private static final HandlerList handlers = new HandlerList();
 
-	private static final HandlerList handlers = new HandlerList();
+    // Fields go here.
 
-	// Fields go here.
+    // Constructor goes here.
 
-	// Constructor goes here.
+    public static HandlerList getHandlerList() {
+        return handlers;
+    }
 
-	public static HandlerList getHandlerList() {
-		return handlers;
-	}
+    @Override
+    public HandlerList getHandlers() {
+        return handlers;
+    }
 
-	@Override
-	public HandlerList getHandlers() {
-		return handlers;
-	}
-
-	// Other methods go here.
-
+    // Other methods go here.
 }

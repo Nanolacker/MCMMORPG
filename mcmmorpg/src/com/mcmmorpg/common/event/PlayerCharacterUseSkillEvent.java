@@ -11,37 +11,36 @@ import com.mcmmorpg.common.playerClass.Skill;
  * effects to skills.
  */
 public class PlayerCharacterUseSkillEvent extends Event {
+    private static final HandlerList handlers = new HandlerList();
 
-	private static final HandlerList handlers = new HandlerList();
+    private final PlayerCharacter pc;
+    private final Skill skill;
 
-	private final PlayerCharacter pc;
-	private final Skill skill;
+    public PlayerCharacterUseSkillEvent(PlayerCharacter pc, Skill skill) {
+        this.pc = pc;
+        this.skill = skill;
+    }
 
-	public PlayerCharacterUseSkillEvent(PlayerCharacter pc, Skill skill) {
-		this.pc = pc;
-		this.skill = skill;
-	}
+    public static HandlerList getHandlerList() {
+        return handlers;
+    }
 
-	public static HandlerList getHandlerList() {
-		return handlers;
-	}
+    @Override
+    public HandlerList getHandlers() {
+        return handlers;
+    }
 
-	@Override
-	public HandlerList getHandlers() {
-		return handlers;
-	}
+    /**
+     * Returns the player character that used the skill.
+     */
+    public PlayerCharacter getPlayerCharacter() {
+        return pc;
+    }
 
-	/**
-	 * Returns the player character that used the skill.
-	 */
-	public PlayerCharacter getPlayerCharacter() {
-		return pc;
-	}
-
-	/**
-	 * Returns the skill used in this event.
-	 */
-	public Skill getSkill() {
-		return skill;
-	}
+    /**
+     * Returns the skill used in this event.
+     */
+    public Skill getSkill() {
+        return skill;
+    }
 }

@@ -11,38 +11,36 @@ import com.mcmmorpg.common.item.ConsumableItem;
  * effects to consumables.
  */
 public class PlayerCharacterUseConsumableItemEvent extends Event {
+    private static final HandlerList handlers = new HandlerList();
 
-	private static final HandlerList handlers = new HandlerList();
+    private final PlayerCharacter pc;
+    private final ConsumableItem consumable;
 
-	private final PlayerCharacter pc;
-	private final ConsumableItem consumable;
+    public PlayerCharacterUseConsumableItemEvent(PlayerCharacter pc, ConsumableItem consumable) {
+        this.pc = pc;
+        this.consumable = consumable;
+    }
 
-	public PlayerCharacterUseConsumableItemEvent(PlayerCharacter pc, ConsumableItem consumable) {
-		this.pc = pc;
-		this.consumable = consumable;
-	}
+    public static HandlerList getHandlerList() {
+        return handlers;
+    }
 
-	public static HandlerList getHandlerList() {
-		return handlers;
-	}
+    @Override
+    public HandlerList getHandlers() {
+        return handlers;
+    }
 
-	@Override
-	public HandlerList getHandlers() {
-		return handlers;
-	}
+    /**
+     * Returns the player character that used the consumable item.
+     */
+    public PlayerCharacter getPlayerCharacter() {
+        return pc;
+    }
 
-	/**
-	 * Returns the player character that used the consumable item.
-	 */
-	public PlayerCharacter getPlayerCharacter() {
-		return pc;
-	}
-
-	/**
-	 * Returns the item consumed in this event.
-	 */
-	public ConsumableItem getConsumable() {
-		return consumable;
-	}
-
+    /**
+     * Returns the item consumed in this event.
+     */
+    public ConsumableItem getConsumable() {
+        return consumable;
+    }
 }

@@ -11,38 +11,36 @@ import com.mcmmorpg.common.item.Weapon;
  * weapons.
  */
 public class PlayerCharacterUseWeaponEvent extends Event {
+    private static final HandlerList handlers = new HandlerList();
 
-	private static final HandlerList handlers = new HandlerList();
+    private final PlayerCharacter pc;
+    private final Weapon weapon;
 
-	private final PlayerCharacter pc;
-	private final Weapon weapon;
+    public PlayerCharacterUseWeaponEvent(PlayerCharacter pc, Weapon weapon) {
+        this.pc = pc;
+        this.weapon = weapon;
+    }
 
-	public PlayerCharacterUseWeaponEvent(PlayerCharacter pc, Weapon weapon) {
-		this.pc = pc;
-		this.weapon = weapon;
-	}
+    public static HandlerList getHandlerList() {
+        return handlers;
+    }
 
-	public static HandlerList getHandlerList() {
-		return handlers;
-	}
+    @Override
+    public HandlerList getHandlers() {
+        return handlers;
+    }
 
-	@Override
-	public HandlerList getHandlers() {
-		return handlers;
-	}
+    /**
+     * Returns the player character that used the weapon.
+     */
+    public PlayerCharacter getPlayerCharacter() {
+        return pc;
+    }
 
-	/**
-	 * Returns the player character that used the weapon.
-	 */
-	public PlayerCharacter getPlayerCharacter() {
-		return pc;
-	}
-
-	/**
-	 * Returns the weapon used in this event.
-	 */
-	public Weapon getWeapon() {
-		return weapon;
-	}
-
+    /**
+     * Returns the weapon used in this event.
+     */
+    public Weapon getWeapon() {
+        return weapon;
+    }
 }
